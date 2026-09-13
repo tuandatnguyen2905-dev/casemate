@@ -1,0 +1,266 @@
+[
+  {
+    "program_id": "manulife-manulife-future-leader-m-fls",
+    "program_name": "Manulife — Manulife Future Leader - M-FLs",
+    "company": "Manulife",
+    "program": "Manulife Future Leader - M-FLs",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Bachelor’s or Master’s degree holders with a minimum GPA of 7.0/10. Candidates with less than 2 years of work experience. Bachelor’s or Master’s degree holders with a minimum GPA of 7.0/10. Candidates with less than 1 year of work experience.) or the CV does not clearly state GPA/major.",
+          "dat": "Bachelor’s or Master’s degree holders with a minimum GPA of 7.0/10. Candidates with less than 2 years of work experience. Bachelor’s or Master’s degree holders with a minimum GPA of 7.0/10. Candidates with less than 1 year of work experience.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Fluent in business-level English. Fluent in business-level English.",
+          "dat": "Fluent in business-level English. Fluent in business-level English.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: For Sales (Agency and Partnership Distribution) Divisions:",
+          "dat": "For Sales (Agency and Partnership Distribution) Divisions:",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Manulife."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel, prior case practice) — enough to pass the program's assessment/aptitude test.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Manulife culture & motivation fit",
+        "label_en": "Manulife culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Manulife or its industry; generic application reasons only.",
+          "dat": "For Sales (Agency and Partnership Distribution) Divisions: Strong sales acumen, excellent communication skills, customer-oriented mindset, willing to travel frequently for business requirements. For Non-sales Divisions: Digitally savvy, customer-centric graduates with experience in social/community work or volunteer activities. Ownership Take ownership of problems and resolutions, execute with speed and perseverance. Embrace challenges and stretch goals; takes bold steps to push beyond the status quo. Step out of comfort zone and support the team through obstacles. Make well-reasoned decisions promptly, considering potential risks. Innovation Develop innovative solutions to business challenges. Embrace AI and digital tools to enhance how we work and serve customers. Experiment, learn fast, and continuously get better. Customer Centricity Focus on customer-centric decisions and solutions. Leverage technology to enhance experiences across touchpoints. Commit to making things Stronger. Faster. Better.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Manulife's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "- For Sales (Agency and Partnership Distribution) Divisions:\n\nBachelor’s or Master’s degree holders with a minimum GPA of 7.0/10.\nCandidates with less than 2 years of work experience.\nFluent in business-level English.\nStrong sales acumen, excellent communication skills, customer-oriented mindset, willing to travel frequently for business requirements.\n\n- For Non-sales Divisions:\n\nBachelor’s or Master’s degree holders with a minimum GPA of 7.0/10.\nCandidates with less than 1 year of work experience.\nFluent in business-level English.\nDigitally savvy, customer-centric graduates with experience in social/community work or volunteer activities.\n\n\nOwnership\n\nTake ownership of problems and resolutions, execute with speed and perseverance.\nEmbrace challenges and stretch goals; takes bold steps to push beyond the status quo.\nStep out of comfort zone and support the team through obstacles.\nMake well-reasoned decisions promptly, considering potential risks.\nInnovation\n\nDevelop innovative solutions to business challenges.\nEmbrace AI and digital tools to enhance how we work and serve customers.\nExperiment, learn fast, and continuously get better.\nCustomer Centricity\n\nFocus on customer-centric decisions and solutions.\nLeverage technology to enhance experiences across touchpoints.\nCommit to making things Stronger. Faster. Better.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "oppo-oppo-management-trainee",
+    "program_name": "OPPO — OPPO Management Trainee",
+    "company": "OPPO",
+    "program": "OPPO Management Trainee",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Male final-year students or graduates with less than 2 years of experience) or the CV does not clearly state GPA/major.",
+          "dat": "Male final-year students or graduates with less than 2 years of experience",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Proficient in English or Chinese across all 4 skills. Graduates in Language Studies, Economics, Business Administration, or Marketing",
+          "dat": "Proficient in English or Chinese across all 4 skills. Graduates in Language Studies, Economics, Business Administration, or Marketing",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Proactive, adaptable, and willing to travel for work",
+          "dat": "Proactive, adaptable, and willing to travel for work",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as OPPO."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel, prior case practice) — enough to pass the program's assessment/aptitude test.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "OPPO culture & motivation fit",
+        "label_en": "OPPO culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to OPPO or its industry; generic application reasons only.",
+          "dat": "Proactive, adaptable, and willing to travel for work",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of OPPO's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "- Male final-year students or graduates with less than 2 years of experience\n- Proficient in English or Chinese across all 4 skills\n- Graduates in Language Studies, Economics, Business Administration, or Marketing\n- Proactive, adaptable, and willing to travel for work",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "panasonic-panasonic-fresher-program",
+    "program_name": "Panasonic — Panasonic Fresher Program",
+    "company": "Panasonic",
+    "program": "Panasonic Fresher Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Students in final year or recent graduates (<1 year experience) Having GPA from 6.5/10 and above) or the CV does not clearly state GPA/major.",
+          "dat": "Students in final year or recent graduates (<1 year experience) Having GPA from 6.5/10 and above",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Meets the program's required English proficiency level.",
+          "dat": "Meets the program's required English proficiency level.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Majored in: HVAC (Heating, Ventilation, and Air Conditioning), Economics, Digital Commerce, Marketing or related majors",
+          "dat": "Majored in: HVAC (Heating, Ventilation, and Air Conditioning), Economics, Digital Commerce, Marketing or related majors",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Panasonic."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel, prior case practice) — enough to pass the program's assessment/aptitude test.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Panasonic culture & motivation fit",
+        "label_en": "Panasonic culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Panasonic or its industry; generic application reasons only.",
+          "dat": "Ready to participate in the program full-time from June 2026 to September 2026​ Passionate about advancing careers in a multinational and professional working environment Progressive, eager to learn and self-develop",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Panasonic's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Students in final year or recent graduates (<1 year experience)\nMajored in: HVAC (Heating, Ventilation, and Air Conditioning), Economics, Digital Commerce, Marketing or related majors\nHaving GPA from 6.5/10 and above\nReady to participate in the program full-time from June 2026 to September 2026​\nPassionate about advancing careers in a multinational and professional working environment\nProgressive, eager to learn and self-develop",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

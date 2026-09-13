@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "schneider-electric-schneider-graduate-program",
+    "program_name": "Schneider Electric — Schneider Graduate Program",
+    "company": "Schneider Electric",
+    "program": "Schneider Graduate Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Minimum an Engineering bachelor’s degree (preferably GPA >=7.5 or equivalent). Majoring in Industrial Engineering / Mechanical Engineering / Electrical Engineering / Mechatronics / Manufacturing Recent University Graduate with 02 years of working experience.) or the CV does not clearly state GPA/major.",
+          "dat": "Minimum an Engineering bachelor’s degree (preferably GPA >=7.5 or equivalent). Majoring in Industrial Engineering / Mechanical Engineering / Electrical Engineering / Mechatronics / Manufacturing Recent University Graduate with 02 years of working experience.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Excellent command of English",
+          "dat": "Excellent command of English",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Familiarity with or prior experience using digital tools, engineering software (such as AutoCAD, SolidWorks, PLC, etc.) is an advantage",
+          "dat": "Familiarity with or prior experience using digital tools, engineering software (such as AutoCAD, SolidWorks, PLC, etc.) is an advantage",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Schneider Electric."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Competent in Communication, Problem Solving and Collaboration.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Schneider Electric culture & motivation fit",
+        "label_en": "Schneider Electric culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Schneider Electric or its industry; generic application reasons only.",
+          "dat": "Good digital acumen and adaptability to new technologies. Demonstrated interest in project management Agile mindset and thirst for knowledge, willingness to unlearn and relearn. Aspired to grow into a future leader Embody of SE IMPACT Values",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Schneider Electric's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Minimum an Engineering bachelor’s degree (preferably GPA >=7.5 or equivalent). Majoring in Industrial Engineering / Mechanical Engineering / Electrical Engineering / Mechatronics / Manufacturing\nRecent University Graduate with 02 years of working experience.\nExcellent command of English\nGood digital acumen and adaptability to new technologies. \nDemonstrated interest in project management\nFamiliarity with or prior experience using digital tools, engineering software (such as AutoCAD, SolidWorks, PLC, etc.) is an advantage \nCompetent in Communication, Problem Solving and Collaboration.\nAgile mindset and thirst for knowledge, willingness to unlearn and relearn.\nAspired to grow into a future leader\nEmbody of SE IMPACT Values",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

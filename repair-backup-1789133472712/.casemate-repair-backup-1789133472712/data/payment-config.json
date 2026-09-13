@@ -1,0 +1,35 @@
+{
+  "enabled": true,
+  "provider": "stripe",
+  "mode": "connect",
+  "stripeAccountId": "acct_1TsdTLRiFhWGE5zE",
+  "platformFeeBps": 500,
+  "currency": "VND",
+  "businessName": "Casemate",
+  "supportEmail": "benjaminnguyen.work03@gmail.com",
+  "defaultTrialDays": 7,
+  "defaultPriceCents": 500,
+  "defaultPriceId": null,
+  "plans": {
+    "monthly_8": {
+      "usd": 8,
+      "vnd": 168000,
+      "days": 30,
+      "label": "Monthly"
+    },
+    "first_month_5": {
+      "usd": 5,
+      "vnd": 105000,
+      "days": 30,
+      "label": "First Month Promo",
+      "renewsAtUsd": 8
+    },
+    "six_month_30": {
+      "usd": 30,
+      "vnd": 630000,
+      "days": 180,
+      "label": "6 Months",
+      "savingsUsd": 18
+    }
+  }
+}

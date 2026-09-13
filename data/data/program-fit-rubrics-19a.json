@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "spx-spx-future-leader-program",
+    "program_name": "SPX — SPX Future Leader Program",
+    "company": "SPX",
+    "program": "SPX Future Leader Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Bachelor’s or Master’s degree in Logistics, Supply Chain, Business, or related fields Fresh graduates or a maximum of 2 years of working experience) or the CV does not clearly state GPA/major.",
+          "dat": "Bachelor’s or Master’s degree in Logistics, Supply Chain, Business, or related fields Fresh graduates or a maximum of 2 years of working experience",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Strong communication skills (clear, structured verbal and written communication in English)",
+          "dat": "Strong communication skills (clear, structured verbal and written communication in English)",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "Leadership potential: ability to influence and guide others",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Strong resilience and willingness to work in on-site Operations environments (Hubs, SOC, etc.)",
+          "dat": "Strong resilience and willingness to work in on-site Operations environments (Hubs, SOC, etc.)",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as SPX."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Strong analytical and problem-solving skills",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "SPX culture & motivation fit",
+        "label_en": "SPX culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to SPX or its industry; generic application reasons only.",
+          "dat": "Strong resilience and willingness to work in on-site Operations environments (Hubs, SOC, etc.) Ability to work in a fast-paced, ambiguous environment and adapt quickly Collaborative mindset and ability to work across teams Ownership and execution excellence Growth mindset and continuous improvement thinking Interest in driving operational improvements and innovation",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of SPX's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Bachelor’s or Master’s degree in Logistics, Supply Chain, Business, or related fields\nFresh graduates or a maximum of 2 years of working experience\nStrong resilience and willingness to work in on-site Operations environments (Hubs, SOC, etc.)\nStrong communication skills (clear, structured verbal and written communication in English)\nStrong analytical and problem-solving skills\nAbility to work in a fast-paced, ambiguous environment and adapt quickly\nCollaborative mindset and ability to work across teams\nLeadership potential: ability to influence and guide others\nOwnership and execution excellence\nGrowth mindset and continuous improvement thinking\nInterest in driving operational improvements and innovation",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

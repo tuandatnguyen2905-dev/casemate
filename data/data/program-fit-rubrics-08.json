@@ -1,0 +1,266 @@
+[
+  {
+    "program_id": "fast-retailing-production-management-candidate-program",
+    "program_name": "Fast Retailing — Production Management Candidate Program",
+    "company": "Fast Retailing",
+    "program": "Production Management Candidate Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Fresh graduated in any major with GPA from 7/10 (3/4) Less than 2 years experience as fulltime job) or the CV does not clearly state GPA/major.",
+          "dat": "Fresh graduated in any major with GPA from 7/10 (3/4) Less than 2 years experience as fulltime job",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: English business level (equivalent to IELTS 6.5, TOEIC 700 or TOEFL 80)",
+          "dat": "English business level (equivalent to IELTS 6.5, TOEIC 700 or TOEFL 80)",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "Demonstrated strong leadership, problem solving, communication skills.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Passion for manufacturing industry, production, clothing, factory & fabrics.",
+          "dat": "Passion for manufacturing industry, production, clothing, factory & fabrics.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Fast Retailing."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Demonstrated strong leadership, problem solving, communication skills.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Fast Retailing culture & motivation fit",
+        "label_en": "Fast Retailing culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Fast Retailing or its industry; generic application reasons only.",
+          "dat": "Passion for manufacturing industry, production, clothing, factory & fabrics. Willing to travel nationwide & globally for business trips every week.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Fast Retailing's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Fresh graduated in any major with GPA from 7/10 (3/4)\nLess than 2 years experience as fulltime job\nEnglish business level (equivalent to IELTS 6.5, TOEIC 700 or TOEFL 80)\nPassion for manufacturing industry, production, clothing, factory & fabrics.\nDemonstrated strong leadership, problem solving, communication skills.\nWilling to travel nationwide & globally for business trips every week.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "uniqlo-uniqlo-management-candidate",
+    "program_name": "Uniqlo — Uniqlo Management Candidate",
+    "company": "Uniqlo",
+    "program": "Uniqlo Management Candidate",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Bachelor's degree or higher in any field ​GPA from 7/10 (3.0/4.0) Fresh graduates or under 03 years of working experience) or the CV does not clearly state GPA/major.",
+          "dat": "Bachelor's degree or higher in any field ​GPA from 7/10 (3.0/4.0) Fresh graduates or under 03 years of working experience",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Proficient in English (minimum IELTS 6.5 or TOEIC 750 equivalent)​",
+          "dat": "Proficient in English (minimum IELTS 6.5 or TOEIC 750 equivalent)​",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Flexibility to relocate nationwide & globally in the future",
+          "dat": "Flexibility to relocate nationwide & globally in the future",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Uniqlo."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel, prior case practice) — enough to pass the program's assessment/aptitude test.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Uniqlo culture & motivation fit",
+        "label_en": "Uniqlo culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Uniqlo or its industry; generic application reasons only.",
+          "dat": "Flexibility to relocate nationwide & globally in the future Flexible work schedule, including early mornings, late nights, overnights, weekends, and holidays.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Uniqlo's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Bachelor's degree or higher in any field ​GPA from 7/10 (3.0/4.0)\nFresh graduates or under 03 years of working experience\nProficient in English (minimum IELTS 6.5 or TOEIC 750 equivalent)​\nFlexibility to relocate nationwide & globally in the future\nFlexible work schedule, including early mornings, late nights, overnights, weekends, and holidays.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "hsbc-hsbc-vietnam-graduate-programme",
+    "program_name": "HSBC — HSBC Vietnam Graduate Programme",
+    "company": "HSBC",
+    "program": "HSBC Vietnam Graduate Programme",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Have at least a second class honours degree in any discipline or equivalent from a recognised university in Vietnam or overseas (recent graduates will be considered). Currently hold a minimum 3.2 cumulative GPA or overseas equivalent.) or the CV does not clearly state GPA/major.",
+          "dat": "Have at least a second class honours degree in any discipline or equivalent from a recognised university in Vietnam or overseas (recent graduates will be considered). Currently hold a minimum 3.2 cumulative GPA or overseas equivalent.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Be fluent in English and Vietnamese",
+          "dat": "Be fluent in English and Vietnamese",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Have the legal right to work in Vietnam",
+          "dat": "Have the legal right to work in Vietnam",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as HSBC."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Strong Problem-solving skills. Ability to break down complex problems into small solvable parts and work with agility and resourcefulness to come up with meaningful outcomes.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "HSBC culture & motivation fit",
+        "label_en": "HSBC culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to HSBC or its industry; generic application reasons only.",
+          "dat": "Have the legal right to work in Vietnam Good networkers. We encourage you to collaborate with clients, senior management, peers and our other teams internationally. This means you should be a strong communicator, show courage when presenting and be the face of HSBC for our clients. Fast learners. You will work with new people on constantly evolving projects to help customers. By quickly becoming an expert in your area and keeping on top of ever-changing markets, you will gain the credibility to succeed. Diverse thinkers. Bringing new ideas to the table and sharing an enthusiasm for improving our services is welcomed by our teams in both customer-facing and head office roles. Your dedication to delivering projects efficiently and sticking to rules and regulations will be important. Opportunity takers. Having the courage to jump at the chance to do a rotation somewhere new or taking on a challenging, yet rewarding project will show that you’ve got the motivation to take your career to a higher level.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of HSBC's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Have at least a second class honours degree in any discipline or equivalent from a recognised university in Vietnam or overseas (recent graduates will be considered). Currently hold a minimum 3.2 cumulative GPA or overseas equivalent.\n Have the legal right to work in Vietnam\n Strong Problem-solving skills. Ability to break down complex problems into small solvable parts and work with agility and resourcefulness to come up with meaningful outcomes.\n Good networkers. We encourage you to collaborate with clients, senior management, peers and our other teams internationally. This means you should be a strong communicator, show courage when presenting and be the face of HSBC for our clients.\n Fast learners. You will work with new people on constantly evolving projects to help customers. By quickly becoming an expert in your area and keeping on top of ever-changing markets, you will gain the credibility to succeed.\n Diverse thinkers. Bringing new ideas to the table and sharing an enthusiasm for improving our services is welcomed by our teams in both customer-facing and head office roles. Your dedication to delivering projects efficiently and sticking to rules and regulations will be important.\n Opportunity takers. Having the courage to jump at the chance to do a rotation somewhere new or taking on a challenging, yet rewarding project will show that you’ve got the motivation to take your career to a higher level.\n Be fluent in English and Vietnamese",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

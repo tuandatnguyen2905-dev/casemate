@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "bosch-bosch-internship-program",
+    "program_name": "Bosch — Bosch Internship Program",
+    "company": "Bosch",
+    "program": "Bosch Internship Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (3rd or final-year student in IT, Computer Science, Electronics, Mechatronics, or related fields) or the CV does not clearly state GPA/major.",
+          "dat": "3rd or final-year student in IT, Computer Science, Electronics, Mechatronics, or related fields",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Able to communicate in English",
+          "dat": "Able to communicate in English",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 22,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Basic understanding of Software Development Life-cycle, good at teamwork and problem-solving",
+          "dat": "Basic understanding of Software Development Life-cycle, good at teamwork and problem-solving",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Bosch."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Basic understanding of Software Development Life-cycle, good at teamwork and problem-solving",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 7,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Bosch culture & motivation fit",
+        "label_en": "Bosch culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Bosch or its industry; generic application reasons only.",
+          "dat": "Official university recommendation letter with stamp (mandatory) Commitment: full-time or at least 4 days/week",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Bosch's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "3rd or final-year student in IT, Computer Science, Electronics, Mechatronics, or related fields\nOfficial university recommendation letter with stamp (mandatory)\nBasic understanding of Software Development Life-cycle, good at teamwork and problem-solving\nAble to communicate in English\nCommitment: full-time or at least 4 days/week",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

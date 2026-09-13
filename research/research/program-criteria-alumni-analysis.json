@@ -1,0 +1,343 @@
+{
+  "title": "Vietnam Management Trainee Program Criteria and Alumni Pattern Analysis",
+  "researchDate": "2026-08-29",
+  "scope": {
+    "market": "Vietnam",
+    "graduationYearsTargeted": "2020-2025",
+    "method": "Official career-page and official-employer-post review, cross-referenced with publicly indexed LinkedIn profiles/posts and Casemate's existing 70-story acceptance corpus.",
+    "limitations": [
+      "LinkedIn public indexing is incomplete and many profile fields are hidden without authentication.",
+      "Unknown fields were retained as unknown; no GPA, language, university, or experience was inferred.",
+      "Alumni patterns are descriptive signals, not causal estimates or admissions guarantees.",
+      "Cycle-specific criteria can change; evergreen official pages and dated campaign sources are distinguished."
+    ]
+  },
+  "programs": [
+    {
+      "program": "Unilever Vietnam — UFLP",
+      "officialCriteria": {
+        "eligibility": ["Vietnamese national", "Bachelor's or Master's graduate in the relevant intake year", "No more than 2 years of full-time experience", "GPA at least 7.0/10 or equivalent"],
+        "competencies": ["Growth and learning mindset", "Leadership and change ownership", "Ambition and drive", "Club, organization, or social-project leadership is advantageous"],
+        "timeline": "2026 cycle: application and aptitude test by 2025-12-29; digital interviews Jan-Feb 2026; Discovery Center Mar 2026; onboarding Apr 2026.",
+        "selectionProcess": ["Application", "Aptitude test", "Digital interview", "Discovery Center"],
+        "evidenceStatus": "Evergreen purpose is official; detailed 2026 criteria are preserved in a Unilever employee campaign post and university republication."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 13,
+        "detailedPublicProfiles": 5,
+        "topUniversities": ["Foreign Trade University", "RMIT University Vietnam"],
+        "commonInternships": ["Shopee business development", "MoMo data analytics", "Perfetti Van Melle commercial finance", "TikTok talent acquisition", "Function-aligned FMCG, e-commerce, analytics, or finance roles"],
+        "leadershipSignals": ["AIESEC or student-project leadership", "Student representative roles", "Facilitative team leadership", "Frontline commercial willingness"],
+        "languageRequirements": ["Official campaigns expect English capability", "Public profiles rarely disclose certificates; one detailed profile listed IELTS 7.5"],
+        "gpaPattern": "GPA is an official gate, but accepted profiles rarely publish it; do not infer below-threshold from omission.",
+        "surprisingFindings": ["Task/function adjacency is more visible than same-company loyalty", "Finance admits show professional-finance or commercial-finance proof", "Formal leadership titles are less informative than collaborative delivery"]
+      }
+    },
+    {
+      "program": "L'Oréal Vietnam — SeedZ Management Trainee",
+      "officialCriteria": {
+        "eligibility": ["Open to graduates from different disciplines", "Vietnam-specific graduation window, GPA, nationality, and experience ceiling are not stated on the current official page", "Country requirements vary by intake"],
+        "competencies": ["Ownership", "Entrepreneurship and creativity", "Open-minded problem solving", "Numerical analysis", "Communication and teamwork", "Beauty Tech interest"],
+        "timeline": "Archived Vietnam 2024 cycle: apply by 2024-10-20, then screening/online test, initial interview, assessment center, final interview.",
+        "selectionProcess": ["Talent Acquisition interview", "Business and/or HR interview", "Possible case study", "Vietnam campaigns may add online test and assessment center"],
+        "evidenceStatus": "Current official SeedZ pages are evergreen; detailed Vietnam cycle criteria come from a dated university republication."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 7,
+        "detailedPublicProfiles": 5,
+        "topUniversities": ["Foreign Trade University", "RMIT University Vietnam", "Northeastern University", "Miami University"],
+        "commonInternships": ["Prior L'Oréal internship", "Beauty/brand agency work", "Medtronic/Conagra supply chain", "PUMA finance", "New Balance/Gucci marketing programs"],
+        "leadershipSignals": ["Brandstorm or investment-research competition performance", "Cross-functional ownership", "Evidence of consumer creation"],
+        "languageRequirements": ["Working English is implicit in global rotations and interviews", "Public profiles usually omit formal scores"],
+        "gpaPattern": "No public Vietnam-specific current GPA floor; GPA mentions are sparse in alumni evidence.",
+        "surprisingFindings": ["Company-owned pathways such as Brandstorm and L'Oréal internships appear unusually valuable", "Profiles are sharply function-specialized despite a generalist MT label", "Professional credentials such as CFA/CAPM can differentiate Finance and Supply Chain tracks"]
+      }
+    },
+    {
+      "program": "Suntory PepsiCo Vietnam — Management Trainee",
+      "officialCriteria": {
+        "eligibility": ["Vietnamese national", "Fresh Bachelor's/Master's graduate or at most 2 years of full-time experience", "GPA above 7.0/10 or equivalent", "Available full-time from March 2026"],
+        "competencies": ["Honesty", "Proactivity and innovation", "Self-motivation", "Results orientation", "Collaboration and influencing", "Leadership potential", "English fluency", "Computer literacy"],
+        "timeline": "2026 cycle: applications 2025-11-25 to 2025-12-31; testing/interviews thereafter; onboarding expected March 2026.",
+        "selectionProcess": ["Application", "English aptitude test", "Bilingual initial interview", "Career Camp business case", "Panel interview"],
+        "evidenceStatus": "Current official program page and official employer announcement."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 12,
+        "detailedPublicProfiles": 5,
+        "topUniversities": ["Foreign Trade University", "HCMC University of Technology", "International University - VNU HCMC", "International School of Business - UEH"],
+        "commonInternships": ["HEINEKEN learning and development", "Sanofi supply chain", "Mondelez category planning", "Lazada", "FMCG/e-commerce brand and commercial roles"],
+        "leadershipSignals": ["Club presidency/AIESEC", "Facilitation rather than dominance", "Business-first case framing", "Emotional control and resilience"],
+        "languageRequirements": ["English is an explicit eligibility and assessment requirement", "One detailed profile lists Vietnamese, English, and Chinese"],
+        "gpaPattern": "Official gate above 7.0/10; public alumni profiles seldom display GPA.",
+        "surprisingFindings": ["Excessive dominance can hurt Assessment Center performance", "HR and technical candidates still need enterprise-level business case skills", "Portable experience from rival FMCG employers is common"]
+      }
+    },
+    {
+      "program": "Central Retail Vietnam — Management Associate",
+      "officialCriteria": {
+        "eligibility": ["Fresh graduate or professional with under 3 years of experience", "Good English", "Passion for retail", "Willingness to work in a fast-paced environment"],
+        "competencies": ["Analytical thinking", "Innovation", "Persistence and resilience", "Entrepreneurial spirit", "Continual learning", "Ambitious goal achievement"],
+        "timeline": "2026 applications 2026-07-24 to 2026-08-24; cognitive test and HR interview Sep; offline test Oct; business case Oct-Nov; onboarding Jan 2027.",
+        "selectionProcess": ["Application", "Cognitive test", "HR interview", "Offline test", "Business-case presentation"],
+        "evidenceStatus": "Current official program site, official corporate careers page, and application page."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 6,
+        "detailedPublicProfiles": 5,
+        "topUniversities": ["Foreign Trade University", "RMIT University Vietnam", "Hanoi University of Science and Technology", "Tokyo International University"],
+        "commonInternships": ["Abbott logistics", "Ratraco business development", "Dentsu strategic planning", "Technology/startup roles", "Retail and cross-functional rotation work"],
+        "leadershipSignals": ["Frontline store learning", "Cross-functional rotation agility", "AIESEC/TEDx leadership", "Process-building and measurable commercial outcomes"],
+        "languageRequirements": ["Good English is explicit", "Public profiles rarely show test scores"],
+        "gpaPattern": "No stated GPA threshold on the current program pages; alumni testimonials mostly omit GPA.",
+        "surprisingFindings": ["Degree background is heterogeneous, including non-business fields", "Frontline retail and door-to-door execution are treated as leadership development", "Rotation outcomes reveal stronger fit signals than pre-admission credential prestige"]
+      }
+    },
+    {
+      "program": "Sea / Shopee Vietnam — Global MAP and Vietnam Management Associate",
+      "officialCriteria": {
+        "eligibility": ["Recognized bachelor's degree in any discipline", "0-2 years of full-time experience excluding internships/part-time work", "Degree completed by June 2027 for the current intake", "Available full-time July 2027"],
+        "competencies": ["Strong academics", "Leadership potential", "Critical thinking", "Data analysis", "Communication", "Scholarships, achievements, and reputable internships are advantageous"],
+        "timeline": "2027 intake: applications/assessment Aug-Oct 2026; behavioral interview Aug-Nov; senior interviews Oct-Nov; executive group case Nov-Dec; deadline 2026-10-31.",
+        "selectionProcess": ["Application", "Online assessment", "HR behavioral interview", "Senior-leader interview", "Vietnam Country/People Head interview", "Possible Singapore executive group case for Global MA"],
+        "evidenceStatus": "Official Sea vacancy and Global MAP program/FAQ; Vietnam path corroborated by dated local notice."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 6,
+        "detailedPublicProfiles": 2,
+        "topUniversities": ["Foreign Trade University", "British University Vietnam/Staffordshire University", "Fulbright University Vietnam"],
+        "commonInternships": ["Shopee Apprentice", "EY-Parthenon strategy", "McKinsey project work", "ZaloPay/product/analytics"],
+        "leadershipSignals": ["High ownership", "TEDx/project leadership", "Cross-market adaptability", "Data-backed decision making"],
+        "languageRequirements": ["English is needed for global interviews and rotations", "Public profiles did not consistently list language levels"],
+        "gpaPattern": "Strong academics are advantageous, not a published numeric cutoff in the current vacancy.",
+        "surprisingFindings": ["Apprentice-to-graduate conversion is a distinct pipeline", "Vietnam MA and Global MA are related outcomes but not identical programs", "Data/product/commercial adjacency is more consistent than a single preferred major"]
+      }
+    },
+    {
+      "program": "Grab Vietnam — Future Unicorn (historical graduate route)",
+      "officialCriteria": {
+        "eligibility": ["Fresh graduate or under 2 years of experience", "GPA at least 7.5/10 or 3.0/4 equivalent", "Fluent and accurate English"],
+        "competencies": ["Analysis and critical thinking", "Leadership mindset", "Ambition", "Positive community impact", "Communication", "Organization and teamwork", "Business problem solving"],
+        "timeline": "Latest detailed official Vietnam cycle found was 2022; deadline 2022-01-14 and final Assessment Center reported 2022-03-22.",
+        "selectionProcess": ["Application", "Online assessment", "Initial interview", "Senior-manager interview", "Assessment Center/final interview"],
+        "evidenceStatus": "Historical official Grab Vietnam page. GrabLife is employer-brand language, not the verified program name."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 6,
+        "detailedPublicProfiles": 2,
+        "topUniversities": ["National Economics University", "Northeastern University"],
+        "commonInternships": ["PwC Deals Strategy", "Nextrans", "Analytics and marketplace strategy", "Tech bootcamp/product pathways"],
+        "leadershipSignals": ["Inclusive facilitation", "Composure in live ambiguity", "Community mission alignment", "Partner empathy"],
+        "languageRequirements": ["English fluency is explicit", "One wider acceptance-corpus profile disclosed IELTS 8.0"],
+        "gpaPattern": "Historical official minimum 3.0/4 or 7.5/10; one rich accepted profile disclosed 3.8/4.",
+        "surprisingFindings": ["Live partner interaction and situational minigames can matter", "Calm facilitation is more visible than dominant leadership", "The Future Unicorn route should not be assumed to run annually"]
+      }
+    },
+    {
+      "program": "Masan Consumer — Masan Young Entrepreneur",
+      "officialCriteria": {
+        "eligibility": ["Fresh graduate or under 2 years of experience", "2026 Sales track GPA at least 6.5/10", "General early-talent page prefers a bachelor's degree from a top university", "Passion for Business/Sales and FMCG for Sales track"],
+        "competencies": ["Proactivity", "Growth orientation", "Discipline", "Learning drive", "Analytical decision making", "Collaboration and presentation", "Values and aspiration fit"],
+        "timeline": "2026 Sales: applications 2026-05-07 to 2026-06-07; aptitude test Jun; initial interview Jul; business case/final interview Jul.",
+        "selectionProcess": ["CV screening", "IQ/EQ and problem-solving test", "Analytical business case", "Group collaboration/presentation", "Final values, technical, and personal-fit interview"],
+        "evidenceStatus": "Official careers pages and official Masan Consumer campaign post."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 3,
+        "detailedPublicProfiles": 2,
+        "topUniversities": ["Foreign Trade University", "VNU International School"],
+        "commonInternships": ["Digital/e-commerce", "Startup and agency work", "Employer branding", "Marketing competition pathways"],
+        "leadershipSignals": ["AIESEC leadership", "Highly deliberate interview preparation", "Resilience after repeated rejection", "Measurable store/operations execution"],
+        "languageRequirements": ["Public campaign materials reviewed did not state a standardized English score", "Profile language fields were mostly unavailable"],
+        "gpaPattern": "Sales gate is 6.5/10; an accepted-candidate story in the broader corpus reported 3.21/4, contradicting a universal hidden 3.5+ floor.",
+        "surprisingFindings": ["Preparation systems can substitute for pedigree signaling", "Competition value comes from functional proof rather than the badge", "Resilience is unusually explicit in successful-candidate narratives"]
+      }
+    },
+    {
+      "program": "P&G Vietnam — direct-entry and Sales Manager Trainee",
+      "officialCriteria": {
+        "eligibility": ["Bachelor's or Master's degree", "Fresh graduate or under 3 years of experience for Sales Manager Trainee", "Fluent English", "Willingness to relocate nationally or internationally"],
+        "competencies": ["Analytical and strategic thinking", "Leadership", "Communication", "Innovation and brand growth", "Problem solving", "Can-do attitude", "Handling multiple priorities"],
+        "timeline": "No fixed annual Vietnam Future Leaders window exists; assessment outcomes are normally communicated within 30 days.",
+        "selectionProcess": ["Online application", "Online assessments including PEAK where applicable", "Behavioral interviews", "Role-specific stages", "Offer"],
+        "evidenceStatus": "Official P&G hiring/development pages and Vietnam recruiter notice. P&G does not publish a distinct rotational program named Future Leaders."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 2,
+        "detailedPublicProfiles": 2,
+        "topUniversities": ["RMIT University Vietnam", "University of Economics and Law"],
+        "commonInternships": ["Mercedes-Benz key account work", "Business development", "Direct ownership roles"],
+        "leadershipSignals": ["AIESEC external-relations leadership", "Day-one ownership", "Commercial mobility"],
+        "languageRequirements": ["Fluent English is explicit", "Public profiles did not expose standardized scores"],
+        "gpaPattern": "No numeric cutoff found for the trainee role reviewed.",
+        "surprisingFindings": ["The core route is direct entry rather than a broad rotational Future Leaders program", "Mobility is an explicit gate", "Prior customer-facing execution is a stronger visible signal than a particular major"]
+      }
+    },
+    {
+      "program": "Nestlé Vietnam — #SparkTheNext Leaders",
+      "officialCriteria": {
+        "eligibility": ["Final-year student or recent graduate", "Under 1 year of full-time experience", "GPA at least 2.8/4 equivalent", "Fluent English"],
+        "competencies": ["Business thinking and operational knowledge", "Teamwork", "Communication", "Holistic business and leadership capability"],
+        "timeline": "2026 cycle: online assessment by 2025-12-15; initial interview; Nest Camp; final interview; May 2026 start.",
+        "selectionProcess": ["Online application/assessment", "Initial interview", "Nest Camp", "Final interview"],
+        "evidenceStatus": "Official evergreen students/graduates page; cycle dates preserved by FPT University. NFSP is not the current official Vietnam MT name."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 11,
+        "detailedPublicProfiles": 6,
+        "topUniversities": ["HCM University of Technology", "Foreign Trade University", "HCMC University of Technology and Education", "Tokyo International University"],
+        "commonInternships": ["Nestern/Nestlé internships", "Brand marketing", "Demand/supply planning", "Industrial engineering and factory roles", "UNIQLO merchandising planning"],
+        "leadershipSignals": ["Patient learning", "Supportive teamwork", "Technical rigor", "End-to-end process curiosity", "Problem solving across every round"],
+        "languageRequirements": ["Fluent English is explicit", "Public profiles usually omit test scores"],
+        "gpaPattern": "Official floor 2.8/4; alumni posts rarely display GPA.",
+        "surprisingFindings": ["Technical internships can convert into MT entry", "Commercial and Technical tracks require separate archetypes", "Supportive team roles can outperform forced dominance at Nest Camp"]
+      }
+    },
+    {
+      "program": "KPMG Vietnam — Graduate Recruitment",
+      "officialCriteria": {
+        "eligibility": ["All degree disciplines welcomed", "Final-year students, recent graduates, some graduates with experience, gap-year candidates, and postgraduates may qualify", "No accounting background required for the internship-to-graduate pipeline", "Current internship pipeline expects graduation by Sep 2027"],
+        "competencies": ["Resilience", "Teamwork", "Progressive thinking", "Passionate communication", "Continuous learning", "Leadership aspiration", "Desire to make a difference"],
+        "timeline": "Graduate Recruitment 2026 applications ran 2026-03-09 to 2026-03-23; later round dates were not published.",
+        "selectionProcess": ["Application/background review", "English and technical assessments", "Virtual Launch Pad with e-tray, role-play, and group exercises", "Behavioral partner/director interview"],
+        "evidenceStatus": "Official graduate page, internship FAQ, selection graphic, and official employer post."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 5,
+        "detailedPublicProfiles": 1,
+        "topUniversities": ["Foreign Trade University", "National Economics University", "Academy of Finance", "Hanoi Law University"],
+        "commonInternships": ["Audit/tax internships", "Internship-to-assistant conversion"],
+        "leadershipSignals": ["Continuous professional study", "Team resilience", "Client-service communication"],
+        "languageRequirements": ["English is directly assessed", "Profile language fields were unavailable"],
+        "gpaPattern": "The official page asks for top students but publishes no numeric GPA threshold.",
+        "surprisingFindings": ["Non-accounting degrees are explicitly allowed", "Professional-study signals such as CFA/ICAEW appear in public profiles", "Entry titles are often Assistant rather than Associate, reducing LinkedIn title-search recall"]
+      }
+    },
+    {
+      "program": "Deloitte Vietnam — Graduate Program / Amplify",
+      "officialCriteria": {
+        "eligibility": ["Amplify: recent graduate with under 3 years of experience", "Available for the full 12-week internship", "No concurrent job or ongoing coursework/examinations", "Vietnam work authorization", "Service-line-relevant degree for some roles"],
+        "competencies": ["Analytical problem solving", "Data interpretation", "Communication", "Teamwork", "Adaptability", "Attention to detail", "Interest in assurance, risk, compliance, tax, or consulting"],
+        "timeline": "September 2026 intake: applications due 2026-09-04; internship 2026-09-21 to 2026-12-11. Regional graduate applications usually open Aug-Sep.",
+        "selectionProcess": ["Application and shortlisting", "Interview/assessment day", "Possible written exercise", "Individual case or technical test", "Group activities"],
+        "evidenceStatus": "Official Southeast Asia graduate, Amplify, role, and how-to-apply pages."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 5,
+        "detailedPublicProfiles": 0,
+        "topUniversities": ["Foreign Trade University", "National Economics University", "Academy of Finance", "University of Economics HCMC"],
+        "commonInternships": ["Audit", "Banking", "Research and accounting roles"],
+        "leadershipSignals": ["Extracurricular achievements are explicitly requested", "Group assessment and client communication"],
+        "languageRequirements": ["English/communication expected", "Public profile language fields were unavailable"],
+        "gpaPattern": "No numeric public cutoff found in current pages.",
+        "surprisingFindings": ["Vietnam's current path is a 12-week conversion internship rather than guaranteed direct graduate hire", "No-concurrent-work and no-exam availability are explicit gates", "Public title matches do not reliably establish program-entry year"]
+      }
+    },
+    {
+      "program": "EY Vietnam — Fresh Graduate Program",
+      "officialCriteria": {
+        "eligibility": ["Vietnamese citizen in the archived 2025 Core Assurance vacancy", "Relevant degree such as Accounting, Auditing, Finance, Economics, Foreign Trade, Banking, Commerce, MIS, or IT", "Good technical marks", "English and Microsoft Office proficiency"],
+        "competencies": ["Analytical ability", "Teamwork", "Organization", "Positive attitude and enthusiasm", "Independent work under pressure", "Chinese, Japanese, or Korean is advantageous"],
+        "timeline": "2025 program applications closed 2025-04-04; no dated timetable for later assessment rounds was found.",
+        "selectionProcess": ["Online application", "Shortlisting", "Aptitude/evaluation rounds", "Online, written, or face-to-face assessments", "Interviews", "Offer/onboarding"],
+        "evidenceStatus": "Official vacancy records and official how-we-hire page; detailed eligibility is preserved in a university vacancy archive."
+      },
+      "alumniPatterns": {
+        "profilesReviewed": 5,
+        "detailedPublicProfiles": 0,
+        "topUniversities": ["University of Economics and Law", "University of Sussex", "Coventry University"],
+        "commonInternships": ["Audit", "Transfer pricing", "Finance and data-analysis exposure"],
+        "leadershipSignals": ["Pressure tolerance", "Analytical teamwork", "Client-service communication"],
+        "languageRequirements": ["English is explicit; Chinese/Japanese/Korean can be advantageous", "Public profiles rarely expose language levels"],
+        "gpaPattern": "Good technical marks are requested, but no numeric GPA floor was found.",
+        "surprisingFindings": ["Additional Asian languages are an explicit differentiator", "MIS/IT degrees are eligible for Core Assurance", "Public Associate titles alone do not prove entry through the fresh-graduate campaign"]
+      }
+    }
+  ],
+  "crossProgramFindings": {
+    "sample": "70 existing successful-candidate stories plus the detailed public profile checks summarized above",
+    "highSignalPatterns": [
+      "Function/task adjacency is the strongest repeated observable signal; 52 of 70 existing candidate stories show aligned work, projects, or responsibilities.",
+      "Learning agility appears in 48 of 70 stories and collaborative leadership in 34 of 70.",
+      "Structured problem solving under ambiguity appears in at least 29 of 70 and is tested outside consulting/marketing, including HR, Supply Chain, Procurement, and technical tracks.",
+      "Only 5 of 70 stories disclosed a numeric GPA and one disclosed a standardized English score, so absence on a profile is not evidence of weakness.",
+      "Company-owned internships/competitions can create privileged pipelines, but generic competition participation is much weaker.",
+      "Rival-company experience is common and should be treated as portable function learning, not a loyalty penalty."
+    ],
+    "nonObviousPatterns": [
+      "Quiet orchestration—listening, synthesis, protecting airtime, and redirecting a group—is often a stronger Assessment Center leadership signal than speaking most.",
+      "The relevant unit of experience is the task, not the industry: planning, key-account, analytics, and commercial-finance skills transfer across employers.",
+      "Career pivots can succeed when the candidate provides coherent transferable-task evidence and deliberate upskilling.",
+      "Frontline willingness in stores, factories, customer visits, or distributor work is repeatedly framed as leadership potential.",
+      "Program naming matters: L'Oréal uses SeedZ; Nestlé uses #SparkTheNext Leaders; GrabLife is not the verified program name; P&G does not publish a broad Future Leaders rotation."
+    ]
+  },
+  "casemateGapAnalysis": [
+    {
+      "gap": "Official eligibility gates are mixed with preference scoring",
+      "recommendation": "Separate hard gates (GPA, graduation window, experience ceiling, nationality/work authorization, availability, mobility) from weighted fit. Use meets/below/unknown rather than treating unknown as fail."
+    },
+    {
+      "gap": "Function evidence is represented too coarsely",
+      "recommendation": "Score a five-level task-adjacency ladder: same function/same industry; same function/different industry; adjacent transferable tasks; substantial project/competition proof; motivation only."
+    },
+    {
+      "gap": "OCP captures value congruence but not demonstrated capability",
+      "recommendation": "Keep OCP as corporate fit, but add separate evidence-backed dimensions for learning agility, structured problem solving, collaborative leadership, resilience/ownership, and frontline willingness."
+    },
+    {
+      "gap": "MBTI/job-fit risks over-weighting type labels",
+      "recommendation": "Do not use MBTI as a selection predictor. Replace or subordinate it with behavioral evidence and function-specific task rubrics."
+    },
+    {
+      "gap": "Industry preference can penalize transferable experience",
+      "recommendation": "Treat industry interest as motivation, not capability. Reward transferable task evidence from rival or adjacent industries."
+    },
+    {
+      "gap": "No explicit selection-round readiness score",
+      "recommendation": "Model timed case, aptitude/numerical tests, group discussion, English presentation, executive Q&A, e-tray/role-play, and camp-style assessment separately from program fit."
+    },
+    {
+      "gap": "Leadership mostly rewards titles",
+      "recommendation": "Add facilitation, listening and revision, conflict management, synthesis, followership, and role flexibility."
+    },
+    {
+      "gap": "Company-owned pipeline signals are missing",
+      "recommendation": "Add dated official_pipeline_signal values for Brandstorm, company internships, Apprentice programs, and verified competition shortcuts; apply expiry and confidence."
+    },
+    {
+      "gap": "Admit archetypes and evidence confidence are incomplete",
+      "recommendation": "Populate evidence-linked, function-specific admit archetypes with source year, sample size, source type, and confidence. Keep alumni patterns probabilistic and avoid clone-the-alumni bias."
+    },
+    {
+      "gap": "Corporate-fit model lacks explicit work-life flexibility",
+      "recommendation": "Retain the existing OCP extension proposal to add work-life balance/flexibility, while displaying compensation and development alongside culture fit."
+    }
+  ],
+  "sources": {
+    "official": [
+      "https://www.unilever.com.vn/news/2023/giup-cac-ban-tre-phat-trien-su-nghiep/",
+      "https://uniquelyuvn.com/",
+      "https://jobs.neu.edu.vn/jobs/unilever-future-leaders-programme-2026-unilever-viet-nam-1202511111446",
+      "https://careers.loreal.com/en_US/content/Vietnam",
+      "https://careers.loreal.com/en_US/content/SeedZ",
+      "https://www.uef.edu.vn/qhdn/cong-viec-part-time/tap-doan-loreal-viet-nam-tuyen-dung-27649",
+      "https://careers.suntorypepsico.vn/intro?id=171&meta_title=MT2026",
+      "https://www.ma-centralretailvn.com/",
+      "https://centralretail.com.vn/careers/vietnam-management-associate/",
+      "https://career.sea.com/position/J02171477",
+      "https://seagmap.sea.com/faq",
+      "https://www.grab.com/vn/en/blog/grab-future-unicorn-program-2022-chuong-trinh-ky-lan-tap-su-2022-tai-grab/",
+      "https://careers.masanconsumer.com/content/The-Next-Masan-Talents/?locale=en_GB",
+      "https://www.pgcareers.com/apac/en/leadership-development",
+      "https://www.pgcareers.com/apac/en/hiring-process",
+      "https://www.nestle.com.vn/en/jobs/students-graduates",
+      "https://kpmg.com/vn/en/careers/graduate.html",
+      "https://kpmg.com/vn/en/careers/internship/faq.html",
+      "https://www.deloitte.com/southeast-asia/en/careers/explore-your-fit/students/graduate-program.html",
+      "https://www.deloitte.com/southeast-asia/en/careers/explore-your-fit/students/amplify-programme.html",
+      "https://www.ey.com/en_vn/careers/how-we-hire"
+    ],
+    "accessDate": "2026-08-29"
+  }
+}

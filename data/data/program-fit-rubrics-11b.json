@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "schneider-electric-schneider-internship-program",
+    "program_name": "Schneider Electric — Schneider Internship Program",
+    "company": "Schneider Electric",
+    "program": "Schneider Internship Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Open to final-year students or fresh graduates Pursuing Bachelor’s degree in Computer Science, Information Technology, or a related field.) or the CV does not clearly state GPA/major.",
+          "dat": "Open to final-year students or fresh graduates Pursuing Bachelor’s degree in Computer Science, Information Technology, or a related field.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Meets the program's required English proficiency level.",
+          "dat": "Meets the program's required English proficiency level.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 22,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Basic knowledge of Excel Solid understanding of data analytics and business analysis. Knowledge of IT/OT cybersecurity principles and best practices.",
+          "dat": "Basic knowledge of Excel Solid understanding of data analytics and business analysis. Knowledge of IT/OT cybersecurity principles and best practices.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Schneider Electric."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Undergraduate student in Business, Marketing, Data Analytics, Psychology, or related field Interest in customer experience, customer service, or data analysis Good logical thinking and attention to detail Solid understanding of data analytics and business analysis. Strong analytical, problem-solving, and communication skills.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 7,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Schneider Electric culture & motivation fit",
+        "label_en": "Schneider Electric culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Schneider Electric or its industry; generic application reasons only.",
+          "dat": "Commercial Function Education: Skills: Strong communication and willingness to learn Curious and proactive mindset Positive attitude and team collaboration Ability to handle multiple small tasks independently Manufacturing Function: Proficiency in .NET, PHP, HTML, and familiarity with LEAP. Strong experience with MS SQL and MySQL. Hands-on experience with RPA tools (e.g., UiPath, Automation Anywhere, Blue Prism). Experience in Tableau or similar BI tools. Exposure to AI development and machine learning concepts. Certifications in RPA, BI tools, AI, or Cybersecurity are a plus. Experience working in industrial or manufacturing environments is advantageous.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Schneider Electric's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Commercial Function\n- Education:\nUndergraduate student in Business, Marketing, Data Analytics, Psychology, or related field\nOpen to final-year students or fresh graduates\n- Skills:\nBasic knowledge of Excel\nInterest in customer experience, customer service, or data analysis\nGood logical thinking and attention to detail\nStrong communication and willingness to learn\nCurious and proactive mindset\nPositive attitude and team collaboration\nAbility to handle multiple small tasks independently\n\nManufacturing Function:\nProficiency in .NET, PHP, HTML, and familiarity with LEAP.\nStrong experience with MS SQL and MySQL.\nHands-on experience with RPA tools (e.g., UiPath, Automation Anywhere, Blue Prism).\nExperience in Tableau or similar BI tools.\nSolid understanding of data analytics and business analysis.\nExposure to AI development and machine learning concepts.\nKnowledge of IT/OT cybersecurity principles and best practices.\nStrong analytical, problem-solving, and communication skills.\nPursuing Bachelor’s degree in Computer Science, Information Technology, or a related field.\nCertifications in RPA, BI tools, AI, or Cybersecurity are a plus.\nExperience working in industrial or manufacturing environments is advantageous.",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

@@ -1,0 +1,266 @@
+[
+  {
+    "program_id": "pg-leadgen-2026",
+    "program_name": "P&G Vietnam — P&G LEAD GEN 2026 (Internship)",
+    "company": "P&G Vietnam",
+    "program": "P&G LEAD GEN 2026 (Internship)",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "Below the program's education requirements (university students available to work full-time from January 2026 (Brand/Sales) or May 2026 (Process Engineer — STEM background); prior internship experience preferred), or the CV does not clearly state the GPA/field of study.",
+          "dat": "Meets the requirements: a university student available to work full-time from January 2026 (Brand/Sales) or May 2026 (Process Engineer — STEM background); prior internship experience preferred; field of study relevant to the application track; graduation timeline meets the requirements.",
+          "noi_bat": "GPA of ~8.5/10 (3.5/4.0) or above, a scholarship, or a high ranking within the department; field of study closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium academic program, or an English-speaking work environment). Program standard: proficient English (the online assessment and three rounds of C-level interviews are conducted mostly in English).",
+          "dat": "Meets the proficient-English standard (the online assessment and three rounds of C-level interviews are conducted mostly in English); able to use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or studies/works entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV lists no significant extracurricular activities.",
+          "dat": "At least one team-lead/committee-lead role in a club, project, or event — clearly states what the candidate specifically did.",
+          "noi_bat": "Club president / organizing committee lead for a large-scale event / project founder — with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience related to FMCG (brand/sales) or process engineering (Process Engineering track).",
+          "dat": "Has at least one internship related to FMCG (brand/sales) or process engineering (Process Engineering track), clearly describing the work actually performed (not just the job title).",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met, project actually implemented) at a company in the same industry as P&G Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, Excel proficiency, case-practice experience) — sufficient to pass P&G-style online assessment tests (reasoning) and three rounds of PEAK Performance behavioral interviews.",
+          "noi_bat": "An achievement in a case competition or a real-world analytical project + strong tool skills (advanced Excel, SQL/Python if required by the track) — ready for both the aptitude test and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV lists no awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or received a scholarship or school-level award.",
+          "noi_bat": "Advanced to the later rounds or won an award in a major competition (P&G CEO Challenge, a major FMCG case competition), or received a scholarship/national-level or higher award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "P&G PEAK behavioral standards & ownership mindset",
+        "label_en": "P&G PEAK behaviors & ownership standard",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Cannot provide a specific behavioral example using a results-oriented model (situation–action–result); the profile lacks clear individual achievements.",
+          "dat": "Has clear behavioral examples of leadership, collaboration, and problem-solving — aligned with P&G's behavioral interview format.",
+          "noi_bat": "A consistent track record of achievements demonstrating ownership and results that exceed expectations (competition award + leadership role + measurable internship results) — meets P&G candidate standards."
+        }
+      }
+    ],
+    "ideal_profile_text": "Undergraduates that can work full-time from Jan 2026\nA forward thinker who can participate in the development and implementation of new ideas.\nEagerness to learn and grow within a dynamic sales environment.\nStrong thinking/problem-solving skills which can be applied to business processes with a \"can-do\" attitude\nExcellent visionary, strategic, and strong leadership skills, with strong communication skills and analytical thinking\nDemonstrated ability to handle multiple priorities and drive innovation and business growth\nProficiency in English (written and spoken).\nReady to relocate nationally",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "deloitte-passport-fy26",
+    "program_name": "Deloitte Vietnam — Deloitte Passport FY26 (Internship)",
+    "company": "Deloitte Vietnam",
+    "program": "Deloitte Passport FY26 (Internship)",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "Below the program's education requirements (fourth-year students (Audit & Assurance or Tax & Legal) or second- to third-year students (Audit & Assurance only); accounting–auditing–finance preferred, with a good-to-excellent GPA), or the CV does not clearly state the GPA/field of study.",
+          "dat": "Meets the requirements: a fourth-year student (Audit & Assurance or Tax & Legal) or a second- to third-year student (Audit & Assurance only); accounting–auditing–finance preferred, with a good-to-excellent GPA; field of study relevant to the application track; graduation timeline meets the requirements.",
+          "noi_bat": "GPA of ~8.5/10 (3.5/4.0) or above, a scholarship, or a high ranking within the department; field of study closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium academic program, or an English-speaking work environment). Program standard: good English proficiency (work documents and reports are in English).",
+          "dat": "Meets the good-English-proficiency standard (work documents and reports are in English); able to use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or studies/works entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV lists no significant extracurricular activities.",
+          "dat": "At least one team-lead/committee-lead role in a club, project, or event — clearly states what the candidate specifically did.",
+          "noi_bat": "Club president / organizing committee lead for a large-scale event / project founder — with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience related to accounting, auditing, tax, or corporate finance.",
+          "dat": "Has at least one internship related to accounting, auditing, tax, or corporate finance, clearly describing the work actually performed (not just the job title).",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met, project actually implemented) at a company in the same industry as Deloitte Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 22,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, Excel proficiency, case-practice experience) — sufficient to pass track-specific application screening and the aptitude assessment.",
+          "noi_bat": "An achievement in a case competition or a real-world analytical project + strong tool skills (advanced Excel, SQL/Python if required by the track) — ready for both the aptitude test and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "The CV lists no awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or received a scholarship or school-level award.",
+          "noi_bat": "Advanced to the later rounds or won an award in a major competition (an accounting–auditing competition such as A+, Audit Proud..., an ACCA/ICAEW scholarship), or received a scholarship/national-level or higher award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Professional standards & commitment to pursuing credentials",
+        "label_en": "Professional standards & credential commitment",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Shows no career orientation toward auditing/tax; is not pursuing any specialized coursework or professional credentials.",
+          "dat": "Is studying the relevant major with a strong foundation in core subjects and a serious commitment to pursuing ACCA/ICAEW/CPA credentials.",
+          "noi_bat": "Has passed several ACCA/ICAEW CFAB papers or won an accounting–auditing professional competition + clearly understands the audit busy season and can commit to that intensity."
+        }
+      }
+    ],
+    "ideal_profile_text": "4th student with background in law, commerce, finance, and foreign trade.\nExcellent command of English, both verbal and written.\nEthical behavior\nStrong interpersonal and team working skills\nEnthusiasm and ability to assume a high level of responsibilities\nHigh commitment to success and continue learning.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "ey-tax-internship-2027",
+    "program_name": "EY Vietnam — EY Tax Services Internship 2027",
+    "company": "EY Vietnam",
+    "program": "EY Tax Services Internship 2027",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "Below the program's education requirements (final-year students graduating in 2027, preferably majoring in accounting, finance, business, economics, foreign trade, or banking; good GPA; Vietnamese citizenship), or the CV does not clearly state the GPA/field of study.",
+          "dat": "Meets the requirements: a final-year student graduating in 2027, preferably majoring in accounting, finance, business, economics, foreign trade, or banking; good GPA; Vietnamese citizenship; field of study relevant to the application track; graduation timeline meets the requirements.",
+          "noi_bat": "GPA of ~8.5/10 (3.5/4.0) or above, a scholarship, or a high ranking within the department; field of study closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium academic program, or an English-speaking work environment). Program standard: good English proficiency (tax documents and work with FDI clients are in English).",
+          "dat": "Meets the good-English-proficiency standard (tax documents and work with FDI clients are in English); able to use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or studies/works entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV lists no significant extracurricular activities.",
+          "dat": "At least one team-lead/committee-lead role in a club, project, or event — clearly states what the candidate specifically did.",
+          "noi_bat": "Club president / organizing committee lead for a large-scale event / project founder — with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience related to tax, accounting, auditing, or corporate legal affairs.",
+          "dat": "Has at least one internship related to tax, accounting, auditing, or corporate legal affairs, clearly describing the work actually performed (not just the job title).",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met, project actually implemented) at a company in the same industry as EY Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 22,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, Excel proficiency, case-practice experience) — sufficient to pass the assessment test and technical interview round.",
+          "noi_bat": "An achievement in a case competition or a real-world analytical project + strong tool skills (advanced Excel, SQL/Python if required by the track) — ready for both the aptitude test and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "The CV lists no awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or received a scholarship or school-level award.",
+          "noi_bat": "Advanced to the later rounds or won an award in a major competition (a tax–accounting competition such as Tax Champion..., an ACCA scholarship), or received a scholarship/national-level or higher award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Attention to detail in documents & tax career orientation",
+        "label_en": "Regulatory rigor & tax-career orientation",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Shows no attention to detail with documents/regulations or a specific reason for choosing a tax career.",
+          "dat": "Understands the fundamentals of Vietnamese tax (VAT, corporate income tax, personal income tax) through coursework/projects and demonstrates meticulous attention to detail in completed work.",
+          "noi_bat": "Has researched/worked directly with tax filings or won a tax competition + follows tax policy updates; has a clear tax advisory career orientation."
+        }
+      }
+    ],
+    "ideal_profile_text": "You have an agile, growth-oriented mindset. What you know matters. But the right mindset is just as important in determining success. We’re looking for people who are innovative, can work in an agile way and keep pace with a rapidly changing world.\nYou are curious and purpose driven. We’re looking for people who see opportunities instead of challenges, who ask better questions to seek better answers that build a better working world.\nYou are inclusive. We’re looking for people who seek out and embrace diverse perspectives, who value differences, and team inclusively to build safety and trust.\nLast-year students who are pursuing a bachelor’s degree in 2027\nPreferably major in accounting, finance, business, economics, foreign trade, banking or related major with good GPA for technical subjects and English.\nStrong analytical, teamwork and organizational skills.\nPositive attitude and enthusiasm in the performance of responsibilities.\nWilling to work for EY Vietnam after you are graduated.\nVietnamese citizen\nGood interpersonal and communication skills\nGood at MS office applications (Word, Excel and Power Point)",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

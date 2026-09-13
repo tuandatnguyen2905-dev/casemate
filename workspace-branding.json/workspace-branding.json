@@ -1,0 +1,148 @@
+{
+  "businessPlan": "## Business Overview\nCasemate\n\n## Customer Profile\nTarget customers identified from business context\n\n### Pain Points\n- Users come to Casemate because they want to break into competitive management trainee and consulting roles — and they're tired of guessing what works. They're solving the problem of scattered, generic prep advice that doesn't match their target firms or timeline. Ultimately, they want a clear path from \"I'm overwhelmed\" to \"I'm interview-ready,\" with confidence that every hour they spend actually moves them closer to an offer.\n\n## Key Problems\n- **Users come to Casemate because they want to break **: Users come to Casemate because they want to break into competitive management trainee and consulting roles — and they're tired of guessing what works. They're solving the problem of scattered, generic prep advice that doesn't match their target firms or timeline. Ultimately, they want a clear path from \"I'm overwhelmed\" to \"I'm interview-ready,\" with confidence that every hour they spend actually moves them closer to an offer.\n\n## Customer Journey\n# Casemate Journey Guide\n\n---\n\n## 1. USER GOALS\n\nUsers come to Casemate because they want to break into competitive management trainee and consulting roles — and they're tired of guessing what works. They're solving the problem of scattered, generic prep advice that doesn't match their target firms or timeline. Ultimately, they want a clear path from \"I'm overwhelmed\" to \"I'm interview-ready,\" with confidence that every hour they spend actually moves them closer to an offer.\n\n---\n\n## 2. QUALIFYING QUESTIONS\n\n**\"Where are you in your application journey right now?\"**\n1. I'm just starting — exploring firms and building my timeline\n2. I'm actively applying — interviews and case prep are my focus\n3. I have offers or final rounds — I need to sharpen and decide\n\n**\"What's your biggest blocker right now?\"**\n1. I don't know what to practice or how to structure my prep\n2. I practice alone and can't tell if I'm actually improving\n3. I need insider knowledge on specific firms and what they look for\n\n---\n\n## 3. JOURNEY NARRATIVE\n\nA natural Casemate journey starts with clarity, not cramming. When someone arrives, the agent's first job is to understand where they are and what they're aiming for — a specific firm, a consulting track, or a broad management trainee pipeline. From there, the agent helps them build a realistic timeline: application deadlines, case interview windows, and weekly prep blocks that fit their actual schedule.\n\nEarly sessions focus on orientation — company-specific insights, competitive positioning, and a honest assessment of gaps. As users engage, the agent shifts into active coaching: recommending targeted practice tests, suggesting case partners through matchmaking, and connecting them with mentorship when they hit plateaus. Each interaction teaches the agent something new — which question types trip them up, how fast they're progressing, whether they learn better solo or with peers — so recommendations get sharper over time.\n\nThe agent isn't a search bar. It's a prep partner that checks in, celebrates wins, recalibrates after setbacks, and always ties the next step back to the user's goal: landing the role they actually want.\n\n---\n\n## 4. APP SUPPORT MAP\n\n**Creation tools** (personalized study plans, firm-specific prep roadmaps, mock interview scripts) work best early and at transition points — when users need structure before they know what to do next. **Tracking tools** (practice test scores, case drill logs, application milestone dashboards) matter once prep is underway; recommend these when users say they're practicing but unsure if it's working. **Automation tools** (deadline reminders, partner matching, curated weekly briefings on target firms) reduce friction for busy students and shine when users feel time-starved or isolated. Match the tool type to the blocker: uncertainty → creation, stagnation → tracking, overwhelm → automation.\n\n---\n\n## 5. COMMUNITY OPPORTUNITIES\n\nUsers learn fastest when they see how others with similar profiles prepared for the same firms — real case debriefs, offer timelines, and \"what actually worked\" stories cut through generic advice. Casemate can harness this by surfacing anonymized prep patterns (e.g., \"candidates who reached BCG final rounds averaged 40 case drills with a partner\") and facilitating peer partnerships so collective experience compounds into smarter individual paths.\n\n---\n\n## 6. MONETIZATION HOOK\n\nThe free tier should deliver one undeniable win: a personalized prep assessment and a firm-specific roadmap that makes the user think, \"Okay, now I actually know what to do.\" That's the proof — not unlimited content, but clarity they couldn't get from a blog post or Reddit thread.\n\nThe \"aha\" moment that triggers first payment happens when they complete their first few practice cases and see a scored breakdown with specific gaps — then the agent says, \"Here's your next three drills, a matched case partner, and a mentor who's been through this firm's process.\" That combination of data + human guidance + accountability is the moment pulling out a card feels obvious, not salesy.\n\nFirst payment is triggered by *direction and a taste of results*. Ongoing subscription is driven by *momentum* — weekly partner matches, mentor access, company-specific intel updates during live recruiting season, and progress tracking that shows they're closing gaps before deadlines hit.\n\nThe free→paid boundary sits right after diagnosis and initial practice: free users get assessment, one firm profile, and limited practice tests; paid unlocks unlimited drills, partner matchmaking, mentorship sessions, and live firm intelligence. Design backward from payment: the user must finish a practice session, see where they stand, feel the gap between current performance and offer-ready — and then be offered the exact next step that only paid access provides.\n\n## AI Tool Suite\n### Case Drill Log\n**Purpose**: Log every case practice session—firm, case type, partner, scores, and debrief—so users can see whether they're actually improving toward offer-ready.\n**User Story**: I log every case I practice so I can stop guessing and finally see which firms and question types I'm actually closing gaps on.\n\n---\n*Generated on 7/9/2026*\n",
+  "workspaceId": "c6ce26d1-7466-4b72-962d-b7bf7a471c88",
+  "configId": 539150,
+  "name": "Casemate",
+  "tagline": "Start to be a leader today",
+  "logoUrl": "https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/e28b4f5e-44e7-4243-a6ec-91b01e5e68bb.png",
+  "iconUrl": "https://storage.googleapis.com/audos-images/brand-logos/a631377d-382b-491f-a398-787914c9a5b9.png",
+  "logoOnDarkUrl": "https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/02ad64ce-be52-4d70-992f-08e0b01728f1.png",
+  "colors": {
+    "primary": "#cc0000",
+    "highlight": "#cc0000",
+    "contrast": "#ffffff",
+    "secondary": "#cc0000",
+    "accent": "#ffffff",
+    "primaryScale": {
+      "50": "#fbebeb",
+      "100": "#f7d6d6",
+      "200": "#f1b8b8",
+      "500": "#bc0000",
+      "600": "#cc0000",
+      "700": "#ab0000",
+      "900": "#870000"
+    },
+    "highlightScale": {
+      "50": "#fbebeb",
+      "100": "#f7d6d6",
+      "200": "#f1b8b8",
+      "500": "#bc0000",
+      "600": "#cc0000",
+      "700": "#ab0000",
+      "900": "#870000"
+    },
+    "surfaces": {
+      "page": "#fcf2f2",
+      "pageAlt": "#ffffff",
+      "gradientFrom": "#fcf2f2",
+      "gradientVia": "#ffffff",
+      "gradientTo": "#fbeded",
+      "card": "#ffffff",
+      "cardHover": "#fdf5f5",
+      "panel": "#ffffff",
+      "panelStrong": "#ffffff",
+      "muted": "#fefafa",
+      "accentSoft": "#fae6e6",
+      "border": "#f4c7c7",
+      "borderStrong": "#eea8a8"
+    },
+    "text": {
+      "primary": "#390000",
+      "secondary": "#6e0000",
+      "brand": "#390000",
+      "accent": "#390000",
+      "muted": "#8f0000",
+      "onPrimary": "#ffffff",
+      "onHighlight": "#ffffff",
+      "onContrast": "#cc0000"
+    },
+    "semantic": {
+      "success": "#16a34a",
+      "warning": "#d97706",
+      "danger": "#dc2626"
+    },
+    "shell": {
+      "buttonText": "#ffffff",
+      "accentButtonText": "#ffffff",
+      "dockText": "#ffffff",
+      "icon": "#390000",
+      "shadow": "#f0b3b3",
+      "shadowStrong": "#e98f8f"
+    }
+  },
+  "palette": {
+    "primary": "#cc0000",
+    "highlight": "#cc0000",
+    "contrast": "#ffffff",
+    "secondary": "#cc0000",
+    "accent": "#ffffff",
+    "primaryScale": {
+      "50": "#fbebeb",
+      "100": "#f7d6d6",
+      "200": "#f1b8b8",
+      "500": "#bc0000",
+      "600": "#cc0000",
+      "700": "#ab0000",
+      "900": "#870000"
+    },
+    "highlightScale": {
+      "50": "#fbebeb",
+      "100": "#f7d6d6",
+      "200": "#f1b8b8",
+      "500": "#bc0000",
+      "600": "#cc0000",
+      "700": "#ab0000",
+      "900": "#870000"
+    },
+    "surfaces": {
+      "page": "#fcf2f2",
+      "pageAlt": "#ffffff",
+      "gradientFrom": "#fcf2f2",
+      "gradientVia": "#ffffff",
+      "gradientTo": "#fbeded",
+      "card": "#ffffff",
+      "cardHover": "#fdf5f5",
+      "panel": "#ffffff",
+      "panelStrong": "#ffffff",
+      "muted": "#fefafa",
+      "accentSoft": "#fae6e6",
+      "border": "#f4c7c7",
+      "borderStrong": "#eea8a8"
+    },
+    "text": {
+      "primary": "#390000",
+      "secondary": "#6e0000",
+      "brand": "#390000",
+      "accent": "#390000",
+      "muted": "#8f0000",
+      "onPrimary": "#ffffff",
+      "onHighlight": "#ffffff",
+      "onContrast": "#cc0000"
+    },
+    "semantic": {
+      "success": "#16a34a",
+      "warning": "#d97706",
+      "danger": "#dc2626"
+    },
+    "shell": {
+      "buttonText": "#ffffff",
+      "accentButtonText": "#ffffff",
+      "dockText": "#ffffff",
+      "icon": "#390000",
+      "shadow": "#f0b3b3",
+      "shadowStrong": "#e98f8f"
+    }
+  },
+  "pickedBrandColor": "#cc0000",
+  "typography": {
+    "font": "Mulish",
+    "category": "sans-serif",
+    "weights": [
+      400,
+      600
+    ],
+    "headingFont": "Mulish",
+    "bodyFont": "Mulish"
+  },
+  "heroVideoUrl": "https://storage.googleapis.com/audos-images/videos/scene_group_1783566441761_stitched.mp4"
+}

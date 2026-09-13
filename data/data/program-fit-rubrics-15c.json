@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "adidas-sourcing-associate",
+    "program_name": "Adidas — Sourcing Associate",
+    "company": "Adidas",
+    "program": "Sourcing Associate",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Meets the program's stated academic requirement for Sourcing Associate.) or the CV does not clearly state GPA/major.",
+          "dat": "Meets the program's stated academic requirement for Sourcing Associate.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Multiple language skills: fluent English -written and spoken- required; German, Mandarin Chinese, Vietnamese, Bahasa Indonesia an advantage.",
+          "dat": "Multiple language skills: fluent English -written and spoken- required; German, Mandarin Chinese, Vietnamese, Bahasa Indonesia an advantage.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: KNOWLEDGE, SKILLS AND ABILITIES",
+          "dat": "KNOWLEDGE, SKILLS AND ABILITIES",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Adidas."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Analytical skills, reporting and data collection",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Adidas culture & motivation fit",
+        "label_en": "Adidas culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Adidas or its industry; generic application reasons only.",
+          "dat": "KNOWLEDGE, SKILLS AND ABILITIES Technical skills (manufacturing, planning, project management, industrial engineering, materials engineering, biomechanical or sport science preferred) Communication skills (presentation, efficient note taking, computer literate) Open mind, passionate about sports REQUISITE EDUCATION AND EXPERIENCE We are looking for world citizens with a passion for excellence, an open and inquisitive mind and passion for sports. Talented individuals, willing to learn, are fitting this job, which requires attention to details, curiosity, spirit of observation and discipline. No previous work experience required but preferred. Vocational training (preferred in a multinational organization), MA in Engineering (Mechanical, Chemical, Industrial) or MBA preferred. Flexibility and willingness to relocate at Company’s request.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Adidas's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "KNOWLEDGE, SKILLS AND ABILITIES\n\nTechnical skills (manufacturing, planning, project management, industrial engineering, materials engineering, biomechanical or sport science preferred)\nCommunication skills (presentation, efficient note taking, computer literate)\nAnalytical skills, reporting and data collection\nOpen mind, passionate about sports\nREQUISITE EDUCATION AND EXPERIENCE\n\nWe are looking for world citizens with a passion for excellence, an open and inquisitive mind and passion for sports. Talented individuals, willing to learn, are fitting this job, which requires attention to details, curiosity, spirit of observation and discipline.\nNo previous work experience required but preferred. Vocational training (preferred in a multinational organization), MA in Engineering (Mechanical, Chemical, Industrial) or MBA preferred.\nMultiple language skills: fluent English -written and spoken- required; German, Mandarin Chinese, Vietnamese, Bahasa Indonesia an advantage.\nFlexibility and willingness to relocate at Company’s request.",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

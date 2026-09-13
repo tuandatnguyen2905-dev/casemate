@@ -1,0 +1,442 @@
+[
+  {
+    "program_id": "viettel-future-changemakers",
+    "program_name": "Viettel — Viettel Future Changemakers",
+    "company": "Viettel",
+    "program": "Viettel Future Changemakers",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (graduation from university with at least a Good classification; the 2026 cycle prioritizes candidates with >3 years of experience in BA/software development/project management who want to transition into management roles), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: graduated from university with at least a Good classification; the 2026 cycle prioritizes candidates with >3 years of experience in BA/software development/project management who want to transition into management roles; the major is relevant to the track applied for; graduation timing meets the requirements.",
+          "noi_bat": "GPA of ~8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the track applied for, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (a certificate, an English-taught program, or an English-speaking work environment). Program standard: a minimum TOEIC score of 700 or equivalent (round 1 includes an English test).",
+          "dat": "Meets the English standard of a minimum TOEIC score of 700 or equivalent (round 1 includes an English test); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or studied/worked entirely in English; confident presenting, discussing cases, and completing panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No leadership role yet: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team lead/committee head role in a club, project, or event, with specific details of what the candidate did.",
+          "noi_bat": "Club president / head organizer of a large-scale event / project founder, with measurable results (number of people led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to digital product management, technology project management, or supply chain/logistics—the program's three tracks.",
+          "dat": "At least one internship related to digital product management, technology project management, or supply chain/logistics—the program's three tracks—with a clear description of the work actually performed (not just the title).",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met, project deployed in practice) at a company in the same industry as Viettel."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 24,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, Excel proficiency, prior case practice)—sufficient to pass the IQ + English test and the round 2 online test.",
+          "noi_bat": "Case competition achievements or a real-world analytical project + strong command of tools (advanced Excel, SQL/Python if required by the track)—ready for both aptitude testing and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or received a university-level scholarship or award.",
+          "noi_bat": "Advanced to a late round or won a major competition (technology/digital-transformation awards, project-management competitions, hackathons), or received a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Viettel discipline & national digital-transformation ambition",
+        "label_en": "Viettel discipline & national digital-transformation drive",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Does not demonstrate fit with a highly disciplined, fast-paced execution environment or an interest in Vietnam's digital infrastructure.",
+          "dat": "Understands Viettel's role in national telecommunications and technology infrastructure and has experience working within disciplined processes and tight schedules.",
+          "noi_bat": "Experience leading a real technology project (on time, with measurable impact) + a clear motivation to create nationwide impact through the Viettel ecosystem."
+        }
+      }
+    ],
+    "ideal_profile_text": "- Candidates in their final year of university or graduated with cumulative scores equivalent to \"Very good\" degree in the fields of Logistics, E-commerce, Supply Chain, Foreign Economics, Import-Export, International Trade, Transport Exploitation, Customs and similar fields; or won national/international awards in related fields; or have excellent achievements when participating in major projects in related fields.\n\n- English with a minimum score of 550 TOEIC or equivalent.\n\n- Location: Hanoi (For candidates outside Hanoi area, round-trip airfare will be sponsored).",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "uob-vietnam-ma",
+    "program_name": "UOB Vietnam — UOB Vietnam Management Associate",
+    "company": "UOB Vietnam",
+    "program": "UOB Vietnam Management Associate",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "Below the program's education standard (a bachelor's degree, preferably in Finance, Banking, Accounting, Business Economics, or Business Administration; no more than 2 years of experience), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: a bachelor's degree, preferably in Finance, Banking, Accounting, Business Economics, or Business Administration; no more than 2 years of experience; the major is relevant to the track applied for; graduation timing meets the requirements.",
+          "noi_bat": "GPA of ~8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the track applied for, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (a certificate, an English-taught program, or an English-speaking work environment). Program standard: fluency in English (online assessments and the panel interview are in English—this is a Singapore-based regional bank).",
+          "dat": "Meets the fluent-English standard (online assessments and the panel interview are in English—this is a Singapore-based regional bank); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or studied/worked entirely in English; confident presenting, discussing cases, and completing panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "No leadership role yet: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team lead/committee head role in a club, project, or event, with specific details of what the candidate did.",
+          "noi_bat": "Club president / head organizer of a large-scale event / project founder, with measurable results (number of people led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No internship/work experience related to banking, finance, auditing, or corporate financial services.",
+          "dat": "At least one internship related to banking, finance, auditing, or corporate financial services, with a clear description of the work actually performed (not just the title).",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met, project deployed in practice) at a company in the same industry as UOB Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, Excel proficiency, prior case practice)—sufficient to pass the online assessments and panel interviews.",
+          "noi_bat": "Case competition achievements or a real-world analytical project + strong command of tools (advanced Excel, SQL/Python if required by the track)—ready for both aptitude testing and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or received a university-level scholarship or award.",
+          "noi_bat": "Advanced to a late round or won a major competition (financial/banking analysis competitions—CFA Research Challenge, banking case competitions), or received a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Regional banking professionalism & client-service ethos",
+        "label_en": "Regional-banking professionalism & client-service ethos",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Does not demonstrate attention to detail/professional standards or an interest in Southeast Asia's regional banking sector.",
+          "dat": "Understands UOB's position in ASEAN, presents a polished application, and shows a clear client-service orientation.",
+          "noi_bat": "Experience in a professional financial environment (auditing, banking, research) + specific knowledge of UOB's ASEAN connectivity strategy and a career story tied to regional banking."
+        }
+      }
+    ],
+    "ideal_profile_text": "A bachelor’s degree from a recognized university, preferable majors in Finance, Banking, Accounting, Business Economics, Business Administration, etc.\nNo more than two years of work experience\nAn impressive leadership and teamwork abilities\nFluency in English",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "prudential-strivers-2025",
+    "program_name": "Prudential Vietnam — Prudential The Strivers",
+    "company": "Prudential Vietnam",
+    "program": "Prudential The Strivers",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "Below the program's education standard (GPA of at least 7.0/10 (2.8/4); graduation in a major relevant to the track applied for; less than 2 years of experience), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: GPA of at least 7.0/10 (2.8/4); graduation in a major relevant to the track applied for; less than 2 years of experience; the major is relevant to the track applied for; graduation timing meets the requirements.",
+          "noi_bat": "GPA of ~8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the track applied for, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (a certificate, an English-taught program, or an English-speaking work environment). Program standard: proficiency in English (the online test and assessment centre are in English).",
+          "dat": "Meets the English-proficiency standard (the online test and assessment centre are in English); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or studied/worked entirely in English; confident presenting, discussing cases, and completing panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "No leadership role yet: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team lead/committee head role in a club, project, or event, with specific details of what the candidate did.",
+          "noi_bat": "Club president / head organizer of a large-scale event / project founder, with measurable results (number of people led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No internship/work experience related to insurance, finance, actuarial work, operations, or technology—the Strivers track applied for.",
+          "dat": "At least one internship related to insurance, finance, actuarial work, operations, or technology—the Strivers track applied for—with a clear description of the work actually performed (not just the title).",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met, project deployed in practice) at a company in the same industry as Prudential Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, Excel proficiency, prior case practice)—sufficient to pass the online test and assessment centre.",
+          "noi_bat": "Case competition achievements or a real-world analytical project + strong command of tools (advanced Excel, SQL/Python if required by the track)—ready for both aptitude testing and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or received a university-level scholarship or award.",
+          "noi_bat": "Advanced to a late round or won a major competition (actuarial/financial-analysis competitions, finance and insurance case competitions), or received a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Long-term perseverance & insurance ethics",
+        "label_en": "Long-horizon grit & insurance ethics",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Shows no sign of understanding or interest in life insurance; motivation for applying is short-term.",
+          "dat": "Understands the life-insurance model (distribution, actuarial work, customer experience) and demonstrates perseverance toward long-term goals.",
+          "noi_bat": "A compelling story of perseverance (pursuing a multi-year goal through to completion) + specific knowledge of Vietnam's insurance market and The Strivers' 2.5–4.5-year pathway."
+        }
+      }
+    ],
+    "ideal_profile_text": "Graduates from relevant disciplines with less than 2 years of work experience\nGPA from 7.0/10 or 2.8/4 equivalent\nProficiency in English\nDemonstrate strong leadership qualities",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "expeditors-mt",
+    "program_name": "Expeditors Vietnam — Expeditors Management Trainee",
+    "company": "Expeditors Vietnam",
+    "program": "Expeditors Management Trainee",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Below the program's education standard (university graduate; committed to a long-term career with Expeditors, as explicitly required by the program), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: university graduate; committed to a long-term career with Expeditors, as explicitly required by the program; the major is relevant to the track applied for; graduation timing meets the requirements.",
+          "noi_bat": "GPA of ~8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the track applied for, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (a certificate, an English-taught program, or an English-speaking work environment). Program standard: good spoken English (an international logistics environment with global clients).",
+          "dat": "Meets the standard for good spoken English (an international logistics environment with global clients); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or studied/worked entirely in English; confident presenting, discussing cases, and completing panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role yet: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team lead/committee head role in a club, project, or event, with specific details of what the candidate did.",
+          "noi_bat": "Club president / head organizer of a large-scale event / project founder, with measurable results (number of people led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No internship/work experience related to logistics, freight forwarding, supply chain, import-export, or B2B customer service.",
+          "dat": "At least one internship related to logistics, freight forwarding, supply chain, import-export, or B2B customer service, with a clear description of the work actually performed (not just the title).",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met, project deployed in practice) at a company in the same industry as Expeditors Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, Excel proficiency, prior case practice)—sufficient to pass the application-screening round + written responses to program questions and the interview.",
+          "noi_bat": "Case competition achievements or a real-world analytical project + strong command of tools (advanced Excel, SQL/Python if required by the track)—ready for both aptitude testing and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 6,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or received a university-level scholarship or award.",
+          "noi_bat": "Advanced to a late round or won a major competition (supply-chain/logistics competitions, operations case competitions), or received a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Long-term commitment & Expeditors' promote-from-within culture",
+        "label_en": "Long-term commitment & promote-from-within culture",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "The profile indicates job-hopping/a short-term orientation and gives no specific reason for choosing logistics or Expeditors.",
+          "dat": "Demonstrates a serious long-term logistics career orientation and understands Expeditors' promote-from-within culture.",
+          "noi_bat": "A compelling commitment story (staying and developing within an organization/project for many years) + an understanding of Expeditors' global freight-forwarding service model and its 1-year rotation pathway across the system."
+        }
+      }
+    ],
+    "ideal_profile_text": "Enthusiastic and committed to a long-term career at Expeditors\nPossess a “can do” attitude ▪ Good interpersonal skills and people focused\nAbility to communicate clearly and effectively through oral and written English\nTeam player with leadership qualities\nCourage to face new challenges\nProcess-oriented with good analytical skills\nOpen to considering relocation to another country based on business needs",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "propertyguru-prodig-2025",
+    "program_name": "PropertyGuru Vietnam — PropertyGuru Prodi-G Internship 2025",
+    "company": "PropertyGuru Vietnam",
+    "program": "PropertyGuru Prodi-G Internship 2025",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (currently pursuing a bachelor's/master's degree, preferably in the penultimate year, with strong academic performance), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: currently pursuing a bachelor's/master's degree, preferably in the penultimate year, with strong academic performance; the major is relevant to the track applied for; graduation timing meets the requirements.",
+          "noi_bat": "GPA of ~8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the track applied for, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (a certificate, an English-taught program, or an English-speaking work environment). Program standard: proficiency in English (a regional technology company where work is conducted in English).",
+          "dat": "Meets the English-proficiency standard (a regional technology company where work is conducted in English); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or studied/worked entirely in English; confident presenting, discussing cases, and completing panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No leadership role yet: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team lead/committee head role in a club, project, or event, with specific details of what the candidate did.",
+          "noi_bat": "Club president / head organizer of a large-scale event / project founder, with measurable results (number of people led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to data science, digital marketing, product, or HR in a technology environment.",
+          "dat": "At least one internship related to data science, digital marketing, product, or HR in a technology environment, with a clear description of the work actually performed (not just the title).",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met, project deployed in practice) at a company in the same industry as PropertyGuru Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 24,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, Excel proficiency, prior case practice)—sufficient to pass the track-specific professional interview (Data Science, Marketing, Product, HR).",
+          "noi_bat": "Case competition achievements or a real-world analytical project + strong command of tools (advanced Excel, SQL/Python if required by the track)—ready for both aptitude testing and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or received a university-level scholarship or award.",
+          "noi_bat": "Advanced to a late round or won a major competition (hackathons, datathons, digital-product/marketing competitions), or received a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Technology curiosity & PropTech affinity",
+        "label_en": "Tech curiosity & PropTech affinity",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Shows no interest in technology/digital real estate; the profile includes no digital projects.",
+          "dat": "Has an academic/personal project involving digital products or data and a genuine interest in the real-estate marketplace model.",
+          "noi_bat": "A side project or in-depth research on marketplaces/PropTech (housing-market data analysis, a product demo) + an understanding of PropertyGuru's position in the region."
+        }
+      }
+    ],
+    "ideal_profile_text": "Currently pursuing a bachelor's or master's degree in any field.\nDemonstrated strong organizational and time management abilities, adept at multitasking and effective prioritization.\nProficient English communication skills, both written and verbal (to liaise with overseas stakeholders)\nExcellent interpersonal skills, fostering a collaborative and team-oriented approach.\nCompetency in Microsoft Office suite and fundamental computer literacy.\nEnthusiasm for learning, with a proactive stance towards embracing new challenges and roles.",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

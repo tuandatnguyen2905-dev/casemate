@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "pmax-pmax-total-marketing-elite",
+    "program_name": "PMAX — PMAX Total Marketing Elite",
+    "company": "PMAX",
+    "program": "PMAX Total Marketing Elite",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (University students graduating in 2026 or professionals with less than 1 year of work experience Strong academic background: GPA 3.0+ on a 4.0 scale or 7+ on a 10-point scale) or the CV does not clearly state GPA/major.",
+          "dat": "University students graduating in 2026 or professionals with less than 1 year of work experience Strong academic background: GPA 3.0+ on a 4.0 scale or 7+ on a 10-point scale",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Proficient English, written and spoken Clear in writing and in speaking, in both Vietnamese and English. You adjust how you communicate for the audience. You get things done by being reliable and easy to work with.",
+          "dat": "Proficient English, written and spoken Clear in writing and in speaking, in both Vietnamese and English. You adjust how you communicate for the audience. You get things done by being reliable and easy to work with.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "Leadership roles in student organizations, or strong results in business case competitions.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Internship exposure in consulting, agency, e-commerce, tech or startup.",
+          "dat": "Internship exposure in consulting, agency, e-commerce, tech or startup.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as PMAX."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Familiarity with Excel / Google Sheets and basic data or analytics tools Problem Solving — our Top 1 priority You figure out what actually needs to be solved, break it into manageable parts, use data instead of assumptions to test your thinking, and come back with a clear recommendation — plus the reasoning to back it up. You already use AI daily and you know where it’s confidently wrong. You’re comfortable reading and working with data. Familiarity with Excel / Google Sheets and basic data or analytics tools Problem-solving: Approaches challenges with structured thinking. Doesn’t wait to be told the answer — builds hypotheses, tests them, and moves forward.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "PMAX culture & motivation fit",
+        "label_en": "PMAX culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to PMAX or its industry; generic application reasons only.",
+          "dat": "Interested in Marketing and committed to building a long-term career in the Marketing industry Growth mindset, Resilience & Extreme Ownership You learn fast and you don’t break under feedback. You fix it and come back better. And you own the outcome from end to end Communication, Teamwork & Influence Digital & AI Good To Have Mindset AI-first: Actively uses AI tools to work smarter, faster, and better. Sees AI as a competitive advantage, not just a feature. Can-do attitude: Embraces ambiguity and high standards. Takes ownership even when the path isn’t clear. Finds a way.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of PMAX's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Interested in Marketing and committed to building a long-term career in the Marketing industry\nUniversity students graduating in 2026 or professionals with less than 1 year of work experience\nStrong academic background: GPA 3.0+ on a 4.0 scale or 7+ on a 10-point scale\nProficient English, written and spoken\nFamiliarity with Excel / Google Sheets and basic data or analytics tools\nProblem Solving — our Top 1 priority\n\nYou figure out what actually needs to be solved, break it into manageable parts, use data instead of assumptions to test your thinking, and come back with a clear recommendation — plus the reasoning to back it up.\n\n Growth mindset, Resilience & Extreme Ownership\n\nYou learn fast and you don’t break under feedback. You fix it and come back better. And you own the outcome from end to end\n\n Communication, Teamwork & Influence\n\nClear in writing and in speaking, in both Vietnamese and English. You adjust how you communicate for the audience. You get things done by being reliable and easy to work with.\n\n Digital & AI\n\nYou already use AI daily and you know where it’s confidently wrong. You’re comfortable reading and working with data.\n\nGood To Have\n\nLeadership roles in student organizations, or strong results in business case competitions. \nInternship exposure in consulting, agency, e-commerce, tech or startup. \nFamiliarity with Excel / Google Sheets and basic data or analytics tools\n\nMindset\n\nProblem-solving: Approaches challenges with structured thinking. Doesn’t wait to be told the answer — builds hypotheses, tests them, and moves forward.\nAI-first: Actively uses AI tools to work smarter, faster, and better. Sees AI as a competitive advantage, not just a feature.\nCan-do attitude: Embraces ambiguity and high standards. Takes ownership even when the path isn’t clear. Finds a way.",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

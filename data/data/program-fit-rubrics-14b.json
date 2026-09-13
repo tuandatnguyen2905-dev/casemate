@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "louis-dreyfus-company-graduate-trainee-program-agri-commercial-track",
+    "program_name": "Louis Dreyfus Company — Graduate Trainee Program (Agri-Commercial Track)",
+    "company": "Louis Dreyfus Company",
+    "program": "Graduate Trainee Program (Agri-Commercial Track)",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (1-2 years of work experience as a Trading Assistant or in Business Development team in multinational corporations is preferred. Recent graduates with strong potential of Trading/ Business Development business, from all degree disciplines and with strong academic records are welcome to apply) or the CV does not clearly state GPA/major.",
+          "dat": "1-2 years of work experience as a Trading Assistant or in Business Development team in multinational corporations is preferred. Recent graduates with strong potential of Trading/ Business Development business, from all degree disciplines and with strong academic records are welcome to apply",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Well communication in both Vietnamese & English",
+          "dat": "Well communication in both Vietnamese & English",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Prior internship/ experience in commodities (cashew, green coffee, etc...) industry is a plus",
+          "dat": "Prior internship/ experience in commodities (cashew, green coffee, etc...) industry is a plus",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Louis Dreyfus Company."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Strong problem solving and numerical/analytical skills",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Louis Dreyfus Company culture & motivation fit",
+        "label_en": "Louis Dreyfus Company culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Louis Dreyfus Company or its industry; generic application reasons only.",
+          "dat": "Good verbal and written communication skills Ability to work independently and thrive in uncertainty situations Proficiency in Microsoft Excel and programming languages e.g., VBA, Python, Power BI is a plus Requires entrepreneurial, good interpersonal skills & team player Possess strong work ethics and humility, high level of ownership and responsibility",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Louis Dreyfus Company's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "1-2 years of work experience as a Trading Assistant or in Business Development team in multinational corporations is preferred. \nRecent graduates with strong potential of Trading/ Business Development business, from all degree disciplines and with strong academic records are welcome to apply\nStrong problem solving and numerical/analytical skills\nWell communication in both Vietnamese & English\nGood verbal and written communication skills\nAbility to work independently and thrive in uncertainty situations\nProficiency in Microsoft Excel and programming languages e.g., VBA, Python, Power BI is a plus\nPrior internship/ experience in commodities (cashew, green coffee, etc...) industry is a plus\nRequires entrepreneurial, good interpersonal skills & team player\nPossess strong work ethics and humility, high level of ownership and responsibility",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

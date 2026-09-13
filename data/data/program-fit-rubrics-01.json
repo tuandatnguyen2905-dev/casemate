@@ -1,0 +1,970 @@
+[
+  {
+    "program_id": "unilever-uflp",
+    "program_name": "Unilever Vietnam — Unilever Future Leaders Programme (UFLP)",
+    "company": "Unilever Vietnam",
+    "program": "Unilever Future Leaders Programme (UFLP)",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (minimum GPA of 7.0/10; final-year student, recent graduate, or less than 2 years of experience), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: minimum GPA of 7.0/10; final-year student, recent graduate, or less than 2 years of experience; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: proficient English (the aptitude test and Discovery Center are conducted in English).",
+          "dat": "Meets the proficient-English standard (the aptitude test and Discovery Center are conducted in English); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to FMCG or the applied-for function (Customer Development, Marketing, Supply Chain, Finance).",
+          "dat": "At least one internship related to FMCG or the applied-for function (Customer Development, Marketing, Supply Chain, Finance), clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as Unilever Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the Aptitude Test and group exercise at the Discovery Center.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (Unilever Future Leaders' League, NielsenIQ Case Competition, or FMCG case competitions), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Unilever-style leadership traits & purpose orientation",
+        "label_en": "Unilever leadership traits & purpose orientation",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV shows no interest in consumer goods/sustainability or leadership drive, and gives no reason for pursuing FMCG.",
+          "dat": "Shows genuine interest in the consumer-goods industry and a clear personal-development story (learning agility).",
+          "noi_bat": "The profile tells a purpose-driven story: a self-initiated community/sustainability project plus specific knowledge of Unilever brands and the Vietnamese market."
+        }
+      }
+    ],
+    "ideal_profile_text": "- Vietnamese nationals who completed a Bachelor's/Master's degree in 2024, or Bachelor's/Master's graduates with less than 2 years of experience,\n- Cumulative GPA of at least 7.0/10.0 or equivalent,\n- Clear career goals and aspirations, with a desire to make substantial and steady progress throughout their career journey,\n- Able to work independently and collaborate with others; leadership experience in a club, team, group, or social organization is an advantage\n- Enthusiastic, quick to learn, and positive in their approach to work",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "nestle-sparkthenext-2026",
+    "program_name": "Nestlé Vietnam — Nestlé #SparkTheNext Leaders Management Trainee 2026",
+    "company": "Nestlé Vietnam",
+    "program": "Nestlé #SparkTheNext Leaders Management Trainee 2026",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (minimum GPA of 2.8/4, approximately 7/10; final-year student or less than 1 year of full-time experience), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: minimum GPA of 2.8/4, approximately 7/10; final-year student or less than 1 year of full-time experience; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: fluent English (the online assessment and Nest Camp are conducted in English).",
+          "dat": "Meets the fluent-English standard (the online assessment and Nest Camp are conducted in English); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to FMCG/food and beverages or the applied-for function (Sales, Marketing, Finance, Supply Chain, plant engineering).",
+          "dat": "At least one internship related to FMCG/food and beverages or the applied-for function (Sales, Marketing, Finance, Supply Chain, plant engineering), clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as Nestlé Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the online assessment and group exercise at Nest Camp.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (an FMCG case competition or a major student marketing/sales competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Nestlé values: nutrition, sustainability & respect",
+        "label_en": "Nestlé values: nutrition, sustainability & respect",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No indication of interest in food and nutrition/sustainability or long-term value; the motivation for applying is generic.",
+          "dat": "Shows genuine interest in the food and beverage industry and a serious long-term development path.",
+          "noi_bat": "A self-initiated project/activity related to nutrition, community, or sustainability, plus specific knowledge of Nestlé's brand portfolio in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Senior student or fresh graduate with less than 1 year of full-time work experience\n- Can start working full-time from May 2026\n- Minimum Grade-Point Average (GPA) of 2.8/4 or equivalent 7/10\n- Proficient in English with strong communication skills\n- A driven and ambitious individual with strong business acumen and sharp analytical and critical thinking.\n- A strong team player with excellent interpersonal and communication skills.\n- Ready to embrace change, lead with agility, and deliver exceptional results.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "loreal-seedz",
+    "program_name": "L'Oréal Vietnam — L'Oréal SEEDZ (Management Trainee)",
+    "company": "L'Oréal Vietnam",
+    "program": "L'Oréal SEEDZ (Management Trainee)",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (good-to-excellent academic performance or higher, reflecting the program's strong-academics requirement; approaching graduation, recently graduated, or less than 2 years of experience), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: good-to-excellent academic performance or higher, reflecting the program's strong-academics requirement; approaching graduation, recently graduated, or less than 2 years of experience; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: proficient English (the Online Assessment and Video Showcase are conducted in English).",
+          "dat": "Meets the proficient-English standard (the Online Assessment and Video Showcase are conducted in English); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to beauty/FMCG, O+O commerce (online + offline), data, or marketing.",
+          "dat": "At least one internship related to beauty/FMCG, O+O commerce (online + offline), data, or marketing, clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as L'Oréal Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the Online Assessment and Assessment Center (business case plus quantitative analysis).",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (L'Oréal Brandstorm or a major marketing/branding competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Entrepreneurial spirit & beauty/BeautyTech affinity",
+        "label_en": "Entrepreneurial spirit & beauty/BeautyTech affinity",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Shows no initiative and no indication of interest in the beauty industry or BeautyTech.",
+          "dat": "Has at least one self-initiated project (small business, content, or data project) and shows genuine interest in beauty/consumer tech.",
+          "noi_bat": "Has competed in Brandstorm or run a real beauty/e-commerce project with metrics; demonstrates the business-plus-data mindset associated with SEEDZ and can articulate a distinctive insight about Vietnamese beauty consumers."
+        }
+      }
+    ],
+    "ideal_profile_text": "A graduating student or a graduate with less than two-year work experience that possess strong foundation of technical & professional competencies\nExhibits high potential in leadership and management\nHas strong business acumen; excellent in analytics and numbers\nAdventurous, driven with entrepreneurial spirit; a creative problem solver with an open mind\nStrong communication and interpersonal skills\nL'Oréal Brandstormer/L'Oréal Intern is a BIG PLUS",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "suntory-pepsico-mt",
+    "program_name": "Suntory PepsiCo Vietnam — Suntory PepsiCo Management Trainee",
+    "company": "Suntory PepsiCo Vietnam",
+    "program": "Suntory PepsiCo Management Trainee",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (minimum GPA of 7.0/10; recent graduate or no more than 1 year of experience), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: minimum GPA of 7.0/10; recent graduate or no more than 1 year of experience; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: fluent English (cognitive test in English and bilingual Vietnamese–English interviews).",
+          "dat": "Meets the fluent-English standard (cognitive test in English and bilingual Vietnamese–English interviews); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to FMCG/beverages or the applied-for function (Sales/GTM, Marketing, Finance, Supply Chain).",
+          "dat": "At least one internship related to FMCG/beverages or the applied-for function (Sales/GTM, Marketing, Finance, Supply Chain), clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as Suntory PepsiCo Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the English cognitive test and business case at Career Camp.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (an FMCG case competition or a major student sales/marketing competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Yatte Minahare (go-for-it) spirit & field resilience",
+        "label_en": "Yatte Minahare (go-for-it) spirit & field grit",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "A purely theoretical profile: no field experience and no indication of being able to handle the pace of the beverage/GT market.",
+          "dat": "Has practical experience demonstrating resilience (sales, field activities, or purposeful part-time work) and a willingness to take on challenges.",
+          "noi_bat": "A clear story of taking bold action: a self-proposed project carried through to completion, real route-to-market/point-of-sale experience, and an understanding of Vietnam's beverage distribution channels."
+        }
+      }
+    ],
+    "ideal_profile_text": "Fresh graduates (Bachelor/Master Degree from all backgrounds) or graduates with maximum 2 years of full-time working experience. Work full-time from March 2026.\nVietnamese nationality\nGPA (Grade Point Average): above 7.0 out of 10 or equivalent\nHonest, proactive, innovative, self-motivated\nResult oriented, collaborating, influencing & innovating\nLeadership potential\nEnglish fluency and computer literacy",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "carlsberg-gtp-2026",
+    "program_name": "Carlsberg Vietnam — Carlsberg Asia Graduate Trainee Programme (GTP) 2026",
+    "company": "Carlsberg Vietnam",
+    "program": "Carlsberg Asia Graduate Trainee Programme (GTP) 2026",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (minimum GPA of 7.0/10; final-year student, recent graduate, or no more than 2 years of experience), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: minimum GPA of 7.0/10; final-year student, recent graduate, or no more than 2 years of experience; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: strong English (the online AI interview and assessment center are in English, in an Asia-regional environment).",
+          "dat": "Meets the strong-English standard (the online AI interview and assessment center are in English, in an Asia-regional environment); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to beverages/FMCG or the applied-for function (Finance, Marketing, Trade Marketing, Procurement, People & Culture, HSSE).",
+          "dat": "At least one internship related to beverages/FMCG or the applied-for function (Finance, Marketing, Trade Marketing, Procurement, People & Culture, HSSE), clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as Carlsberg Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the online AI interview and regional assessment center.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (an FMCG/business case competition or a regional analytics competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Mobility & Asia-regional mindset",
+        "label_en": "Mobility & Asia-regional mindset",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Does not demonstrate willingness to rotate domestically/internationally, an explicit program requirement, or any experience across different environments.",
+          "dat": "Demonstrates willingness to relocate and has at least one experience outside the comfort zone (exchange, multi-region project, or multicultural environment).",
+          "noi_bat": "Genuine international/multicultural experience (exchange, regional internship, or cross-country project), plus a clear reason for wanting to develop through Carlsberg Asia's regional pathway."
+        }
+      }
+    ],
+    "ideal_profile_text": "Hold a Bachelor's or Master's degree with a GPA of 7.0+ (or equivalent);\nAre fresh graduates or have less than 2 years of working experience;\nBring a dynamic, curious, and eager-to-learn mindset, paired with a strong collaborative spirit;\nDemonstrate a drive for results, supported by effective communication, analytical thinking, and project management skills;\nShowcase a proven track record in extracurricular activities or internship experience;\nAre excited about mobility opportunities, both domestic and international;\nAspire to lead and thrive in the fast-paced, ever-evolving beer industry;\nCommunicate confidently with fluent English skills;\nAre proficient in Microsoft Office and comfortable using AI-based tools to support the work environment.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "central-retail-ma-2026",
+    "program_name": "Central Retail Vietnam — Central Retail Management Associate (MA) 2026",
+    "company": "Central Retail Vietnam",
+    "program": "Central Retail Management Associate (MA) 2026",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (recent graduate or less than 3 years of experience; good academic performance or higher), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: recent graduate or less than 3 years of experience; good academic performance or higher; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: strong English (the program includes a 6-month assignment in Thailand).",
+          "dat": "Meets the strong-English standard (the program includes a 6-month assignment in Thailand); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to retail, commerce, store operations, or e-commerce.",
+          "dat": "At least one internship related to retail, commerce, store operations, or e-commerce, clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as Central Retail Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the cognitive test, offline test, and Business Case Presentation round.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (a retail/business case competition or an entrepreneurship competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Retail-operations & customer orientation",
+        "label_en": "Retail-operations & customer orientation",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No indication of interest in retail/operations; a purely theoretical profile with no direct customer-facing experience.",
+          "dat": "Has direct customer-facing or operational experience (sales, service, or booth management) and understands the field-based pace of retail work.",
+          "noi_bat": "Retail-operations experience with metrics (revenue, conversion, or process optimization), plus willingness to work at stores/in the provinces and take a 6-month international assignment in Thailand."
+        }
+      }
+    ],
+    "ideal_profile_text": "Fresh graduates or young professionals who have less than 3 years of working experience\nPassion for retail business and willing to work in a fast-paced, dynamic environment\nIf you're eager to learn, resilient in the face of challenges, and committed to achieving ambitious goals\nGood English proficiency",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "abinbev-dreamship-2026",
+    "program_name": "AB InBev Vietnam — AB InBev Dreamship Internship 2026",
+    "company": "AB InBev Vietnam",
+    "program": "AB InBev Dreamship Internship 2026",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "Below the program's education standard (GPA of at least 7.0/10; third- or fourth-year student or recent graduate from any major; available to work full-time from 9/2026), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: GPA of at least 7.0/10; third- or fourth-year student or recent graduate from any major; available to work full-time from 9/2026; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: strong English (the cognitive test and video interview are conducted in English).",
+          "dat": "Meets the strong-English standard (the cognitive test and video interview are conducted in English); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience related to FMCG/beverages or the application track (Commercial, Finance, Marketing & Trade, Supply Chain, Tech & Analytics).",
+          "dat": "At least one internship related to FMCG/beverages or the application track (Commercial, Finance, Marketing & Trade, Supply Chain, Tech & Analytics), clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as AB InBev Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the cognitive test and successive interview rounds.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (a business/FMCG case competition or a data hackathon), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Ownership & dream-big mindset",
+        "label_en": "Ownership & dream-big mindset",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Shows no initiative in taking on work or responsibility; all activities involve passive roles.",
+          "dat": "Provides a specific example of taking responsibility and following through (a club project, part-time work, or research).",
+          "noi_bat": "A standout ownership story: independently initiated and took responsibility for the outcome of a real project, demonstrating ambition to grow quickly in line with AB InBev's meritocratic culture."
+        }
+      }
+    ],
+    "ideal_profile_text": "3rd – 4th year student or fresh graduate with less than 1 year of experience; open for all majors.\nBachelor's degree required and GPA (Grade Point Average): from 7.0 out of 10 or equivalent.\nLanguage: Native Vietnamese speaker with fluent in English.\nProficiency in Microsoft Office (especially Excel) and ability to quickly adapt to new systems.\nBe able to start working full-time from September 2026, and take 6-month duration.\nBe bold to take risks, solves challenges in new ways and works hard to make a difference.\nBe interested in a multi-functional career and have the willingness to develop new skillsets and capabilities throughout your career.\nDesire to learn, evolve, and adapt and is innately curious.\nOperates with a continuous learning mindset.\nShows confidence in ambiguous situations and thrives in a fast-paced environment.\nLeverages insight, innovation and technology to stay ahead of the curve.\nTakes pride, ownership and accountability for their actions.\nRecognizes the impact we have to our customers, consumers, and communities.\nSeeks diverse perspectives; co-creates win-win solutions across teams; recognizes contributions and celebrates successes.\nInclusive mindset; shows humility and empathy.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "homecredit-homeracer-2026",
+    "program_name": "Home Credit Vietnam — Home Credit Home Racer 2026",
+    "company": "Home Credit Vietnam",
+    "program": "Home Credit Home Racer 2026",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (final-year student, recent graduate, or less than 2 years of experience in Data or Commercial; available to work full-time from 9/2026), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: final-year student, recent graduate, or less than 2 years of experience in Data or Commercial; available to work full-time from 9/2026; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: English equivalent to IELTS 6.0+ (6.5 preferred).",
+          "dat": "Meets the English standard equivalent to IELTS 6.0+ (6.5 preferred); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to data (analyst/engineer/scientist/MarTech) or commercial work (product, CX) aligned with the Home Racer application track.",
+          "dat": "At least one internship related to data (analyst/engineer/scientist/MarTech) or commercial work (product, CX) aligned with the Home Racer application track, clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as Home Credit Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 24,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the online assessment, technical assessment (Data Track), and assessment center.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (a hackathon/datathon, data analytics competition, or fintech case competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Consumer-finance acumen & fintech pace",
+        "label_en": "Consumer-finance sense & fintech pace",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "No indication of interest in consumer finance/fintech; skills are described generically and are not connected to a real product.",
+          "dat": "Has a basic understanding of consumer-finance products (consumer loans, BNPL, scoring) and a project/coursework involving data or a digital product.",
+          "noi_bat": "A real data/product project in fintech or digital banking (scoring model, dashboard, or user-behavior analysis), plus close attention to Vietnam's consumer-finance market."
+        }
+      }
+    ],
+    "ideal_profile_text": "- Final-year student, recent graduate, or candidate with less than 2 years of relevant work experience\n- Available to work full-time from 9.2026\n- Interested in and eager to develop a career in Data or Commercial\n- Ready to learn, proactively embrace challenges, and create tangible value",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "shopee-monee-gdp",
+    "program_name": "Shopee & Monee (SeaMoney) — Shopee & Monee (SeaMoney) Global Development Program (GDP)",
+    "company": "Shopee & Monee (SeaMoney)",
+    "program": "Shopee & Monee (SeaMoney) Global Development Program (GDP)",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (bachelor's/master's degree in any discipline; 0–2 years of experience; the Global track requires graduation before 6/2026), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: bachelor's/master's degree in any discipline; 0–2 years of experience; the Global track requires graduation before 6/2026; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: proficient English (senior-leadership interviews and the group-case round in Singapore are conducted in English).",
+          "dat": "Meets the proficient-English standard (senior-leadership interviews and the group-case round in Singapore are conducted in English); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to e-commerce, digital payments, product, business intelligence, or digital-platform operations.",
+          "dat": "At least one internship related to e-commerce, digital payments, product, business intelligence, or digital-platform operations, clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as Shopee & Monee (SeaMoney)."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 24,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the online assessment and 3–5 interview rounds (up to Country Head level; the Global track also includes a group case in Singapore).",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (an e-commerce/tech case competition, hackathon, or major business analytics competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "High-tempo execution & platform thinking",
+        "label_en": "High-tempo execution & platform thinking",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "No evidence of working at a fast pace or understanding platform/marketplace models.",
+          "dat": "Understands marketplace/payments mechanics (fees, funnel, GMV, take rate) and has experience in a fast-paced environment (startup, major event, or campaign operations).",
+          "noi_bat": "Real operational/analytical experience on a digital platform with metrics (GMV, conversion, retention), plus evidence of thriving under high intensity and rapidly taking on greater responsibility."
+        }
+      }
+    ],
+    "ideal_profile_text": "- University graduates with a Bachelor’s/Master’s degree in any discipline, with no more than 2 years of full-time work experience (as of application deadline)\n- Curious and adaptable learners who tackle challenges with resourcefulness and agility\n- Effective communicators who can share ideas and thoughts effectively\n- Self-starters with a growth mindset who take ownership and aspire to drive meaningful impact\n- Leaders who can inspire others towards the achievement of goals",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "momo-talent-2026",
+    "program_name": "MoMo — MoMo Talent 2026",
+    "company": "MoMo",
+    "program": "MoMo Talent 2026",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's education standard (minimum GPA of 3.2/4.0 or 8.0/10; recent graduate or less than 2 years of experience; available to work full-time from 8/2026), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: minimum GPA of 3.2/4.0 or 8.0/10; recent graduate or less than 2 years of experience; available to work full-time from 8/2026; major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: B2 English / IELTS 6.0 / TOEIC 750 or higher.",
+          "dat": "Meets the B2 English / IELTS 6.0 / TOEIC 750-or-higher standard; can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience related to fintech, product, digital growth/marketing, data, or technology.",
+          "dat": "At least one internship related to fintech, product, digital growth/marketing, data, or technology, clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as MoMo."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 24,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the cognitive test and track-specific functional assessment.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (a hackathon, datathon, product/startup competition, or technology case competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "AI-first mindset & MoMo product velocity",
+        "label_en": "AI-first mindset & MoMo product velocity",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "No evidence of using/understanding AI tools or digital products; does not demonstrate a proactive work pace.",
+          "dat": "Proactively uses AI tools in study/work and understands Vietnam's super-app/e-wallet ecosystem.",
+          "noi_bat": "Has built/shipped something real with AI or conducted an in-depth fintech product analysis (side project, bot, or funnel analysis); demonstrates the AI-first mindset MoMo explicitly seeks."
+        }
+      }
+    ],
+    "ideal_profile_text": "Strong Academic Foundation\n- GPA of 3.2/4.0 or 8.0/10 and above\n- Proficiency in English: B2 level, IELTS 6.0, TOEIC 750, TOEFL iBT 79\n- Fresh graduates or candidates with less than 2 years of full-time work experience, available to work full-time from August 2026\nAI-First Mindset\n- Passionate about technology with a curious drive to explore the latest digital tools and platforms\n- Know how to leverage AI as a \"co-pilot\" at work - from data analysis and content creation to automating everyday workflows\nCultural Fit\n- You’re proactive, adaptable, and genuinely excited about technology and fintech\n- You’re ready to embrace MoMo’s mission and core values-and make a meaningful impact along the way\nHigh Growth Potential\n- You bring a growth mindset, adapt quickly, and show strong leadership potential\n- You’re driven, committed for the long term, and ready to grow into future leadership roles",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "techcombank-futuregen-2027",
+    "program_name": "Techcombank — Techcombank Future Gen 2027",
+    "company": "Techcombank",
+    "program": "Techcombank Future Gen 2027",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "Below the program's education standard (final-year student/recent graduate with good-to-excellent academic performance; preference for economics, finance, or technology backgrounds depending on the track: Business, Data & AI, General Management, or Technology), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: final-year student/recent graduate with good-to-excellent academic performance; preference for economics, finance, or technology backgrounds depending on the track (Business, Data & AI, General Management, Technology); major aligned with the application track; graduation timeline meets the requirement.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or higher, a scholarship, or a high ranking within the faculty; a major closely aligned with the application track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certification, an English-medium program, or an English-speaking work environment). Program standard: strong English (the aptitude test, functional test, and panel interview include English-language components).",
+          "dat": "Meets the strong-English standard (the aptitude test, functional test, and panel interview include English-language components); can use English at work and answer interview questions.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or education/work conducted entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no significant extracurricular activities.",
+          "dat": "At least one team-lead or committee-head role in a club, project, or event, with a specific account of what the candidate did.",
+          "noi_bat": "Club president / organizing committee head for a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No internship/work experience related to banking, finance, data/AI, or technology aligned with the Future Gen application track.",
+          "dat": "At least one internship related to banking, finance, data/AI, or technology aligned with the Future Gen application track, clearly describing the work actually performed rather than only the title.",
+          "noi_bat": "Two or more relevant internships, or one internship with measurable achievements (KPI met or a project actually implemented) at a company in the same industry as Techcombank."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data projects, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, and case-practice experience), sufficient to pass the aptitude test, functional test, and assessment center.",
+          "noi_bat": "Achievement in a case competition or a real-world analytical project, plus strong tool proficiency (advanced Excel, SQL/Python if required by the track), demonstrating readiness for both aptitude tests and the assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "The CV does not mention any awards, scholarships, or competitions.",
+          "dat": "Has participated in an academic/case competition or earned a university-level scholarship or award.",
+          "noi_bat": "Advanced to the later rounds of or won a major competition (a finance/banking analytics competition, datathon, or banking case competition), or earned a national-level or higher scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Digital-banking orientation & risk discipline",
+        "label_en": "Digital-banking orientation & risk discipline",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "No indication of interest in banking/financial digital transformation; does not understand the role of risk discipline in banking.",
+          "dat": "Understands Techcombank's digital-banking model (CASA, fees, ecosystem) and demonstrates careful handling of data and adherence to standards in prior work.",
+          "noi_bat": "A project/internship involving digital banking or real financial analysis, plus close attention to Techcombank's strategy; balances innovative thinking with risk discipline."
+        }
+      }
+    ],
+    "ideal_profile_text": "- Technology:\nFinal-year students from Vietnamese or overseas universities\nBachelor's degree and/or higher in IT, Computer Science, Software Engineering, or related fields.\nAbility: Strong coding, software development and system design skills.\nAble to solve technical problems with logic, creativity, and customer-centricity in mind.\nLess than 2 years of full-time work experience\nProficiency in spoken and written English\n- Data & AI: \nFinal-year students from Vietnamese or overseas universities\nBachelor's degree and/or higher in AI Science, Statistics, Quantitative Science, Finance, Computer Science, Mathematics & other related fields.\nAbility: Able to work with data tools (Python, SQL, Power BI). Strong statistical thinking with understanding of data visualization and data analysis.\nLess than 2 years of full-time work experience\nProficiency in spoken and written English\n- Business:\nFinal-year students from Vietnamese or overseas universities\nBachelor's degree and/or higher in Business Administration, Banking & Finance, Accounting, Statistics, Economics & other related fields.\nAbility: Understands business operations, customer behavior and experiences. Strong in market and product analysis.\nLess than 2 years of full-time work experience\nProficiency in spoken and written English\n- General Management: \nFinal-year students from Vietnamese or overseas universities\nBachelor's degree and/or higher in Business Administration, Banking & Finance, Human Resource & other related fields.\nAbility: Learns quickly, connects dots, and drives execution across domains. Understand business operations, management and people.\nLess than 2 years of full-time work experience\nProficiency in spoken and written English",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

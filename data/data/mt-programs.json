@@ -1,0 +1,771 @@
+{
+  "version": 7,
+  "source_hook_id": "82eb817b-cb93-4356-9f6b-70bd9539d669",
+  "updated": "2026-08-10",
+  "notes": "v9 (estimated-window fallback for expired cycles, founder feedback 2026-08-10): 12 records whose concrete application_window had a real but now-PAST close_date (Carlsberg GTP 2026, AB InBev Dreamship 2026, Home Credit Home Racer 2026, Shopee & Monee GDP, Nestlé #SparkTheNext 2026, MoMo Talent 2026, Viettel Future Changemakers, UOB Vietnam MA, Prudential The Strivers 2025, Deloitte Passport FY26, EY Tax Internship 2027, Abbott Internship 2025) were converted from concrete estimated:false dates to the SAME estimated-annual-window pattern already used by Unilever/L'Oréal/Suntory PepsiCo: open_date/close_date set back to null, open_text/close_text reworded as ~DD/MM 'estimated' referencing the real researched cycle, and estimated_open_month/estimated_open_day added so the app projects the next likely opening date instead of dead-ending on 'Closed' with no forward guidance. This directly addresses founder feedback that an annual program's last real cycle should be shifted forward a year, exactly like the app already does for the 3 pattern-setting verified programs. rounds_detail periods on these 12 records were also generalized from hard year-tagged dates to '~Month (estimated)' style to match. central-retail-ma-2026 and techcombank-futuregen-2027 were left untouched since their windows are still genuinely upcoming (not yet closed) as of 2026-08-10. Mirrored in lib/programTimelines.ts. v8 (founder-directed web research ingestion, 2026-08-09): filled application_window / rounds_detail / program_url / functions for 16 previously coming_soon programs (Carlsberg GTP 2026, Central Retail MA 2026, AB InBev Dreamship 2026, Home Credit Home Racer 2026, Shopee & Monee GDP, Nestlé #SparkTheNext 2026, MoMo Talent 2026, Viettel Future Changemakers, UOB Vietnam MA, Prudential The Strivers 2025, Expeditors MT, PropertyGuru Prodi-G 2025, P&G LEAD GEN 2026, Deloitte Passport FY26, EY Tax Internship 2027, Abbott Internship 2025) plus a functions list for Techcombank Future Gen 2027 — per explicit founder instruction (2026-08-09) authorizing the agent to web-research and self-fill the format, defaulting month-only opens to day 01. Source: official company career pages / recruiter LinkedIn-and-press posts found via web search — NOT founder-pasted data. All details_status values are intentionally left 'coming_soon' (including Techcombank) since no explicit founder confirmation of current-cycle verification was given in this pass. Several 2025/2026-labelled cycles have already closed as of today (2026-08-09); their dates are preserved as the historical record of that named cohort and the app's countdown correctly renders them as closed. Where NO current-cycle date or functions list could be confirmed from public sources, the field is left absent — real remaining gaps: central-retail-ma-2026 functions, uob-vietnam-ma functions, expeditors-mt dates/rounds/functions, propertyguru-prodig-2025 dates, pg-leadgen-2026 dates. Mirrored in lib/programTimelines.ts. v7 (estimated-open anchor — founder directive 2026-08-09): estimated application_window records now carry estimated_open_month/estimated_open_day; the app anchors month-only estimated open windows to a concrete display date defaulting to DAY 01 of that month ('Expected to open 01/12 — estimated') plus a prep-runway day count, so candidates have a real date to prepare toward. Display-only: open_date/close_date STILL stay null until founder-verified and the 'X days left' countdown still only runs off close_date. Mirrored in lib/programTimelines.ts — keep BOTH in sync. v6 (program timeline display): verified records now carry structured application_window (open_date/close_date stay NULL until the founder verifies concrete current-cycle dates — the app's 'X days left' countdown only ever runs off close_date; open_text/close_text hold the estimated windows already stated in the record, always labelled 'estimated') and rounds_detail (round names + estimated periods, straight from the verified rounds/timeline text). Mirrored client-side in lib/programTimelines.ts — keep BOTH in sync when verifying new timeline data. Never invent dates: only founder-verified data lands in these fields. v5 (v1.4 grounding fix): sector_taxonomy added — the founder-approved sector buckets the scoring engine uses as a HARD FILTER (a candidate's chosen sector removes every off-sector program from ranking; FMCG splits into cosmetics/personal-care vs food & beverage; multi-sector companies like Unilever sit in every bucket they genuinely play in, and a company NEVER appears for a sector it has no presence in). v4: Shopee & Monee GDP is categorized as pure e-commerce / digital services (no consumer-brands/FMCG/beauty linkage). FMCG programs carry fmcg_subverticals so FMCG is never treated as one monolithic category (food & dairy / beverages / beauty & personal care / household & home care / health & nutrition).",
+  "sector_taxonomy": {
+    "FMCG — cosmetics & personal care": ["loreal-seedz", "unilever-uflp"],
+    "FMCG — food & beverage": ["suntory-pepsico-mt", "nestle-sparkthenext-2026", "carlsberg-gtp-2026", "abinbev-dreamship-2026", "pg-leadgen-2026", "unilever-uflp"],
+    "Retail": ["central-retail-ma-2026"],
+    "Banking": ["techcombank-futuregen-2027", "uob-vietnam-ma"],
+    "Consumer finance / Fintech": ["homecredit-homeracer-2026", "momo-talent-2026"],
+    "E-commerce / digital financial services": ["shopee-monee-gdp"],
+    "Telecom / technology": ["viettel-future-changemakers"],
+    "Insurance": ["prudential-strivers-2025"],
+    "Logistics / supply chain": ["expeditors-mt"],
+    "PropTech / real estate": ["propertyguru-prodig-2025"],
+    "Professional services / Big 4": ["deloitte-passport-fy26", "ey-tax-internship-2027"],
+    "Healthcare / pharma / nutrition": ["abbott-internship-2025"]
+  },
+  "verified_programs": [
+    {
+      "id": "unilever-uflp",
+      "company": "Unilever Vietnam",
+      "program": "Unilever Future Leaders Programme (UFLP)",
+      "type": "management_trainee",
+      "industry": "FMCG",
+      "industry_tags": ["fmcg", "consumer"],
+      "functions": [
+        "Customer Development",
+        "Marketing",
+        "Supply Chain Manufacturing (technical students)",
+        "Finance",
+        "Unilever Food Solutions (Business Development)"
+      ],
+      "function_tags": ["sales", "marketing", "supply_chain", "finance"],
+      "eligibility": "Vietnamese nationality; fresh Bachelor/Master grad or <2 yrs experience; GPA ≥7.0/10; club/team leadership a plus",
+      "gpa_min_10": 7.0,
+      "rounds": "R1 Online Application + Aptitude Test → R2 Digital Interview → R3 Discovery Center",
+      "duration": "2 years to Manager",
+      "timeline": "Estimated annual window: opens ~December, deadline late January (2025 ref: 26 Jan) → Digital Interview Feb–Mar → Discovery Center Mar–Apr → start ~April. Estimated from the most recent verified cycle — verify on Unilever’s careers page.",
+      "open_months": [12],
+      "program_url": null,
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~December each year (estimated from the most recent cycle)",
+        "close_text": "Closes ~late January (2025 cycle: 26/01 — estimated; check the exact date on Unilever's careers page)",
+        "estimated": true,
+        "estimated_open_month": 12,
+        "estimated_open_day": null
+      },
+      "rounds_detail": [
+        { "name": "R1 Online Application + Aptitude Test", "period": "~Dec – Jan (estimated)" },
+        { "name": "R2 Digital Interview", "period": "~Feb – Mar (estimated)" },
+        { "name": "R3 Discovery Center", "period": "~Mar – Apr (estimated)" }
+      ],
+      "competitiveness": 5,
+      "fmcg_subverticals": ["food & dairy", "beauty & personal care", "household & home care"],
+      "details_status": "verified"
+    },
+    {
+      "id": "loreal-seedz",
+      "company": "L'Oréal Vietnam",
+      "program": "L'Oréal SEEDZ (Management Trainee)",
+      "type": "management_trainee",
+      "industry": "FMCG / Beauty (BeautyTech)",
+      "industry_tags": ["fmcg", "consumer", "beauty"],
+      "functions": [
+        "Marketing",
+        "O+O Commercial (Online/Offline Sales)",
+        "Supply Chain (Data Analytics)",
+        "Finance",
+        "Human Resources"
+      ],
+      "functions_note": "as of 2026 — SEEDZ functions vary year to year",
+      "function_tags": ["marketing", "sales", "supply_chain", "finance", "hr", "tech"],
+      "eligibility": "near-grad or <2 yrs experience; strong academics; leadership; business + data-analysis thinking; proactive/entrepreneurial; L'Oréal Brandstorm or internship a big plus",
+      "gpa_min_10": null,
+      "rounds": "Application → Online Assessment & Video Showcase → Initial Interview → Assessment Center & Final Interview → Onboarding",
+      "duration": "18 months",
+      "timeline": "Estimated annual window: application ~25 Apr–16 May → Online Assessment & Video Showcase 17–20 May → Initial Interview 21 May–5 Jun → Assessment Center & Final Interview 8–12 Jun → onboarding July. Estimated from the most recent verified cycle — verify on L’Oréal’s careers page.",
+      "open_months": [4],
+      "program_url": null,
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~25/04 each year (estimated from the most recent cycle)",
+        "close_text": "Closes ~16/05 (estimated; check the exact date on L'Oréal's careers page)",
+        "estimated": true,
+        "estimated_open_month": 4,
+        "estimated_open_day": 25
+      },
+      "rounds_detail": [
+        { "name": "Application", "period": "~25/04 – 16/05 (estimated)" },
+        { "name": "Online Assessment & Video Showcase", "period": "~17/05 – 20/05 (estimated)" },
+        { "name": "Initial Interview", "period": "~21/05 – 05/06 (estimated)" },
+        { "name": "Assessment Center & Final Interview", "period": "~08/06 – 12/06 (estimated)" },
+        { "name": "Onboarding", "period": "~July (estimated)" }
+      ],
+      "competitiveness": 4,
+      "fmcg_subverticals": ["beauty & personal care"],
+      "details_status": "verified"
+    },
+    {
+      "id": "suntory-pepsico-mt",
+      "company": "Suntory PepsiCo Vietnam",
+      "program": "Suntory PepsiCo Management Trainee",
+      "type": "management_trainee",
+      "industry": "Beverage / FMCG",
+      "industry_tags": ["fmcg", "consumer"],
+      "functions": [
+        "Sales (Customer Development, GTM, Trade Marketing, RGM, e-Commerce)",
+        "Marketing (Brand, Consumer Insight, Media & Digital)",
+        "Finance (Planning, Control)",
+        "Operations (Plant Operations, Project & Engineering)",
+        "People & Culture",
+        "Supply Chain"
+      ],
+      "function_tags": ["sales", "marketing", "finance", "operations", "hr", "supply_chain"],
+      "eligibility": "Vietnamese nationality; fresh Bachelor/Master grad or ≤1 yr experience; GPA ≥7.0/10; English fluency + computer literacy; leadership potential",
+      "gpa_min_10": 7.0,
+      "rounds": "Application review → Cognitive test (English) → Initial interview (VN+EN) → Career Camp (games, business case, panel) → Onboarding",
+      "duration": "36 months (first 18mo cross-functional rotations ~3mo each; final 18mo home-function specialization)",
+      "timeline": "Estimated annual window: application deadline ~30 November, onboarding ~April. Estimated from the most recent verified cycle — verify on Suntory PepsiCo’s careers page.",
+      "open_months": [10],
+      "program_url": null,
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~October each year (estimated from the most recent cycle)",
+        "close_text": "Closes ~30/11 (estimated; check the exact date on Suntory PepsiCo's careers page)",
+        "estimated": true,
+        "estimated_open_month": 10,
+        "estimated_open_day": null
+      },
+      "rounds_detail": [
+        { "name": "Application review" },
+        { "name": "Cognitive test (English)" },
+        { "name": "Initial interview (VN+EN)" },
+        { "name": "Career Camp (games, business case, panel)" },
+        { "name": "Onboarding", "period": "~April (estimated)" }
+      ],
+      "competitiveness": 4,
+      "fmcg_subverticals": ["beverages"],
+      "details_status": "verified"
+    },
+    {
+      "id": "carlsberg-gtp-2026",
+      "company": "Carlsberg Vietnam",
+      "program": "Carlsberg Asia Graduate Trainee Programme (GTP) 2026",
+      "type": "graduate_program",
+      "industry": "Beverage",
+      "industry_tags": ["fmcg", "consumer"],
+      "functions": [
+        "Finance",
+        "Marketing",
+        "People & Culture",
+        "Trade Marketing",
+        "HSSE (Health, Safety, Security & Environment)",
+        "Procurement"
+      ],
+      "function_tags": ["finance", "marketing", "hr", "supply_chain"],
+      "eligibility": "Final-year students, recent graduates, or professionals with up to 2 years of work experience; minimum GPA 7.0/10; good English; willing to relocate domestically/internationally",
+      "rounds": "Application submission → Application screening → Online AI interview → Assessment center → Final interview",
+      "duration": "2 years",
+      "timeline": "Estimated annual window based on the 2026 cycle (\"Something Stronger is Brewing\"): applications opened ~08/07, closed ~02/08/2026. Roles based in Ho Chi Minh City and Hue. That 2026 window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on Carlsberg's careers page.",
+      "program_url": "https://www.carlsbergvietnam.vn/vi/",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~08/07 each year (estimated from the 2026 cycle)",
+        "close_text": "Closes ~02/08 (2026 cycle: 02/08 — estimated; check the exact date on Carlsberg's careers page)",
+        "estimated": true,
+        "estimated_open_month": 7,
+        "estimated_open_day": 8
+      },
+      "rounds_detail": [
+        { "name": "Application submission" },
+        { "name": "Application screening" },
+        { "name": "Online AI interview" },
+        { "name": "Assessment center" },
+        { "name": "Final interview" }
+      ],
+      "fmcg_subverticals": ["beverages"],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "central-retail-ma-2026",
+      "company": "Central Retail Vietnam",
+      "program": "Central Retail Management Associate (MA) 2026",
+      "type": "management_trainee",
+      "industry": "Retail",
+      "industry_tags": ["retail", "consumer"],
+      "function_tags": ["operations", "sales", "supply_chain"],
+      "eligibility": "Fresh graduates or young professionals with less than 3 years of working experience; good English proficiency; strong analytical thinking",
+      "rounds": "Application → Cognitive Test → HR Interview → Offline Test → Business Case Presentation → Onboarding",
+      "duration": "2 years, incl. a 6-month international assignment in Thailand",
+      "timeline": "Vietnam Management Associate Program 2026: applications 24/07 – 24/08/2026 → Selection Process Sept–Nov 2026 → Program starts January 2027. No official functions/track breakdown was published for this cross-functional rotation program.",
+      "program_url": "https://www.ma-centralretailvn.com/home",
+      "application_window": {
+        "open_date": "2026-07-24",
+        "close_date": "2026-08-24",
+        "open_text": "Opens 24/07/2026",
+        "close_text": "Closes 24/08/2026",
+        "estimated": false
+      },
+      "rounds_detail": [
+        { "name": "Application", "period": "24/07 – 24/08/2026" },
+        { "name": "Cognitive Test", "period": "Early Sep 2026" },
+        { "name": "HR Interview", "period": "Sep 2026" },
+        { "name": "Offline Test", "period": "Late Sep 2026" },
+        { "name": "Business Case Presentation", "period": "Oct – Nov 2026" },
+        { "name": "Onboarding", "period": "Jan 2027" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "abinbev-dreamship-2026",
+      "company": "AB InBev Vietnam",
+      "program": "AB InBev Dreamship Internship 2026",
+      "type": "internship",
+      "industry": "Beverage",
+      "industry_tags": ["fmcg", "consumer"],
+      "functions": [
+        "Commercial & Strategy",
+        "Finance",
+        "Legal & Corporate Affairs",
+        "Marketing, Ecommerce & Trade",
+        "Supply Chain",
+        "Technology and Analytics"
+      ],
+      "function_tags": ["marketing", "finance", "supply_chain", "tech", "consulting"],
+      "eligibility": "3rd–4th year student or fresh graduate, open to all majors; GPA from 7.0/10 or equivalent; able to start full-time from September 2026",
+      "rounds": "Online Application → Cognitive Test → Video Interview → Panel Interview → Final Interview",
+      "duration": "6 months (through March 2027)",
+      "timeline": "Estimated annual window based on the 2026 cycle (Dreamship – ABI Summer Internship): applications opened ~early July, closed 23:59 24/07/2026 → onboarding ~September → internship 6 months. That 2026 window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on AB InBev's careers page.",
+      "program_url": "https://www.ab-inbev.com/working-with-us",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~early July each year (estimated from the 2026 cycle)",
+        "close_text": "Closes ~24/07 (2026 cycle: 24/07 — estimated; check the exact date on AB InBev's careers page)",
+        "estimated": true,
+        "estimated_open_month": 7,
+        "estimated_open_day": 1
+      },
+      "rounds_detail": [
+        { "name": "Online Application" },
+        { "name": "Cognitive Test" },
+        { "name": "Video Interview" },
+        { "name": "Panel Interview" },
+        { "name": "Final Interview" },
+        { "name": "Onboarding", "period": "~September (estimated)" }
+      ],
+      "fmcg_subverticals": ["beverages"],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "homecredit-homeracer-2026",
+      "company": "Home Credit Vietnam",
+      "program": "Home Credit Home Racer 2026",
+      "type": "management_trainee",
+      "industry": "Consumer Finance / Fintech",
+      "industry_tags": ["finance", "fintech", "banking"],
+      "functions": [
+        "Data Track — Data Analyst",
+        "Data Track — Data Engineer",
+        "Data Track — Data Scientist",
+        "Data Track — MarTech Engineer",
+        "Commercial Track — Product Specialist",
+        "Commercial Track — Product Analyst",
+        "Commercial Track — Customer Experience Analyst"
+      ],
+      "function_tags": ["tech", "marketing", "sales"],
+      "eligibility": "Final-year students, recent graduates, or candidates with less than 2 years of experience in Data or Commercial; able to work full-time from September 2026; English equivalent to IELTS 6.0+ (6.5 preferred)",
+      "rounds": "Application & Online Assessment → Online HR Interview → Technical Assessment (Data Track) → Assessment Center → Department Interview → Career Development Discussion with C-levels → Welcome Onboard",
+      "duration": "6 months",
+      "timeline": "Estimated annual window based on the 2026 cycle (Home Racer Program): applications opened ~15/06, closed ~31/07 → onboard ~September. That 2026 window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on Home Credit's careers page.",
+      "program_url": "https://homeracer.homecredit.vn",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~15/06 each year (estimated from the 2026 cycle)",
+        "close_text": "Closes ~31/07 (2026 cycle: 31/07 — estimated; check the exact date on Home Credit's careers page)",
+        "estimated": true,
+        "estimated_open_month": 6,
+        "estimated_open_day": 15
+      },
+      "rounds_detail": [
+        { "name": "Application & Online Assessment", "period": "~15/06 – 31/07 (estimated)" },
+        { "name": "Online HR Interview", "period": "~July (estimated)" },
+        { "name": "Technical Assessment (Data Track)", "period": "~July (estimated)" },
+        { "name": "Assessment Center", "period": "~August (estimated)" },
+        { "name": "Department Interview", "period": "~August (estimated)" },
+        { "name": "Career Development Discussion with C-levels", "period": "~August (estimated)" },
+        { "name": "Welcome Onboard", "period": "~September (estimated)" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "shopee-monee-gdp",
+      "company": "Shopee & Monee (SeaMoney)",
+      "program": "Shopee & Monee (SeaMoney) Global Development Program (GDP)",
+      "type": "graduate_program",
+      "industry": "E-commerce / Digital Financial Services",
+      "industry_tags": ["tech", "ecommerce", "fintech"],
+      "industry_note": "Pure e-commerce / digital services — NOT related to the beauty industry or consumer-brands FMCG; never present it as an FMCG or beauty match.",
+      "functions": [
+        "E-Commerce Operations",
+        "Product Management",
+        "Marketing",
+        "Business Intelligence",
+        "Data Analytics",
+        "Monee (digital payments & financial services) core functions"
+      ],
+      "function_tags": ["sales", "operations", "marketing", "tech"],
+      "eligibility": "Recognised Bachelor's/Master's degree, any discipline, 0–2 years full-time experience; degree completed no later than June 2026 for the Global track",
+      "rounds": "Round 1 Application + Online Assessment → Round 2 HR Interview → Round 3 Senior Leadership Interview → Round 4 Interview with Shopee Vietnam Country Head & People Head → (Global track) Round 5 Group Case Assessment in Singapore",
+      "duration": "2 years — 4 rotations of 6 months each; Vietnam Management Associate track (formerly GDP) or Global Management Associate track (starts in Singapore)",
+      "timeline": "Estimated annual window based on the GMAP 2026 cycle (Shopee & Monee track): Global-track applications were open by ~August, closing 31/10/2025. That window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on Sea/Shopee's careers page.",
+      "program_url": "https://seagmap.sea.com/shopee-monee",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~August each year (estimated from the 2025 cycle)",
+        "close_text": "Closes ~31/10 (2025 cycle: 31/10 — Global track — estimated; check the exact date on Sea/Shopee's careers page)",
+        "estimated": true,
+        "estimated_open_month": 8,
+        "estimated_open_day": null
+      },
+      "rounds_detail": [
+        { "name": "Round 1: Application + Online Assessment" },
+        { "name": "Round 2: HR Interview" },
+        { "name": "Round 3: Senior Leadership Interview" },
+        { "name": "Round 4: Interview with Shopee Vietnam Country Head & People Head" },
+        { "name": "Round 5: Group Case Assessment (Singapore) — Global track only" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "nestle-sparkthenext-2026",
+      "company": "Nestlé Vietnam",
+      "program": "Nestlé #SparkTheNext Leaders Management Trainee 2026",
+      "type": "management_trainee",
+      "industry": "FMCG",
+      "industry_tags": ["fmcg", "consumer"],
+      "functions": [
+        "Sales",
+        "Commercial (Marketing)",
+        "Consumer Market Intelligence",
+        "Finance & Control",
+        "Supply Chain",
+        "Factory HR",
+        "Production",
+        "Engineering",
+        "Quality Assurance",
+        "Health – Safety – Environment"
+      ],
+      "function_tags": ["sales", "marketing", "finance", "supply_chain", "hr", "operations"],
+      "eligibility": "Final-year students or fresh graduates with less than 1 year full-time experience; GPA ≥2.8/4 (≈7/10); fluent English",
+      "rounds": "Online Assessment → Initial Interview → Nest Camp → Final Interview",
+      "duration": "Fast-track development programme; start full-time May 2026",
+      "timeline": "Estimated annual window based on the 2026 cycle (Nestlé #SparkTheNext Leaders): applications open ~early December, closed 23:59 15/12/2025 → start full-time ~May. That window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on Nestlé's careers page.",
+      "program_url": "https://nes.tl/NSLP2026",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~early December each year (estimated from the 2025 cycle)",
+        "close_text": "Closes ~15/12 (2025 cycle: 15/12 — estimated; check the exact date on Nestlé's careers page)",
+        "estimated": true,
+        "estimated_open_month": 12,
+        "estimated_open_day": 2
+      },
+      "rounds_detail": [
+        { "name": "Online Assessment", "period": "Until 15/12/2025" },
+        { "name": "Initial Interview" },
+        { "name": "Nest Camp" },
+        { "name": "Final Interview" },
+        { "name": "Start of work", "period": "May 2026" }
+      ],
+      "fmcg_subverticals": ["food & dairy", "beverages"],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "momo-talent-2026",
+      "company": "MoMo",
+      "program": "MoMo Talent 2026",
+      "type": "management_trainee",
+      "industry": "Fintech",
+      "industry_tags": ["fintech", "tech", "finance"],
+      "functions": [
+        "Marketing / Creative / Growth (Brand & Marketing, Creative, Growth – Insurance Technology, Growth – MoMo Travel, Growth – Promotion & Loyalty, Product Growth – Platform User Growth)",
+        "Product Development (Payment Platform, Credit Tech Product & Partnerships, Platform User Engagement, Expense Management)",
+        "Data / Analytics (Customer Experience Excellence, Credit Risk Management, Platform User Growth, Product Development)",
+        "Business Development (MoMo Travel)",
+        "Project Management (Social Payment, Enterprise Payment and Business Solutions)",
+        "Accounting / Treasury",
+        "Human Resources (Learning & Organizational Development)"
+      ],
+      "function_tags": ["tech", "marketing", "finance", "hr"],
+      "eligibility": "Fresh graduates or <2 years full-time experience; GPA ≥3.2/4.0 or 8.0/10; English B2/IELTS 6.0/TOEIC 750; AI-first mindset; available full-time from August 2026",
+      "rounds": "Application & CV Screen → Cognitive Test → Functional Assessment/Interview → Leadership Interview → Offer",
+      "duration": "8 months",
+      "timeline": "Estimated annual window based on the 2026 cycle (MoMo Talent): applications opened ~18/05, closed ~12/06 → offers ~mid-July. That 2026 window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on MoMo's careers page.",
+      "program_url": "https://momo.careers/momo-talent",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~18/05 each year (estimated from the 2026 cycle)",
+        "close_text": "Closes ~12/06 (2026 cycle: 12/06 — estimated; check the exact date on MoMo's careers page)",
+        "estimated": true,
+        "estimated_open_month": 5,
+        "estimated_open_day": 18
+      },
+      "rounds_detail": [
+        { "name": "Application & CV Screen", "period": "~18/05 – 12/06 (estimated)" },
+        { "name": "Cognitive Test", "period": "~June (estimated)" },
+        { "name": "Functional Assessment / Interview", "period": "~Jun – Jul (estimated)" },
+        { "name": "Leadership Interview", "period": "~July (estimated)" },
+        { "name": "Offer", "period": "~July (estimated)" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "techcombank-futuregen-2027",
+      "company": "Techcombank",
+      "program": "Techcombank Future Gen 2027",
+      "type": "management_trainee",
+      "industry": "Banking",
+      "industry_tags": ["banking", "finance"],
+      "functions": [
+        "Business",
+        "Data & AI",
+        "General Management",
+        "Technology"
+      ],
+      "function_tags": ["finance", "tech"],
+      "program_url": "https://tuyendung.techcombankjobs.com/techcombank-future-gen",
+      "application_window": {
+        "open_date": "2026-07-24",
+        "close_date": "2026-09-30",
+        "open_text": "Opens 24/07/2026",
+        "close_text": "Closes 30/09/2026",
+        "estimated": false
+      },
+      "rounds_detail": [
+        { "name": "Application", "period": "24/07 – 30/09/2026" },
+        { "name": "Remote Interview", "period": "Aug – Oct 2026" },
+        { "name": "Aptitude Test", "period": "Aug – Oct 2026" },
+        { "name": "Functional Test", "period": "Sep – Oct 2026" },
+        { "name": "Assessment Center", "period": "Oct 2026" },
+        { "name": "Panel Interview", "period": "Nov 2026" },
+        { "name": "Offer", "period": "Nov – Dec 2026" },
+        { "name": "Onboarding", "period": "Jan 2027" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "viettel-future-changemakers",
+      "company": "Viettel",
+      "program": "Viettel Future Changemakers",
+      "type": "graduate_program",
+      "industry": "Telecom / Tech",
+      "industry_tags": ["telecom", "tech"],
+      "functions": [
+        "Digital Product Management",
+        "Technology Project Management",
+        "Supply Chain & Logistics Management"
+      ],
+      "function_tags": ["tech", "operations", "supply_chain"],
+      "eligibility": "Candidates with prior work experience seeking a transition into management/leadership roles (2026 cycle prioritized >3 years' experience in Business Analysis, Software Development, or Project Management); TOEIC ≥700 or equivalent; university graduates with Good classification or higher",
+      "rounds": "Round 1: IQ + English (TOEIC) test → Round 2: Online test → Round 3: Panel interview",
+      "duration": "9 months (2 phases: 3-month centralized bootcamp/rotation + 6-month project placement)",
+      "timeline": "Estimated annual window based on the 2026 cycle (Viettel Future Changemakers): registration opened ~12/02, closed ~15/03; programme ran ~05/2026–01/2027. That 2026 window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on Viettel's careers page.",
+      "program_url": "https://tuyendung.viettel.vn/viettel-talent-2026",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~12/02 each year (estimated from the 2026 cycle)",
+        "close_text": "Closes ~15/03 (2026 cycle: 15/03 — estimated; check the exact date on Viettel's careers page)",
+        "estimated": true,
+        "estimated_open_month": 2,
+        "estimated_open_day": 12
+      },
+      "rounds_detail": [
+        { "name": "Round 1: IQ + TOEIC Test" },
+        { "name": "Round 2: Online Test" },
+        { "name": "Round 3: Panel Interview" },
+        { "name": "Phase 1: Intensive training camp with rotations", "period": "~3 months, expected to start in May (estimated)" },
+        { "name": "Phase 2: Working on key strategic projects", "period": "~6 months after that (estimated)" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "uob-vietnam-ma",
+      "company": "UOB Vietnam",
+      "program": "UOB Vietnam Management Associate",
+      "type": "management_trainee",
+      "industry": "Banking",
+      "industry_tags": ["banking", "finance"],
+      "function_tags": ["finance"],
+      "eligibility": "Bachelor's degree, preferably in Finance, Banking, Accounting, Business Economics, or Business Administration; no more than 2 years of work experience; fluent English",
+      "rounds": "Online Application → Online Assessments → Panel Interviews → Final Offer",
+      "timeline": "Estimated annual window based on the 2026 cycle (UOB Vietnam MAP): applications announced open ~24/01, closed ~13/03 → programme commenced ~July. That 2026 window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on UOB's careers page. No functional-track breakdown was published for this rotation-based programme.",
+      "program_url": "https://go.uob.com/4k1pfjc",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~24/01 each year (estimated from the 2026 cycle)",
+        "close_text": "Closes ~13/03 (2026 cycle: 13/03 — estimated; check the exact date on UOB's careers page)",
+        "estimated": true,
+        "estimated_open_month": 1,
+        "estimated_open_day": 24
+      },
+      "rounds_detail": [
+        { "name": "Online Application" },
+        { "name": "Online Assessments" },
+        { "name": "Panel Interviews" },
+        { "name": "Final Offer" },
+        { "name": "Programme Commencement", "period": "~July (estimated)" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "prudential-strivers-2025",
+      "company": "Prudential Vietnam",
+      "program": "Prudential The Strivers 2025",
+      "type": "management_trainee",
+      "industry": "Insurance",
+      "industry_tags": ["insurance", "finance"],
+      "functions": [
+        "Management Trainee track — Partnership Distribution",
+        "Management Trainee track — Agency Distribution",
+        "Management Trainee track — Finance",
+        "Management Trainee track — Operations",
+        "Management Trainee track — Technology (IT)",
+        "Management Trainee track — Compliance, Legal & Risk",
+        "Management Trainee track — Strategy",
+        "Management Trainee track — Marketing",
+        "Functional Trainee track — Human Resources",
+        "Functional Trainee track — Actuarial"
+      ],
+      "function_tags": ["finance", "sales"],
+      "eligibility": "Graduates from relevant disciplines with less than 2 years of work experience; GPA from 7.0/10 or 2.8/4 equivalent; proficient English; strong leadership qualities",
+      "rounds": "Online Application → Online Test → Interview → Assessment Centre",
+      "duration": "Fast-track to manager in 2.5 years (Management Trainee & HR Functional Trainee) or 4–4.5 years (Actuarial Functional Trainee)",
+      "timeline": "Estimated annual window based on the 2025 cycle (The Strivers): applications opened ~10/02, closed ~10/03 → start full-time ~June. That 2025 window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on Prudential's careers page.",
+      "program_url": "https://www.prudential.com.vn/vi/co-hoi-nghe-nghiep/",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~10/02 each year (estimated from the 2025 cycle)",
+        "close_text": "Closes ~10/03 (2025 cycle: 10/03 — estimated; check the exact date on Prudential's careers page)",
+        "estimated": true,
+        "estimated_open_month": 2,
+        "estimated_open_day": 10
+      },
+      "rounds_detail": [
+        { "name": "Online Application", "period": "~10/02 – 10/03 (estimated)" },
+        { "name": "Online Test", "period": "~March (estimated)" },
+        { "name": "Interview", "period": "~Mar – Apr (estimated)" },
+        { "name": "Assessment Centre", "period": "~Apr – May (estimated)" },
+        { "name": "Start of full-time work", "period": "~June (estimated)" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "expeditors-mt",
+      "company": "Expeditors Vietnam",
+      "program": "Expeditors Management Trainee",
+      "type": "management_trainee",
+      "industry": "Logistics / Supply Chain",
+      "industry_tags": ["logistics", "operations"],
+      "function_tags": ["supply_chain", "operations"],
+      "eligibility": "Enthusiastic and committed to a long-term career at Expeditors; good English communication; leadership qualities",
+      "rounds": "Submit CV + written answers to program questions (via email) → review → interview",
+      "duration": "1 year, rotating across Expeditors' systems, products and services company-wide",
+      "timeline": "Expeditors Vietnam runs this MT programme on a rolling, email-submission basis rather than one fixed annual portal window — no confirmed current-cycle open/close date or functional-track list was found publicly; verify directly with Expeditors Vietnam HR.",
+      "program_url": "https://www.expeditors.com",
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "propertyguru-prodig-2025",
+      "company": "PropertyGuru Vietnam",
+      "program": "PropertyGuru Prodi-G Internship 2025",
+      "type": "internship",
+      "industry": "PropTech",
+      "industry_tags": ["proptech", "tech"],
+      "functions": [
+        "Data Science",
+        "Marketing",
+        "Product",
+        "HR"
+      ],
+      "function_tags": ["tech", "marketing", "hr"],
+      "eligibility": "Enrolled in a bachelor's or master's program (preferably penultimate year); proficient English; basic computer literacy",
+      "rounds": "Application → Interviews (Q1 2025)",
+      "duration": "12 weeks",
+      "timeline": "PropertyGuru 2025 Intern Program: 12-week internship, June – September 2025; interviews held across Q1 2025. Locations: Singapore, Kuala Lumpur, Bangkok, Hanoi, Ho Chi Minh City. Published application open/close dates were inconsistent across sources for this cohort, so no application_window is recorded — verify directly with PropertyGuru.",
+      "program_url": "https://sg.prosple.com/graduate-employers/propertyguru-group/jobs-internships/prodi-g-internship-program",
+      "rounds_detail": [
+        { "name": "Application" },
+        { "name": "Interviews", "period": "Q1 2025" },
+        { "name": "Internship", "period": "Jun – Sep 2025 (12 weeks)" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "pg-leadgen-2026",
+      "company": "P&G Vietnam",
+      "program": "P&G LEAD GEN 2026 (Internship)",
+      "type": "internship",
+      "industry": "FMCG",
+      "industry_tags": ["fmcg", "consumer"],
+      "functions": [
+        "Brand / Marketing",
+        "Sales",
+        "Process Engineering (Supply Chain)"
+      ],
+      "function_tags": ["marketing", "sales", "supply_chain"],
+      "eligibility": "Undergraduates able to work full-time from Jan 2026 (Brand/Sales tracks) or May 2026 (Process Engineer track, STEM background); English proficiency; prior internship experience preferred",
+      "rounds": "Online Application (first come, first served) → Phone Interview → Online Assessment Tests → 3 Rounds of Interview with C-levels",
+      "duration": "6 months",
+      "timeline": "P&G LEAD GEN 2026: flagship 6-month program for undergraduates; Brand/Sales interns start Jan 2026, Process Engineer interns start May 2026. No published application open/close date was found — P&G's postings describe a rolling, first-come-first-served process rather than a fixed window.",
+      "program_url": "https://www.pgcareers.com",
+      "rounds_detail": [
+        { "name": "Online Application (first come, first served)" },
+        { "name": "Phone Interview" },
+        { "name": "Online Assessment Tests" },
+        { "name": "3 Rounds of Interview with C-levels" }
+      ],
+      "fmcg_subverticals": ["household & home care", "beauty & personal care"],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "deloitte-passport-fy26",
+      "company": "Deloitte Vietnam",
+      "program": "Deloitte Passport FY26 (Internship)",
+      "type": "internship",
+      "industry": "Professional Services / Big 4",
+      "industry_tags": ["consulting", "finance"],
+      "functions": [
+        "Audit & Assurance",
+        "Tax & Legal"
+      ],
+      "function_tags": ["consulting", "finance"],
+      "eligibility": "Year-4 students: Audit & Assurance or Tax & Legal; Year-2/3 students: Audit & Assurance only",
+      "rounds": "Online application via role-specific link",
+      "timeline": "Estimated annual window based on the FY26 cycle (Deloitte Passport): applications opened ~09/07, closed ~09/08/2025. That window has now closed — estimated from the most recent cycle; verify next cycle's (e.g. FY27) exact dates on Deloitte's careers page.",
+      "program_url": "https://jobs.sea.deloitte.com/",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~09/07 each year (estimated from the FY26/2025 cycle)",
+        "close_text": "Closes ~09/08 (FY26/2025 cycle: 09/08 — estimated; check the exact date on Deloitte's careers page)",
+        "estimated": true,
+        "estimated_open_month": 7,
+        "estimated_open_day": 9
+      },
+      "rounds_detail": [
+        { "name": "Online Application", "period": "~09/07 – 09/08 (estimated)" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "ey-tax-internship-2027",
+      "company": "EY Vietnam",
+      "program": "EY Tax Services Internship 2027",
+      "type": "internship",
+      "industry": "Professional Services / Big 4",
+      "industry_tags": ["consulting", "finance"],
+      "functions": [
+        "Tax Services"
+      ],
+      "function_tags": ["consulting", "finance"],
+      "eligibility": "Last-year students pursuing a bachelor's degree in 2027, preferably in accounting, finance, business, economics, foreign trade, or banking; good GPA; Vietnamese citizen",
+      "rounds": "Application → Assessment Test → Interview Round",
+      "duration": "3–4 months, from November/December 2026",
+      "timeline": "Estimated annual window based on the 2027-cohort cycle (EY Internship Program, Tax Services — part of the wider Core Assurance / FS Assurance / Tax launch): applications opened ~20/06, closed ~17/07/2026. That window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on EY's careers page.",
+      "program_url": "https://go.ey.com/4a9XbGA",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~20/06 each year (estimated from the 2026 cycle)",
+        "close_text": "Closes ~17/07 (2026 cycle: 17/07 — estimated; check the exact date on EY's careers page)",
+        "estimated": true,
+        "estimated_open_month": 6,
+        "estimated_open_day": 20
+      },
+      "rounds_detail": [
+        { "name": "Application Period", "period": "~20/06 – 17/07 (estimated)" },
+        { "name": "Assessment Test", "period": "~Late July (estimated)" },
+        { "name": "Interview Round", "period": "~August (estimated)" }
+      ],
+      "details_status": "coming_soon"
+    },
+    {
+      "id": "abbott-internship-2025",
+      "company": "Abbott Vietnam",
+      "program": "Abbott Internship Program 2025",
+      "type": "internship",
+      "industry": "Healthcare / Nutrition / Pharma / Diagnostics",
+      "industry_tags": ["healthcare", "fmcg"],
+      "functions": [
+        "Marketing Intern – Nutrition Division",
+        "Marketing Intern – Pharma Division",
+        "Marketing & Trade Marketing Intern – Pharma Division",
+        "Data & Analytics Intern",
+        "Finance Intern",
+        "Equipment Management and Validation Intern – Chemical Lab",
+        "Electrophysiology Intern",
+        "Operations Intern",
+        "E-Commerce Intern",
+        "Sales Intern – MT Omni Channel",
+        "Sales Intern – MT Operation",
+        "MT Channel Marketing Intern",
+        "Business Analyst Intern – Core Diagnostics"
+      ],
+      "function_tags": ["marketing", "finance", "sales", "operations"],
+      "eligibility": "Senior students or fresh graduates; GPA from 7.0/10 or 2.8/4.0; proficient English and Microsoft Office",
+      "rounds": "Online application",
+      "timeline": "Estimated annual window based on the 2025 cycle (Abbott Internship Program): applications opened ~17/03, closed ~07/04/2025 → onboarding ~12/05. That window has now closed — estimated from the most recent cycle; verify next cycle's exact dates on Abbott's careers page.",
+      "program_url": "https://www.vn.abbott/",
+      "application_window": {
+        "open_date": null,
+        "close_date": null,
+        "open_text": "Opens ~17/03 each year (estimated from the 2025 cycle)",
+        "close_text": "Closes ~07/04 (2025 cycle: 07/04 — estimated; check the exact date on Abbott's careers page)",
+        "estimated": true,
+        "estimated_open_month": 3,
+        "estimated_open_day": 17
+      },
+      "rounds_detail": [
+        { "name": "Application", "period": "~17/03 – 07/04 (estimated)" },
+        { "name": "Onboarding", "period": "~May (estimated)" }
+      ],
+      "fmcg_subverticals": ["health & nutrition"],
+      "details_status": "coming_soon"
+    }
+  ],
+  "directory": [
+    {
+      "company": "PwC Vietnam",
+      "industry_tags": ["consulting", "finance"]
+    },
+    {
+      "company": "KPMG Vietnam",
+      "industry_tags": ["consulting", "finance"]
+    },
+    {
+      "company": "McKinsey & Company (Vietnam)",
+      "industry_tags": ["consulting"]
+    },
+    {
+      "company": "Boston Consulting Group (Vietnam)",
+      "industry_tags": ["consulting"]
+    },
+    {
+      "company": "Masan Group",
+      "industry_tags": ["fmcg", "retail", "consumer"]
+    },
+    {
+      "company": "Vinamilk",
+      "industry_tags": ["fmcg", "consumer"]
+    },
+    {
+      "company": "HEINEKEN Vietnam",
+      "industry_tags": ["fmcg", "consumer"]
+    }
+  ]
+}
