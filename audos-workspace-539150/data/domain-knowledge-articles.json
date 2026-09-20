@@ -1,0 +1,645 @@
+{
+  "version": "domain-v1",
+  "generated_at": "2026-08-23T16:00:00Z",
+  "articles": [
+    {
+      "industry_id": "fmcg",
+      "industry_slug": "fmcg",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: FMCG (Fast Moving Consumer Goods)",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnam's FMCG market serves nearly 100 million consumers through one of Southeast Asia's most fragmented route-to-market systems. Published estimates vary because some reports measure packaged consumer goods while others include broader consumer spending; directional evidence is more reliable than a single headline total. NIQ reported continued value growth into 2025, increasingly driven by price and a polarized consumer who trades down in staples but still pays for convenience, health, beauty and selected premium occasions. Traditional trade remains structurally dominant: mom-and-pop stores, wet markets and independent wholesalers provide neighborhood reach, small pack sizes and informal credit. NIQ found that 84% of Tet 2025 shoppers still chose traditional trade, while modern trade represented about 14% of holiday value. For broader retail, FiinGroup has estimated modern trade at roughly one-third of the market, illustrating how channel definitions and shopping occasions change the number. The value chain runs from agricultural and chemical inputs through formulation, manufacturing, packaging, distributors, wholesalers, retailers and e-commerce platforms. Domestic champions such as Vinamilk and Masan compete with Unilever, Nestlé, P&G, Suntory PepsiCo and HEINEKEN. Local firms bring taste knowledge and dense distribution; multinationals bring category science, global brands and management systems. Winning depends on numeric distribution, shelf availability, price-pack architecture, brand salience and rapid learning from outlet-level data.",
+          "bullets": [
+            "Demand is broad but polarized: value-seeking and selective premiumization coexist.",
+            "General trade wins on reach; modern trade and e-commerce contribute data, assortment and convenience.",
+            "The economic engine is high volume, fast inventory turns and disciplined revenue growth management."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "Growth opportunities include rural penetration, affordable nutrition, premium personal care, convenience formats, social commerce and products aligned with health or sustainability. Vietnam's young households are open to experimentation, but brand loyalty is earned outlet by outlet. The hardest challenges are fragmented distribution, counterfeit or gray-channel leakage, volatile agricultural and packaging inputs, promotion dependence and the tension between national scale and local tastes. Modern trade demands listing fees, service levels and joint promotions; traditional trade requires distributor economics, salesperson productivity and thousands of daily execution decisions. Candidates should also recognize that nominal growth can be price-led rather than volume-led. A strong answer separates volume, price, mix and distribution effects instead of calling all revenue growth healthy.",
+          "bullets": [
+            "Opportunity: design the right pack, price and claim for each income tier and occasion.",
+            "Challenge: protect availability and freshness across a fragmented national network.",
+            "Watch-out: distinguish sell-in to distributors from true consumer sell-out."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "FMCG management-trainee programs rotate candidates through commercial and enabling functions. Each function owns a different part of the same profit equation.",
+          "bullets": [
+            "Marketing — consumer insight, positioning, innovation pipelines, media effectiveness and brand P&L choices.",
+            "Sales & Trade Marketing — distributor management, outlet segmentation, assortment, promotion, planograms and perfect-store execution.",
+            "Supply Chain — demand planning, procurement, manufacturing, inventory, logistics, service level and waste reduction.",
+            "Finance — pricing waterfalls, gross margin, trade-spend control, forecasting and investment cases.",
+            "Human Resources — frontline capability, workforce planning, performance systems and culture across factories and field sales."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Recruiters favor candidates who can move from a messy consumer signal to a commercially practical decision.",
+          "bullets": [
+            "Data literacy: decompose growth into price, volume, mix and distribution.",
+            "Commercial acumen: connect consumer value, retailer economics and company margin.",
+            "Agility under imperfect information and rapid market change.",
+            "Field empathy: learn from shoppers, store owners, distributors and factory teams.",
+            "Structured problem solving with a bias to test-and-learn execution.",
+            "Influence across marketing, sales, finance and operations without formal authority.",
+            "Clear communication that turns analysis into a frontline action."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "FMCG cases usually test whether a candidate can combine consumer logic with channel economics.",
+          "bullets": [
+            "Market sizing — estimate category value from population, penetration, frequency and spend per occasion.",
+            "Go-to-market strategy — choose distributor coverage, outlet segments and launch sequence for a new province or category.",
+            "Pricing and pack architecture — protect affordability and margin after an input-cost shock.",
+            "Distribution expansion — diagnose low numeric distribution or out-of-stocks and prioritize outlets.",
+            "Promotion effectiveness — separate incremental volume from subsidized purchases and cannibalization."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "The candidates who stand out do not stop at saying 'build the brand.' They explain exactly which shopper, occasion, pack, outlet and economic lever they would change, then name the metric that would prove the move worked. Show that you can think in both consumer stories and distributor math: that dual fluency is the signature of a future FMCG general manager."
+        }
+      ],
+      "sources": [
+        {"title":"NIQ — From Tariffs to Opportunity (2025)","link":"https://nielseniq.com/global/en/insights/analysis/2025/from-tariffs-to-opportunity/"},
+        {"title":"NIQ — Winning Vietnam's Tet Holiday 2025","link":"https://nielseniq.com/global/en/insights/analysis/2025/winning-vietnams-tet-holiday-optimizing-fmcg-growth-for-the-next-season/"},
+        {"title":"FiinGroup — Vietnam Modern Trade Sector Preview","link":"https://fiingroup.vn/upload/docs/14.-FiinGroup-Modern-Trade-Sector-Preview-Aug-2024-(1).pdf"},
+        {"title":"Bain — Asia-Pacific Consumer Products Report 2025","link":"https://www.bain.com/insights/asia-pacific-consumer-products-report-2025/"}
+      ]
+    },
+    {
+      "industry_id": "banking",
+      "industry_slug": "banking",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: Banking & Financial Services",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnam's banking system combines four large state-controlled commercial banks, a broad group of privately owned joint-stock banks, and a smaller foreign-bank segment. The state-linked banks—Agribank, BIDV, VietinBank and Vietcombank—carry scale, policy importance and extensive branch networks. Private banks such as Techcombank, VPBank, MB and ACB compete through customer segmentation, digital experience and faster product innovation; foreign banks such as UOB, HSBC and Standard Chartered focus selectively on multinational, affluent and cross-border clients. The State Bank of Vietnam (SBV) is the central bank, prudential supervisor and monetary-policy authority. Banks operate under the Law on Credit Institutions and SBV circulars governing capital, liquidity, credit growth, asset classification and consumer protection. Basel II is established across the sector, while leading banks are moving toward Basel III-aligned liquidity and risk practices; adoption is a journey rather than a single national switch. Core economics come from net interest income—the spread between asset yields and funding costs—plus fees from payments, cards, insurance, trade finance and wealth products. Cheap current-account and savings-account funding, or CASA, is strategically valuable. Digital banking has shifted competition from branch density toward daily engagement: mobile banks, VietQR and NAPAS rails coexist with MoMo, ZaloPay and VNPay. Market estimates project digital banking and neobank revenue from about US$10.75 billion in 2024 toward US$22.37 billion by 2030, but definitions vary. The durable trend is clear: payments are becoming instant, embedded and mobile-first.",
+          "bullets": [
+            "State-owned banks dominate system scale; private banks often lead retail innovation.",
+            "SBV regulation shapes credit growth, capital, liquidity and restructuring priorities.",
+            "Digital experience is now a funding and customer-acquisition strategy, not only an IT project."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "Vietnam's rising formalization, SME financing needs, underpenetrated wealth products and smartphone adoption create room for retail lending, transaction banking, insurance, investment and data-led personalization. Banks can use ecosystems to make their app the customer's financial home and lift CASA. The constraints are equally material: asset-quality cycles, real-estate exposure, thin-file borrowers, cyber risk, fraud, legacy cores and intense price competition. Fintech wallets have reset expectations for onboarding and payments, but banks still own regulated deposits, lending balance sheets and risk infrastructure. The strategic question is not 'bank or fintech'; it is how to combine bank trust and capital with product speed. Candidates must balance growth against expected credit loss, capital consumption and conduct risk.",
+          "bullets": [
+            "Opportunity: serve underbanked consumers and SMEs with better data and lower-cost journeys.",
+            "Challenge: grow without weakening underwriting or increasing fraud and operational risk.",
+            "Regulatory awareness must be built into product design from day one."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "Banking MT rotations expose candidates to the full balance-sheet and customer lifecycle.",
+          "bullets": [
+            "Retail Banking — deposits, cards, mortgages, unsecured lending, branch and digital journeys.",
+            "Corporate Banking — cash management, working capital, trade finance and relationship coverage.",
+            "Risk — credit underwriting, portfolio monitoring, market risk, operational risk and model governance.",
+            "Technology & Data — core platforms, cybersecurity, analytics, automation and digital product delivery.",
+            "Strategy & Finance — capital allocation, performance management, transformation portfolios and investor metrics."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Strong candidates demonstrate disciplined judgment because banking decisions compound over years.",
+          "bullets": [
+            "Quantitative analysis and comfort with financial statements and ratios.",
+            "Risk-return thinking rather than growth-at-any-cost enthusiasm.",
+            "Regulatory awareness and willingness to escalate control concerns.",
+            "Customer relationship skills across retail, SME and corporate contexts.",
+            "Digital product literacy and ability to work with engineers and data teams.",
+            "Precision, confidentiality and high ethical standards.",
+            "Ability to explain complex financial products in plain language."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "Banking cases reward explicit assumptions about risk, funding and regulation.",
+          "bullets": [
+            "Credit risk — assess an SME or retail portfolio and recommend approval, limits and mitigants.",
+            "Digital product launch — design a youth banking proposition with acquisition, activation and fraud controls.",
+            "Market entry — evaluate a foreign bank's target segment, product scope and route to market in Vietnam.",
+            "Profitability — improve NIM, fee income or cost-to-income without harming customer trust.",
+            "Branch-to-digital transformation — migrate routine activity while preserving advice and inclusion."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "Candidates stand out when they can say 'yes, if' instead of simply yes or no: yes to growth if the bank can fund it, price the risk, control fraud and meet SBV requirements. In a case, name the balance-sheet consequence of your idea. That shows you understand that banking strategy is risk management expressed through customer choices."
+        }
+      ],
+      "sources": [
+        {"title":"State Bank of Vietnam — legal and policy framework","link":"https://www.sbv.gov.vn/"},
+        {"title":"IFLR — Banking & Finance Guide: Vietnam","link":"https://www.iflr.com/article/2fe4amcdz96i1gc1et81s/sponsored/banking-finance-guide-2025-vietnam"},
+        {"title":"SSI — Vietnam banking sector reports","link":"https://www.ssi.com.vn/en/organization-customer/sector-report"},
+        {"title":"Ken Research — Vietnam Digital Banking and Neobanks","link":"https://www.kenresearch.com/industry-reports/vietnam-digital-banking-and-neobanks-market"}
+      ]
+    },
+    {
+      "industry_id": "tech",
+      "industry_slug": "tech",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: Technology & Digital",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnam is one of Southeast Asia's most dynamic digital markets, supported by a young population, high smartphone use, nationwide 4G, expanding 5G, widespread QR payments and a large technical talent base. Google, Temasek and Bain's e-Conomy SEA work places the country among the region's fastest-growing digital economies; public reporting around the 2025 edition put Vietnam's digital gross merchandise value near US$39 billion. GMV is not revenue or GDP, but it is a useful measure of activity across e-commerce, transport, food delivery, online travel and digital financial services. The ecosystem mixes domestic platforms—VNG, MoMo, VNPay, FPT, Viettel and edtech or SaaS specialists—with regional giants such as Shopee, TikTok Shop, Grab and Lazada. Vietnam has produced unicorn-scale companies including VNG, VNLife, MoMo and Sky Mavis, though startup funding has become more selective after the 2021 peak. Key segments have distinct economics: marketplaces monetize commissions, ads, logistics and payments; fintech monetizes merchant fees, lending or cross-sell; gaming depends on hits, retention and in-app purchases; SaaS earns recurring subscriptions; edtech balances acquisition cost with learning outcomes and renewal. Across all of them, the product loop is similar: identify a high-frequency problem, acquire users, activate them quickly, build retention, then monetize without destroying trust. Digital payments reduce checkout friction, while cloud, AI and open APIs lower experimentation cost. Scale still requires offline execution—merchant onboarding, logistics, compliance and customer support—not just code.",
+          "bullets": [
+            "Vietnam's digital economy is mobile-first and increasingly payment-enabled.",
+            "Regional platforms compete with strong domestic firms and specialized startups.",
+            "GMV, revenue, contribution margin and cash burn must never be treated as interchangeable."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "Opportunities sit in SME digitization, AI-enabled productivity, embedded finance, cross-border commerce, cloud migration, cybersecurity and products for consumers outside the two largest cities. Vietnam's engineering talent and export-manufacturing base also support enterprise software and industrial technology. Challenges include costly user acquisition, low switching costs, platform concentration, evolving data and fintech regulation, cyber threats and difficulty converting engagement into profit. In e-commerce and delivery, subsidies can create growth that vanishes when incentives stop. In SaaS, a small local customer base may require regional expansion. The strongest operators therefore track cohort retention and unit economics early, while investing in trust, privacy and operational reliability.",
+          "bullets": [
+            "Opportunity: solve local workflow and payment friction better than a generic global product.",
+            "Challenge: convert fast user growth into sustainable contribution margin.",
+            "Moat candidates include proprietary data, workflow depth, network effects and trusted distribution."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "Technology graduate programs are often less rotational than FMCG programs, but high-potential roles span the product operating system.",
+          "bullets": [
+            "Product Management — discovery, prioritization, roadmaps, experiments and cross-functional delivery.",
+            "Engineering — architecture, reliability, security, developer velocity and technical execution.",
+            "Data & Analytics — instrumentation, experimentation, forecasting, personalization and decision support.",
+            "Business Development — partnerships, merchant or enterprise acquisition and ecosystem economics.",
+            "Operations — marketplace quality, trust and safety, fulfillment, support and process scaling."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Recruiters value candidates who learn from user behavior without losing commercial discipline.",
+          "bullets": [
+            "Product thinking: define the user problem before proposing a feature.",
+            "Data literacy: funnels, cohorts, experiments and causal caution.",
+            "Agility and comfort shipping, measuring and iterating.",
+            "Technical fluency sufficient to trade off scope, quality and speed.",
+            "Unit-economics thinking: CAC, LTV, take rate, contribution margin and payback.",
+            "Clear prioritization under scarce engineering capacity.",
+            "Ownership across online product and offline operational failure points."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "Technology cases test whether candidates can connect user value, growth mechanics and economics.",
+          "bullets": [
+            "Product-market fit — choose a target user, problem, minimum product and validation signal.",
+            "Growth hacking — diagnose an acquisition-to-retention funnel and propose controlled experiments.",
+            "Unit economics — determine whether an e-commerce, delivery or fintech transaction creates value.",
+            "Marketplace liquidity — balance buyer demand, seller supply, quality and incentives.",
+            "Product launch — prioritize features, rollout cohorts, guardrail metrics and operational readiness."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "The best technology candidates avoid feature theater. They state the user behavior they want to change, the smallest experiment that can test it, and the metric that would make them stop. Pair that product instinct with contribution-margin awareness and you will sound like an operator, not merely an app user with opinions."
+        }
+      ],
+      "sources": [
+        {"title":"Google, Temasek & Bain — e-Conomy SEA","link":"https://economysea.withgoogle.com/"},
+        {"title":"Bain — e-Conomy SEA 2025 press release","link":"https://www.bain.com/about/media-center/press-releases/sea/e-conomy-sea-2025/"},
+        {"title":"Vietnam National Innovation Center","link":"https://nic.gov.vn/"},
+        {"title":"Vietnam Ministry of Science and Technology","link":"https://mst.gov.vn/"}
+      ]
+    },
+    {
+      "industry_id": "retail",
+      "industry_slug": "retail",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: Retail",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnamese retail is large, fast-growing and still unusually fragmented. Government statistics measure total retail sales of goods and consumer services in the hundreds of billions of US dollars, while commercial reports place 2024 market value around US$250 billion depending on scope. Traditional markets and independent stores remain central, but modern trade is expanding through supermarkets, mini-marts, convenience stores and malls. A frequently cited FiinGroup estimate put modern trade near 33% and general trade near 55%, with the remainder including e-commerce and other formats; figures vary by product category and definition. Domestic leaders include WinCommerce's WinMart/WinMart+, Saigon Co.op and Bach Hoa Xanh. Foreign-invested groups include Central Retail's GO! and Tops Market, AEON, LOTTE and MM Mega Market. Retail economics are more complex than buying at one price and selling at another. Gross margin comes from front margin on the shelf, supplier rebates and promotion funding; it is consumed by shrinkage, labor, rent, utilities, markdowns and fulfillment. Category managers decide assortment, shelf space, price ladders and promotions. Store operations turn that plan into availability, freshness and service. E-commerce and social commerce have changed discovery and price transparency, but stores remain strategically valuable for immediate consumption, trust and low-cost pickup. Omnichannel leaders treat inventory, loyalty and customer data as one system across app, marketplace and store rather than running separate businesses.",
+          "bullets": [
+            "Traditional trade remains substantial while modern formats gain share.",
+            "Domestic and FDI retailers compete on format, location, assortment and supply-chain execution.",
+            "Retail profit is decided after shrink, markdowns, occupancy and fulfillment—not at gross margin alone."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "Rising urban income, smaller households, convenience, private label, fresh food modernization and secondary-city expansion create growth. Retailers can use loyalty data to localize assortment and improve promotion productivity. The challenge is that expansion can destroy cash if stores open ahead of demand or working capital grows faster than sales. Fresh categories add waste and cold-chain complexity. E-commerce creates new reach but high picking and last-mile costs. Suppliers and retailers also compete for margin through listing fees, rebates and payment terms. A credible strategy therefore combines customer demand with store-level unit economics, supply reliability and a clear path to mature sales density.",
+          "bullets": [
+            "Opportunity: neighborhood formats aligned with motorbike shopping and frequent small baskets.",
+            "Challenge: maintain in-stock availability while reducing inventory and fresh-food waste.",
+            "Expansion quality matters more than headline store count."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "Retail MTs learn both commercial choice and operational repetition.",
+          "bullets": [
+            "Merchandising & Category Management — assortment, supplier negotiation, pricing, promotions and planograms.",
+            "Store Operations — labor, service, availability, shrink, compliance and daily sales execution.",
+            "Supply Chain — replenishment, distribution centers, transport, cold chain and inventory accuracy.",
+            "Marketing & CRM — traffic, loyalty, personalization, retail media and campaign measurement.",
+            "Finance — store P&L, capex, working capital, lease economics and expansion hurdle rates."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Retailers seek candidates who notice operational detail without losing sight of the shopper.",
+          "bullets": [
+            "Customer obsession grounded in observed shopping behavior.",
+            "Operational excellence and comfort with standard work.",
+            "Data analytics at SKU, store, cohort and catchment level.",
+            "Commercial negotiation with suppliers and landlords.",
+            "Bias for action during stock, staffing or service failures.",
+            "Working-capital awareness and respect for cash.",
+            "Frontline leadership across diverse store teams."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "Retail cases usually require a store- or category-level economic model.",
+          "bullets": [
+            "Store expansion — rank catchments using demand, competition, rent, capex and cannibalization.",
+            "Category management — improve sales and margin through assortment, shelf space and price architecture.",
+            "Supply-chain optimization — reduce out-of-stocks and inventory days together.",
+            "Omnichannel design — choose delivery, pickup and marketplace roles by customer mission.",
+            "Turnaround — diagnose weak same-store sales, shrink or labor productivity."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "Strong retail candidates walk the imaginary store. They ask what the shopper sees, whether the SKU is actually in stock, how fast it turns, what gets wasted and whether the basket pays for the space and labor. In interviews, translate every broad strategy into one store routine and one store-level metric."
+        }
+      ],
+      "sources": [
+        {"title":"USDA FAS — Vietnam Retail Foods Annual 2024","link":"https://apps.fas.usda.gov/newgainapi/api/Report/DownloadReportByFileName?fileName=Retail%20Foods%20Annual_Ho%20Chi%20Minh%20City_Vietnam_VM2024-0032.pdf"},
+        {"title":"FiinGroup — Vietnam Modern Trade Sector Preview","link":"https://fiingroup.vn/upload/docs/14.-FiinGroup-Modern-Trade-Sector-Preview-Aug-2024-(1).pdf"},
+        {"title":"General Statistics Office of Vietnam","link":"https://www.gso.gov.vn/en/homepage/"},
+        {"title":"B&Company — Vietnam supermarket market","link":"https://b-company.jp/vietnam-supermarket-market-main-players-and-market-trends/"}
+      ]
+    },
+    {
+      "industry_id": "industrial-manufacturing",
+      "industry_slug": "industrial-manufacturing",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: Industrial & Manufacturing",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnam has become a critical export-manufacturing hub in global 'China+1' diversification. Competitive labor, political stability, trade agreements, improving industrial parks and proximity to Asian supply networks have attracted multinational production. Manufacturing and processing consistently take the largest share of registered foreign direct investment. McKinsey's Southeast Asia supply-chain analysis highlighted Vietnam's electronics momentum, including roughly 8.2% compound annual growth and major FDI flows. Electronics and phones led by Samsung and suppliers dominate exports; Intel, LG, Foxconn and emerging semiconductor investment deepen the ecosystem. Other important subsectors include garments and footwear, furniture, food and consumer-goods manufacturing, steel, chemicals, renewable-energy components and industrial equipment. Yet Vietnam captures different amounts of value across sectors. Final assembly can scale faster than local upstream capability, leaving factories dependent on imported components, machinery and materials. A typical value chain begins with product and process design, supplier qualification and procurement; moves through inbound logistics, fabrication or assembly, testing, packaging and warehousing; and ends with export customs, distribution and after-sales service. Plant economics are governed by throughput, yield, overall equipment effectiveness, labor productivity, changeover time, inventory and quality cost. Lean manufacturing uses standard work, flow, visual management and root-cause problem solving to remove waste. The goal is not simply maximum utilization: a resilient plant balances cost, quality, delivery, safety and flexibility.",
+          "bullets": [
+            "Vietnam's position is strongest in export-oriented assembly and increasingly higher-value electronics.",
+            "FDI anchors ecosystems, but local supplier depth and technology transfer remain strategic questions.",
+            "Factory performance is a system of quality, delivery, cost, safety and people—not output alone."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "Opportunities include supplier localization, semiconductor packaging and testing, automation, energy efficiency, industrial software and deeper engineering capability. Global customers also want diversified and lower-carbon supply chains, creating demand for traceability and renewable power. Constraints include infrastructure bottlenecks, supplier capability gaps, technical talent shortages, power reliability, trade-policy shifts and wage inflation. China+1 does not mean replacing China; Vietnam often remains linked to Chinese inputs. Resilience therefore requires dual sourcing, safety-stock logic, qualified alternatives and scenario planning. Managers must also prevent automation projects from becoming expensive equipment without process discipline or trained operators.",
+          "bullets": [
+            "Opportunity: move from assembly toward local components, process engineering and design support.",
+            "Challenge: improve productivity while maintaining labor, environmental and customer standards.",
+            "Resilience depends on visibility and qualified alternatives, not inventory alone."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "Manufacturing graduate programs develop leaders across plant and network operations.",
+          "bullets": [
+            "Operations — production planning, shift performance, safety, quality and continuous improvement.",
+            "Engineering — process design, maintenance, automation, reliability and capital projects.",
+            "Supply Chain — sourcing, supplier development, materials planning, logistics and S&OP.",
+            "Finance — standard cost, variance analysis, capex, working capital and plant controls.",
+            "Human Resources — workforce planning, technical training, labor relations and frontline leadership."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Recruiters look for practical problem solvers who respect both the process and the people running it.",
+          "bullets": [
+            "Process-improvement thinking: map flow, identify constraint and remove root cause.",
+            "Technical literacy and willingness to learn equipment and process details.",
+            "Quantitative discipline with yield, cycle time, capacity and cost data.",
+            "Safety and quality ownership even under delivery pressure.",
+            "Cross-cultural communication across global customers and local plants.",
+            "Frontline leadership and change management.",
+            "Scenario planning for suppliers, capacity and disruption."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "Industrial cases test whether candidates can model a physical system and choose a feasible intervention.",
+          "bullets": [
+            "Capacity planning — find the bottleneck and decide between shifts, debottlenecking and new equipment.",
+            "Operational efficiency — improve OEE, yield or changeover time without shifting waste elsewhere.",
+            "Supply-chain resilience — respond to a single-source component disruption.",
+            "Make-versus-buy — compare control, capability, investment and total landed cost.",
+            "Plant network — allocate production across sites under demand, tariff and logistics scenarios."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "Candidates stand out when they go to the constraint. Instead of proposing broad automation, identify the exact process step limiting throughput, quantify lost capacity, test the root cause and protect safety and quality. Manufacturing interviewers trust people who can connect a spreadsheet to what an operator experiences on the line."
+        }
+      ],
+      "sources": [
+        {"title":"McKinsey — Diversifying global supply chains: Southeast Asia","link":"https://www.mckinsey.com/industries/logistics/our-insights/diversifying-global-supply-chains-opportunities-in-southeast-asia"},
+        {"title":"Vietnam Foreign Investment Agency","link":"https://fia.mpi.gov.vn/"},
+        {"title":"World Bank — Vietnam overview","link":"https://www.worldbank.org/en/country/vietnam/overview"},
+        {"title":"Vietnam Briefing — Manufacturing Tracker","link":"https://www.vietnam-briefing.com/news/vietnam-manufacturing-tracker.html/"}
+      ]
+    },
+    {
+      "industry_id": "consulting",
+      "industry_slug": "consulting",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: Consulting & Professional Services",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnam's professional-services landscape spans the Big Four—Deloitte, EY, KPMG and PwC—global strategy firms, technology integrators, law and accounting firms, and specialized local boutiques. Commercial estimates place management consulting around US$2.6 billion in 2025, but the boundary between consulting, implementation, outsourcing, audit and tax differs by source. More important is the client demand behind the market: rapid FDI, family-business professionalization, digital transformation, banking modernization, supply-chain shifts, energy transition and transaction activity. The Big Four operate broad portfolios. Assurance teams audit financial statements and controls; tax teams advise on corporate, transfer-pricing, customs and transaction matters; financial-advisory teams cover deals, valuation, restructuring and forensic work; consulting teams span strategy, risk, operations, people and technology. Strategy boutiques and global firms focus more narrowly on CEO-level growth, portfolio and transformation questions, while technology firms earn more from design and implementation. Work is project-based. Partners originate and govern client relationships; managers translate the problem into workstreams and coach delivery; consultants and analysts research, interview, model, analyze and build the storyline. Economics follow a leverage pyramid: senior judgment is supported by more junior delivery hours. Utilization, realization, project margin, backlog and client satisfaction matter. Career paths commonly progress from analyst or associate to consultant, manager, director and partner, with advancement based on problem solving, client trust, team leadership and commercial contribution.",
+          "bullets": [
+            "Big Four breadth differs from strategy boutiques' narrower executive focus.",
+            "The deliverable is not the deck; it is a decision, implementation or assurance outcome.",
+            "Project economics depend on leverage, utilization, pricing and scope control."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "Vietnam offers strong demand in ERP and cloud programs, data and AI, cyber risk, ESG reporting, supply-chain redesign, market entry and M&A. Firms can combine global methods with local regulatory and stakeholder knowledge. Challenges include talent churn, fee pressure, ambiguous scopes, independence rules, uneven client data and the gap between recommendation and implementation. Generative AI automates research and first drafts, but it raises the value of problem framing, verification and client judgment. Junior candidates should never present unsupported precision: consulting credibility is built by triangulating evidence and being explicit about uncertainty.",
+          "bullets": [
+            "Opportunity: translate Vietnam-specific market and regulatory complexity for investors and local leaders.",
+            "Challenge: deliver impact despite incomplete data and changing client priorities.",
+            "AI increases speed but also raises the standard for validation and distinctive insight."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "Graduate hiring usually feeds service-line career tracks rather than a classic corporate rotation.",
+          "bullets": [
+            "Strategy & Operations — growth, market entry, operating model, cost and transformation.",
+            "Financial Advisory / Deals — due diligence, valuation, integration, restructuring and forensics.",
+            "Tax & Legal — compliance, structuring, transfer pricing, customs and controversy support.",
+            "Technology Consulting — ERP, cloud, data, cyber and digital-product implementation.",
+            "Assurance & Risk — audit, controls, internal audit, governance and regulatory risk."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Firms recruit for steep learning curves and credible client interaction.",
+          "bullets": [
+            "Structured thinking: mutually exclusive, collectively exhaustive issue decomposition where useful.",
+            "Analytical rigor and transparent assumptions.",
+            "Synthesis: turn many facts into a short answer with implications.",
+            "Executive communication in slides, writing and conversation.",
+            "Client management, listening and professional judgment.",
+            "Team reliability under deadlines and changing scopes.",
+            "Intellectual curiosity across industries and functions."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "Consulting interviews can draw from almost any business problem, but the evaluation criteria remain stable.",
+          "bullets": [
+            "Market entry — size demand, map competition, choose entry mode and assess economics and risk.",
+            "Profitability — isolate revenue and cost drivers before prioritizing interventions.",
+            "Operational improvement — redesign process, organization or supply chain and quantify impact.",
+            "M&A due diligence — test market attractiveness, target quality, synergies and downside cases.",
+            "Public-sector or digital transformation — balance stakeholder outcomes, feasibility and adoption."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "Candidates stand out by being answer-first without being assumption-blind. State a provisional view, build a clean path to test it, and update openly when evidence changes. The strongest case performance feels like a useful working session with a future colleague—not a memorized framework recital."
+        }
+      ],
+      "sources": [
+        {"title":"EY Vietnam — Strategy services","link":"https://www.ey.com/en_vn/services/strategy"},
+        {"title":"Deloitte Vietnam — Services","link":"https://www2.deloitte.com/vn/en.html"},
+        {"title":"KPMG Vietnam — Services","link":"https://kpmg.com/vn/en/home/services.html"},
+        {"title":"Consultancy.org — Vietnam consulting market","link":"https://www.consultancy.org/country/vietnam"}
+      ]
+    },
+    {
+      "industry_id": "logistics",
+      "industry_slug": "logistics",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: Logistics & Supply Chain",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnam's logistics sector sits underneath an export economy, long coastline and rapidly growing domestic commerce. It includes trucking, ports, shipping agencies, air cargo, freight forwarding, contract logistics, warehousing, cold chain, customs brokerage and parcel delivery. The market is often described as one of Southeast Asia's fastest-growing, although total-size estimates differ because some include captive transport and infrastructure while others count only outsourced services. Global operators such as DHL, Maersk, Kuehne+Nagel and Expeditors compete with Vietnamese groups including Gemadept, Transimex, Viettel Post, Giao Hang Nhanh and Giao Hang Tiet Kiem. Freight forwarders typically own little transport capacity; they buy space from carriers, consolidate demand, manage documents and sell a coordinated door-to-door service. Contract-logistics providers run warehouses and value-added operations. Parcel firms optimize dense pickup and last-mile networks. A container export moves from factory pickup through origin consolidation, customs, port handling, ocean line-haul, destination port, drayage and distribution. Incoterms allocate cost and risk between buyer and seller; they do not replace a transport contract. E-commerce has accelerated fulfillment and last-mile demand: IMARC estimated Vietnam's e-commerce logistics market at roughly US$2.2 billion in 2025, potentially reaching US$6.3 billion by 2034. Last mile remains difficult because of motorbike access, address quality, failed delivery, cash-on-delivery and peak volatility. Network economics depend on shipment density, asset utilization, load factor, route productivity, claims, customs accuracy and on-time-in-full service.",
+          "bullets": [
+            "Vietnam logistics links global manufacturing flows with dense domestic last mile.",
+            "Global scale competes with local network knowledge and customer relationships.",
+            "Density and reliability—not distance alone—determine delivery economics."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "Opportunities include modern distribution centers, cold chain, multimodal corridors, cross-border e-commerce, customs technology and supply-chain control towers. Manufacturing diversification can increase high-value air and ocean freight, while domestic consumers demand faster delivery. Challenges include logistics costs relative to GDP, fragmented trucking, congestion, port and road bottlenecks, empty returns, emissions and inconsistent data across partners. Operators must also manage global rate cycles and geopolitical rerouting. The best resilience plans segment critical lanes, map dependencies, define service alternatives and price the cost of redundancy instead of promising universal backup.",
+          "bullets": [
+            "Opportunity: digitize handoffs and visibility across fragmented carriers.",
+            "Challenge: balance speed, service reliability, cost and carbon.",
+            "Modal shift works only when lead-time variability and handling risk remain acceptable."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "Logistics graduate roles combine live operations with commercial coordination.",
+          "bullets": [
+            "Freight — carrier procurement, consolidation, documentation and lane profitability.",
+            "Operations — warehouse flow, transport dispatch, customs, quality and exception handling.",
+            "Customer Service — shipment visibility, recovery, claims and proactive communication.",
+            "Trade Finance & Compliance — letters of credit, duties, sanctions, documentation and Incoterms.",
+            "Strategy & Solutions — network design, tenders, automation and contract-logistics proposals."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Recruiters value calm execution because logistics failures unfold in real time.",
+          "bullets": [
+            "Operational discipline and accurate follow-through.",
+            "Process thinking across handoffs, queues and constraints.",
+            "Relationship management with customers, carriers, customs and suppliers.",
+            "Data analysis for routes, capacity, service and cost.",
+            "Exception management and communication under pressure.",
+            "Commercial understanding of lane and contract profitability.",
+            "Compliance awareness in documents and cross-border trade."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "Logistics cases ask candidates to optimize a network while protecting service.",
+          "bullets": [
+            "Network optimization — choose hubs, lanes and service areas under volume scenarios.",
+            "Modal shift — test road, rail, sea or air trade-offs in cost, lead time and reliability.",
+            "Last-mile delivery — improve drop density, first-attempt success and rider productivity.",
+            "Warehouse capacity — redesign slotting, labor and process around peak demand.",
+            "Disruption response — reroute a critical flow after port, carrier or supplier failure."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "Candidates stand out when they follow the shipment. Draw every handoff, identify where information or physical flow waits, and show how your proposal affects service and cost at the same time. In logistics, a sophisticated strategy that ignores one customs document or failed-delivery loop is not sophisticated at all."
+        }
+      ],
+      "sources": [
+        {"title":"Vietnam Logistics Business Association","link":"https://vla.com.vn/"},
+        {"title":"IMARC — Vietnam E-Commerce Logistics Market","link":"https://www.imarcgroup.com/vietnam-e-commerce-logistics-market"},
+        {"title":"World Bank — Logistics Performance Index","link":"https://lpi.worldbank.org/"},
+        {"title":"Vietnam Briefing — E-commerce logistics","link":"https://www.vietnam-briefing.com/news/vietnam-e-commerce-logistics-market.html/"}
+      ]
+    },
+    {
+      "industry_id": "insurance",
+      "industry_slug": "insurance",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: Insurance",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnam's insurance market remains underpenetrated relative to many regional peers, creating long-run growth potential but also a trust and distribution challenge. Recent industry reporting places total premium penetration around 2.3% to 2.8% of GDP, below 3% by many measures. Life insurance is the larger long-duration savings and protection pool; non-life covers motor, property, health, marine, liability and other risks. Commercial estimates valued life premiums around US$6.6 billion in 2024, but the sector was rebuilding after a period of bancassurance controversy and tighter regulation. Life products include term protection, endowment and unit-linked contracts. Insurers collect premiums, pay acquisition and operating costs, establish reserves, invest assets and pay claims or benefits. Profit therefore depends on pricing assumptions, persistency, investment returns, expenses and risk experience—not premium growth alone. Non-life economics are tracked through loss ratio, expense ratio and combined ratio. Distribution has historically depended on large tied or agency forces. Bancassurance scaled rapidly by using bank relationships and branches, but aggressive sales practices damaged trust and led to stronger conduct scrutiny. Digital channels can simplify education, service and claims, yet complex life products still require advice. Major life players include Bao Viet Life, Prudential, Manulife, AIA and Dai-ichi Life; non-life leaders include Bao Viet Insurance, PVI, PTI and others. The Ministry of Finance supervises the sector under the Law on Insurance Business and related rules.",
+          "bullets": [
+            "Low penetration means headroom, not automatic demand; trust and suitability are decisive.",
+            "Life and non-life have different duration, reserving and profitability mechanics.",
+            "Distribution quality is as important as distribution reach."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "An expanding middle class, health-cost awareness, aging, climate risk and SME formalization support protection demand. Simple digital products, health ecosystems and better claims journeys can broaden access. The main challenges are consumer trust, agent productivity and turnover, product complexity, data quality, medical inflation and regulatory change. Bancassurance must shift from sales pressure toward documented needs analysis and post-sale service. For insurers, fast premium growth can destroy value if policies lapse early or claims are mispriced. Candidates should distinguish first-year sales from long-term customer value and discuss persistency, solvency and conduct together.",
+          "bullets": [
+            "Opportunity: close genuine protection gaps with simpler, transparent products.",
+            "Challenge: rebuild trust through suitability, service and fair claims outcomes.",
+            "Growth quality is visible in persistency, loss experience and customer complaints."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "Insurance programs span quantitative, commercial and service disciplines.",
+          "bullets": [
+            "Actuarial — pricing, reserving, experience studies, solvency and product profitability.",
+            "Sales & Distribution — agency, bancassurance, broker and partner productivity with conduct controls.",
+            "Product — customer need, benefit design, underwriting rules and approval.",
+            "Finance & Investment — reporting, capital, asset-liability management and portfolio performance.",
+            "Digital, Operations & Claims — onboarding, policy service, fraud control and claims experience."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Insurers value analytical care paired with empathy because products matter most when customers are vulnerable.",
+          "bullets": [
+            "Quantitative reasoning and comfort with probability and long-term assumptions.",
+            "Relationship skills across agents, banks, brokers and customers.",
+            "Regulatory and conduct awareness.",
+            "Ability to explain exclusions, value and uncertainty clearly.",
+            "Customer empathy in service and claims.",
+            "Data literacy for pricing, retention and fraud.",
+            "Long-term judgment rather than short-term sales focus."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "Insurance cases test risk economics and channel behavior together.",
+          "bullets": [
+            "Product pricing — set premium and benefits using claims, expense, lapse and margin assumptions.",
+            "Distribution design — choose agency, bank, broker or digital roles for a target segment.",
+            "Customer retention — improve persistency by diagnosing product, sales and service causes.",
+            "Claims transformation — reduce cycle time and fraud while protecting fair outcomes.",
+            "Market entry — assess segment need, regulation, capital and distribution economics."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "Candidates stand out when they treat trust as an economic variable. Explain how a recommendation affects not only sales but also lapse rates, complaints, claims and lifetime value. The future leaders of insurance can translate actuarial discipline into a promise customers understand and believe."
+        }
+      ],
+      "sources": [
+        {"title":"Vietnam Ministry of Finance — Insurance Supervisory Authority","link":"https://mof.gov.vn/"},
+        {"title":"Vietnam Briefing — Non-life insurance outlook","link":"https://www.vietnam-briefing.com/news/vietnams-non-life-insurance-sector-attracts-strong-fdi-amid-favorable-regulatory-changes.html/"},
+        {"title":"OECD — Global Insurance Market Trends","link":"https://www.oecd.org/en/publications/global-insurance-market-trends-2025_0d11ecf4-en/full-report/component-3.html"},
+        {"title":"Research and Markets — Vietnam Life Insurance","link":"https://www.researchandmarkets.com/reports/6111768/vietnam-life-insurance-market-size-share"}
+      ]
+    },
+    {
+      "industry_id": "tobacco",
+      "industry_slug": "tobacco",
+      "topic_id": "domain_overview",
+      "title": "Domain Knowledge: Tobacco",
+      "sections": [
+        {
+          "heading": "Market Overview",
+          "body": "Vietnam remains a large cigarette market with a male smoking prevalence among the highest in the region, but it operates under tightening public-health regulation and declining social acceptance. Market-size estimates vary because illicit trade is difficult to measure and public sources often combine factory-gate, retail and volume data. The industry structure includes state-linked domestic manufacturing and distribution, Vietnam National Tobacco Corporation (Vinataba), joint ventures and international companies. British American Tobacco has long participated through local partnerships and brands; Japan Tobacco International competes in premium and international segments. Cigarette value chains run from leaf cultivation and imported tobacco through primary processing, blending, cigarette manufacturing, excise stamping, wholesale distribution and restricted retail marketing. Brand communication is constrained, so portfolio, price tier, trade availability, packaging compliance and adult-consumer retention matter more than conventional advertising. Regulation includes excise tax, health warnings, advertising and promotion restrictions, age controls, smoke-free rules and the WHO Framework Convention on Tobacco Control, which Vietnam ratified in 2004. A major strategic discontinuity is reduced-risk products. Heated-tobacco and vaping products are growing globally, but Vietnam's National Assembly prohibited the production, trading, import, storage, transport and use of e-cigarettes and heated-tobacco products from 2025. WHO welcomed a further strong stance in December 2025 against investment or commercial business in these products. Candidates must therefore not frame them as a legal near-term growth channel in Vietnam. They are relevant as a global portfolio trend, illicit-market and enforcement challenge, and regulatory scenario.",
+          "bullets": [
+            "The legal combustible market is mature, regulated and exposed to illicit trade.",
+            "BAT and JTI compete within a market shaped by domestic production and state-linked structures.",
+            "Heated tobacco and vaping are a global trend but prohibited in Vietnam from 2025."
+          ]
+        },
+        {
+          "heading": "Opportunities & Challenges",
+          "body": "Because tobacco causes severe health harm, commercial opportunity must be discussed inside legal, ethical and public-health boundaries. For operators, near-term priorities are supply efficiency, product quality, anti-illicit-trade cooperation, tax-stamp compliance and responsible execution in permitted adult channels. Challenges include excise increases, plain-packaging or warning changes, advertising restrictions, counterfeit products, reputational risk and the conflict between global reduced-risk investment and Vietnam's ban. Illicit trade can rise when tax and price gaps widen, but that does not justify weak control; it calls for enforcement, traceability and evidence-based policy. A strong candidate treats regulation as a design constraint and stakeholder system, not an obstacle to evade.",
+          "bullets": [
+            "Operational opportunity is mainly in compliance, efficiency and legal-channel integrity.",
+            "Challenge: plan portfolios under tax, warning, channel and product restrictions.",
+            "Public-health impact and reputation belong in every strategic recommendation."
+          ]
+        },
+        {
+          "heading": "Common MT Functions",
+          "body": "Tobacco graduate programs emphasize controlled commercial and operational leadership.",
+          "bullets": [
+            "Finance — excise scenarios, portfolio margin, working capital, controls and planning.",
+            "Marketing / Commercial Planning — adult-only portfolio and pricing within strict promotion rules.",
+            "Operations — manufacturing reliability, quality, safety and cost.",
+            "Supply Chain — leaf and materials sourcing, demand planning, tax-stamped inventory and distribution.",
+            "Legal, Regulatory & External Affairs — compliance, policy analysis, stakeholder engagement and anti-illicit-trade work."
+          ]
+        },
+        {
+          "heading": "Skills Recruiters Look For",
+          "body": "Recruiters need candidates who can operate rigorously in a highly scrutinized category.",
+          "bullets": [
+            "Regulatory navigation and respect for both the letter and intent of rules.",
+            "Operational excellence and disciplined controls.",
+            "Financial acumen, especially price, tax and mix analysis.",
+            "Scenario planning under policy uncertainty.",
+            "Stakeholder communication without minimizing health impacts.",
+            "Integrity and willingness to challenge non-compliant action.",
+            "Supply-chain traceability and anti-illicit-trade awareness."
+          ]
+        },
+        {
+          "heading": "Common Interview Case Types",
+          "body": "Tobacco cases should be solved with explicit legal and ethical guardrails.",
+          "bullets": [
+            "Portfolio management — respond to excise changes across price tiers without breaching regulation.",
+            "Regulatory compliance strategy — implement new warnings, traceability or channel rules.",
+            "Operational cost reduction — improve yield, energy or maintenance while preserving product and safety standards.",
+            "Illicit-trade response — combine data, distribution controls and authority cooperation.",
+            "Scenario planning — assess implications of tighter restrictions or enforcement of the reduced-risk-product ban."
+          ]
+        },
+        {
+          "heading": "Casemate Insight",
+          "body": "Candidates stand out by refusing false trade-offs. Do not propose growth first and add compliance later. Start with what is legal, scientifically honest and operationally controllable; then optimize within that boundary. In this sector, mature judgment and the courage to name stakeholder harm matter as much as financial fluency."
+        }
+      ],
+      "sources": [
+        {"title":"WHO Vietnam — National Assembly stance on e-cigarettes and heated tobacco","link":"https://www.who.int/vietnam/news/detail/11-12-2025-world-health-organization-welcomes-national-assembly-s-strong-stance-on-banned-e-cigarettes-and-heated-tobacco-products"},
+        {"title":"WHO — Vietnam tobacco profile and FCTC","link":"https://www.who.int/vietnam/health-topics/tobacco"},
+        {"title":"SEATCA Tobacco Watch — ASEAN product status","link":"https://tobaccowatch.seatca.org/2026/01/status-of-tobacco-products-in-2026-in-asean/"},
+        {"title":"Tobacco Tactics — Viet Nam country profile","link":"https://www.tobaccotactics.org/article/viet-nam-country-profile/"}
+      ]
+    }
+  ]
+}

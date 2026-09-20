@@ -1,0 +1,158 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "EY Vietnam",
+      "program": "EY Tax Services Internship 2027",
+      "program_type": "Internship Program",
+      "location": "Hanoi, Ho Chi Minh City",
+      "function_list": [
+        "Core Assurance",
+        "Financial Services Assurance",
+        "Tax Services",
+        "Transfer Pricing",
+        "Global Compliance & Reporting Services (GCR)",
+        "International Tax & Transaction Services (M&A Tax)",
+        "Indirect Tax",
+        "People Advisory Services (PIT Services/Payroll Services)"
+      ],
+      "open_date": "20/06",
+      "close_date": "21/08",
+      "rounds_json": [
+        "1. Applications",
+        "2. Assessment Test",
+        "3. Interview Round"
+      ],
+      "candidate_requirement": "You have an agile, growth-oriented mindset. What you know matters. But the right mindset is just as important in determining success. We’re looking for people who are innovative, can work in an agile way and keep pace with a rapidly changing world.\nYou are curious and purpose driven. We’re looking for people who see opportunities instead of challenges, who ask better questions to seek better answers that build a better working world.\nYou are inclusive. We’re looking for people who seek out and embrace diverse perspectives, who value differences, and team inclusively to build safety and trust.\nLast-year students who are pursuing a bachelor’s degree in 2027\nPreferably major in accounting, finance, business, economics, foreign trade, banking or related major with good GPA for technical subjects and English.\nStrong analytical, teamwork and organizational skills.\nPositive attitude and enthusiasm in the performance of responsibilities.\nWilling to work for EY Vietnam after you are graduated.\nVietnamese citizen\nGood interpersonal and communication skills\nGood at MS office applications (Word, Excel and Power Point)",
+      "apply_url": null
+    },
+    {
+      "corporation": "Abbott Vietnam",
+      "program": "Abbott Internship Program",
+      "program_type": "Internship Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Marketing Intern - Nutrition Division",
+        "Data & Analytics Intern",
+        "Finance Intern",
+        "Equipment Management and Validation Intern - Chemical Lab",
+        "Marketing & Trade Marketing Intern - Pharma Division",
+        "Marketing Intern - Pharma Division",
+        "Electrophysiology Intern",
+        "Business Analyst Intern - Core Diagnostics",
+        "MT Channel Marketing Intern",
+        "Sales Intern - MT Operation",
+        "Sales Intern - MT Omni Channel",
+        "E-Commerce Intern",
+        "Operations Intern"
+      ],
+      "open_date": "17/03",
+      "close_date": "25/04",
+      "rounds_json": [
+        "1. Application",
+        "2. Selection",
+        "3. Onboarding"
+      ],
+      "candidate_requirement": "Senior Students or Fresh Graduates\nGPA from 7.0/10 or 2.8/4.0\nProficient in English and Microsoft Office\nStrong communication skill",
+      "apply_url": null
+    },
+    {
+      "corporation": "Mondelēz Vietnam",
+      "program": "Taste The Future Management Trainee",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City, Binh Duong, Hung Yen",
+      "function_list": [
+        "Human Resources",
+        "Commercial",
+        "Manufacturing",
+        "Customer service & Logistics (Planning)"
+      ],
+      "open_date": "10/04",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Aptitude Test",
+        "3. Initial Interview",
+        "4. Assessment Center"
+      ],
+      "candidate_requirement": "Là sinh viên mới tốt nghiệp hoặc có dưới 2 năm kinh nghiệm (GPA ≥ 7.0/10.0)\nCó tư duy phát triển, linh hoạt, kiên cường, kỹ năng lãnh đạo và giải quyết vấn đề tốt\nThành thạo tiếng Anh\nCó thể làm việc toàn thời gian từ tháng 6 năm 2025\nCó bằng lái xe và sẵn sàng di chuyển toàn quốc",
+      "apply_url": null
+    },
+    {
+      "corporation": "Mondelēz Vietnam",
+      "program": "Sales Trainee Program",
+      "program_type": "Graduate Program",
+      "location": "North, Center, South",
+      "function_list": [
+        "Sales Traditional Trade",
+        "Sales Modern Trade",
+        "Sales Away From Home"
+      ],
+      "open_date": "21/03",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Aptitude Test",
+        "3. Initial Interview",
+        "4. Field Visit",
+        "5. Assessment Center Day"
+      ],
+      "candidate_requirement": "Sinh viên vừa tốt nghiệp Đại học hoặc có dưới 2 năm kinh nghiệm làm việc sau khi đã tốt nghiệp, không giới hạn chuyên ngành học\nĐiểm trung bình tích lũy từ 6.5/10 hoặc 2.3/4 trở lên\nSẵn sàng làm việc toàn thời gian từ tháng 05/2026\nĐam mê nghề Sales và mong muốn phát triển sự nghiệp trong lĩnh vực FMCG\nKỹ năng giao tiếp tốt, khả năng thích nghi và sự bền bỉ\nThái độ cầu tiến, tính cam kết cao, tinh thần win - win\nSẵn sàng thay đổi nơi làm việc theo điều động công việc",
+      "apply_url": null
+    },
+    {
+      "corporation": "Mondelēz Vietnam",
+      "program": "Taste The Future Internship Program",
+      "program_type": "Internship Program",
+      "location": "Ho Chi Minh City, Binh Duong, Hung Yen",
+      "function_list": [
+        "Sales Operations",
+        "Sales Effectiness (Modern Trade)",
+        "Route To Market",
+        "Category Revenue Planning",
+        "Category Planning and Activation",
+        "Marketing",
+        "Customer Service and Logistics",
+        "Production Planning and Inventory Control",
+        "BDE – Business Development & Engineer",
+        "HSE – Health",
+        "Safety & Environment",
+        "RDQ – Research",
+        "Development and Quality",
+        "Customer Service and Logistics"
+      ],
+      "open_date": "04/04",
+      "close_date": "17/05",
+      "rounds_json": [
+        "1. Application",
+        "2. Initial Interview",
+        "3. Online Test",
+        "4. Panel Interview"
+      ],
+      "candidate_requirement": "Đang là sinh viên năm 3,4 hoặc vừa mới tốt nghiệp, có thể làm việc toàn thời gian trong vòng 4-6 tháng tới\nCó kỹ năng khả năng học hỏi nhanh, thích ứng tốt và có tư duy tăng trưởng.\nCó sự bền bỉ, khả năng làm việc độc lập và luôn hướng tới kết quả.\nCó khả năng giao tiếp tốt bằng tiếng Anh và tiếng Việt.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Masan Group",
+      "program": "Young Entreprenours Program Sales Trainee",
+      "program_type": "Graduate Program",
+      "location": "North, Center, South",
+      "function_list": [
+        "Sales General Trade",
+        "Sales Modern Trade",
+        "Shopper Marketing"
+      ],
+      "open_date": "07/05",
+      "close_date": "01/07",
+      "rounds_json": [
+        "1. Application",
+        "2. Aptitude Test",
+        "3. Initial Interview",
+        "4. Assessment Center"
+      ],
+      "candidate_requirement": "Sinh viên mới tốt nghiệp hoặc có dưới 2 năm kinh nghiệm làm việc.\nĐiểm trung bình tích lũy (GPA) từ 6.5/10 trở lên.\nĐam mê lĩnh vực Kinh doanh & Bán hàng, đặc biệt là ngành hàng tiêu dùng nhanh (FMCG).\nNhiệt huyết, cầu tiến, kỷ luật và tinh thần học hỏi cao.\nSẵn sàng làm việc tại các tỉnh thành được chỉ định.\nSẵn sàng di chuyển, tiếp xúc và phát triển khách hàng tại các kênh.",
+      "apply_url": null
+    }
+  ]
+}

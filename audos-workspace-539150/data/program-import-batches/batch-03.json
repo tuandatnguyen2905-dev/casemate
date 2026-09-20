@@ -1,0 +1,132 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "UOB Vietnam",
+      "program": "UOB Vietnam Management Associate",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Finance and Corporate Service"
+      ],
+      "open_date": "13/03",
+      "close_date": "01/07",
+      "rounds_json": [
+        "1. Online Application",
+        "2. Online Assessments",
+        "Step 1: Personality & Cognitive Assessment",
+        "Step 2: Video Interview",
+        "3. Panel interviews"
+      ],
+      "candidate_requirement": "A bachelor’s degree from a recognized university, preferable majors in Finance, Banking, Accounting, Business Economics, Business Administration, etc.\nNo more than two years of work experience\nAn impressive leadership and teamwork abilities\nFluency in English",
+      "apply_url": null
+    },
+    {
+      "corporation": "Prudential Vietnam",
+      "program": "Prudential The Strivers",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Management Trainee: Partnership Distribution",
+        "Agency Distribution",
+        "Finance",
+        "Operations",
+        "IT",
+        "Compliance Legal Risk",
+        "Strategy",
+        "Marketing.",
+        "Functional Trainee Track: Human Resources",
+        "Actuarial Management."
+      ],
+      "open_date": "10/02",
+      "close_date": "01/05",
+      "rounds_json": [
+        "1. Online Application",
+        "2. Online Test",
+        "3. Interview",
+        "4. Assessment Center"
+      ],
+      "candidate_requirement": "Graduates from relevant disciplines with less than 2 years of work experience\nGPA from 7.0/10 or 2.8/4 equivalent\nProficiency in English\nDemonstrate strong leadership qualities",
+      "apply_url": null
+    },
+    {
+      "corporation": "Expeditors Vietnam",
+      "program": "Expeditors Management Trainee",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Logistics and Supply Chain Management"
+      ],
+      "open_date": "31/03",
+      "close_date": null,
+      "rounds_json": null,
+      "candidate_requirement": "Enthusiastic and committed to a long-term career at Expeditors\nPossess a “can do” attitude ▪ Good interpersonal skills and people focused\nAbility to communicate clearly and effectively through oral and written English\nTeam player with leadership qualities\nCourage to face new challenges\nProcess-oriented with good analytical skills\nOpen to considering relocation to another country based on business needs",
+      "apply_url": null
+    },
+    {
+      "corporation": "PropertyGuru Vietnam",
+      "program": "PropertyGuru Prodi-G Internship 2025",
+      "program_type": "Internship Program",
+      "location": "Hanoi, Ho Chi Minh City",
+      "function_list": [
+        "Data Science",
+        "Marketing",
+        "Product",
+        "HR"
+      ],
+      "open_date": "01/01",
+      "close_date": null,
+      "rounds_json": null,
+      "candidate_requirement": "Currently pursuing a bachelor's or master's degree in any field.\nDemonstrated strong organizational and time management abilities, adept at multitasking and effective prioritization.\nProficient English communication skills, both written and verbal (to liaise with overseas stakeholders)\nExcellent interpersonal skills, fostering a collaborative and team-oriented approach.\nCompetency in Microsoft Office suite and fundamental computer literacy.\nEnthusiasm for learning, with a proactive stance towards embracing new challenges and roles.",
+      "apply_url": null
+    },
+    {
+      "corporation": "P&G Vietnam",
+      "program": "P&G LEAD GEN 2026 (Internship)",
+      "program_type": "Internship Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Sales",
+        "Brand",
+        "HR Analytics",
+        "Finance",
+        "IT",
+        "Process Engineer"
+      ],
+      "open_date": "27/10",
+      "close_date": "01/01",
+      "rounds_json": [
+        "1. Online Application (First come, first served)",
+        "2. Online Assessment Tests",
+        "3. Phone Interview",
+        "4. 3 Rounds of interview with C-levels"
+      ],
+      "candidate_requirement": "Undergraduates that can work full-time from Jan 2026\nA forward thinker who can participate in the development and implementation of new ideas.\nEagerness to learn and grow within a dynamic sales environment.\nStrong thinking/problem-solving skills which can be applied to business processes with a \"can-do\" attitude\nExcellent visionary, strategic, and strong leadership skills, with strong communication skills and analytical thinking\nDemonstrated ability to handle multiple priorities and drive innovation and business growth\nProficiency in English (written and spoken).\nReady to relocate nationally",
+      "apply_url": null
+    },
+    {
+      "corporation": "Deloitte Vietnam",
+      "program": "Deloitte Passport FY26 (Internship)",
+      "program_type": "Internship Program",
+      "location": "Hanoi, Ho Chi Minh City",
+      "function_list": [
+        "Audit & Assurance",
+        "Tax & Legal",
+        "Tư vấn dịch vụ Thuế hải quan",
+        "Tư vấn dịch vụ Pháp lý",
+        "Tư vấn dịch vụ Kế toán & Giải pháp doanh nghiệp"
+      ],
+      "open_date": "09/07",
+      "close_date": "05/09",
+      "rounds_json": [
+        "1. Applications",
+        "2. Writing Test",
+        "3. Individual interviews",
+        "4. Results"
+      ],
+      "candidate_requirement": "4th student with background in law, commerce, finance, and foreign trade.\nExcellent command of English, both verbal and written.\nEthical behavior\nStrong interpersonal and team working skills\nEnthusiasm and ability to assume a high level of responsibilities\nHigh commitment to success and continue learning.",
+      "apply_url": null
+    }
+  ]
+}

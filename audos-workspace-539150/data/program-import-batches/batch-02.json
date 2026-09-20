@@ -1,0 +1,168 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "AB InBev Vietnam",
+      "program": "AB InBev Dreamship Internship 2026",
+      "program_type": "Internship Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Commercial & Strategy",
+        "Finance",
+        "Legal and Corporate Affairs",
+        "Marketing E-commerce and Trade",
+        "Supply Chain",
+        "Technology and Analytics"
+      ],
+      "open_date": "24/07",
+      "close_date": "01/09",
+      "rounds_json": [
+        "1. Application",
+        "2. Cognitive Test",
+        "3. Video Interview",
+        "4. Panel Interview",
+        "5. Final Interview"
+      ],
+      "candidate_requirement": "3rd – 4th year student or fresh graduate with less than 1 year of experience; open for all majors.\nBachelor's degree required and GPA (Grade Point Average): from 7.0 out of 10 or equivalent.\nLanguage: Native Vietnamese speaker with fluent in English.\nProficiency in Microsoft Office (especially Excel) and ability to quickly adapt to new systems.\nBe able to start working full-time from September 2026, and take 6-month duration.\nBe bold to take risks, solves challenges in new ways and works hard to make a difference.\nBe interested in a multi-functional career and have the willingness to develop new skillsets and capabilities throughout your career.\nDesire to learn, evolve, and adapt and is innately curious.\nOperates with a continuous learning mindset.\nShows confidence in ambiguous situations and thrives in a fast-paced environment.\nLeverages insight, innovation and technology to stay ahead of the curve.\nTakes pride, ownership and accountability for their actions.\nRecognizes the impact we have to our customers, consumers, and communities.\nSeeks diverse perspectives; co-creates win-win solutions across teams; recognizes contributions and celebrates successes.\nInclusive mindset; shows humility and empathy.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Home Credit Vietnam",
+      "program": "Home Credit Home Racer 2026",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Data Analyst",
+        "Data Engineer",
+        "Product Specialist",
+        "Product Analyst",
+        "Customer Experience Analyst"
+      ],
+      "open_date": "24/07",
+      "close_date": "01/09",
+      "rounds_json": [
+        "1. Application & Online Assessment",
+        "2. Online HR Interview",
+        "3. Online Technical Assessment",
+        "4. Assessment Center",
+        "5. Department Interview",
+        "6. Career Development Discussion"
+      ],
+      "candidate_requirement": "- Sinh viên năm cuối hoặc mới tốt nghiệp hoặc ứng viên có dưới 2 năm kinh nghiệm làm việc ở lĩnh vực liên quan\n- Có thể làm việc fulltime kể từ tháng 9.2026\n- Quan tâm và mong muốn phát triển sự nghiệp trong lĩnh vực Data hoặc Commercial\n- Sẵn sàng học hỏi, chủ động đón nhận thử thách và tạo ra giá trị thực tế",
+      "apply_url": null
+    },
+    {
+      "corporation": "Shopee & Monee (SeaMoney)",
+      "program": "Shopee & Monee (SeaMoney) Global Development Program (GDP)",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Business Development",
+        "Business Intelligence",
+        "Financial Products",
+        "Marketing",
+        "Operations",
+        "Product Management"
+      ],
+      "open_date": "15/08",
+      "close_date": "15/10",
+      "rounds_json": [
+        "1. Application",
+        "2. Online Assessment",
+        "3. Behavioural Interview",
+        "4. Case Assessments",
+        "5. Interview with Senior Leaders"
+      ],
+      "candidate_requirement": "- University graduates with a Bachelor’s/Master’s degree in any discipline, with no more than 2 years of full-time work experience (as of application deadline)\n- Curious and adaptable learners who tackle challenges with resourcefulness and agility\n- Effective communicators who can share ideas and thoughts effectively\n- Self-starters with a growth mindset who take ownership and aspire to drive meaningful impact\n- Leaders who can inspire others towards the achievement of goals",
+      "apply_url": null
+    },
+    {
+      "corporation": "MoMo",
+      "program": "MoMo Talent 2026",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Customer Experience Excellence",
+        "Insurance Techonology",
+        "Momo Travel",
+        "Credit Tech Product & Partnerships",
+        "Platform User Growth",
+        "Promotion & Loyalty",
+        "Expense Management",
+        "Platform User Engagement",
+        "Social Payment",
+        "Payment Platform",
+        "Brand & Marketing"
+      ],
+      "open_date": "18/05",
+      "close_date": "10/07",
+      "rounds_json": [
+        "1. Application & CV Screen",
+        "2. Cognitive Test",
+        "3. Functional Assessment",
+        "4. Leadership Interview"
+      ],
+      "candidate_requirement": "Strong Academic Foundation\n- GPA of 3.2/4.0 or 8.0/10 and above\n- Proficiency in English: B2 level, IELTS 6.0, TOEIC 750, TOEFL iBT 79\n- Fresh graduates or candidates with less than 2 years of full-time work experience, available to work full-time from August 2026\nAI-First Mindset\n- Passionate about technology with a curious drive to explore the latest digital tools and platforms\n- Know how to leverage AI as a \"co-pilot\" at work - from data analysis and content creation to automating everyday workflows\nCultural Fit\n- You’re proactive, adaptable, and genuinely excited about technology and fintech\n- You’re ready to embrace MoMo’s mission and core values-and make a meaningful impact along the way\nHigh Growth Potential\n- You bring a growth mindset, adapt quickly, and show strong leadership potential\n- You’re driven, committed for the long term, and ready to grow into future leadership roles",
+      "apply_url": null
+    },
+    {
+      "corporation": "Techcombank",
+      "program": "Techcombank Future Gen 2027",
+      "program_type": "Leadership Program",
+      "location": "Hanoi",
+      "function_list": [
+        "Technology: Project Management",
+        "Software Development",
+        "Business Analysis",
+        "Cybersecurity",
+        "Data & AI: Data Analytics",
+        "Data Engineering",
+        "Data Governance",
+        "AI Capability",
+        "Business: Segmentation",
+        "Product Management",
+        "Business",
+        "Performance Management",
+        "Customer Experience Management",
+        "General Management: Analytical Thinking",
+        "Problem Solving",
+        "Business Acumen",
+        "Stakeholder Management"
+      ],
+      "open_date": "24/07",
+      "close_date": "01/11",
+      "rounds_json": [
+        "1. Application",
+        "2. Remote Interview",
+        "3. Aptitude Test",
+        "4. Functional Test",
+        "5. Assessment Center",
+        "6. Panel Interview"
+      ],
+      "candidate_requirement": "- Technology:\nFinal-year students from Vietnamese or overseas universities\nBachelor's degree and/or higher in IT, Computer Science, Software Engineering, or related fields.\nAbility: Strong coding, software development and system design skills.\nAble to solve technical problems with logic, creativity, and customer-centricity in mind.\nLess than 2 years of full-time work experience\nProficiency in spoken and written English\n- Data & AI: \nFinal-year students from Vietnamese or overseas universities\nBachelor's degree and/or higher in AI Science, Statistics, Quantitative Science, Finance, Computer Science, Mathematics & other related fields.\nAbility: Able to work with data tools (Python, SQL, Power BI). Strong statistical thinking with understanding of data visualization and data analysis.\nLess than 2 years of full-time work experience\nProficiency in spoken and written English\n- Business:\nFinal-year students from Vietnamese or overseas universities\nBachelor's degree and/or higher in Business Administration, Banking & Finance, Accounting, Statistics, Economics & other related fields.\nAbility: Understands business operations, customer behavior and experiences. Strong in market and product analysis.\nLess than 2 years of full-time work experience\nProficiency in spoken and written English\n- General Management: \nFinal-year students from Vietnamese or overseas universities\nBachelor's degree and/or higher in Business Administration, Banking & Finance, Human Resource & other related fields.\nAbility: Learns quickly, connects dots, and drives execution across domains. Understand business operations, management and people.\nLess than 2 years of full-time work experience\nProficiency in spoken and written English",
+      "apply_url": null
+    },
+    {
+      "corporation": "Viettel",
+      "program": "Viettel Future Changemakers",
+      "program_type": "Leadership Program",
+      "location": "Hanoi",
+      "function_list": [
+        "Digital Product Management Trainee",
+        "Logistics & Supply Chain management Trainee",
+        "Digital Project Management"
+      ],
+      "open_date": "10/05",
+      "close_date": "01/09",
+      "rounds_json": [
+        "1. IQ, Toeic English",
+        "2. Online test",
+        "3. Assessment day in Hanoi",
+        "4. Panel interview"
+      ],
+      "candidate_requirement": "- Candidates in their final year of university or graduated with cumulative scores equivalent to \"Very good\" degree in the fields of Logistics, E-commerce, Supply Chain, Foreign Economics, Import-Export, International Trade, Transport Exploitation, Customs and similar fields; or won national/international awards in related fields; or have excellent achievements when participating in major projects in related fields.\n\n- English with a minimum score of 550 TOEIC or equivalent.\n\n- Location: Hanoi (For candidates outside Hanoi area, round-trip airfare will be sponsored).",
+      "apply_url": null
+    }
+  ]
+}

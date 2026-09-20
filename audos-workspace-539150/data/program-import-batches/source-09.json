@@ -1,0 +1,120 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "Garena",
+      "program": "Garena Strategy and Operations",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Strategy & Operations",
+        "Marketing"
+      ],
+      "open_date": null,
+      "close_date": null,
+      "rounds_json": [
+        "1. HR Screening",
+        "2. Technical Assessment Test",
+        "3. HR Interview",
+        "4. Case Interview",
+        "5. Country Head Interview",
+        "6. Regional Interview"
+      ],
+      "candidate_requirement": "Fresh graduates or candidates with less than 2 years of full-time experience\nStrong academic background from top-tier universities in Vietnam or abroad\nExceptional logical and structured thinking; comfortable working with data and breaking down complex problems\nClear and confident communicator, with the ability to work well in teams\nProactive and gritty – you’re not afraid of hard work or starting from the ground up\nDeep passion for games – you understand game mechanics and enjoy discussing strategy with fellow players\nA builder’s mindset – you don’t just enjoy games, you want to shape how others experience them\n\nApplications are accepted on a rolling basis (all time).",
+      "apply_url": null
+    },
+    {
+      "corporation": "Tiktok",
+      "program": "Graduate Development Program (TikTok Shop E-commerce, Vietnam)",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Acquisition and Incubation",
+        "Category and Creator Growth",
+        "Campaign Management",
+        "Platform Operations and Business Intelligence"
+      ],
+      "open_date": "30/11",
+      "close_date": "01/12",
+      "rounds_json": [
+        "1. Online Assessment",
+        "2. HR Team Interview",
+        "3. Case Assessment",
+        "4. Business Leaders Interview"
+      ],
+      "candidate_requirement": "Minimum Qualification(s)\n\n Individuals who are completing or have recently completed a Bachelor's degree in any field or a related discipline.\n Strong interest in e-commerce, technology, digital platforms, consumer products, creator economy, or business operations.\n Strong analytical and problem-solving skills, with the ability to work with data, structure ambiguous problems, and develop practical recommendations.\n Clear and effective communication skills, with the ability to collaborate with stakeholders across teams and markets.\n Demonstrated intellectual curiosity, learning agility, ownership, and resilience in a fast-paced environment.\n Academic background in Business, Economics, Finance, Accounting, Analytics, Data Science, Information Systems, Information Technology, Engineering, Computer Science, or related disciplines.\n Prior internship, project, case competition, startup, consulting, e-commerce, technology, or business operations experience.\n Experience using data to solve business problems, such as through Excel, SQL, dashboards, analytics tools, or structured research.\n Strong business acumen and interest in understanding how platforms grow users, sellers, creators, categories, and revenue.\n Demonstrated leadership potential through student organizations, entrepreneurial projects, competitions, community initiatives, or other meaningful experiences.\n Ability to thrive in ambiguity, learn quickly, and work effectively in a cross-functional and multicultural environment.\n Interest in building a long-term career in e-commerce, business strategy, operations, growth, analytics, or general management.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Louis Dreyfus Company",
+      "program": "Graduate Trainee Program (Agri-Commercial Track)",
+      "program_type": "Graduate Program",
+      "location": "Remote offered, Lam Dong, Ho Chi Minh City, Pleiku",
+      "function_list": [
+        "Commercial Trainee"
+      ],
+      "open_date": "01/08",
+      "close_date": null,
+      "rounds_json": null,
+      "candidate_requirement": "1-2 years of work experience as a Trading Assistant or in Business Development team in multinational corporations is preferred. \nRecent graduates with strong potential of Trading/ Business Development business, from all degree disciplines and with strong academic records are welcome to apply\nStrong problem solving and numerical/analytical skills\nWell communication in both Vietnamese & English\nGood verbal and written communication skills\nAbility to work independently and thrive in uncertainty situations\nProficiency in Microsoft Excel and programming languages e.g., VBA, Python, Power BI is a plus\nPrior internship/ experience in commodities (cashew, green coffee, etc...) industry is a plus\nRequires entrepreneurial, good interpersonal skills & team player\nPossess strong work ethics and humility, high level of ownership and responsibility",
+      "apply_url": null
+    },
+    {
+      "corporation": "Starbuck",
+      "program": "Future Store Manager",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City, Hanoi",
+      "function_list": [
+        "Supply Chain Operations",
+        "Accounting",
+        "Store Operations"
+      ],
+      "open_date": "15/07",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Assessment Day",
+        "3. Panel Interview",
+        "4. Store Experience Day"
+      ],
+      "candidate_requirement": "Education: \n\nBachelor's degree (preferably in Economics, Finance, or Hospitality Management)\nGPA of 7.5/10 or 3.0/4.0 or higher.\nSkill set:\n\nProficient in English, equivalent to IELTS 6.0 or above.\nProject management\nProblem Solving\nLearning Agility\nLeadership\nWorking Experience: \n\n Less than one year of full-time work experience.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Hitachi Energy",
+      "program": "Graduate Engineering Trainee",
+      "program_type": "Graduate Program",
+      "location": "Bac Ninh",
+      "function_list": [
+        "Engineering & Science"
+      ],
+      "open_date": "13/08",
+      "close_date": null,
+      "rounds_json": null,
+      "candidate_requirement": "Recent university graduates (Mechanical Engineering / Electrical Engineering) with a good CGPA or equivalent.\nInternational mindset with strong intercultural awareness and social competence, well-rounded, mature personality with strong interpersonal skills.\nEffective communicator with perseverance, drive, and a results-oriented approach, demonstrated leadership potential, strategic thinking, and entrepreneurial mindset, curious, ambitious, and open to continuous learning across diverse areas of interest, clear and realistic career aspirations.\nWillingness to work in different locations, including international assignments.\nStrong command of English; additional language skills are an advantage.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Crystal International Group",
+      "program": "Crystal Associate Programme",
+      "program_type": "Graduate Program",
+      "location": "Hai Phong, Bac Ninh, Nghe An, Ha Noi",
+      "function_list": [
+        "Production Associate",
+        "Technical Associate"
+      ],
+      "open_date": "10/12",
+      "close_date": "01/04",
+      "rounds_json": [
+        "1. Application",
+        "2. Video interview",
+        "3. Manager Interview",
+        "4. Online Test",
+        "5. Business Leader Interview"
+      ],
+      "candidate_requirement": "Là sinh viên sắp tốt nghiệp hoặc dưới 2 năm kinh nghiệm làm việc toàn thời gian\nĐiểm GPA tối thiểu là 7.0/10 hoặc tương đương (tốt nghiệp loại Khá trở lên)\nKỹ năng giao tiếp tốt và trình độ Tiếng Anh đáp ứng công việc hàng ngày \nVà trên hết, bạn đam mê ngành May mặc Thời trang, mong muốn trở thành nhà lãnh đạo tiềm năng, và sẵn sàng làm việc tại Hải Phòng/ Bắc Ninh/ Nghệ An và Hà Nội.",
+      "apply_url": null
+    }
+  ]
+}

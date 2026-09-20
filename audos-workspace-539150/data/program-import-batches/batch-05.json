@@ -1,0 +1,145 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "Knauf",
+      "program": "Knauf Management Trainee Program",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Manufacturing Track: Production management",
+        "Process Optimization",
+        "Quality Control",
+        "Maintenance",
+        "Health & Safety",
+        "Inventory Management",
+        "Continuous Improvement",
+        "Sales Strategy",
+        "Commercial Track: Market Analysis",
+        "Sales Strategy",
+        "Customer Relationship Management",
+        "Product Management",
+        "Business Development",
+        "Marketing Campaigns",
+        "Financial Reporting",
+        "Data Analysis"
+      ],
+      "open_date": "01/09",
+      "close_date": "01/11",
+      "rounds_json": [
+        "1. Application",
+        "2. Assessment",
+        "3. Interview"
+      ],
+      "candidate_requirement": "Graduate or young talent with 0 – 3 years of work experiences\nBachelor’s degree in any field is welcome\nProficient in English (preferably with IELTS score of 6.5 and above)\nDrive to succeed - strong intellectual abilities & learning agility.\nStrong analytical and problem-solving skills.\nExcellent communication and interpersonal skills.\nPassion for innovation and sustainability.\nA real team player who sees the team's success as their own.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Fast Retailing",
+      "program": "Production Management Candidate Program",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Production Merchandiser"
+      ],
+      "open_date": "01/09",
+      "close_date": "01/11",
+      "rounds_json": [
+        "1. Screening & Info Session",
+        "2. Pre-interview & Aptitude Test",
+        "3. First Interview",
+        "4. Factory Tour",
+        "5. Final Interview"
+      ],
+      "candidate_requirement": "Fresh graduated in any major with GPA from 7/10 (3/4)\nLess than 2 years experience as fulltime job\nEnglish business level (equivalent to IELTS 6.5, TOEIC 700 or TOEFL 80)\nPassion for manufacturing industry, production, clothing, factory & fabrics.\nDemonstrated strong leadership, problem solving, communication skills.\nWilling to travel nationwide & globally for business trips every week.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Uniqlo",
+      "program": "Uniqlo Management Candidate",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City, Hanoi and other cities",
+      "function_list": [
+        "Store Manager"
+      ],
+      "open_date": "13/10",
+      "close_date": "29/01",
+      "rounds_json": [
+        "1. Application",
+        "2. Aptitude Test & Company Information Session",
+        "3. First interview",
+        "4. Store Experience & Panel interview",
+        "5. Final interview"
+      ],
+      "candidate_requirement": "Bachelor's degree or higher in any field ​GPA from 7/10 (3.0/4.0)\nFresh graduates or under 03 years of working experience\nProficient in English (minimum IELTS 6.5 or TOEIC 750 equivalent)​\nFlexibility to relocate nationwide & globally in the future\nFlexible work schedule, including early mornings, late nights, overnights, weekends, and holidays.",
+      "apply_url": null
+    },
+    {
+      "corporation": "HSBC",
+      "program": "HSBC Vietnam Graduate Programme",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "CIB Banking Management Associate",
+        "GCOO Management Associate",
+        "Premier Wealth Relationship Management Associate",
+        "Risk and Compliance Management Associate"
+      ],
+      "open_date": "22/06",
+      "close_date": "30/07",
+      "rounds_json": null,
+      "candidate_requirement": "Have at least a second class honours degree in any discipline or equivalent from a recognised university in Vietnam or overseas (recent graduates will be considered). Currently hold a minimum 3.2 cumulative GPA or overseas equivalent.\n Have the legal right to work in Vietnam\n Strong Problem-solving skills. Ability to break down complex problems into small solvable parts and work with agility and resourcefulness to come up with meaningful outcomes.\n Good networkers. We encourage you to collaborate with clients, senior management, peers and our other teams internationally. This means you should be a strong communicator, show courage when presenting and be the face of HSBC for our clients.\n Fast learners. You will work with new people on constantly evolving projects to help customers. By quickly becoming an expert in your area and keeping on top of ever-changing markets, you will gain the credibility to succeed.\n Diverse thinkers. Bringing new ideas to the table and sharing an enthusiasm for improving our services is welcomed by our teams in both customer-facing and head office roles. Your dedication to delivering projects efficiently and sticking to rules and regulations will be important.\n Opportunity takers. Having the courage to jump at the chance to do a rotation somewhere new or taking on a challenging, yet rewarding project will show that you’ve got the motivation to take your career to a higher level.\n Be fluent in English and Vietnamese",
+      "apply_url": null
+    },
+    {
+      "corporation": "C.P Group",
+      "program": "Future Leaders Development Program",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": null,
+      "open_date": "30/08",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Online interview",
+        "3. Online Test",
+        "4. Assessment Day Application"
+      ],
+      "candidate_requirement": "Bachelor’s degree or higher in the following majors: Animal Science, Veterinary Medicine, Industrial Engineering, Automation, Electrical – Mechanical, IT, Economics, Finance, Marketing, Food Technology, Logistics & Supply Chain, or related fields\nGPA from 2.75/4 or equivalent\nGood communication in English (or Thai)\nStrong teamwork & independent working skills\nCritical thinking & problem-solving abilities\nLeadership experience in clubs/teams is an advantage\nEntrepreneurial spirit, passion for business & production chain management",
+      "apply_url": null
+    },
+    {
+      "corporation": "MSB",
+      "program": "MSB Management Trainee Program",
+      "program_type": "Leadership Program",
+      "location": "Hanoi, Ho Chi Minh City",
+      "function_list": [
+        "Nhóm Kinh tế – Tài chính – Ngân hàng: Ngân hàng Bán lẻ",
+        "Ngân hàng Doanh nghiệp",
+        "Ngân hàng Định chế Tài chính",
+        "Khối Quản lý Tài chính",
+        "Digital Channel Program",
+        "Digital Sale Platform Program",
+        "Use Case RB/EB Program",
+        "MT Loyalty Program",
+        "Nhóm Công nghệ – Dữ liệu – Phân tích số: Khối Công nghệ",
+        "Khối Quản lý Rủi ro",
+        "Khối Vận hành",
+        "BPM Risk Program",
+        "STP Program"
+      ],
+      "open_date": "05/05",
+      "close_date": "12/07",
+      "rounds_json": [
+        "1. Application",
+        "2. Aptitude Test",
+        "3. Group Discussion",
+        "4. Interview",
+        "5. Panel Interview"
+      ],
+      "candidate_requirement": "Sinh viên mới tốt nghiệp hoặc dưới 02 năm kinh nghiệm.\nGPA từ Khá trở lên, ưu tiên tốt nghiệp Đại học top đầu các chuyên ngành hoặc Du học sinh. Ưu tiên sinh viên tốt nghiệp thủ khoa hoặc có thành tích học tập xuất sắc\nSở hữu tư duy logic, sáng tạo, khả năng giải quyết vấn đề và tinh thần học hỏi không ngừng.\nKhả năng nghe và hiểu Tiếng Anh thành thạo..\nKhao khát phát triển và sẵn sàng trở thành lãnh đạo trẻ trong 2 năm tới.\nSẵn sàng thử thách và thích nghi với môi trường làm việc năng động",
+      "apply_url": null
+    }
+  ]
+}

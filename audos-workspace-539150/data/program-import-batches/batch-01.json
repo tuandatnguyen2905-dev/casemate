@@ -1,0 +1,145 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "Unilever Vietnam",
+      "program": "Unilever Future Leaders Programme (UFLP)",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Customer Development",
+        "Marketing",
+        "Supply Chain Manufacturing (Dành cho sinh viên khối kĩ thuật)",
+        "Finance",
+        "Business Development (Unilever Food Solutions)"
+      ],
+      "open_date": "26/01",
+      "close_date": "01/04",
+      "rounds_json": [
+        "Vòng 1: Online Application & Aptitude Test",
+        "Vòng 2: Digital Interview",
+        "Vòng 3: Discovery Center"
+      ],
+      "candidate_requirement": "- Sinh viên quốc tịch Việt Nam đã hoàn thành hệ Cử Nhân/ Thạc Sĩ trong năm 2024, hoặc sinh viên Cử Nhân/Thạc sĩ đã tốt nghiệp có dưới 2 năm kinh nghiệm,\n- Điểm trung bình tích lũy từ 7.0/10.0 hoặc tương đương,\n- Có mục tiêu và lý tưởng nghề nghiệp rõ ràng và mong muốn được bước những bước tiến xa và vững chắc trong hành trình sự nghiệp,\n- Có kỹ năng làm việc độc lập và hợp tác với mọi người; Kinh nghiệm lãnh đạo trong câu lạc bộ, đội, nhóm, tổ chức xã hội là một lợi thế\n- Nhiệt huyết, học hỏi nhanh, thái độ làm việc tích cực",
+      "apply_url": null
+    },
+    {
+      "corporation": "Nestlé Vietnam",
+      "program": "Nestlé #SparkTheNext Leaders Management Trainee 2026",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City, Dong Nai, Hung Yen",
+      "function_list": [
+        "Sales",
+        "Commercial (Marketing)",
+        "Consumer Market Intelligence",
+        "Finance & Control",
+        "Supply Chain",
+        "Factory HR",
+        "Production",
+        "Engineering",
+        "Quality Assurance",
+        "Health - Safety - Environment."
+      ],
+      "open_date": "15/12",
+      "close_date": "01/05",
+      "rounds_json": [
+        "1. Online Assessment",
+        "2. Initial Interview",
+        "3. Nest Camp",
+        "4. Final Interview"
+      ],
+      "candidate_requirement": "Senior student or fresh graduate with less than 1 year of full-time work experience\n- Can start working full-time from May 2026\n- Minimum Grade-Point Average (GPA) of 2.8/4 or equivalent 7/10\n- Proficient in English with strong communication skills\n- A driven and ambitious individual with strong business acumen and sharp analytical and critical thinking.\n- A strong team player with excellent interpersonal and communication skills.\n- Ready to embrace change, lead with agility, and deliver exceptional results.",
+      "apply_url": null
+    },
+    {
+      "corporation": "L'Oréal Vietnam",
+      "program": "L'Oréal SEEDZ (Management Trainee)",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Marketing",
+        "O+O Commercial (Online / Offline Sales)",
+        "Supply Chain (Data Analytics)",
+        "Finance",
+        "Human Resources"
+      ],
+      "open_date": "25/04",
+      "close_date": "06/12",
+      "rounds_json": [
+        "1. Application",
+        "2. Online Test & Video Assessment",
+        "3. Initial Interview",
+        "4. Assessment Center & Final Interview"
+      ],
+      "candidate_requirement": "A graduating student or a graduate with less than two-year work experience that possess strong foundation of technical & professional competencies\nExhibits high potential in leadership and management\nHas strong business acumen; excellent in analytics and numbers\nAdventurous, driven with entrepreneurial spirit; a creative problem solver with an open mind\nStrong communication and interpersonal skills\nL'Oréal Brandstormer/L'Oréal Intern is a BIG PLUS",
+      "apply_url": null
+    },
+    {
+      "corporation": "Suntory PepsiCo Vietnam",
+      "program": "Suntory PepsiCo Management Trainee",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City, Ha Noi",
+      "function_list": [
+        "Sales",
+        "Marketing",
+        "Operations",
+        "Finance",
+        "People & Culture"
+      ],
+      "open_date": "25/11",
+      "close_date": "01/03",
+      "rounds_json": [
+        "1. Application",
+        "2. Testing",
+        "3. Initial Interview",
+        "4. Career Camp & Fin'al Interview"
+      ],
+      "candidate_requirement": "Fresh graduates (Bachelor/Master Degree from all backgrounds) or graduates with maximum 2 years of full-time working experience. Work full-time from March 2026.\nVietnamese nationality\nGPA (Grade Point Average): above 7.0 out of 10 or equivalent\nHonest, proactive, innovative, self-motivated\nResult oriented, collaborating, influencing & innovating\nLeadership potential\nEnglish fluency and computer literacy",
+      "apply_url": null
+    },
+    {
+      "corporation": "Carlsberg Vietnam",
+      "program": "Carlsberg Asia Graduate Trainee Programme (GTP) 2026",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City, Hue Brewery",
+      "function_list": [
+        "Finance",
+        "People & Culture",
+        "Health Safety Security & Environment",
+        "Marketing",
+        "Trade Marketing",
+        "Procurement"
+      ],
+      "open_date": "08/07",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application Submission",
+        "2. Application Screening",
+        "3. Online AI interview",
+        "4. Assessment Center",
+        "5. Final Interview"
+      ],
+      "candidate_requirement": "Hold a Bachelor's or Master's degree with a GPA of 7.0+ (or equivalent);\nAre fresh graduates or have less than 2 years of working experience;\nBring a dynamic, curious, and eager-to-learn mindset, paired with a strong collaborative spirit;\nDemonstrate a drive for results, supported by effective communication, analytical thinking, and project management skills;\nShowcase a proven track record in extracurricular activities or internship experience;\nAre excited about mobility opportunities, both domestic and international;\nAspire to lead and thrive in the fast-paced, ever-evolving beer industry;\nCommunicate confidently with fluent English skills;\nAre proficient in Microsoft Office and comfortable using AI-based tools to support the work environment.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Central Retail Vietnam",
+      "program": "Central Retail Management Associate (MA) 2026",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": null,
+      "open_date": "24/07",
+      "close_date": "01/11",
+      "rounds_json": [
+        "1. Application",
+        "2. Cognitive Test",
+        "3. HR interview",
+        "4. Offline Test",
+        "5. Business Case Presentation"
+      ],
+      "candidate_requirement": "Fresh graduates or young professionals who have less than 3 years of working experience\nPassion for retail business and willing to work in a fast-paced, dynamic environment\nIf you're eager to learn, resilient in the face of challenges, and committed to achieving ambitious goals\nGood English proficiency",
+      "apply_url": null
+    }
+  ]
+}

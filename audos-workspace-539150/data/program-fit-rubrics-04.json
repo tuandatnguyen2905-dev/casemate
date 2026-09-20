@@ -1,0 +1,266 @@
+[
+  {
+    "program_id": "abbott-internship-2025",
+    "program_name": "Abbott Vietnam — Abbott Internship Program",
+    "company": "Abbott Vietnam",
+    "program": "Abbott Internship Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (GPA of at least 7.0/10 (2.8/4.0); final-year students or recent graduates), or the CV does not clearly state the GPA/major.",
+          "dat": "Meets the standard: GPA of at least 7.0/10 (2.8/4.0); final-year student or recent graduate; major relevant to the applied track; graduation timeline meets the requirements.",
+          "noi_bat": "GPA of approximately 8.5/10 (3.5/4.0) or above, a scholarship, or a high departmental ranking; major closely aligned with the applied track, or a double degree/supplementary professional certification."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & foreign languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "The CV provides no evidence of English proficiency (certificate, English-medium program, or English-speaking work environment). Program standard: proficient English and strong Microsoft Office skills (an explicit program requirement).",
+          "dat": "Meets the standard for proficient English and strong Microsoft Office skills (an explicit program requirement); able to use English at work and respond in interviews.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+, or has studied/worked entirely in English; confident presenting, discussing cases, and participating in panel interviews in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurricular activities & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one team leader/committee head role in a club, project, or event, with a specific description of what the candidate did.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder, with measurable results (number of members led, budget size, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience related to healthcare/pharmaceuticals/nutrition, marketing, finance, data, or operations, as relevant to the applied internship track.",
+          "dat": "At least one internship related to healthcare/pharmaceuticals/nutrition, marketing, finance, data, or operations, as relevant to the applied internship track, with a clear description of the work actually performed (not just a job title).",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI met, project implemented in practice) at a company in the same industry as Abbott Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical thinking & case skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel skills, prior case practice), sufficient to pass the CV screening and department-specific interview rounds.",
+          "noi_bat": "Case competition achievement or a real-world analytical project + strong command of tools (advanced Excel, SQL/Python if required by the track), ready for both the aptitude test and assessment centre."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "The CV does not mention any award, scholarship, or competition.",
+          "dat": "Has participated in an academic/case competition or received a school-level scholarship or award.",
+          "noi_bat": "Reached an advanced round or won a major competition (healthcare/FMCG case competition or scientific research competition), or received a national-level scholarship/award or higher."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Healthcare standards & data integrity",
+        "label_en": "Healthcare compliance & data integrity",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "No indication of interest in healthcare or nutrition; does not demonstrate care or accuracy in their work.",
+          "dat": "Shows genuine interest in healthcare/nutrition and demonstrates accuracy and compliance in academic and professional work.",
+          "noi_bat": "A specific healthcare/nutrition project or activity (research or community campaign) + an understanding of compliance standards in the multinational healthcare industry."
+        }
+      }
+    ],
+    "ideal_profile_text": "Senior Students or Fresh Graduates\nGPA from 7.0/10 or 2.8/4.0\nProficient in English and Microsoft Office\nStrong communication skill",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "mondelez-vietnam-taste-the-future-management-trainee",
+    "program_name": "Mondelēz Vietnam — Taste The Future Management Trainee",
+    "company": "Mondelēz Vietnam",
+    "program": "Taste The Future Management Trainee",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (recent graduate or less than 2 years of experience (GPA ≥ 7.0/10.0)), or the CV does not clearly state the GPA/major.",
+          "dat": "Recent graduate or less than 2 years of experience (GPA ≥ 7.0/10.0)",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Proficient in English",
+          "dat": "Proficient in English",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "Has a growth mindset, flexibility, resilience, and strong leadership and problem-solving skills",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Able to work full-time from June 2025",
+          "dat": "Able to work full-time from June 2025",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Mondelēz Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has a growth mindset, flexibility, resilience, and strong leadership and problem-solving skills",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Mondelēz Vietnam culture & motivation fit",
+        "label_en": "Mondelēz Vietnam culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Mondelēz Vietnam or its industry; generic application reasons only.",
+          "dat": "Able to work full-time from June 2025 Has a driver's license and is willing to travel nationwide",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Mondelēz Vietnam's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Recent graduate or less than 2 years of experience (GPA ≥ 7.0/10.0)\nHas a growth mindset, flexibility, resilience, and strong leadership and problem-solving skills\nProficient in English\nAble to work full-time from June 2025\nHas a driver's license and is willing to travel nationwide",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "mondelez-vietnam-sales-trainee-program",
+    "program_name": "Mondelēz Vietnam — Sales Trainee Program",
+    "company": "Mondelēz Vietnam",
+    "program": "Sales Trainee Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (recent university graduate or less than 2 years of post-graduation work experience, with no restriction on field of study; cumulative GPA of at least 6.5/10 or 2.3/4), or the CV does not clearly state the GPA/major.",
+          "dat": "Recent university graduate or less than 2 years of post-graduation work experience, with no restriction on field of study; cumulative GPA of at least 6.5/10 or 2.3/4",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Meets the program's required English proficiency level.",
+          "dat": "Meets the program's required English proficiency level.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Recent university graduate or less than 2 years of post-graduation work experience, with no restriction on field of study",
+          "dat": "Recent university graduate or less than 2 years of post-graduation work experience, with no restriction on field of study",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Mondelēz Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel, prior case practice) — enough to pass the program's assessment/aptitude test.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Mondelēz Vietnam culture & motivation fit",
+        "label_en": "Mondelēz Vietnam culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Mondelēz Vietnam or its industry; generic application reasons only.",
+          "dat": "Willing to work full-time from May 2026 Passionate about Sales and eager to build a career in FMCG Strong communication skills, adaptability, and resilience A growth-oriented attitude, strong commitment, and a win-win mindset Willing to relocate as required by the role",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Mondelēz Vietnam's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Recent university graduate or less than 2 years of post-graduation work experience, with no restriction on field of study\nCumulative GPA of at least 6.5/10 or 2.3/4\nWilling to work full-time from May 2026\nPassionate about Sales and eager to build a career in FMCG\nStrong communication skills, adaptability, and resilience\nA growth-oriented attitude, strong commitment, and a win-win mindset\nWilling to relocate as required by the role",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

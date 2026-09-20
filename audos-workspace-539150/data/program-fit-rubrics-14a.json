@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "tiktok-graduate-development-program-tiktok-shop-e-commerce-vietnam",
+    "program_name": "Tiktok — Graduate Development Program (TikTok Shop E-commerce, Vietnam)",
+    "company": "Tiktok",
+    "program": "Graduate Development Program (TikTok Shop E-commerce, Vietnam)",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Individuals who are completing or have recently completed a Bachelor's degree in any field or a related discipline.) or the CV does not clearly state GPA/major.",
+          "dat": "Individuals who are completing or have recently completed a Bachelor's degree in any field or a related discipline.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Meets the program's required English proficiency level.",
+          "dat": "Meets the program's required English proficiency level.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "Demonstrated leadership potential through student organizations, entrepreneurial projects, competitions, community initiatives, or other meaningful experiences.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Academic background in Business, Economics, Finance, Accounting, Analytics, Data Science, Information Systems, Information Technology, Engineering, Computer Science, or related disciplines. Prior internship, project, case competition, startup, consulting, e-commerce, technology, or business operations experience.",
+          "dat": "Academic background in Business, Economics, Finance, Accounting, Analytics, Data Science, Information Systems, Information Technology, Engineering, Computer Science, or related disciplines. Prior internship, project, case competition, startup, consulting, e-commerce, technology, or business operations experience.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Tiktok."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Strong analytical and problem-solving skills, with the ability to work with data, structure ambiguous problems, and develop practical recommendations. Academic background in Business, Economics, Finance, Accounting, Analytics, Data Science, Information Systems, Information Technology, Engineering, Computer Science, or related disciplines. Experience using data to solve business problems, such as through Excel, SQL, dashboards, analytics tools, or structured research. Interest in building a long-term career in e-commerce, business strategy, operations, growth, analytics, or general management.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Tiktok culture & motivation fit",
+        "label_en": "Tiktok culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Tiktok or its industry; generic application reasons only.",
+          "dat": "Minimum Qualification(s) Strong interest in e-commerce, technology, digital platforms, consumer products, creator economy, or business operations. Clear and effective communication skills, with the ability to collaborate with stakeholders across teams and markets. Demonstrated intellectual curiosity, learning agility, ownership, and resilience in a fast-paced environment. Strong business acumen and interest in understanding how platforms grow users, sellers, creators, categories, and revenue. Ability to thrive in ambiguity, learn quickly, and work effectively in a cross-functional and multicultural environment.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Tiktok's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Minimum Qualification(s)\n\n Individuals who are completing or have recently completed a Bachelor's degree in any field or a related discipline.\n Strong interest in e-commerce, technology, digital platforms, consumer products, creator economy, or business operations.\n Strong analytical and problem-solving skills, with the ability to work with data, structure ambiguous problems, and develop practical recommendations.\n Clear and effective communication skills, with the ability to collaborate with stakeholders across teams and markets.\n Demonstrated intellectual curiosity, learning agility, ownership, and resilience in a fast-paced environment.\n Academic background in Business, Economics, Finance, Accounting, Analytics, Data Science, Information Systems, Information Technology, Engineering, Computer Science, or related disciplines.\n Prior internship, project, case competition, startup, consulting, e-commerce, technology, or business operations experience.\n Experience using data to solve business problems, such as through Excel, SQL, dashboards, analytics tools, or structured research.\n Strong business acumen and interest in understanding how platforms grow users, sellers, creators, categories, and revenue.\n Demonstrated leadership potential through student organizations, entrepreneurial projects, competitions, community initiatives, or other meaningful experiences.\n Ability to thrive in ambiguity, learn quickly, and work effectively in a cross-functional and multicultural environment.\n Interest in building a long-term career in e-commerce, business strategy, operations, growth, analytics, or general management.",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

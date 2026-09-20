@@ -1,0 +1,266 @@
+[
+  {
+    "program_id": "mondelez-vietnam-taste-the-future-internship-program",
+    "program_name": "Mondelēz Vietnam — Taste The Future Internship Program",
+    "company": "Mondelēz Vietnam",
+    "program": "Taste The Future Internship Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Meets the program's stated academic requirement for Taste The Future Internship Program.) or the CV does not clearly state GPA/major.",
+          "dat": "Meets the program's stated academic requirement for Taste The Future Internship Program.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Able to communicate effectively in both English and Vietnamese.",
+          "dat": "Able to communicate effectively in both English and Vietnamese.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 22,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Currently a year 3 or 4 student or a recent graduate, able to work full-time for the next 4-6 months",
+          "dat": "Currently a year 3 or 4 student or a recent graduate, able to work full-time for the next 4-6 months",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Mondelēz Vietnam."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Able to learn quickly and adapt well, with a growth mindset.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 7,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Mondelēz Vietnam culture & motivation fit",
+        "label_en": "Mondelēz Vietnam culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Mondelēz Vietnam or its industry; generic application reasons only.",
+          "dat": "Currently a year 3 or 4 student or a recent graduate, able to work full-time for the next 4-6 months Demonstrates perseverance, can work independently, and remains results-oriented.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Mondelēz Vietnam's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Currently a year 3 or 4 student or a recent graduate, able to work full-time for the next 4-6 months\nAble to learn quickly and adapt well, with a growth mindset.\nDemonstrates perseverance, can work independently, and remains results-oriented.\nAble to communicate effectively in both English and Vietnamese.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "masan-group-young-entreprenours-program-sales-trainee",
+    "program_name": "Masan Group — Young Entreprenours Program Sales Trainee",
+    "company": "Masan Group",
+    "program": "Young Entreprenours Program Sales Trainee",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Recent graduate or professional with less than 2 years of work experience. Cumulative grade point average (GPA) of 6.5/10 or higher.) or the CV does not clearly state GPA/major.",
+          "dat": "Recent graduate or professional with less than 2 years of work experience. Cumulative grade point average (GPA) of 6.5/10 or higher.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Meets the program's required English proficiency level.",
+          "dat": "Meets the program's required English proficiency level.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Passionate about Business & Sales, especially the fast-moving consumer goods (FMCG) industry.",
+          "dat": "Passionate about Business & Sales, especially the fast-moving consumer goods (FMCG) industry.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Masan Group."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel, prior case practice) — enough to pass the program's assessment/aptitude test.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Masan Group culture & motivation fit",
+        "label_en": "Masan Group culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Masan Group or its industry; generic application reasons only.",
+          "dat": "Passionate about Business & Sales, especially the fast-moving consumer goods (FMCG) industry. Enthusiastic, ambitious, disciplined, and highly eager to learn. Willing to work in assigned provinces and cities. Willing to travel, engage with customers, and develop customer relationships across channels.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Masan Group's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Recent graduate or professional with less than 2 years of work experience.\nCumulative grade point average (GPA) of 6.5/10 or higher.\nPassionate about Business & Sales, especially the fast-moving consumer goods (FMCG) industry.\nEnthusiastic, ambitious, disciplined, and highly eager to learn.\nWilling to work in assigned provinces and cities.\nWilling to travel, engage with customers, and develop customer relationships across channels.",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "masan-group-young-entreprenours-program-technology",
+    "program_name": "Masan Group — Young Entreprenours Program - Technology",
+    "company": "Masan Group",
+    "program": "Young Entreprenours Program - Technology",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Final-year students who are able to work full-time, or fresh graduates with less than one year of professional experience.) or the CV does not clearly state GPA/major.",
+          "dat": "Final-year students who are able to work full-time, or fresh graduates with less than one year of professional experience.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Meets the program's required English proficiency level.",
+          "dat": "Meets the program's required English proficiency level.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Major in Computer Science, Software Engineering, Information Technology, Data Science, or related technical disciplines. Strong foundation in Data Structures, Algorithms, and Programming.",
+          "dat": "Major in Computer Science, Software Engineering, Information Technology, Data Science, or related technical disciplines. Strong foundation in Data Structures, Algorithms, and Programming.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Masan Group."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Major in Computer Science, Software Engineering, Information Technology, Data Science, or related technical disciplines. Strong foundation in Data Structures, Algorithms, and Programming. Strong analytical thinking, problem-solving ability, and eagerness to learn.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Masan Group culture & motivation fit",
+        "label_en": "Masan Group culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Masan Group or its industry; generic application reasons only.",
+          "dat": "Good academic record or notable achievements such as technology competitions, research projects, open-source contributions, or personal technical projects.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Masan Group's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Final-year students who are able to work full-time, or fresh graduates with less than one year of professional experience.\nMajor in Computer Science, Software Engineering, Information Technology, Data Science, or related technical disciplines.\nGood academic record or notable achievements such as technology competitions, research projects, open-source contributions, or personal technical projects.\nStrong foundation in Data Structures, Algorithms, and Programming.\nStrong analytical thinking, problem-solving ability, and eagerness to learn.",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "program_id": "acb-the-next-banker",
+    "program_name": "ACB — The Next Banker",
+    "company": "ACB",
+    "program": "The Next Banker",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Final-year students currently enrolled at universities nationwide) or the CV does not clearly state GPA/major.",
+          "dat": "Final-year students currently enrolled at universities nationwide",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Meets the program's required English proficiency level.",
+          "dat": "Meets the program's required English proficiency level.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Economics-related fields or majors related to Finance - Banking, Business Administration, Accounting, Auditing, etc.",
+          "dat": "Economics-related fields or majors related to Finance - Banking, Business Administration, Accounting, Auditing, etc.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as ACB."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Has an analytical foundation (quantitative coursework, strong Excel, prior case practice) — enough to pass the program's assessment/aptitude test.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "ACB culture & motivation fit",
+        "label_en": "ACB culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to ACB or its industry; generic application reasons only.",
+          "dat": "Expected to graduate in 2026 or 2027",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of ACB's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Final-year students currently enrolled at universities nationwide\nEconomics-related fields or majors related to Finance - Banking, Business Administration, Accounting, Auditing, etc.\nExpected to graduate in 2026 or 2027",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

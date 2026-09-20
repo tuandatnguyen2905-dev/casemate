@@ -1,0 +1,142 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "Masan Group",
+      "program": "Young Entreprenours Program - Technology",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Software Development",
+        "Data / Artificial Intelligence",
+        "Information Security",
+        "Cloud & Infrastructure"
+      ],
+      "open_date": "16/03",
+      "close_date": "17/04",
+      "rounds_json": [
+        "1. Application",
+        "2. Initial Interview",
+        "3. Masan Tech-Talk Day"
+      ],
+      "candidate_requirement": "Final-year students who are able to work full-time, or fresh graduates with less than one year of professional experience.\nMajor in Computer Science, Software Engineering, Information Technology, Data Science, or related technical disciplines.\nGood academic record or notable achievements such as technology competitions, research projects, open-source contributions, or personal technical projects.\nStrong foundation in Data Structures, Algorithms, and Programming.\nStrong analytical thinking, problem-solving ability, and eagerness to learn.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Vinamilk",
+      "program": "Vinamilk Graduate Talent Program",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "E-Commerce",
+        "Modern Trade",
+        "Retail Chain",
+        "Brand Design",
+        "Brand Management",
+        "Internal Control & Audit",
+        "Research & Development",
+        "Manufacturing Excellence",
+        "Tech & Data",
+        "Finance"
+      ],
+      "open_date": "27/06",
+      "close_date": "26/07",
+      "rounds_json": [
+        "1. Application",
+        "2. Aptitude Test",
+        "3. In-depth Interview",
+        "4. Final Interview"
+      ],
+      "candidate_requirement": "Be a senior student or fresh graduate with less than 2 years of full-time work experience.\nHave a cumulative GPA of 7/10 or higher (or equivalent).\nBe available to work full-time starting from October 2026.\nPossess a growth mindset, strong ownership, critical thinking, and a proactive, innovative spirit.",
+      "apply_url": null
+    },
+    {
+      "corporation": "British American Tobacco",
+      "program": "BAT Global Graduate Programme",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Operations (Manufacturing & Supply Chain)",
+        "Finance",
+        "Trade Marketing",
+        "Brand Marketing",
+        "Corporate & Regulatory Affairs",
+        "Human Resources"
+      ],
+      "open_date": "01/10",
+      "close_date": "01/12",
+      "rounds_json": [
+        "1. Application",
+        "2. Initial Interview",
+        "3. Assessment Center",
+        "4. Final Interview"
+      ],
+      "candidate_requirement": "A resilient person who can lead yourself & others through change & challenges.\nA career-driven person who aims to drive personal & professional growth beyond their limits.\nA globally mobile person who is passionate about pursuing a career in the profession of Operations/ Trade Marketing/ Finance/ Corporate & Regulatory Affairs\nComprehensive onboarding to BAT Business and the specific Functions within Corporate & Regulatory Affairs (i.e Corporate Communication, External Affairs, Commercial Partnering)\nFresh graduates (Bachelor/Master’s degree from all backgrounds) or graduates with maximum 2 year of professional work experience (excluding internship)\nGraduated with Bachelor or Masters from a reputable university majoring in law, communication, media, political science, external engagement, or equivalent is preferrable\nInterests in corporate and regulatory campaign/project management.\nInterests in ESG, corporate communication, and laws/regulations.\nBe able to work full-time from November 2024 \nDemonstrate great leadership potential\nShow great alignment with our Core Values\nGlobally Mobile\nProficient in English\nVietnam Nationality",
+      "apply_url": null
+    },
+    {
+      "corporation": "Japan Tobacco International",
+      "program": "JTI Management Trainee",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Corporate Affairs & Communications",
+        "Operations"
+      ],
+      "open_date": "01/09",
+      "close_date": "29/11",
+      "rounds_json": [
+        "1. Application",
+        "2. Aptitude Test",
+        "3. Business Case",
+        "4. Panel Interview"
+      ],
+      "candidate_requirement": "Bachelor’s or Master’s degree in Economics, Marketing, Commerce, Business Administration, or a related field, with a minimum GPA of 3.0 (or equivalent).\nLess than 2 years of full-time work experience, with strong passion and long-term career orientation in the commercial field.\nFluent in English (spoken and written).\nProficient in Microsoft Office and adaptable to digital tools.\nWilling to relocate within Vietnam or internationally; Vietnamese nationality required.\nStrong analytical and critical thinking skills, with the ability to make sound business decisions.\nDemonstrated teamwork and leadership potential, with the ability to foster trust and collaborate effectively with colleagues.\nCommercial acumen and capacity for strategic thinking.\nGrowth-oriented mindset, intellectual curiosity, and adaptability in diverse situations.\nStrong sense of ownership, resilience, discipline, and the ability to positively influence others with empathy.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Shopee",
+      "program": "ShopeeFood Associate Product Management Program",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Product Management"
+      ],
+      "open_date": "01/09",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Online HR Interview",
+        "3. Competency Assessment",
+        "4. Business Assessment Center"
+      ],
+      "candidate_requirement": "Education & Experience: Bachelor’s/Master’s fresh graduate or <2 years of full-time experience (available full-time from Nov 2026).\nCore Competencies: Strong analytical, problem-solving, and cross-functional communication skills.\nMindset: High ownership, proactive \"can-do\" attitude, curious, adaptable, and passionate about technology/digital products.\nLanguages: Business-level English fluency (written & spoken).\nNice-to-have: Prior experience in Tech/E-commerce/FinTech/Consulting/Product, or basic knowledge of product/data tools (SQL, Figma, Google Analytics, Amplitude).",
+      "apply_url": null
+    },
+    {
+      "corporation": "Shopee",
+      "program": "Shopee Apprentice Program",
+      "program_type": "Internship Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Marketing",
+        "Operations",
+        "Business Development",
+        "Product Management",
+        "Business Intelligence"
+      ],
+      "open_date": "31/03",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Online Assessment",
+        "3. HR interview",
+        "4. Case Interview",
+        "5. Business Leader Interview"
+      ],
+      "candidate_requirement": "University students in their second to final year, currently pursuing a Bachelor’s degree in any discipline\n Available for a full-time internship in Ho Chi Minh City from June to the end of August 2026 (3 months)\n Strong verbal and written communication skills\n A team player with good interpersonal skills\n Effective problem solver with analytical thinking skills\n Able to adapt in a fast-paced and dynamic environment\n Self-starter who is eager to learn\n Passionate individual who possesses a can-do attitude",
+      "apply_url": null
+    }
+  ]
+}

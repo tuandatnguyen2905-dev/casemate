@@ -1,0 +1,266 @@
+[
+  {
+    "program_id": "c-p-group-future-leaders-development-program",
+    "program_name": "C.P Group — Future Leaders Development Program",
+    "company": "C.P Group",
+    "program": "Future Leaders Development Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Bachelor’s degree or higher in the following majors: Animal Science, Veterinary Medicine, Industrial Engineering, Automation, Electrical – Mechanical, IT, Economics, Finance, Marketing, Food Technology, Logistics & Supply Chain, or related fields GPA from 2.75/4 or equivalent) or the CV does not clearly state GPA/major.",
+          "dat": "Bachelor’s degree or higher in the following majors: Animal Science, Veterinary Medicine, Industrial Engineering, Automation, Electrical – Mechanical, IT, Economics, Finance, Marketing, Food Technology, Logistics & Supply Chain, or related fields GPA from 2.75/4 or equivalent",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Good communication in English (or Thai)",
+          "dat": "Good communication in English (or Thai)",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "Leadership experience in clubs/teams is an advantage",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Strong teamwork & independent working skills",
+          "dat": "Strong teamwork & independent working skills",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as C.P Group."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Critical thinking & problem-solving abilities",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "C.P Group culture & motivation fit",
+        "label_en": "C.P Group culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to C.P Group or its industry; generic application reasons only.",
+          "dat": "Strong teamwork & independent working skills Entrepreneurial spirit, passion for business & production chain management",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of C.P Group's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Bachelor’s degree or higher in the following majors: Animal Science, Veterinary Medicine, Industrial Engineering, Automation, Electrical – Mechanical, IT, Economics, Finance, Marketing, Food Technology, Logistics & Supply Chain, or related fields\nGPA from 2.75/4 or equivalent\nGood communication in English (or Thai)\nStrong teamwork & independent working skills\nCritical thinking & problem-solving abilities\nLeadership experience in clubs/teams is an advantage\nEntrepreneurial spirit, passion for business & production chain management",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "msb-msb-management-trainee-program",
+    "program_name": "MSB — MSB Management Trainee Program",
+    "company": "MSB",
+    "program": "MSB Management Trainee Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Recent graduates or candidates with less than 02 years of experience. GPA equivalent to a “Good” classification or above, with preference given to graduates from top universities in relevant majors or those who studied abroad. Preference is given to valedictorians or students with outstanding academic achievements) or the CV does not clearly state GPA/major.",
+          "dat": "Recent graduates or candidates with less than 02 years of experience. GPA equivalent to a “Good” classification or above, with preference given to graduates from top universities in relevant majors or those who studied abroad. Preference is given to valedictorians or students with outstanding academic achievements",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Proficient in listening to and understanding English.",
+          "dat": "Proficient in listening to and understanding English.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "Aspires to grow and is ready to become a young leader within the next 2 years.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Ready to take on challenges and adapt to a dynamic work environment",
+          "dat": "Ready to take on challenges and adapt to a dynamic work environment",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as MSB."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Demonstrates logical and creative thinking, problem-solving ability, and a commitment to continuous learning.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "MSB culture & motivation fit",
+        "label_en": "MSB culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to MSB or its industry; generic application reasons only.",
+          "dat": "Ready to take on challenges and adapt to a dynamic work environment",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of MSB's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Recent graduates or candidates with less than 02 years of experience.\nGPA equivalent to a “Good” classification or above, with preference given to graduates from top universities in relevant majors or those who studied abroad. Preference is given to valedictorians or students with outstanding academic achievements\nDemonstrates logical and creative thinking, problem-solving ability, and a commitment to continuous learning.\nProficient in listening to and understanding English.\nAspires to grow and is ready to become a young leader within the next 2 years.\nReady to take on challenges and adapt to a dynamic work environment",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "vpbank-vpbank-young-talents",
+    "program_name": "VPBank — VPBank Young Talents",
+    "company": "VPBank",
+    "program": "VPBank Young Talents",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Outstanding final-year students, recent bachelor’s or master’s graduates from universities in Vietnam or abroad, candidates with less than 1 year of work experience, or qualified internal candidates. Banking experience is not required.) or the CV does not clearly state GPA/major.",
+          "dat": "Outstanding final-year students, recent bachelor’s or master’s graduates from universities in Vietnam or abroad, candidates with less than 1 year of work experience, or qualified internal candidates. Banking experience is not required.",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Proficient in using English for day-to-day workplace communication and researching specialized materials.",
+          "dat": "Proficient in using English for day-to-day workplace communication and researching specialized materials.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Proficient in using English for day-to-day workplace communication and researching specialized materials.",
+          "dat": "Proficient in using English for day-to-day workplace communication and researching specialized materials.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as VPBank."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Bachelor’s degree or higher, preferably in: Business Administration, International Economics, Investment Economics, Finance, Banking, Accounting, Auditing, Information Technology, Data Science, Computer Science, Artificial Intelligence, Data Analytics, Risk Management, Communications, Marketing, Human Resource Management, or other related fields...",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "VPBank culture & motivation fit",
+        "label_en": "VPBank culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to VPBank or its industry; generic application reasons only.",
+          "dat": "Strong communication skills, a fast learner, willingness to take on challenges, and adaptability to change. Passionate about working at VPBank and committed to a long-term career with the bank. Preference is given to candidates with outstanding academic achievements who have earned prestigious awards, certificates of merit, or recognition for initiatives from domestic or international organizations and companies.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of VPBank's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Outstanding final-year students, recent bachelor’s or master’s graduates from universities in Vietnam or abroad, candidates with less than 1 year of work experience, or qualified internal candidates. Banking experience is not required. \nBachelor’s degree or higher, preferably in: Business Administration, International Economics, Investment Economics, Finance, Banking, Accounting, Auditing, Information Technology, Data Science, Computer Science, Artificial Intelligence, Data Analytics, Risk Management, Communications, Marketing, Human Resource Management, or other related fields... \nProficient in using English for day-to-day workplace communication and researching specialized materials.\nStrong communication skills, a fast learner, willingness to take on challenges, and adaptability to change.\nPassionate about working at VPBank and committed to a long-term career with the bank.\nPreference is given to candidates with outstanding academic achievements who have earned prestigious awards, certificates of merit, or recognition for initiatives from domestic or international organizations and companies.",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]

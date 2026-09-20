@@ -1,0 +1,56 @@
+{
+  "enabled": true,
+  "provider": "stripe",
+  "mode": "connect",
+  "stripeAccountId": "acct_1TsdTLRiFhWGE5zE",
+  "platformFeeBps": 500,
+  "currency": "VND",
+  "businessName": "Casemate",
+  "supportEmail": "benjaminnguyen.work03@gmail.com",
+  "defaultTrialDays": 7,
+  "defaultPriceCents": 500,
+  "defaultPriceId": null,
+  "plans": [
+    {
+      "id": "first_month_5",
+      "name": "First Month Promo",
+      "planTier": "pro",
+      "currency": "VND",
+      "priceCents": 105000,
+      "interval": "month",
+      "intervalCount": 1,
+      "hasIntroPricing": true,
+      "introPriceCents": 105000,
+      "introInterval": "month",
+      "introIntervalCount": 1,
+      "introIterations": 1,
+      "regularPriceCents": 168000,
+      "regularInterval": "month",
+      "regularIntervalCount": 1,
+      "trialDays": 0,
+      "accessDurationDays": 30
+    },
+    {
+      "id": "monthly_8",
+      "name": "Monthly",
+      "planTier": "pro",
+      "currency": "VND",
+      "priceCents": 168000,
+      "interval": "month",
+      "intervalCount": 1,
+      "trialDays": 0,
+      "accessDurationDays": 30
+    },
+    {
+      "id": "six_month_30",
+      "name": "6-Month Package",
+      "planTier": "pro",
+      "currency": "VND",
+      "priceCents": 630000,
+      "interval": "day",
+      "intervalCount": 180,
+      "trialDays": 0,
+      "accessDurationDays": 180
+    }
+  ]
+}

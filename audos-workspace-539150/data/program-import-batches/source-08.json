@@ -1,0 +1,146 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "Schneider Electric",
+      "program": "Schneider Graduate Program",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Electrical Engineering Associate",
+        "Mechanical Engineering Associate"
+      ],
+      "open_date": "01/03",
+      "close_date": "01/05",
+      "rounds_json": [
+        "1. Application",
+        "2. Digital Interview (Hirevue)",
+        "3. Assessment Day",
+        "4. Final interview"
+      ],
+      "candidate_requirement": "Minimum an Engineering bachelor’s degree (preferably GPA >=7.5 or equivalent). Majoring in Industrial Engineering / Mechanical Engineering / Electrical Engineering / Mechatronics / Manufacturing\nRecent University Graduate with 02 years of working experience.\nExcellent command of English\nGood digital acumen and adaptability to new technologies. \nDemonstrated interest in project management\nFamiliarity with or prior experience using digital tools, engineering software (such as AutoCAD, SolidWorks, PLC, etc.) is an advantage \nCompetent in Communication, Problem Solving and Collaboration.\nAgile mindset and thirst for knowledge, willingness to unlearn and relearn.\nAspired to grow into a future leader\nEmbody of SE IMPACT Values",
+      "apply_url": null
+    },
+    {
+      "corporation": "Techtronic Industries",
+      "program": "Techtronic Industries Leadership Development Program",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Engineering Development Program (EDP): New Product Development (NPD)",
+        "Product Support Engineering (PSE)",
+        "Value Engineering (VE)",
+        "Testing Laboratory",
+        "Electrical Engineering",
+        "Motor Engineering",
+        "Console Engineering",
+        "Operations Development Program (ODP): Supply Chain Management",
+        "Operations Project Management",
+        "Quality Management",
+        "Manufacturing Production and Preventive Maintenance",
+        "Industrial Engineering",
+        "Advanced Manufacturing Engineering",
+        "EHS and ESG"
+      ],
+      "open_date": "01/08",
+      "close_date": "01/11",
+      "rounds_json": [
+        "1. Application Period",
+        "2. Online Assessment",
+        "3. Assessment Day",
+        "4. Final Interview"
+      ],
+      "candidate_requirement": "Recent graduates or candidates with less than one year of work experience in Mechatronic Engineering, Electrical Engineering, Mechanical Engineering, Industrial Management, Quality Management, Finance/Accounting, Supply Chain Management, or other related fields.​\nProficiency in English communication (IELTS 6.0 or equivalent certification).​\nMinimum GPA of 2.7/4 or 7/10.​\nDemonstrated analytical skills, logical reasoning, and critical thinking abilities.​\nAbility to learn quickly and adapt well to pressure and change.​\nA proactive mindset with creativity in problem-solving.​",
+      "apply_url": null
+    },
+    {
+      "corporation": "DKSH",
+      "program": "DKSH Internship Program",
+      "program_type": "Internship Program",
+      "location": "Ho Chi Minh City, Hanoi",
+      "function_list": [
+        "Finance (AI & Automation)",
+        "BI / BS (IT)",
+        "E-commerce (Livestream, Marketing & Merchandising, Social Commerce, Commercial, Operations, KAM)",
+        "Client Management & Key Account Management",
+        "Technical Sales (F&B, Personal Care)",
+        "Sales Force / Marketing Admin Support / Data Automation",
+        "Regulatory Affairs",
+        "Marketing / Social / Event",
+        "Service Engineer",
+        "Marcom",
+        "Supply Chain Management"
+      ],
+      "open_date": "[\"01/03\", \"30/06\"]",
+      "close_date": null,
+      "rounds_json": [
+        "Application"
+      ],
+      "candidate_requirement": "3rd or 4th year student (or a fresh graduate)",
+      "apply_url": null
+    },
+    {
+      "corporation": "Decathlon",
+      "program": "Future Shaper Program",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City, Hanoi",
+      "function_list": [
+        "Production Supply Specialist",
+        "Production Industrialization Specialist"
+      ],
+      "open_date": "31/05",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. HR interview/ Video Pitch",
+        "3. Factory Interview & Sport Session Day"
+      ],
+      "candidate_requirement": "Sinh viên mới tốt nghiệp hoặc < 2 năm kinh nghiệm\nChuyên ngành Textile / Material / Industrial Engineering\nGPA ≥ 3.0/4.0\nTiếng Anh tốt (IELTS 6.5 / TOEIC 800 trở lên)\nĐam mê sản xuất, đổi mới và phát triển bền vững\nTò mò, chủ động và sẵn sàng đối mặt thử thách\nSống cùng 4 giá trị của Decathlon: Sức sống – Trách nhiệm – Rộng lượng – Chân thật",
+      "apply_url": null
+    },
+    {
+      "corporation": "MUJI",
+      "program": "MUJI Managment Trainee",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City, Hanoi",
+      "function_list": [
+        "Store Supervisor"
+      ],
+      "open_date": "20/08",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Online Pre-interview Assessment",
+        "3. HR Interview",
+        "4. Panel Interview"
+      ],
+      "candidate_requirement": "Hold a Bachelor's Degree in Business Administration, Commerce, Economics, Supply Chain or related fields.\nGPA of 3.0/4.0 or equivalent (preferred)\nAre fresh graduates or have up to 1 year of working experience.\nHave a strong interest in retail, customer experience, and people management.\nDemonstrate leadership potential through academic, extracurricular, or professional experiences.\nPossess strong communication and interpersonal skills.\nAre willing to work flexible shifts, including weekends and public holidays.\nHave good English communication skills (equivalent to TOEIC 650+, IELTS 6.0+, or similar).\nAre eager to learn, adaptable, and ready to take on challenges.",
+      "apply_url": null
+    },
+    {
+      "corporation": "PMAX",
+      "program": "PMAX Total Marketing Elite",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City, Hanoi",
+      "function_list": [
+        "Management Trainee",
+        "Media",
+        "Strategy",
+        "Influencer Management",
+        "Creative",
+        "Account",
+        "and Tech"
+      ],
+      "open_date": "14/08",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application & Entrance Test",
+        "2. Interview with BOD",
+        "3. Business Case/ AI Case + Present with CEO & BOD"
+      ],
+      "candidate_requirement": "Interested in Marketing and committed to building a long-term career in the Marketing industry\nUniversity students graduating in 2026 or professionals with less than 1 year of work experience\nStrong academic background: GPA 3.0+ on a 4.0 scale or 7+ on a 10-point scale\nProficient English, written and spoken\nFamiliarity with Excel / Google Sheets and basic data or analytics tools\nProblem Solving — our Top 1 priority\n\nYou figure out what actually needs to be solved, break it into manageable parts, use data instead of assumptions to test your thinking, and come back with a clear recommendation — plus the reasoning to back it up.\n\n Growth mindset, Resilience & Extreme Ownership\n\nYou learn fast and you don’t break under feedback. You fix it and come back better. And you own the outcome from end to end\n\n Communication, Teamwork & Influence\n\nClear in writing and in speaking, in both Vietnamese and English. You adjust how you communicate for the audience. You get things done by being reliable and easy to work with.\n\n Digital & AI\n\nYou already use AI daily and you know where it’s confidently wrong. You’re comfortable reading and working with data.\n\nGood To Have\n\nLeadership roles in student organizations, or strong results in business case competitions. \nInternship exposure in consulting, agency, e-commerce, tech or startup. \nFamiliarity with Excel / Google Sheets and basic data or analytics tools\n\nMindset\n\nProblem-solving: Approaches challenges with structured thinking. Doesn’t wait to be told the answer — builds hypotheses, tests them, and moves forward.\nAI-first: Actively uses AI tools to work smarter, faster, and better. Sees AI as a competitive advantage, not just a feature.\nCan-do attitude: Embraces ambiguity and high standards. Takes ownership even when the path isn’t clear. Finds a way.",
+      "apply_url": null
+    }
+  ]
+}

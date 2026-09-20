@@ -1,0 +1,51 @@
+{
+  "enabled": true,
+  "provider": "stripe",
+  "mode": "connect",
+  "stripeAccountId": "acct_1TsdTLRiFhWGE5zE",
+  "platformFeeBps": 500,
+  "currency": "VND",
+  "businessName": "Casemate",
+  "supportEmail": "benjaminnguyen.work03@gmail.com",
+  "defaultTrialDays": 0,
+  "defaultPriceCents": 200000,
+  "defaultInterval": "month",
+  "defaultPriceId": null,
+  "plans": [
+    {
+      "id": "first_month_5",
+      "name": "Casemate Pro — 150.000₫ first month, then 200.000₫/month",
+      "priceCents": 150000,
+      "interval": "month",
+      "intervalCount": 1,
+      "effectiveMonthlyRate": 150000,
+      "introPriceCents": 150000,
+      "introInterval": "month",
+      "introIntervalCount": 1,
+      "introIterations": 1,
+      "regularPriceCents": 200000,
+      "regularInterval": "month",
+      "regularIntervalCount": 1,
+      "hasIntroPricing": true,
+      "trialDays": 0
+    },
+    {
+      "id": "monthly_8",
+      "name": "Casemate Pro — Monthly",
+      "priceCents": 200000,
+      "interval": "month",
+      "intervalCount": 1,
+      "effectiveMonthlyRate": 200000,
+      "trialDays": 0
+    },
+    {
+      "id": "six_month_30",
+      "name": "Casemate Pro — 6 Months",
+      "priceCents": 800000,
+      "interval": "month",
+      "intervalCount": 6,
+      "effectiveMonthlyRate": 133333,
+      "trialDays": 0
+    }
+  ]
+}

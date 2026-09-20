@@ -1,0 +1,170 @@
+{
+  "action": "import",
+  "expected_count": 6,
+  "programs": [
+    {
+      "corporation": "VPBank",
+      "program": "VPBank Young Talents",
+      "program_type": "Graduate Program",
+      "location": "Hanoi, Ho Chi Minh City",
+      "function_list": [
+        "Khối Nguồn vốn & Thị trường Tài chính (BFM)",
+        "Khối Khách hàng doanh nghiệp lớn và đầu tư (CIB)",
+        "Khối Khách hàng doanh nghiệp (CMB)",
+        "Khối Quản trị và Phân tích dữ liệu (EDA)",
+        "Khối Ngân hàng Giao dịch và Đầu tư trực tiếp Nước ngoài (FDI-TB)",
+        "Khối Tài chính (FIN)",
+        "Khối Quản trị Nguồn nhân lực (HR)",
+        "Khối kiểm toán nội bộ (IA)",
+        "Khối Pháp chế và Kiểm soát tuân thủ (L&C)",
+        "Khối Truyền thông và Tiếp thị (Marcom)",
+        "Khối Quản lý đối tác và Quan hệ đối ngoại (PCA)",
+        "Khối Công nghệ thông tin (IT)",
+        "Khối Quản trị rủi ro (RM)",
+        "Khối Vận hành (OPS)"
+      ],
+      "open_date": "01/04",
+      "close_date": "01/08",
+      "rounds_json": [
+        "1. Application",
+        "2. Aptitude Test",
+        "3. Group Interview",
+        "4. Panel Interview"
+      ],
+      "candidate_requirement": "Sinh viên xuất sắc đang học năm cuối, mới tốt nghiệp cử nhân hoặc thạc sĩ từ các trường ĐH trong và ngoài nước, các ứng viên có dưới 1 năm kinh nghiệm làm việc hoặc các ứng viên nội bộ đạt yêu cầu. Không yêu cầu có kinh nghiệm trong lĩnh vực ngân hàng. \nTốt nghiệp Đại học trở lên, ưu tiên các ngành: Quản trị Kinh doanh, Kinh tế đối ngoại, Kinh tế đầu tư, Tài chính, Ngân hàng, Kế toán, Kiểm toán, Công nghệ thông tin, Khoa học Dữ liệu, Khoa học máy tính, Trí tuệ nhân tạo, Phân tích Dữ liệu, Quản trị rủi ro, Truyền thông, Marketing, Quản trị Nhân sự, và các ngành liên quan khác... \nSử dụng tốt tiếng Anh để giao tiếp trong công việc hàng ngày và nghiên cứu tài liệu chuyên ngành.\nKhả năng giao tiếp tốt, học hỏi nhanh, tinh thần không ngại thử thách, và thích nghi nhanh với sự thay đổi.\nYêu thích và mong muốn làm việc và gắn bó lâu dài tại VPBank.\nƯu tiên: Ứng viên có thành tích học tập vượt trội, đã đạt các giải thưởng có uy tín/bằng khen/sáng kiến được ghi nhận bởi tổ chức và doanh nghiệp trong và ngoài nước.",
+      "apply_url": null
+    },
+    {
+      "corporation": "Manulife",
+      "program": "Manulife Future Leader - M-FLs",
+      "program_type": "Leadership Program",
+      "location": "Hanoi, Ho Chi Minh City",
+      "function_list": [
+        "Agency",
+        "Partnetship Distribution",
+        "Marketing & Strategy",
+        "Operations",
+        "Finance & Actuary",
+        "People-HR",
+        "Legal Compliance & Government Affairs",
+        "Information Technology"
+      ],
+      "open_date": "02/02",
+      "close_date": "30/05",
+      "rounds_json": [
+        "1. Application round and CV Screening",
+        "2. Aptitude Test",
+        "3. The First Interview",
+        "4. Assessment Center",
+        "5. Final Interview"
+      ],
+      "candidate_requirement": "- For Sales (Agency and Partnership Distribution) Divisions:\n\nBachelor’s or Master’s degree holders with a minimum GPA of 7.0/10.\nCandidates with less than 2 years of work experience.\nFluent in business-level English.\nStrong sales acumen, excellent communication skills, customer-oriented mindset, willing to travel frequently for business requirements.\n\n- For Non-sales Divisions:\n\nBachelor’s or Master’s degree holders with a minimum GPA of 7.0/10.\nCandidates with less than 1 year of work experience.\nFluent in business-level English.\nDigitally savvy, customer-centric graduates with experience in social/community work or volunteer activities.\n\n\nOwnership\n\nTake ownership of problems and resolutions, execute with speed and perseverance.\nEmbrace challenges and stretch goals; takes bold steps to push beyond the status quo.\nStep out of comfort zone and support the team through obstacles.\nMake well-reasoned decisions promptly, considering potential risks.\nInnovation\n\nDevelop innovative solutions to business challenges.\nEmbrace AI and digital tools to enhance how we work and serve customers.\nExperiment, learn fast, and continuously get better.\nCustomer Centricity\n\nFocus on customer-centric decisions and solutions.\nLeverage technology to enhance experiences across touchpoints.\nCommit to making things Stronger. Faster. Better.",
+      "apply_url": null
+    },
+    {
+      "corporation": "OPPO",
+      "program": "OPPO Management Trainee",
+      "program_type": "Leadership Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Sales",
+        "Trade Marketing",
+        "Training",
+        "Go To Market"
+      ],
+      "open_date": "27/05",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Assessment Test (Attitude Test)",
+        "3. Market Visit & Department Interview"
+      ],
+      "candidate_requirement": "- Nam, sinh viên năm cuối hoặc tốt nghiệp dưới 2 năm kinh nghiệm\n- Thành thạo Tiếng Anh hoặc Tiếng Trung (4 kỹ năng)\n- Tốt nghiệp các ngành: Ngôn ngữ, Kinh tế, Quản trị Kinh doanh, Marketing\n- Chủ động, linh hoạt và sẵn sàng đi công tác",
+      "apply_url": null
+    },
+    {
+      "corporation": "Panasonic",
+      "program": "Panasonic Fresher Program",
+      "program_type": "Graduate Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "HVAC Engineering",
+        "Brand & Retail Activation",
+        "Product Marketing",
+        "Digital Commerce"
+      ],
+      "open_date": "08/04",
+      "close_date": "01/05",
+      "rounds_json": [
+        "1. Application",
+        "2. Assessment Test",
+        "3. Department Interview"
+      ],
+      "candidate_requirement": "Students in final year or recent graduates (<1 year experience)\nMajored in: HVAC (Heating, Ventilation, and Air Conditioning), Economics, Digital Commerce, Marketing or related majors\nHaving GPA from 6.5/10 and above\nReady to participate in the program full-time from June 2026 to September 2026​\nPassionate about advancing careers in a multinational and professional working environment\nProgressive, eager to learn and self-develop",
+      "apply_url": null
+    },
+    {
+      "corporation": "Bosch",
+      "program": "Bosch Internship Program",
+      "program_type": "Internship Program",
+      "location": "Hanoi, Ho Chi Minh City",
+      "function_list": [
+        "Embedded C/C++ Software Development & Testing",
+        "Web App Development (Java, .NET, React, Django)",
+        "Data Engineering (PL/SQL, Python)",
+        "AI & Automation (AI/GenAI, Python scripting, Automation tools)",
+        "DevOps / Cloud (CI/CD, IT Infrastructure, Cloud platforms)"
+      ],
+      "open_date": "01/08",
+      "close_date": "10/09",
+      "rounds_json": [
+        "1. Registration",
+        "2. Screening",
+        "3. Interview + Offer"
+      ],
+      "candidate_requirement": "3rd or final-year student in IT, Computer Science, Electronics, Mechatronics, or related fields\nOfficial university recommendation letter with stamp (mandatory)\nBasic understanding of Software Development Life-cycle, good at teamwork and problem-solving\nAble to communicate in English\nCommitment: full-time or at least 4 days/week",
+      "apply_url": null
+    },
+    {
+      "corporation": "Schneider Electric",
+      "program": "Schneider Internship Program",
+      "program_type": "Internship Program",
+      "location": "Ho Chi Minh City",
+      "function_list": [
+        "Commercial Function:",
+        "Commercial Support Associate Intern",
+        "Customer Advocate Intern",
+        "Commercial Customer Care Intern",
+        "Digital Energy Intern",
+        "Channel Marketing Intern",
+        "Human Resources Intern",
+        "Power Systems Intern",
+        "Sales Operations Intern (Strategic Account & Major Pursuit)",
+        "Sales Operations Intern (Industrial Automation)",
+        "Logistics Intern",
+        "Digital Transformation Intern",
+        "Channel Business Development Intern",
+        "Marketing Communications Intern",
+        "Commercial Excellence Intern",
+        "Offer Marketing Intern",
+        "Prescription Intern",
+        "Manufacturing Function:",
+        "Method Intern",
+        "Digital Transformation Intern",
+        "Maintenance Intern",
+        "Supply Chain Intern",
+        "Quality Intern"
+      ],
+      "open_date": "[\"05/02\", \"12/08\"]",
+      "close_date": null,
+      "rounds_json": [
+        "1. Application",
+        "2. Digital Interview (Hirevue)",
+        "3. HR Interview",
+        "4. Panel interview"
+      ],
+      "candidate_requirement": "Commercial Function\n- Education:\nUndergraduate student in Business, Marketing, Data Analytics, Psychology, or related field\nOpen to final-year students or fresh graduates\n- Skills:\nBasic knowledge of Excel\nInterest in customer experience, customer service, or data analysis\nGood logical thinking and attention to detail\nStrong communication and willingness to learn\nCurious and proactive mindset\nPositive attitude and team collaboration\nAbility to handle multiple small tasks independently\n\nManufacturing Function:\nProficiency in .NET, PHP, HTML, and familiarity with LEAP.\nStrong experience with MS SQL and MySQL.\nHands-on experience with RPA tools (e.g., UiPath, Automation Anywhere, Blue Prism).\nExperience in Tableau or similar BI tools.\nSolid understanding of data analytics and business analysis.\nExposure to AI development and machine learning concepts.\nKnowledge of IT/OT cybersecurity principles and best practices.\nStrong analytical, problem-solving, and communication skills.\nPursuing Bachelor’s degree in Computer Science, Information Technology, or a related field.\nCertifications in RPA, BI tools, AI, or Cybersecurity are a plus.\nExperience working in industrial or manufacturing environments is advantageous.",
+      "apply_url": null
+    }
+  ]
+}

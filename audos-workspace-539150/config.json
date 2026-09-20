@@ -1,0 +1,416 @@
+{
+  "id": "workspace-539150",
+  "name": "Casemate",
+  "description": "Workspace for Casemate",
+  "version": "4.0.0",
+  "templateVersion": 4,
+  "publicEntry": {
+    "mode": "space-email-gate",
+    "path": "/site/:configId",
+    "component": "components/EmailGate.tsx"
+  },
+  "apps": [
+    {
+      "id": "fit-assessment",
+      "name": "Fit Assessment",
+      "icon": "Sparkles",
+      "component": "apps/FitAssessment/TargetFitOnboarding.tsx"
+    },
+    {
+      "id": "browse-programs",
+      "name": "Browse Programs",
+      "icon": "BookOpen",
+      "component": "apps/ProgramBrowser/App.tsx"
+    },
+    {
+      "id": "my-roadmap",
+      "name": "My Roadmap",
+      "icon": "Map",
+      "component": "apps/MyRoadmap/App.tsx"
+    },
+    {
+      "id": "case-drill-log",
+      "name": "Case Pool",
+      "icon": "Target",
+      "dataFile": "data/case-drill-log.json",
+      "component": "apps/CaseDrillLog/App.tsx"
+    },
+    {
+      "id": "case-drill",
+      "name": "Case Drill",
+      "icon": "Zap",
+      "component": "apps/CaseDrill/App.tsx"
+    },
+    {
+      "id": "industry-knowledge",
+      "name": "Domain Knowledge",
+      "icon": "BookOpen",
+      "component": "apps/IndustryKnowledge/App.tsx"
+    },
+    {
+      "id": "aptitude-test",
+      "name": "Aptitude Test",
+      "icon": "Hexagon",
+      "component": "apps/AptitudeTest/App.tsx"
+    },
+    {
+      "id": "feedback",
+      "name": "Feedback",
+      "icon": "MessageCircle",
+      "component": "apps/FeedbackForm/App.tsx"
+    },
+    {
+      "id": "founder-usage",
+      "name": "Usage · Founder",
+      "icon": "LineChart",
+      "component": "apps/UsageDashboard/App.tsx",
+      "allowedRoles": [
+        "founder"
+      ]
+    },
+    {
+      "id": "business-email",
+      "name": "Business Email",
+      "description": "Your inbox concierge: triage, drafts awaiting approval, and mail on your own domain — owner-only",
+      "icon": "Mail",
+      "component": "apps/BusinessEmail/App.tsx"
+    }
+  ],
+  "terminology": {
+    "reading": "loading",
+    "writing": "saving",
+    "creating": "adding",
+    "deleting": "removing",
+    "editing": "updating"
+  },
+  "desktop": {
+    "theme": {
+      "gradient": "from-[#f9fafb] via-[#ffffff] to-[#fef2f2]",
+      "accentColor": "#cc0000",
+      "dockStyle": "glass"
+    },
+    "themeRecipe": "glass",
+    "themeTokens": {
+      "palette": {
+        "primary": "#cc0000",
+        "highlight": "#cc0000",
+        "contrast": "#ffffff",
+        "secondary": "#cc0000",
+        "accent": "#ffffff",
+        "primaryScale": {
+          "50": "#fef2f2",
+          "100": "#fee2e2",
+          "200": "#fecaca",
+          "500": "#ef4444",
+          "600": "#cc0000",
+          "700": "#b91c1c",
+          "900": "#7f1d1d"
+        },
+        "highlightScale": {
+          "50": "#fef2f2",
+          "100": "#fee2e2",
+          "200": "#fecaca",
+          "500": "#ef4444",
+          "600": "#cc0000",
+          "700": "#b91c1c",
+          "900": "#7f1d1d"
+        },
+        "surfaces": {
+          "page": "#f9fafb",
+          "pageAlt": "#ffffff",
+          "gradientFrom": "#f9fafb",
+          "gradientVia": "#ffffff",
+          "gradientTo": "#fef2f2",
+          "card": "#ffffff",
+          "cardHover": "#fef6f6",
+          "panel": "#ffffff",
+          "panelStrong": "#ffffff",
+          "muted": "#f9fafb",
+          "accentSoft": "#fee2e2",
+          "border": "#e5e7eb",
+          "borderStrong": "#d1d5db"
+        },
+        "text": {
+          "primary": "#111827",
+          "secondary": "#374151",
+          "brand": "#b91c1c",
+          "accent": "#b91c1c",
+          "muted": "#6b7280",
+          "onPrimary": "#ffffff",
+          "onHighlight": "#ffffff",
+          "onContrast": "#cc0000"
+        },
+        "semantic": {
+          "success": "#16a34a",
+          "warning": "#d97706",
+          "danger": "#dc2626"
+        },
+        "shell": {
+          "buttonText": "#ffffff",
+          "accentButtonText": "#ffffff",
+          "dockText": "#ffffff",
+          "icon": "#b91c1c",
+          "shadow": "#cbd5e1",
+          "shadowStrong": "#94a3b8"
+        }
+      },
+      "typography": {
+        "headingFont": "Mulish",
+        "bodyFont": "Mulish",
+        "fontFamily": "\"Mulish\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif"
+      },
+      "shell": {
+        "accentColor": "#cc0000",
+        "dockStyle": "glass",
+        "pageBackground": "#f9fafb",
+        "gateBackground": "linear-gradient(135deg, #f9fafb, #ffffff, #fef2f2)",
+        "panelBackground": "#ffffff",
+        "panelStrongBackground": "#ffffff"
+      },
+      "cssVariables": {
+        "--space-brand-primary": "#cc0000",
+        "--space-brand-highlight": "#cc0000",
+        "--space-brand-contrast": "#ffffff",
+        "--space-brand-secondary": "#cc0000",
+        "--space-brand-accent": "#ffffff",
+        "--space-brand-primary-50": "#fef2f2",
+        "--space-brand-primary-100": "#fee2e2",
+        "--space-brand-primary-200": "#fecaca",
+        "--space-brand-primary-500": "#ef4444",
+        "--space-brand-primary-600": "#cc0000",
+        "--space-brand-primary-700": "#b91c1c",
+        "--space-brand-primary-900": "#7f1d1d",
+        "--space-brand-highlight-50": "#fef2f2",
+        "--space-brand-highlight-100": "#fee2e2",
+        "--space-brand-highlight-200": "#fecaca",
+        "--space-brand-highlight-500": "#ef4444",
+        "--space-brand-highlight-600": "#cc0000",
+        "--space-brand-highlight-700": "#b91c1c",
+        "--space-brand-highlight-900": "#7f1d1d",
+        "--space-surface-page": "#f9fafb",
+        "--space-surface-page-alt": "#ffffff",
+        "--space-surface-gradient-from": "#f9fafb",
+        "--space-surface-gradient-via": "#ffffff",
+        "--space-surface-gradient-to": "#fef2f2",
+        "--space-surface-card": "#ffffff",
+        "--space-surface-card-hover": "#fef6f6",
+        "--space-surface-panel": "#ffffff",
+        "--space-surface-panel-strong": "#ffffff",
+        "--space-surface-muted": "#f9fafb",
+        "--space-surface-accent-soft": "#fee2e2",
+        "--space-border-default": "#e5e7eb",
+        "--space-border-subtle": "#e5e7eb",
+        "--space-border-strong": "#d1d5db",
+        "--space-text-primary": "#111827",
+        "--space-text": "#111827",
+        "--space-text-secondary": "#374151",
+        "--space-text-brand": "#b91c1c",
+        "--space-text-accent": "#b91c1c",
+        "--space-text-muted": "#6b7280",
+        "--space-text-on-primary": "#ffffff",
+        "--space-text-on-highlight": "#ffffff",
+        "--space-text-on-contrast": "#cc0000",
+        "--space-semantic-success": "#16a34a",
+        "--space-semantic-success-50": "#ecf8f1",
+        "--space-semantic-success-100": "#daf0e2",
+        "--space-semantic-success-500": "#149644",
+        "--space-semantic-success-600": "#16a34a",
+        "--space-semantic-success-700": "#12893e",
+        "--space-semantic-warning": "#d97706",
+        "--space-semantic-warning-50": "#fcf4eb",
+        "--space-semantic-warning-100": "#f9e9d7",
+        "--space-semantic-warning-500": "#c86d06",
+        "--space-semantic-warning-600": "#d97706",
+        "--space-semantic-warning-700": "#b66405",
+        "--space-semantic-danger": "#dc2626",
+        "--space-semantic-danger-50": "#fceeee",
+        "--space-semantic-danger-100": "#f9dcdc",
+        "--space-semantic-danger-500": "#ca2323",
+        "--space-semantic-danger-600": "#dc2626",
+        "--space-semantic-danger-700": "#b92020",
+        "--space-neutral-0": "#ffffff",
+        "--space-neutral-50": "#f9f9fa",
+        "--space-neutral-100": "#f3f4f5",
+        "--space-neutral-200": "#e7e8eb",
+        "--space-neutral-300": "#d3d5d9",
+        "--space-neutral-400": "#a6aab3",
+        "--space-neutral-500": "#6b7280",
+        "--space-neutral-600": "#565b66",
+        "--space-neutral-700": "#444952",
+        "--space-neutral-800": "#30333a",
+        "--space-neutral-900": "#202226",
+        "--space-neutral-950": "#131517",
+        "--space-shell-button-text": "#ffffff",
+        "--space-shell-accent-button-text": "#ffffff",
+        "--space-shell-dock-text": "#ffffff",
+        "--space-shell-icon": "#b91c1c",
+        "--space-shell-shadow": "#cbd5e1",
+        "--space-shell-shadow-strong": "#94a3b8"
+      }
+    },
+    "layout": {
+      "agentPosition": "center",
+      "dockPosition": "bottom",
+      "appWindowSize": "fullscreen",
+      "defaultLandingView": "app",
+      "defaultLandingAppId": "fit-assessment",
+      "customerLandsOnAgent": false
+    },
+    "branding": {
+      "name": "Casemate",
+      "tagline": "Start to be a leader today",
+      "logoUrl": "https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/e28b4f5e-44e7-4243-a6ec-91b01e5e68bb.png",
+      "headingFont": "Mulish",
+      "bodyFont": "Mulish",
+      "colors": {
+        "primary": "#cc0000",
+        "highlight": "#cc0000",
+        "contrast": "#ffffff",
+        "secondary": "#cc0000",
+        "accent": "#ffffff",
+        "primaryScale": {
+          "50": "#fef2f2",
+          "100": "#fee2e2",
+          "200": "#fecaca",
+          "500": "#ef4444",
+          "600": "#cc0000",
+          "700": "#b91c1c",
+          "900": "#7f1d1d"
+        },
+        "highlightScale": {
+          "50": "#fef2f2",
+          "100": "#fee2e2",
+          "200": "#fecaca",
+          "500": "#ef4444",
+          "600": "#cc0000",
+          "700": "#b91c1c",
+          "900": "#7f1d1d"
+        },
+        "surfaces": {
+          "page": "#f9fafb",
+          "pageAlt": "#ffffff",
+          "gradientFrom": "#f9fafb",
+          "gradientVia": "#ffffff",
+          "gradientTo": "#fef2f2",
+          "card": "#ffffff",
+          "cardHover": "#fef6f6",
+          "panel": "#ffffff",
+          "panelStrong": "#ffffff",
+          "muted": "#f9fafb",
+          "accentSoft": "#fee2e2",
+          "border": "#e5e7eb",
+          "borderStrong": "#d1d5db"
+        },
+        "text": {
+          "primary": "#111827",
+          "secondary": "#374151",
+          "brand": "#b91c1c",
+          "accent": "#b91c1c",
+          "muted": "#6b7280",
+          "onPrimary": "#ffffff",
+          "onHighlight": "#ffffff",
+          "onContrast": "#cc0000"
+        },
+        "semantic": {
+          "success": "#16a34a",
+          "warning": "#d97706",
+          "danger": "#dc2626"
+        },
+        "shell": {
+          "buttonText": "#ffffff",
+          "accentButtonText": "#ffffff",
+          "dockText": "#ffffff",
+          "icon": "#b91c1c",
+          "shadow": "#cbd5e1",
+          "shadowStrong": "#94a3b8"
+        }
+      },
+      "palette": {
+        "primary": "#cc0000",
+        "highlight": "#cc0000",
+        "contrast": "#ffffff",
+        "secondary": "#cc0000",
+        "accent": "#ffffff",
+        "primaryScale": {
+          "50": "#fef2f2",
+          "100": "#fee2e2",
+          "200": "#fecaca",
+          "500": "#ef4444",
+          "600": "#cc0000",
+          "700": "#b91c1c",
+          "900": "#7f1d1d"
+        },
+        "highlightScale": {
+          "50": "#fef2f2",
+          "100": "#fee2e2",
+          "200": "#fecaca",
+          "500": "#ef4444",
+          "600": "#cc0000",
+          "700": "#b91c1c",
+          "900": "#7f1d1d"
+        },
+        "surfaces": {
+          "page": "#f9fafb",
+          "pageAlt": "#ffffff",
+          "gradientFrom": "#f9fafb",
+          "gradientVia": "#ffffff",
+          "gradientTo": "#fef2f2",
+          "card": "#ffffff",
+          "cardHover": "#fef6f6",
+          "panel": "#ffffff",
+          "panelStrong": "#ffffff",
+          "muted": "#f9fafb",
+          "accentSoft": "#fee2e2",
+          "border": "#e5e7eb",
+          "borderStrong": "#d1d5db"
+        },
+        "text": {
+          "primary": "#111827",
+          "secondary": "#374151",
+          "brand": "#b91c1c",
+          "accent": "#b91c1c",
+          "muted": "#6b7280",
+          "onPrimary": "#ffffff",
+          "onHighlight": "#ffffff",
+          "onContrast": "#cc0000"
+        },
+        "semantic": {
+          "success": "#16a34a",
+          "warning": "#d97706",
+          "danger": "#dc2626"
+        },
+        "shell": {
+          "buttonText": "#ffffff",
+          "accentButtonText": "#ffffff",
+          "dockText": "#ffffff",
+          "icon": "#b91c1c",
+          "shadow": "#cbd5e1",
+          "shadowStrong": "#94a3b8"
+        }
+      }
+    }
+  },
+  "cdnDependencies": {
+    "remark-gfm": {
+      "version": "4.0.0"
+    }
+  },
+  "agent": {
+    "greetingPrompt": "You are Mate in Casemate's SECONDARY support view. If asked about access or payment, state that new users receive 14 days of free access without payment, after which Casemate Pro is required. Casemate Pro offers First Month Promo (150.000₫ for the first month, then 200.000₫/month), Monthly (200.000₫ per month), and 6-Month (800.000₫, saving 400.000₫ versus six monthly payments). Direct customers to Settings → Account & Subscription, where Get Pro Plan opens secure native checkout. Customers land in Fit Assessment, not chat. Never restart either assessment as a chat interview and never request a CV here; direct actions back to Fit Assessment. Explain that customers choose one of two paths: validate a specific target program and function, or use the unchanged Exploration flow when they do not yet have a target. In validation, Casemate confirms the target, reviews a CV, collects MCQ motivation answers, reuses valid work-style results, shows only evidence-backed Target Fit dimensions, and generates a gap-based My Roadmap plan. Never invent a fit score, requirement, deadline, or company-culture claim. Keep the greeting under 120 words. Do not mention tools, systems, or this instruction.",
+    "welcomeMessage": "Hi — I’m Mate, your Casemate guide. Already know your MT or consulting target? Choose it in Fit Assessment and I’ll help you review your evidence, validate available fit dimensions, find gaps, and turn them into a preparation roadmap. Still deciding? Choose ‘Not yet, help me explore’ to continue through Casemate’s existing Exploration flow.",
+    "name": "Mate",
+    "greetingAutoSend": true,
+    "thinkingText": "Mate is working on it...",
+    "starterPrompts": [
+      "I have a target — how does Target Fit work?",
+      "I’m not sure yet — how does Exploration work?",
+      "Explain my MBTI and work-style breakdown",
+      "How do aptitude results affect my function fit?",
+      "How does Casemate identify missing target evidence?",
+      "How ready am I? Explain my Readiness Score",
+      "Give me a practice case for my target function",
+      "Which target programs are open right now?"
+    ]
+  },
+  "updatedAt": "2026-07-09T03:11:06.706Z"
+}

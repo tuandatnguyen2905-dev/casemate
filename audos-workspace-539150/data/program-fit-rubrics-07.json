@@ -1,0 +1,266 @@
+[
+  {
+    "program_id": "shopee-shopeefood-associate-product-management-program",
+    "program_name": "Shopee — ShopeeFood Associate Product Management Program",
+    "company": "Shopee",
+    "program": "ShopeeFood Associate Product Management Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Education & Experience: Bachelor’s/Master’s fresh graduate or <2 years of full-time experience (available full-time from Nov 2026).) or the CV does not clearly state GPA/major.",
+          "dat": "Education & Experience: Bachelor’s/Master’s fresh graduate or <2 years of full-time experience (available full-time from Nov 2026).",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Languages: Business-level English fluency (written & spoken).",
+          "dat": "Languages: Business-level English fluency (written & spoken).",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 20,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Nice-to-have: Prior experience in Tech/E-commerce/FinTech/Consulting/Product, or basic knowledge of product/data tools (SQL, Figma, Google Analytics, Amplitude).",
+          "dat": "Nice-to-have: Prior experience in Tech/E-commerce/FinTech/Consulting/Product, or basic knowledge of product/data tools (SQL, Figma, Google Analytics, Amplitude).",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Shopee."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Core Competencies: Strong analytical, problem-solving, and cross-functional communication skills. Nice-to-have: Prior experience in Tech/E-commerce/FinTech/Consulting/Product, or basic knowledge of product/data tools (SQL, Figma, Google Analytics, Amplitude).",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 9,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Shopee culture & motivation fit",
+        "label_en": "Shopee culture & motivation fit",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Shopee or its industry; generic application reasons only.",
+          "dat": "Mindset: High ownership, proactive \"can-do\" attitude, curious, adaptable, and passionate about technology/digital products.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Shopee's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Education & Experience: Bachelor’s/Master’s fresh graduate or <2 years of full-time experience (available full-time from Nov 2026).\nCore Competencies: Strong analytical, problem-solving, and cross-functional communication skills.\nMindset: High ownership, proactive \"can-do\" attitude, curious, adaptable, and passionate about technology/digital products.\nLanguages: Business-level English fluency (written & spoken).\nNice-to-have: Prior experience in Tech/E-commerce/FinTech/Consulting/Product, or basic knowledge of product/data tools (SQL, Figma, Google Analytics, Amplitude).",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "shopee-shopee-apprentice-program",
+    "program_name": "Shopee — Shopee Apprentice Program",
+    "company": "Shopee",
+    "program": "Shopee Apprentice Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 10,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (University students in their second to final year, currently pursuing a Bachelor’s degree in any discipline) or the CV does not clearly state GPA/major.",
+          "dat": "University students in their second to final year, currently pursuing a Bachelor’s degree in any discipline",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 13,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Meets the program's required English proficiency level.",
+          "dat": "Meets the program's required English proficiency level.",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 22,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Available for a full-time internship in Ho Chi Minh City from June to the end of August 2026 (3 months)",
+          "dat": "Available for a full-time internship in Ho Chi Minh City from June to the end of August 2026 (3 months)",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Shopee."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Effective problem solver with analytical thinking skills",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 7,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Shopee culture & motivation fit",
+        "label_en": "Shopee culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Shopee or its industry; generic application reasons only.",
+          "dat": "Strong verbal and written communication skills A team player with good interpersonal skills Able to adapt in a fast-paced and dynamic environment Self-starter who is eager to learn Passionate individual who possesses a can-do attitude",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Shopee's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "University students in their second to final year, currently pursuing a Bachelor’s degree in any discipline\n Available for a full-time internship in Ho Chi Minh City from June to the end of August 2026 (3 months)\n Strong verbal and written communication skills\n A team player with good interpersonal skills\n Effective problem solver with analytical thinking skills\n Able to adapt in a fast-paced and dynamic environment\n Self-starter who is eager to learn\n Passionate individual who possesses a can-do attitude",
+    "example_admit_profile": null,
+    "version": 1
+  },
+  {
+    "program_id": "knauf-knauf-management-trainee-program",
+    "program_name": "Knauf — Knauf Management Trainee Program",
+    "company": "Knauf",
+    "program": "Knauf Management Trainee Program",
+    "criteria": [
+      {
+        "id": "education_gpa",
+        "label_vi": "Education & GPA",
+        "label_en": "Education & GPA",
+        "weight": 12,
+        "levels": {
+          "chua_dat": "Below the program's academic standard (Graduate or young talent with 0 – 3 years of work experiences Bachelor’s degree in any field is welcome) or the CV does not clearly state GPA/major.",
+          "dat": "Graduate or young talent with 0 – 3 years of work experiences Bachelor’s degree in any field is welcome",
+          "noi_bat": "GPA ~8.5/10 (3.5/4.0) or above, scholarship or top departmental ranking; major closely matches the applied track, or holds a double degree/supplementary professional certificate."
+        }
+      },
+      {
+        "id": "english_language",
+        "label_vi": "English & languages",
+        "label_en": "English & languages",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no evidence of English proficiency (certificate, English-medium program, English-speaking work environment). Program standard: Proficient in English (preferably with IELTS score of 6.5 and above)",
+          "dat": "Proficient in English (preferably with IELTS score of 6.5 and above)",
+          "noi_bat": "IELTS 7.0+/TOEIC 900+ or has studied/worked entirely in English; confident presenting, debating cases, and interviewing on a panel in English."
+        }
+      },
+      {
+        "id": "leadership_activities",
+        "label_vi": "Extracurriculars & leadership",
+        "label_en": "Extracurriculars & leadership",
+        "weight": 18,
+        "levels": {
+          "chua_dat": "No leadership role shown: only a club member, or the CV shows no meaningful extracurricular activity.",
+          "dat": "At least one leader/lead-organizer role in a club, project, or event — with a concrete description of what was actually done.",
+          "noi_bat": "Club president / lead organizer of a large-scale event / project founder — with measurable results (team size led, budget scale, growth achieved)."
+        }
+      },
+      {
+        "id": "relevant_internship",
+        "label_vi": "Relevant internship experience",
+        "label_en": "Relevant internship experience",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "No internship/work experience relevant to: Drive to succeed - strong intellectual abilities & learning agility.",
+          "dat": "Drive to succeed - strong intellectual abilities & learning agility.",
+          "noi_bat": "Two or more relevant internships, or one internship with a measurable achievement (KPI hit, project actually shipped) at a company in the same industry as Knauf."
+        }
+      },
+      {
+        "id": "analytical_case",
+        "label_vi": "Analytical & case-solving skills",
+        "label_en": "Analytical & case-solving skills",
+        "weight": 17,
+        "levels": {
+          "chua_dat": "No evidence of analytical thinking: no quantitative coursework, data project, or case-practice experience.",
+          "dat": "Strong analytical and problem-solving skills.",
+          "noi_bat": "Case competition achievements or a real analytical project + solid tools (advanced Excel, SQL/Python if the track needs it) — ready for both aptitude tests and assessment centres."
+        }
+      },
+      {
+        "id": "awards_competitions",
+        "label_vi": "Awards & competitions",
+        "label_en": "Awards & competitions",
+        "weight": 8,
+        "levels": {
+          "chua_dat": "CV does not mention any award, scholarship, or competition.",
+          "dat": "Has taken part in an academic/case competition or won a school-level scholarship/award.",
+          "noi_bat": "Reached the final rounds or won a major competition (case competitions in the relevant industry, national hackathon/datathon) or a national-level scholarship/award."
+        }
+      },
+      {
+        "id": "program_culture",
+        "label_vi": "Knauf culture & motivation fit",
+        "label_en": "Knauf culture & motivation fit",
+        "weight": 15,
+        "levels": {
+          "chua_dat": "CV shows no genuine interest signal or motivation tied to Knauf or its industry; generic application reasons only.",
+          "dat": "Drive to succeed - strong intellectual abilities & learning agility. Excellent communication and interpersonal skills. Passion for innovation and sustainability. A real team player who sees the team's success as their own.",
+          "noi_bat": "A clear, specific story connecting personal motivation, prior projects, and understanding of Knauf's business/brand/values in Vietnam."
+        }
+      }
+    ],
+    "ideal_profile_text": "Graduate or young talent with 0 – 3 years of work experiences\nBachelor’s degree in any field is welcome\nProficient in English (preferably with IELTS score of 6.5 and above)\nDrive to succeed - strong intellectual abilities & learning agility.\nStrong analytical and problem-solving skills.\nExcellent communication and interpersonal skills.\nPassion for innovation and sustainability.\nA real team player who sees the team's success as their own.",
+    "example_admit_profile": null,
+    "version": 1
+  }
+]
