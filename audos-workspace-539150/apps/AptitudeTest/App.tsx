@@ -53,7 +53,6 @@ import {
 import { tw } from '../../lib/colors';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import PaywallGate from '../../components/PaywallGate';
-import FeatureShowcase from '../../components/FeatureShowcase';
 import { emitLiveSourceEventsOnce, insertedWorkspaceRowId, logLiveTrackingFailure, workspaceRows } from '../../lib/liveFeatureTracking';
 import { loadDiagrammaticLibrary } from '../../lib/diagrammaticLibrary';
 import { ensureAptitudeInfoHook } from './serverFunctions';
@@ -123,7 +122,7 @@ declare global {
 
 type Category = 'diagrammatic' | 'inductive' | 'deductive' | 'error_checking' | 'spatial' | 'numerical' | 'verbal' | 'situational';
 type TestMode = Category | 'mixed';
-type AnyQuestion =
+type SourceQuestion =
   | ExpandedQuestion
   | InductiveExpandedQuestion
   | DeductiveExpandedQuestion
@@ -132,6 +131,10 @@ type AnyQuestion =
   | NumericalQuestion
   | VerbalQuestion
   | SituationalQuestion;
+type AnyQuestion = SourceQuestion & {
+  hint: string;
+  explanation: string;
+};
 type MixedQuestion = AnyQuestion & {
   sourceCategory: Category;
   sourceTestId: string;
@@ -255,6 +258,89 @@ function shuffleCopy<T>(items: readonly T[]): T[] {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
+}
+
+function questionHint(question: SourceQuestion): string {
+  switch (question.kind) {
+    case 'numerical':
+      return 'Identify the exact rows, columns and units the question needs, then write the calculation in stages before checking the answer choices.';
+    case 'verbal':
+      return 'Use only evidence stated in the passage. Check whether the statement is supported, contradicted, or simply not addressed.';
+    case 'situational':
+      return 'Rank responses by how directly they solve the issue while protecting stakeholders, escalating proportionately and taking ownership.';
+    case 'deductive':
+      return 'Translate each premise into a firm constraint, then test the statement without adding assumptions that are not given.';
+    case 'error_checking':
+      return 'Compare the original and copied records one field at a time; do not rely on the rows looking broadly similar.';
+    case 'spatial':
+      return 'Choose one distinctive feature as an anchor, then track its position and orientation through the transformation.';
+    case 'inductive':
+      return 'Track separate visual features independently—such as position, count, fill and rotation—then apply both emerging rules to the next step.';
+    default:
+      return question.kind === 'set_ab'
+        ? 'Identify the property shared by every figure in Set A and the contrasting property shared by every figure in Set B.'
+        : 'Compare consecutive cells feature by feature. Look for a rule in position, count, fill, shape or rotation before testing the options.';
+  }
+}
+
+function correctAnswerText(question: SourceQuestion): string {
+  if (question.kind === 'situational') {
+    return question.optimalRanking
+      .map((optionLabel, ratingIndex) => `${optionLabel} — ${SITUATIONAL_RATING_LABELS[ratingIndex]}`)
+      .join('; ');
+  }
+  return question.correctAnswer;
+}
+
+function fallbackReasoning(question: SourceQuestion): string {
+  if (question.kind === 'inductive') {
+    return `The sequence follows two linked rules: ${question.rule1} ${question.rule2}`;
+  }
+  if ('answerSummary' in question) {
+    return question.answerSummary;
+  }
+  return `This option is the only one that satisfies the information and transformation shown in the question.`;
+}
+
+function wrongAnswerReason(question: SourceQuestion): string {
+  switch (question.kind) {
+    case 'numerical':
+      return 'The other values come from using the wrong row, unit, base value or calculation step.';
+    case 'verbal':
+      return 'The other choices either conflict with the passage or assume information that the passage never provides.';
+    case 'situational':
+      return 'Alternative rankings overvalue passive, disproportionate or low-ownership responses and undervalue the actions that address the issue constructively.';
+    case 'deductive':
+      return 'The other choices either contradict a premise or claim more certainty than the premises support.';
+    case 'error_checking':
+      return 'The other options do not match the exact field differences between the original and copied records.';
+    case 'spatial':
+    case 'inductive':
+    default:
+      return 'Each other option breaks at least one required visual rule, even if it matches another feature of the pattern.';
+  }
+}
+
+function enrichQuestion<T extends SourceQuestion>(question: T): T & { hint: string; explanation: string } {
+  const storedHint = typeof (question as { hint?: unknown }).hint === 'string'
+    ? (question as { hint: string }).hint.trim()
+    : '';
+  const storedExplanation = typeof (question as { explanation?: unknown }).explanation === 'string'
+    ? (question as { explanation: string }).explanation.trim()
+    : '';
+  const reasoning = storedExplanation || fallbackReasoning(question);
+  return {
+    ...question,
+    hint: storedHint || questionHint(question),
+    explanation: `Correct answer: ${correctAnswerText(question)}. ${reasoning} ${wrongAnswerReason(question)}`,
+  };
+}
+
+function enrichTests<T extends { questions: readonly SourceQuestion[] }>(sourceTests: readonly T[]): T[] {
+  return sourceTests.map((test) => ({
+    ...test,
+    questions: test.questions.map((question) => enrichQuestion(question)),
+  }) as T);
 }
 
 function questionCategory(question: AnyQuestion): Category {
@@ -1047,14 +1133,16 @@ interface FinishedAttempt {
 
 function AptitudeTestInner() {
   const { spaceId, sessionId } = useSpaceRuntime();
-  const tests = useMemo(() => loadDiagrammaticLibrary(), []);
-  const inductiveTests = useMemo(() => loadInductiveLibrary(), []);
-  const deductiveTests = useMemo(() => loadDeductiveLibrary(), []);
-  const errorCheckingTests = useMemo(() => loadErrorCheckingLibrary(), []);
-  const spatialTests = useMemo(() => loadSpatialLibrary(), []);
-  const numericalTests = useMemo(() => loadNumericalReasoningLibrary(), []);
-  const verbalTests = useMemo(() => loadVerbalReasoningLibrary(), []);
-  const situationalTests = useMemo(() => loadSituationalJudgementLibrary(), []);
+  // The source libraries predate in-test help. Normalise every loaded question
+  // with durable hint and explanation fields before it reaches any test mode.
+  const tests = useMemo(() => enrichTests(loadDiagrammaticLibrary()), []);
+  const inductiveTests = useMemo(() => enrichTests(loadInductiveLibrary()), []);
+  const deductiveTests = useMemo(() => enrichTests(loadDeductiveLibrary()), []);
+  const errorCheckingTests = useMemo(() => enrichTests(loadErrorCheckingLibrary()), []);
+  const spatialTests = useMemo(() => enrichTests(loadSpatialLibrary()), []);
+  const numericalTests = useMemo(() => enrichTests(loadNumericalReasoningLibrary()), []);
+  const verbalTests = useMemo(() => enrichTests(loadVerbalReasoningLibrary()), []);
+  const situationalTests = useMemo(() => enrichTests(loadSituationalJudgementLibrary()), []);
 
   const initialCategory = useMemo(() => aptitudeCategoryFromHash(), []);
   const [view, setView] = useState<View>(initialCategory ? 'family' : 'home');
@@ -1063,6 +1151,7 @@ function AptitudeTestInner() {
   const [activeTest, setActiveTest] = useState<AnyTest | null>(null);
   const [answers, setAnswers] = useState<(string | null)[]>([]);
   const [index, setIndex] = useState(0);
+  const [helpStage, setHelpStage] = useState<0 | 1 | 2>(0);
   const [deadline, setDeadline] = useState<number | null>(null);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [remaining, setRemaining] = useState(0);
@@ -1286,6 +1375,7 @@ function AptitudeTestInner() {
     setActiveTest(test);
     setAnswers(new Array(test.questions.length).fill(null));
     setIndex(0);
+    setHelpStage(0);
     const now = Date.now();
     setStartedAt(now);
     if (test.timeLimitSeconds > 0) {
@@ -1306,6 +1396,11 @@ function AptitudeTestInner() {
       next[index] = label;
       return next;
     });
+  };
+
+  const goToQuestion = (nextIndex: number) => {
+    setHelpStage(0);
+    setIndex(Math.max(0, Math.min(activeTest ? activeTest.questions.length - 1 : 0, nextIndex)));
   };
 
   const createMixedTest = (): MixedTest => {
@@ -2438,46 +2533,89 @@ function AptitudeTestInner() {
                   question={question as ErrorCheckingExpandedQuestion}
                   selected={answers[index]}
                   onSelect={chooseAnswer}
+                  reveal={helpStage === 2}
                 />
               ) : isDeductive ? (
                 <DeductiveOptionGrid
                   question={question as DeductiveExpandedQuestion}
                   selected={answers[index]}
                   onSelect={chooseAnswer}
+                  reveal={helpStage === 2}
                 />
               ) : isNumerical ? (
                 <NumericalOptionGrid
                   question={question as NumericalQuestion}
                   selected={answers[index]}
                   onSelect={chooseAnswer}
+                  reveal={helpStage === 2}
                 />
               ) : isVerbal ? (
                 <VerbalOptionGrid
                   question={question as VerbalQuestion}
                   selected={answers[index]}
                   onSelect={chooseAnswer}
+                  reveal={helpStage === 2}
                 />
               ) : isSpatial ? (
                 <SpatialOptionGrid
                   question={question as SpatialExpandedQuestion}
                   selected={answers[index]}
                   onSelect={chooseAnswer}
+                  reveal={helpStage === 2}
                 />
               ) : isInductive ? (
                 <InductiveOptionGrid
                   question={question as InductiveExpandedQuestion}
                   selected={answers[index]}
                   onSelect={chooseAnswer}
+                  reveal={helpStage === 2}
                 />
               ) : (
-                <OptionGrid question={question as ExpandedQuestion} selected={answers[index]} onSelect={chooseAnswer} />
+                <OptionGrid
+                  question={question as ExpandedQuestion}
+                  selected={answers[index]}
+                  onSelect={chooseAnswer}
+                  reveal={helpStage === 2}
+                />
               )}
+            </div>
+
+            <div className="space-y-2 border-t border-[var(--space-border-default)] pt-4">
+              <button
+                type="button"
+                onClick={() => setHelpStage((stage) => (stage === 0 ? 1 : 2))}
+                disabled={helpStage === 2}
+                className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-3 py-2 text-xs font-semibold text-[var(--space-text-secondary)] transition hover:border-[var(--space-brand-primary)] hover:bg-[var(--space-surface-accent-soft)] hover:text-[var(--space-text-brand)] disabled:cursor-default disabled:opacity-70"
+                data-testid="button-question-help"
+              >
+                <Lightbulb className="h-4 w-4" />
+                {helpStage === 0 ? 'Show hint' : helpStage === 1 ? 'Show answer' : 'Answer revealed'}
+              </button>
+
+              {helpStage > 0 ? (
+                <div
+                  className={`rounded-lg border p-3 ${
+                    helpStage === 1
+                      ? 'border-[color-mix(in_srgb,var(--space-brand-primary)_35%,transparent)] bg-[var(--space-surface-accent-soft)]'
+                      : 'border-[color-mix(in_srgb,var(--space-semantic-success)_35%,transparent)] bg-[color-mix(in_srgb,var(--space-semantic-success)_8%,var(--space-surface-card))]'
+                  }`}
+                  role="status"
+                  aria-live="polite"
+                >
+                  <p className="text-xs font-bold text-[var(--space-text-primary)]">
+                    {helpStage === 1 ? 'Hint' : 'Answer and explanation'}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">
+                    {helpStage === 1 ? question.hint : question.explanation}
+                  </p>
+                </div>
+              ) : null}
             </div>
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2">
             <button
-              onClick={() => setIndex((i) => Math.max(0, i - 1))}
+              onClick={() => goToQuestion(index - 1)}
               disabled={index === 0}
               className="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-2 text-[13px] font-medium sm:w-auto sm:rounded-lg sm:px-4 sm:py-2 sm:text-sm text-[var(--space-text-secondary)] hover:bg-[var(--space-surface-muted)] disabled:cursor-not-allowed disabled:opacity-40"
             >
@@ -2486,7 +2624,7 @@ function AptitudeTestInner() {
             </button>
             {index < activeTest.questions.length - 1 ? (
               <button
-                onClick={() => setIndex((i) => Math.min(activeTest.questions.length - 1, i + 1))}
+                onClick={() => goToQuestion(index + 1)}
                 className={`inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-xl px-3 py-2 text-[13px] font-semibold sm:w-auto sm:rounded-lg sm:px-4 sm:py-2 sm:text-sm ${tw.button.primary}`}
               >
                 Next
@@ -2516,7 +2654,7 @@ function AptitudeTestInner() {
             {activeTest.questions.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setIndex(i)}
+                onClick={() => goToQuestion(i)}
                 aria-label={`Go to question ${i + 1}`}
                 className={`h-11 w-11 rounded-lg border text-xs font-bold transition sm:h-8 sm:w-8 sm:text-xs ${
                   i === index
@@ -2853,10 +2991,11 @@ function AptitudeTestInner() {
   );
 }
 
-export default function AptitudeTest() {
+export default function AptitudeTest({ demo = false }: { demo?: boolean }) {
+  if (demo === true) return <AptitudeTestInner />;
+
   return (
     <>
-      <FeatureShowcase variant="aptitude-test" />
       <PaywallGate appId="aptitude-test" appName="Aptitude Test">
         <AptitudeTestInner />
       </PaywallGate>

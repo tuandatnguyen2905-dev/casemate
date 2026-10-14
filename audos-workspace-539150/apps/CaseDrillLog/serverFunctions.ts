@@ -1,10 +1,10 @@
 import { CASEMATE_ENTITLEMENT_SNIPPET, ACCESS_RULES_VERSION } from '../../lib/proAccess';
 
 export const CASE_DRILL_HOOK_NAME = 'casemate-case-drill-v4';
-export const CASE_DRILL_HOOK_VERSION = 'case-drill-v14.1-library-open-rubric';
+export const CASE_DRILL_HOOK_VERSION = 'case-drill-v15-journey-library';
 export const CASE_DRILL_WORKSPACE_ID = 'workspace-539150';
 
-const HOOK_DESCRIPTION = `Casemate Case Pool full-case engine — live case generation (14 case types incl. banking/Big-4/ops/digital specialties, industry- and function-aware mixed rotation, optional program targeting, selectable Easy/Medium/Hard difficulty, exhibits rendered in the clearest form for the data — chart or table), guided walkthrough coaching, rubric grading — every graded case returns a model answer (framework, key findings, recommendation), a matched/missing delta comparison against it, and an action plan whose items each carry a why tied to that delta — give-up reveal with model answers, and grading for the 100 prebuilt Case Library cases against their own published model answer; generation is gated server-side to Casemate Pro subscribers or an active free-access window — launch week / founding-member month (${CASE_DRILL_HOOK_VERSION}, ${ACCESS_RULES_VERSION})`;
+const HOOK_DESCRIPTION = `Casemate Case Pool full-case engine - live case generation (14 case types incl. banking/Big-4/ops/digital specialties, industry- and function-aware mixed rotation, optional program targeting, selectable Easy/Medium/Hard difficulty, exhibits rendered in the clearest form for the data - chart or table), guided walkthrough coaching, rubric grading - every graded case returns a model answer (framework, key findings, recommendation), a matched/missing delta comparison against it, and an action plan whose items each carry a why tied to that delta - give-up reveal with model answers, and grading for 114 prebuilt Case Library cases (100 core plus 14 manifest-approved Journey cases) against their own published model answer; generation is gated server-side to Casemate Pro subscribers or an active free-access window - launch week / founding-member month (${CASE_DRILL_HOOK_VERSION}, ${ACCESS_RULES_VERSION})`;
 
 // v13 (solve a library case in place): adds action=grade_library, which grades
 // an answer to one of the 100 prebuilt Case Library cases. Those cases live in
@@ -45,23 +45,23 @@ const HOOK_DESCRIPTION = `Casemate Case Pool full-case engine — live case gene
 // envelope (difficulty_id). (2) Exhibit rendering is matched to the data
 // shape: the model now PICKS the clearest representation (line = trend,
 // bar = few-category comparison, pie = part-to-whole, TABLE = reference or
-// anchor facts, mixed units, or dense multi-field data) — the old per-type
-// chart kind is a suggestion only — and exhibit_chart may carry a
+// anchor facts, mixed units, or dense multi-field data) - the old per-type
+// chart kind is a suggestion only - and exhibit_chart may carry a
 // columns/rows table payload. Rule encoded in the prompt: if a chart does
 // not make the numbers faster to grasp than a table, render a table; never
 // chart data for decoration. Paywall/trial gating is UNCHANGED from v10.
 // v10 (v0.7 trial rules): the paywall boundary moves to the SHARED Casemate
-// access snippet (lib/proAccess.ts) — generation now also unlocks during the
+// access snippet (lib/proAccess.ts) - generation now also unlocks during the
 // one-time launch-week window and for first-65 founding members' free month,
 // with identical rules across Case Pool, Case Drill, Industry Knowledge, and
 // the client paywall gate. Only the boundary block changed; case generation,
 // grading, walkthrough, and reveal logic are untouched.
-// v9: HARDENS THE PAYWALL — the generate action verifies Casemate Pro
+// v9: HARDENS THE PAYWALL - the generate action verifies Casemate Pro
 // (promo-monthly, monthly, or six-month access) SERVER-SIDE, so calling the
 // hook directly (bypassing components/PaywallGate.tsx) or via the agent
 // tools no longer creates cases for non-subscribers. The caller's session id
 // (X-Session-Id) is resolved to a contact through platform-owned records
-// only — never a trusted client claim (see the "Casemate Pro server-side
+// only - never a trusted client claim (see the "Casemate Pro server-side
 // boundary" block inside the hook code for the exact mechanism). Grade,
 // walkthrough, and reveal stay ungated so already-generated cases keep
 // working and nobody is stranded mid-rep. Non-subscribers receive a
@@ -69,7 +69,7 @@ const HOOK_DESCRIPTION = `Casemate Case Pool full-case engine — live case gene
 // that Mate and the apps can relay warmly; transient verification failures
 // return 503 { code: 'subscription_check_unavailable' } instead, so a
 // platform hiccup never shows a paying member the upgrade screen.
-// v8.1: the customer-facing tool is RENAMED — the full-case practice room is
+// v8.1: the customer-facing tool is RENAMED - the full-case practice room is
 // now called "Case Pool" (the separate Case Drill app is the new micro-drills
 // room). Only the user-facing message strings changed; generation, grading,
 // walkthrough, and reveal logic are untouched.
@@ -443,7 +443,7 @@ if (!sessionId) {
   respond(401, { error: 'Sign in to generate and save your case practice.' });
 } else if ((action === 'generate' || action === 'open_library') && !(await ensureProForGenerate())) {
   // ensureProForGenerate already responded (402 subscription_required or
-  // 503 subscription_check_unavailable) — nothing more to do here.
+  // 503 subscription_check_unavailable) - nothing more to do here.
 } else if (action === 'generate') {
   const assessment = await latestAssessment();
   const direction = asObject(assessment && assessment.result_json);
@@ -605,7 +605,7 @@ if (!sessionId) {
           .filter(function (item) { return item.length > 0; });
         const rubric = Object.assign({}, LIBRARY_RUBRIC, {
           reference_model_answer: {
-            note: 'Published model answer for this exact library case — the standard a 5/5 answer reaches. Grade the candidate against it; never contradict it.',
+            note: 'Published model answer for this exact library case - the standard a 5/5 answer reaches. Grade the candidate against it; never contradict it.',
             framework: clampText(model.framework, 1200).trim(),
             key_findings: findings,
             recommendation: clampText(model.recommendation, 3000).trim(),
@@ -625,7 +625,7 @@ if (!sessionId) {
           difficulty: clampText(lib.difficulty_label, 60).trim() || null,
           practice_focus: focusKey,
           prompt: clampText(lib.situation, 5000).trim() + (lib.key_question ? '\n\nKey question: ' + clampText(lib.key_question, 1200).trim() : ''),
-          case_data: clampText(lib.exhibits_text, 8000).trim(),
+          case_data: clampText(lib.exhibits_text, 30000).trim(),
           rubric_json: mergeRubric(rubric, meta),
           status: 'pending',
           session_id: sessionId,
@@ -850,7 +850,7 @@ if (!sessionId) {
         };
         const now = new Date().toISOString();
         // json columns must be passed as JSON strings on update (raw arrays
-        // fail with "invalid input syntax for type json" — the bug that left
+        // fail with "invalid input syntax for type json" - the bug that left
         // every v3 case permanently ungraded).
         const updated = await db.update('case_practice_cases', { id: caseId, session_id: sessionId }, {
           answer_text: answerText,
@@ -1166,7 +1166,7 @@ export function ensureCaseDrillServerFunction(): Promise<void> {
 // registry (see the mcp-agent-tools integration). This adds the optional
 // `difficulty` argument to generate_practice_case so Mate can start a case
 // at the level the candidate asked for. Read-modify-write: only that one
-// tool entry is touched, and only when the argument is missing — every other
+// tool entry is touched, and only when the argument is missing - every other
 // registered tool passes through unchanged. Best-effort by design: if the
 // registry is unreadable we leave it alone (the hook itself already accepts
 // difficulty either way).
@@ -1204,7 +1204,7 @@ async function ensureAgentToolDifficulty(): Promise<void> {
 // The signed-in email stored by the platform session (EmailGate / register).
 // Sent to the hook only as a VERIFICATION HINT: the hook independently proves
 // the email belongs to this session via the platform session store and checks
-// the subscription server-side — a forged value cannot unlock anything, but a
+// the subscription server-side - a forged value cannot unlock anything, but a
 // correct one saves the hook from enumerating subscribers.
 function storedSessionEmail(): string | null {
   try {

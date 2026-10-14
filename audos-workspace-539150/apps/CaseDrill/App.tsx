@@ -1,4 +1,4 @@
-// Casemate "Case Drill" — rapid micro-drills (v1).
+// Casemate "Case Drill" - rapid micro-drills (v1).
 //
 // Where Case Pool (apps/CaseDrillLog) runs FULL cases end-to-end, this app is
 // the CaseCoach-style rep room: the candidate picks ONE sub-skill
@@ -6,7 +6,7 @@
 // Mate generates a fresh prompt, a short countdown starts, and the moment
 // they submit they get a structured coaching result (micro-drill-v1.3): how
 // to approach that drill type, a model answer, feedback on their own answer,
-// and concrete next steps — not just a score blurb.
+// and concrete next steps - not just a score blurb.
 // Drills are generated contextually by the micro-drill hook (see
 // ./serverFunctions.ts) and personalized to the candidate's matched
 // industry/function via the shared caseTypeCatalog mapping.
@@ -46,9 +46,10 @@ import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import { emitLiveSourceEventsOnce, logLiveTrackingFailure, workspaceRows } from '../../lib/liveFeatureTracking';
 import { tw } from '../../lib/colors';
 import PaywallGate from '../../components/PaywallGate';
-import FeatureShowcase from '../../components/FeatureShowcase';
 import QuestionLibrary from '../../components/QuestionLibrary';
 import PercentileRankingWidget from '../../components/PercentileRankingWidget';
+import ExhibitRenderer from '../../components/ExhibitRenderer';
+import { ALL_LIBRARY_QUESTIONS, type LibraryExhibit } from '../../lib/skillQuestionLibrary';
 import {
   MICRO_SKILLS,
   callMicroDrillServerFunction,
@@ -92,18 +93,18 @@ interface DrillResult {
   skipped: boolean;
   score: number | null;
   feedback: DrillFeedback | null;
-  /** Seconds from the drill appearing to submission — feeds the ranking widget. */
+  /** Seconds from the drill appearing to submission - feeds the ranking widget. */
   elapsedSeconds: number;
   modelAnswer: string;
   /** Structured Case Math worked solution (micro-drill-v1.4), when available. */
   solution: CaseMathSolution | null;
-  /** How to approach this TYPE of drill — 3-5 concrete method steps. */
+  /** How to approach this TYPE of drill - 3-5 concrete method steps. */
   approach: string[];
   /** 1-3 concrete things to practice next. */
   nextSteps: string[];
 }
 
-/* Case Math linked mini-case (micro-drill-v1.4) — the structured case brief
+/* Case Math linked mini-case (micro-drill-v1.4) - the structured case brief
  * travels in chart_json (format case_math_v1) and the structured solution in
  * the grade/skip response (format case_math_solution_v1). */
 
@@ -207,6 +208,7 @@ function asObject(value: JsonValue | undefined): Record<string, any> {
 
 function capitaliseLineStarts(value: unknown): string {
   return String(value ?? '')
+    .replace(/\u2014/g, '-')
     .split('\n')
     .map((line) => line.replace(/^([^A-Za-zÀ-ỹ]*)([a-zà-ỹ])/, (_, prefix, first) => `${prefix}${first.toUpperCase()}`))
     .join('\n');
@@ -277,7 +279,7 @@ const SKILL_ICONS: Record<string, typeof Network> = {
   creativity: Lightbulb,
 };
 
-// Which micro-skills matter most for each full-case type — this is how the
+// Which micro-skills matter most for each full-case type - this is how the
 // existing industry/function diversification mapping (caseTypeCatalog.ts)
 // is reused to order the drill menu for a candidate's matched direction.
 const CASE_TYPE_TO_SKILLS: Record<string, string[]> = {
@@ -552,76 +554,7 @@ function DrillChart({ chart }: { chart: ChartSpec }) {
  * Case Math linked mini-case (micro-drill-v1.4): brief + worked solution.
  * ------------------------------------------------------------------------- */
 
-/* UX fix #5: whenever the case-math data table carries comparable figures
- * (≥2 rows sharing one unit — e.g. several VND amounts, several %), the same
- * numbers ALSO render as a bar chart right below the table. The table stays
- * the authoritative reference; the chart is a visual aid, never a
- * replacement. Rows with mixed or sentence-like values are left uncharted. */
-interface CaseMathChartView {
-  unit: string;
-  points: Array<{ label: string; value: number }>;
-}
-
-function caseMathChartOf(rows: CaseMathTableRow[]): CaseMathChartView | null {
-  const groups = new Map<string, CaseMathChartView>();
-  rows.forEach((row) => {
-    const text = String(row.value || '').trim();
-    const match = text.replace(/,/g, '').match(/-?\d+(?:\.\d+)?/);
-    if (!match) return;
-    const value = Number(match[0]);
-    if (!Number.isFinite(value) || value <= 0) return;
-    const unit = text.replace(/-?[\d.,]+/g, '').replace(/\s+/g, ' ').trim();
-    if (unit.length > 12) return; // sentence-like value — not a data point
-    const key = unit.toLowerCase();
-    const group = groups.get(key) || { unit, points: [] };
-    group.points.push({ label: row.label, value });
-    groups.set(key, group);
-  });
-  // Within each unit group, keep only the largest COMPARABLE subset — case
-  // briefs routinely mix magnitudes in one unit (a per-cup price next to a
-  // monthly rent), and charting those together is dishonest. Sorting by
-  // value, the longest run whose max/min stays ≤ 40 charts cleanly.
-  let best: CaseMathChartView | null = null;
-  groups.forEach((group) => {
-    const sorted = group.points.slice().sort((a, b) => a.value - b.value);
-    let runStart = 0;
-    let bestRun: typeof sorted = [];
-    for (let end = 0; end < sorted.length; end += 1) {
-      while (sorted[end].value / sorted[runStart].value > 40) runStart += 1;
-      if (end - runStart + 1 > bestRun.length) bestRun = sorted.slice(runStart, end + 1);
-    }
-    if (bestRun.length >= 2 && (!best || bestRun.length > best.points.length)) {
-      // Restore the original table order for the charted rows.
-      const kept = new Set(bestRun);
-      best = { unit: group.unit, points: group.points.filter((point) => kept.has(point)).slice(0, 8) };
-    }
-  });
-  return best;
-}
-
-function CaseMathChart({ chart }: { chart: CaseMathChartView }) {
-  return (
-    <div className="mt-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3" data-testid="case-math-chart">
-      <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-        Exhibit — comparable figures{chart.unit ? ' (' + chart.unit + ')' : ''}
-      </p>
-      <DrillColumnChart
-        chart={{
-          type: 'column',
-          title: 'Comparable figures',
-          unit: chart.unit,
-          data: chart.points,
-        }}
-      />
-      <p className="mt-2 text-[10px] leading-4 text-[var(--space-text-muted)]">
-        Same numbers as the table above — the chart is a visual aid only.
-      </p>
-    </div>
-  );
-}
-
 function CaseMathBriefView({ brief }: { brief: CaseMathBrief }) {
-  const chart = caseMathChartOf(brief.dataTable);
   return (
     <div data-testid="case-math-brief">
       <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Case context</p>
@@ -630,7 +563,7 @@ function CaseMathBriefView({ brief }: { brief: CaseMathBrief }) {
 
       <div className="mt-3 overflow-hidden rounded-xl border border-[var(--space-border-default)]" data-testid="case-math-data-table">
         <p className="border-b border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-          Given data — each figure feeds the next
+          Given data - each figure feeds the next
         </p>
         <ul className="divide-y divide-[var(--space-border-default)]">
           {brief.dataTable.map((row, index) => (
@@ -645,11 +578,9 @@ function CaseMathBriefView({ brief }: { brief: CaseMathBrief }) {
         </ul>
       </div>
 
-      {chart && <CaseMathChart chart={chart} />}
-
       <div className="mt-3" data-testid="case-math-questions">
         <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-          Questions — answer in order, each step feeds the next
+          Questions - answer in order, each step feeds the next
         </p>
         <ol className="mt-1.5 space-y-1.5">
           {brief.questions.map((question, index) => (
@@ -678,7 +609,7 @@ function CaseMathSolutionView({ solution }: { solution: CaseMathSolution }) {
           <div key={index} className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3" data-testid={`case-math-step-${index + 1}`}>
             <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">
               Step {index + 1}
-              {step.label ? ` — ${step.label}` : ''}
+              {step.label ? ` - ${step.label}` : ''}
             </p>
             <pre className="mt-1.5 whitespace-pre-wrap break-words font-[inherit] text-xs leading-5 text-[var(--space-text-secondary)]">{step.work}</pre>
             <p className="mt-1.5 text-xs leading-5 text-[var(--space-text-primary)]">
@@ -720,7 +651,6 @@ type Phase = 'pick' | 'generating' | 'active' | 'grading' | 'result';
 export default function CaseDrill() {
   return (
     <>
-      <FeatureShowcase variant="case-drill" />
       <PaywallGate appId="case-drill" appName="Case Drill">
         <CaseDrillInner />
       </PaywallGate>
@@ -743,9 +673,9 @@ function CaseDrillInner() {
   });
 
   // Case Drill has two practice modes.
-  //   'library' — 500 prebuilt questions across five consulting skills (default,
+  //   'library' - 500 prebuilt questions across five consulting skills (default,
   //               no AI call, so every question opens instantly).
-  //   'coach'   — the existing micro-drill flow generated and graded by Mate.
+  //   'coach'   - the existing micro-drill flow generated and graded by Mate.
   const [mode, setMode] = useState<'library' | 'coach'>('library');
   const [phase, setPhase] = useState<Phase>('pick');
   const [drill, setDrill] = useState<MicroDrill | null>(null);
@@ -756,7 +686,7 @@ function CaseDrillInner() {
   const [error, setError] = useState('');
   const [prioritySkillId, setPrioritySkillId] = useState<string | null>(null);
   const startedAtRef = useRef<number>(0);
-  // Last explicitly requested skill — powers the retry button and the
+  // Last explicitly requested skill - powers the retry button and the
   // case-math-specific generating copy (null = "surprise me").
   const lastSkillRef = useRef<string | null>(null);
 
@@ -765,7 +695,14 @@ function CaseDrillInner() {
       const id = typeof skillId === 'string' && MICRO_SKILLS.some((skill) => skill.id === skillId) ? skillId : null;
       if (!id) return;
       setPrioritySkillId(id);
-      setMode('coach');
+      if (id === 'structures') {
+        const firstStructure = ALL_LIBRARY_QUESTIONS.find((question) => question.skill === 'structures');
+        try { if (firstStructure) sessionStorage.setItem('casemate-open-case-drill', firstStructure.id); } catch { /* best effort */ }
+        setMode('library');
+        window.setTimeout(() => window.dispatchEvent(new CustomEvent('openApp', { detail: { appId: 'case-drill' } })), 0);
+      } else {
+        setMode('coach');
+      }
       setPhase('pick');
       setDrill(null);
       setResult(null);
@@ -784,7 +721,32 @@ function CaseDrillInner() {
     return () => window.removeEventListener('casemateCaseDrillFocus', onFocus);
   }, [sessionId]);
 
-  // Countdown — driven by wall-clock time so a background tab can't stretch
+  useEffect(() => {
+    const openRequestedStructure = () => {
+      try {
+        const directCaseId = sessionStorage.getItem('casemate-open-structures-case');
+        const legacyDrillId = sessionStorage.getItem('casemate-open-case-drill');
+        const directQuestion = directCaseId ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === directCaseId) : null;
+        const legacyQuestion = legacyDrillId ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === legacyDrillId) : null;
+        if (directCaseId && directQuestion?.skill !== 'structures') sessionStorage.removeItem('casemate-open-structures-case');
+        if (directQuestion?.skill !== 'structures' && legacyQuestion?.skill !== 'structures') return;
+        setMode('library');
+        setPhase('pick');
+        setDrill(null);
+        setResult(null);
+      } catch {
+        /* sessionStorage can be unavailable in strict browser modes */
+      }
+    };
+    openRequestedStructure();
+    const onOpenApp = (event: Event) => {
+      if ((event as CustomEvent).detail?.appId === 'case-drill') openRequestedStructure();
+    };
+    window.addEventListener('openApp', onOpenApp);
+    return () => window.removeEventListener('openApp', onOpenApp);
+  }, []);
+
+  // Countdown - driven by wall-clock time so a background tab can't stretch
   // the limit. Stops at zero and flags the timeout.
   useEffect(() => {
     if (phase !== 'active' || timedOut || !drill) return;
@@ -828,6 +790,15 @@ function CaseDrillInner() {
 
   const startDrill = async (skillId: string | null) => {
     lastSkillRef.current = skillId;
+    if (skillId === 'structures') {
+      const firstStructure = ALL_LIBRARY_QUESTIONS.find((question) => question.skill === 'structures');
+      try { if (firstStructure) sessionStorage.setItem('casemate-open-case-drill', firstStructure.id); } catch { /* best effort */ }
+      setMode('library');
+      setPhase('pick');
+      setError('');
+      window.setTimeout(() => window.dispatchEvent(new CustomEvent('openApp', { detail: { appId: 'case-drill' } })), 0);
+      return;
+    }
     if (!sessionId) {
       setError('Sign in first so your drills are saved to your log.');
       return;
@@ -903,6 +874,18 @@ function CaseDrillInner() {
 
   const activeCase = drill && drill.skill === 'case_math' ? parseCaseMathBrief(drill.chart_json) : null;
   const activeChart = drill && !activeCase ? parseChart(drill.chart_json) : null;
+  const activeExhibit: LibraryExhibit | null = activeChart
+    ? {
+        id: `generated-drill-${drill?.id || 'preview'}`,
+        kind: ({ column: 'vertical-bar', bar: 'horizontal-bar', line: 'line', pie: 'pie' } as const)[resolveDrillChartType(activeChart)],
+        title: activeChart.title,
+        unit: activeChart.unit,
+        categories: activeChart.data.map((point) => point.label),
+        series: [{ name: activeChart.unit || 'Value', values: activeChart.data.map((point) => point.value) }],
+        mutuallyExclusive: true,
+        analyticalPurpose: 'Interpret the exhibit and use its values to answer the drill prompt.',
+      }
+    : null;
   const timerFraction = drill ? secondsLeft / Math.max(drill.time_limit_seconds, 1) : 0;
   const timerTone = timedOut
     ? 'text-[var(--space-semantic-danger)]'
@@ -912,9 +895,9 @@ function CaseDrillInner() {
 
   return (
     <div className="h-full overflow-y-auto bg-[var(--space-surface-page)] [&_button]:min-h-11 [&_button]:min-w-11">
-      {/* Full-bleed: Casemate is used on a laptop, not a phone, so the drill
-          room spans the whole window rather than a narrow centred column. */}
-      <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
+      {/* Full-bleed case workspace: chart grids, prompts, answers, and review
+          panels use the entire app width with modest responsive gutters. */}
+      <div className="w-full px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
         {/* ------------------------------------------------ header */}
         <header className="flex items-start gap-3">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--space-surface-accent-soft)] sm:h-10 sm:w-10">
@@ -923,7 +906,7 @@ function CaseDrillInner() {
           <div className="min-w-0">
             <h1 className="text-lg font-bold text-[var(--space-text-primary)] sm:text-xl">Case Drill</h1>
             <p className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)] sm:text-sm">
-              A 500-question library across Charts, Structures, Calculations, Creativity, and Market Sizing — plus timed micro-drills graded by Mate. Full cases live in{' '}
+              A question library across Charts, Structures, Calculations, Creativity, and Market Sizing - plus Case Journeys, where one business decision runs across linked Hard and Expert drills from diagnosis to recommendation. Timed micro-drills graded by Mate sit under Practice with Mate. Full open-ended cases live in{' '}
               <button
                 type="button"
                 className="font-semibold text-[var(--space-text-brand)] underline-offset-2 hover:underline"
@@ -1006,7 +989,7 @@ function CaseDrillInner() {
                 </span>
               ) : (
                 <span className={`${tw.badge.default} ${tw.badge.neutral}`}>
-                  General set — share your CV with Mate to personalize it
+                  General set - share your CV with Mate to personalize it
                 </span>
               )}
             </div>
@@ -1052,7 +1035,7 @@ function CaseDrillInner() {
               data-testid="button-skill-surprise"
             >
               <Shuffle className="h-4 w-4" />
-              Surprise me — my least-practiced skill
+              Surprise me - my least-practiced skill
             </button>
 
             {/* stats + recent reps */}
@@ -1107,8 +1090,8 @@ function CaseDrillInner() {
             </p>
             <p className="mt-1 text-xs text-[var(--space-text-muted)]">
               {lastSkillRef.current === 'case_math'
-                ? 'Linked data, layered questions — plus a double-check that every number reconciles.'
-                : 'Fresh prompt every time — the clock starts the moment it appears.'}
+                ? 'Linked data, layered questions - plus a double-check that every number reconciles.'
+                : 'Fresh prompt every time - the clock starts the moment it appears.'}
             </p>
           </div>
         )}
@@ -1146,19 +1129,22 @@ function CaseDrillInner() {
                 <CaseMathBriefView brief={activeCase} />
               ) : (
                 <>
-                  <p className="whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-primary)]" data-testid="drill-prompt">
-                    {capitaliseLineStarts(drill.prompt)}
-                  </p>
                   {drill.drill_data ? (
-                    <pre className="mt-3 whitespace-pre-wrap rounded-xl bg-[var(--space-surface-muted)] p-3 font-[inherit] text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="drill-data">
+                    <pre className="whitespace-pre-wrap rounded-xl bg-[var(--space-surface-muted)] p-3 font-[inherit] text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="drill-data">
                       {capitaliseLineStarts(drill.drill_data)}
                     </pre>
                   ) : null}
-                  {activeChart ? (
-                    <div className="mt-3">
-                      <DrillChart chart={activeChart} />
+                  {activeExhibit ? (
+                    <div className={drill.drill_data ? 'mt-3' : ''}>
+                      <ExhibitRenderer exhibits={[activeExhibit]} />
                     </div>
                   ) : null}
+                  <div className={`${drill.drill_data || activeExhibit ? 'mt-3 border-t border-[var(--space-border-default)] pt-3' : ''}`}>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Question</p>
+                    <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-primary)]" data-testid="drill-prompt">
+                      {capitaliseLineStarts(drill.prompt)}
+                    </p>
+                  </div>
                 </>
               )}
             </div>
@@ -1172,19 +1158,19 @@ function CaseDrillInner() {
                 rows={6}
                 placeholder={
                   drill.skill === 'creativity'
-                    ? 'One idea per line — go for volume and variety…'
+                    ? 'One idea per line - go for volume and variety…'
                     : drill.skill === 'structures'
-                      ? 'Your MECE branches — short lines, one branch per line with its sub-points…'
+                      ? 'Your MECE branches - short lines, one branch per line with its sub-points…'
                       : drill.skill === 'case_math'
-                        ? 'Answer each question in order — show the arithmetic for every step…'
-                        : 'Type your answer — show your working in short lines…'
+                        ? 'Answer each question in order - show the arithmetic for every step…'
+                        : 'Type your answer - show your working in short lines…'
                 }
                 className={`${tw.input.base} ${tw.input.default} min-h-[110px] text-sm leading-6 sm:min-h-[130px] ${timedOut ? 'opacity-80' : ''}`}
                 data-testid="input-drill-answer"
               />
               {timedOut && (
                 <p className="mt-1.5 text-xs text-[var(--space-semantic-danger)]">
-                  The clock hit zero — submit what you have (strong partials still score) or reveal the model answer.
+                  The clock hit zero - submit what you have (strong partials still score) or reveal the model answer.
                 </p>
               )}
               <div className="mt-2.5 flex flex-col gap-2 sm:flex-row">
@@ -1222,7 +1208,7 @@ function CaseDrillInner() {
                   <>
                     <Flag className="h-6 w-6 text-[var(--space-text-muted)]" />
                     <div>
-                      <p className="text-sm font-bold text-[var(--space-text-primary)]">Answer revealed — not scored</p>
+                      <p className="text-sm font-bold text-[var(--space-text-primary)]">Answer revealed - not scored</p>
                       <p className="text-xs text-[var(--space-text-muted)]">Skipping a rep is part of learning. Study the key, then go again.</p>
                     </div>
                   </>
@@ -1243,7 +1229,7 @@ function CaseDrillInner() {
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-[var(--space-text-primary)]">{drill.skill_label || drill.skill} rep graded</p>
                       <p className="text-xs text-[var(--space-text-muted)]">
-                        {timedOut ? 'Submitted after the buzzer — ' : ''}
+                        {timedOut ? 'Submitted after the buzzer - ' : ''}
                         {formatClock(drill.time_limit_seconds)} limit
                       </p>
                     </div>
@@ -1252,7 +1238,7 @@ function CaseDrillInner() {
               </div>
 
               {/* Percentile ranking vs every other user's graded drill. Only a
-                  scored rep counts — a skipped rep records nothing. The drill id
+                  scored rep counts - a skipped rep records nothing. The drill id
                   keys the submission, so re-renders never double-count. */}
               {!result.skipped && result.score != null && (
                 <PercentileRankingWidget
@@ -1264,7 +1250,7 @@ function CaseDrillInner() {
                 />
               )}
 
-              {/* 1 — the reusable method for this drill type */}
+              {/* 1 - the reusable method for this drill type */}
               {result.approach.length > 0 && (
                 <div className="mt-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3" data-testid="drill-approach">
                   <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">
@@ -1284,7 +1270,7 @@ function CaseDrillInner() {
                 </div>
               )}
 
-              {/* 2 — what good looks like on THIS drill (Case Math renders the
+              {/* 2 - what good looks like on THIS drill (Case Math renders the
                   structured step-by-step solution; other skills the text key) */}
               {result.solution ? (
                 <CaseMathSolutionView solution={result.solution} />
@@ -1292,20 +1278,25 @@ function CaseDrillInner() {
                 <div className="mt-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3">
                   <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
                     <Eye className="h-3.5 w-3.5 flex-shrink-0" />
-                    Mate's model answer
+                    {drill.skill === 'creativity' ? "Mate's one possible approach" : "Mate's model answer"}
                   </p>
+                  {drill.skill === 'creativity' ? (
+                    <p className="mt-1.5 text-xs leading-5 text-[var(--space-text-muted)]">
+                      Creativity questions can have many strong answers - this is one structured route, not a required framework.
+                    </p>
+                  ) : null}
                   <pre className="mt-1.5 whitespace-pre-wrap font-[inherit] text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="drill-model-answer">
                     {result.modelAnswer}
                   </pre>
                 </div>
               ) : null}
 
-              {/* 3 — feedback on their own answer (degrades gracefully on a skip) */}
+              {/* 3 - feedback on their own answer (degrades gracefully on a skip) */}
               <div className="mt-3 rounded-xl border border-[var(--space-border-default)] p-3" data-testid="drill-answer-feedback">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Feedback on your answer</p>
                 {result.skipped || !result.feedback ? (
                   <p className="mt-1.5 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="drill-feedback">
-                    Nothing went in this rep, so there's no grade — compare the model answer above against how you would have attacked it, note the one step you'd have missed, then take another rep.
+                    Nothing went in this rep, so there's no grade - compare the model answer above against how you would have attacked it, note the one step you'd have missed, then take another rep.
                   </p>
                 ) : (
                   <>
@@ -1348,7 +1339,7 @@ function CaseDrillInner() {
                 )}
               </div>
 
-              {/* 4 — where to take it next */}
+              {/* 4 - where to take it next */}
               {result.nextSteps.length > 0 && (
                 <div className="mt-3 rounded-xl border border-[var(--space-border-default)] p-3" data-testid="drill-next-steps">
                   <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">
@@ -1375,7 +1366,7 @@ function CaseDrillInner() {
                 data-testid="button-drill-again"
               >
                 <RefreshCw className="h-4 w-4" />
-                Go again — {drill.skill_label || 'same skill'}
+                Go again - {drill.skill_label || 'same skill'}
               </button>
               <button
                 type="button"

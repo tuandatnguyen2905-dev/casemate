@@ -4,6 +4,8 @@ type ProgramRow = {
   id: number;
   program_id: string;
   program_name: string;
+  company: string;
+  rubric_program_name?: string | null;
   open_date?: string | null;
   close_date?: string | null;
   logo_url?: string | null;
@@ -154,6 +156,7 @@ function splitProgramName(value: string) {
 }
 
 function classify(row: ProgramRow, now = new Date()): LiveProgram | null {
+  const displayName = row.rubric_program_name || `${row.company} — ${row.program_name}`;
   const open = dateParts(row.open_date)[0];
   if (!open || row.active === false) return null;
 
@@ -175,7 +178,7 @@ function classify(row: ProgramRow, now = new Date()): LiveProgram | null {
   if (today < openDate || today > closeDate) return null;
   return {
     row,
-    ...splitProgramName(row.program_name),
+    ...splitProgramName(displayName),
     closesLabel: `${String(closeDate.getDate()).padStart(2, '0')}/${String(closeDate.getMonth() + 1).padStart(2, '0')}`,
   };
 }
@@ -221,10 +224,10 @@ function ProgramSequence({ items, duplicate = false }: { items: LiveProgram[]; d
 
 export default function LandingLivePrograms(_props: { onStart: () => void }) {
   const useWorkspaceDB = (window as any).useWorkspaceDB as WorkspaceDbHook;
-  const { data, loading, error } = useWorkspaceDB<ProgramRow>('program_fit_rubrics', {
+  const { data, loading, error } = useWorkspaceDB<ProgramRow>('programs', {
     shared: true,
     filters: [{ column: 'active', operator: 'eq', value: true }],
-    orderBy: { column: 'program_name', direction: 'asc' },
+    orderBy: { column: 'company', direction: 'asc' },
     limit: 500,
   });
   const newest = new Map<string, ProgramRow>();

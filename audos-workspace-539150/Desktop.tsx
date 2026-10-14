@@ -1,5 +1,5 @@
 import { useState, Suspense, LazyExoticComponent, ComponentType, useEffect, useRef, useMemo, useCallback, Component, ErrorInfo, ReactNode } from 'react';
-import { Bot, Folder, X, Plus, Menu, PanelLeftClose, PanelLeftOpen, ChevronLeft, Activity, Maximize2, Minimize2, Moon, Heart, Calendar, Users, FileText, BarChart, Settings as SettingsIcon, ArrowUp, MessageCircle, ChevronUp, Plane, TrendingUp, LineChart, Dumbbell, Brain, Target, Zap, Star, Clock, CheckCircle, List, BookOpen, Coffee, Music, Camera, MapPin, Wallet, ShoppingCart, Gift, Lightbulb, Sparkles, Rocket, Home, Building, Globe, Mail, Phone, Video, Mic, Image, Play, Pause, Volume2, Wifi, Cloud, Sun, Umbrella, Thermometer, Wind, Droplets, Leaf, Flower2, Mountain, Waves, Compass, Map, Navigation, Car, Bike, Ship, Award, Trophy, Medal, Crown, Diamond, Gem, Key, Lock, Unlock, Shield, Eye, Search, Filter, SortAsc, Download, Upload, Share2, Link, ExternalLink, Copy, Clipboard, Trash2, Edit, Pencil, PenTool, Scissors, Bookmark, Flag, Bell, AlertCircle, Info, HelpCircle, XCircle, CheckCircle2, Circle, Square, Triangle, Hexagon, Octagon, Hash, AtSign, DollarSign, Percent, Calculator, Code, Terminal, Database, Server, Cpu, Monitor, Smartphone, Tablet, Laptop, Watch, Headphones, Speaker, Radio, Tv, Printer, Scan, QrCode, Barcode, CreditCard, Receipt, Banknote, PiggyBank, TrendingDown, AreaChart, PieChart, ClipboardList } from 'lucide-react';
+import { Bot, Folder, X, Plus, Menu, PanelLeftClose, PanelLeftOpen, ChevronLeft, Activity, Maximize2, Minimize2, Moon, Heart, Calendar, Users, FileText, BarChart, Settings as SettingsIcon, ArrowUp, MessageCircle, Plane, TrendingUp, LineChart, Dumbbell, Brain, Target, Zap, Star, Clock, CheckCircle, List, BookOpen, Coffee, Music, Camera, MapPin, Wallet, ShoppingCart, Gift, Lightbulb, Sparkles, Rocket, Home, Building, Globe, Mail, Phone, Video, Mic, Image, Play, Pause, Volume2, Wifi, Cloud, Sun, Umbrella, Thermometer, Wind, Droplets, Leaf, Flower2, Mountain, Waves, Compass, Map, Navigation, Car, Bike, Ship, Award, Trophy, Medal, Crown, Diamond, Gem, Key, Lock, Unlock, Shield, Eye, Search, Filter, SortAsc, Download, Upload, Share2, Link, ExternalLink, Copy, Clipboard, ClipboardCheck, Trash2, Edit, Pencil, PenTool, Scissors, Bookmark, Flag, Bell, AlertCircle, Info, HelpCircle, XCircle, CheckCircle2, Circle, Square, Triangle, Hexagon, Octagon, Hash, AtSign, DollarSign, Percent, Calculator, Code, Terminal, Database, Server, Cpu, Monitor, Smartphone, Tablet, Laptop, Watch, Headphones, Speaker, Radio, Tv, Printer, Scan, QrCode, Barcode, CreditCard, Receipt, Banknote, PiggyBank, TrendingDown, AreaChart, PieChart, ClipboardList } from 'lucide-react';
 import type { SpaceConfig, DesktopBranding, DesktopThemeTokens } from './types';
 import { useSpaceRuntime } from './SpaceRuntimeContext';
 import AgentChat from './components/AgentChat';
@@ -48,39 +48,13 @@ const APP_NAV_LABELS: Record<string, string> = {
   'browse-programs': 'Explore open programs',
   'my-roadmap': 'Your personalized preparation plan',
   'case-drill-log': 'Full case library',
+  'case-arena': 'Live team case competition',
   'case-drill': 'Rapid case practice',
   'industry-knowledge': 'Industry knowledge library',
   'aptitude-test': 'Practice aptitude tests',
   feedback: 'Share feedback',
 };
 const START_HERE_APP_ID = 'fit-assessment';
-
-const PRODUCT_NAV_ITEMS = [
-  {
-    id: 'case-drill-log',
-    icon: '🧩',
-    name: 'Case Solver',
-    description: 'Giải case thực tế theo ngành và chức năng.',
-  },
-  {
-    id: 'case-drill',
-    icon: '⚡',
-    name: 'Case Drill',
-    description: 'Luyện phản xạ case qua các bài tập ngắn.',
-  },
-  {
-    id: 'industry-knowledge',
-    icon: '📚',
-    name: 'Domain Knowledge',
-    description: 'Nắm kiến thức ngành cốt lõi cho vòng tuyển.',
-  },
-  {
-    id: 'aptitude-test',
-    icon: '🧠',
-    name: 'Aptitude Test',
-    description: 'Luyện tư duy số, logic và pattern.',
-  },
-] as const;
 
 // A customer must never see raw agent scaffolding as a conversation title.
 // Thread titles derive from each thread's first user message, but the very
@@ -245,7 +219,7 @@ const baseIconMap: Record<string, ComponentType<any>> = {
   Umbrella, Thermometer, Wind, Droplets, Leaf, Mountain, Waves, Compass,
   Map, Navigation, Car, Bike, Ship, Award, Trophy, Medal, Crown, Diamond,
   Gem, Key, Lock, Unlock, Shield, Eye, Search, Filter, SortAsc, Download,
-  Upload, Share2, Link, ExternalLink, Copy, Clipboard, Trash2, Edit, Pencil,
+  Upload, Share2, Link, ExternalLink, Copy, Clipboard, ClipboardCheck, Trash2, Edit, Pencil,
   PenTool, Scissors, Bookmark, Flag, Bell, AlertCircle, Info, HelpCircle,
   XCircle, CheckCircle2, Circle, Square, Triangle, Hexagon, Octagon, Hash,
   AtSign, DollarSign, Percent, Calculator, Code, Terminal, Database, Server,
@@ -504,7 +478,6 @@ export default function SpaceDesktop({
   // action, never as a sidebar or as the default customer surface.
   const [showMateSupport, setShowMateSupport] = useState(false);
   const [showAccountPanel, setShowAccountPanel] = useState(false);
-  const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
 
   // --- Thread state ----------------------------------------------------
   const threadStorageKey = `space_thread_${spaceId}`;
@@ -1385,7 +1358,7 @@ export default function SpaceDesktop({
   );
 
   // Casemate's customer experience is app-first. This branch intentionally
-  // has no left sidebar and no chat alongside the assessment. The six product
+  // has no left sidebar and no chat alongside the assessment. The product
   // destinations live in a sticky top navigation; Mate is a secondary,
   // explicit support destination reached from the help icon.
   if (layoutConfig?.defaultLandingView === 'app') {
@@ -1395,6 +1368,7 @@ export default function SpaceDesktop({
       'my-roadmap',
       'case-drill-log',
       'case-drill',
+      'case-arena',
       'industry-knowledge',
       'aptitude-test',
     ];
@@ -1410,10 +1384,8 @@ export default function SpaceDesktop({
     const openTopDestination = (id: string) => {
       setShowMateSupport(false);
       setShowAccountPanel(false);
-      setIsProductMenuOpen(false);
       openPanel(id);
     };
-    const productIsActive = PRODUCT_NAV_ITEMS.some(item => item.id === shellPanelId);
 
     return (
       <>
@@ -1430,7 +1402,7 @@ export default function SpaceDesktop({
             <div className="flex h-14 items-center gap-2 px-2.5 sm:h-16 sm:gap-3 sm:px-5">
               <button
                 type="button"
-                onClick={() => fallbackApp && openTopDestination(fallbackApp.id)}
+                onClick={() => openTopDestination(START_HERE_APP_ID)}
                 className="flex flex-shrink-0 items-center gap-1.5 rounded-xl px-1 py-1 text-left sm:gap-2.5 sm:px-1.5 hover:bg-[var(--space-surface-muted)]"
                 data-testid="button-casemate-home"
               >
@@ -1441,7 +1413,7 @@ export default function SpaceDesktop({
               </button>
 
               <nav className="flex min-w-0 flex-1 snap-x snap-mandatory items-center gap-1 overflow-x-auto overscroll-x-contain px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Casemate tools">
-                {topNavApps.filter(app => !PRODUCT_NAV_ITEMS.some(item => item.id === app.id)).map(app => {
+                {topNavApps.map(app => {
                   const Icon = app.icon && iconMap[app.icon] ? iconMap[app.icon] : Activity;
                   const active = !showMateSupport && shellPanelId === app.id;
                   return (
@@ -1463,59 +1435,6 @@ export default function SpaceDesktop({
                   );
                 })}
               </nav>
-
-              <div
-                className="group relative flex-shrink-0"
-                onMouseEnter={() => { if (!isMobile) setIsProductMenuOpen(true); }}
-                onMouseLeave={() => { if (!isMobile) setIsProductMenuOpen(false); }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsProductMenuOpen(value => !value)}
-                  aria-expanded={isProductMenuOpen}
-                  aria-haspopup="menu"
-                  className={`flex min-h-11 items-center gap-1 rounded-xl px-2 text-[11px] font-bold transition sm:gap-1.5 sm:px-3 sm:text-xs ${
-                    productIsActive || isProductMenuOpen
-                      ? 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]'
-                      : 'text-[var(--space-text-secondary)] hover:bg-[var(--space-surface-muted)]'
-                  }`}
-                  data-testid="top-nav-product"
-                >
-                  <span>Product</span>
-                  <ChevronUp className={`h-3.5 w-3.5 transition-transform duration-200 ${isProductMenuOpen ? '' : 'rotate-180'}`} />
-                </button>
-
-                <div
-                  role="menu"
-                  aria-label="Product features"
-                  className={`absolute right-0 top-[calc(100%+8px)] z-[80] w-[min(22rem,calc(100vw-1rem))] origin-top overflow-hidden rounded-lg border border-[var(--space-border-default)] bg-white p-2 shadow-[0_18px_45px_rgba(15,23,42,0.18)] transition-all duration-200 ease-out ${
-                    isProductMenuOpen
-                      ? 'pointer-events-auto translate-y-0 opacity-100'
-                      : 'pointer-events-none -translate-y-2 opacity-0'
-                  }`}
-                >
-                  {PRODUCT_NAV_ITEMS.map(item => {
-                    const app = topNavApps.find(candidate => candidate.id === item.id);
-                    if (!app) return null;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        role="menuitem"
-                        onClick={() => openTopDestination(item.id)}
-                        className="flex w-full items-start gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-[color-mix(in_srgb,var(--space-brand-primary-500)_10%,white)]"
-                        data-testid={`product-menu-${item.id}`}
-                      >
-                        <span className="mt-0.5 text-xl leading-none" aria-hidden="true">{item.icon}</span>
-                        <span className="min-w-0">
-                          <span className="block text-sm font-extrabold text-[var(--space-text-primary)]">{item.name}</span>
-                          <span className="mt-0.5 block text-[11px] italic leading-4 text-[var(--space-text-muted)]">{item.description}</span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
 
               <div className="flex flex-shrink-0 items-center gap-1">
                 <button

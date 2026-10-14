@@ -48,7 +48,7 @@
 import { CASEMATE_WORKSPACE_ID } from './proAccess';
 
 export const AUTH_HOOK_NAME = 'casemate-auth-v1';
-export const AUTH_HOOK_VERSION = 'auth-v11-linkedin-oidc';
+export const AUTH_HOOK_VERSION = 'auth-v12-db-oauth-state';
 
 // ---------------------------------------------------------------------------
 // Founder-supplied PUBLIC identifiers (safe to ship in the browser bundle).
@@ -85,6 +85,124 @@ export const LINKEDIN_OAUTH_REDIRECT_URI = 'https://app.casemateaud.com/auth/cal
 // The authenticated shell uses URL hashes as app deep links. OAuth callbacks
 // must land here instead of restoring the public EmailGate at `/` first.
 export const SOCIAL_OAUTH_SUCCESS_PATH = '/#fit-assessment';
+
+// Social OAuth creates the canonical workspace session inside a server function.
+// A Set-Cookie header from that server-to-server /register call cannot reach the
+// browser, so the callback must persist the session cookie itself and then touch
+// /register from the browser. Keep the browser cookie and sliding server session
+// on the same minimum lifetime: seven days.
+export const WORKSPACE_SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
+export const WORKSPACE_SESSION_REFRESH_INTERVAL_MS = 60 * 1000;
+const WORKSPACE_SESSION_COOKIE = 'audos_space_session';
+
+export function persistWorkspaceSessionCookie(workspaceSessionId: string): void {
+  if (typeof document === 'undefined' || !workspaceSessionId) return;
+  const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+  const hostname = window.location.hostname.toLowerCase();
+  const domain = hostname === 'casemateaud.com' || hostname.endsWith('.casemateaud.com')
+    ? '; Domain=.casemateaud.com'
+    : '';
+  document.cookie = `${WORKSPACE_SESSION_COOKIE}=${encodeURIComponent(workspaceSessionId)}; Max-Age=${WORKSPACE_SESSION_MAX_AGE_SECONDS}; Path=/${domain}; SameSite=Lax${secure}`;
+}
+
+/**
+ * Invalidate the canonical platform session, then remove every browser-side
+ * source that could restore the authenticated shell. The platform request is
+ * required because its signed session cookie is HttpOnly and cannot be
+ * reliably cleared by page code.
+ */
+export async function clearWorkspaceAuthState(spaceId: string, sessionId?: string): Promise<void> {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const sharedSpacePath = `/space/${encodeURIComponent(spaceId)}`;
+    const logoutUrl = window.location.pathname === sharedSpacePath
+      ? `${sharedSpacePath}/logout`
+      : `/api/space/${encodeURIComponent(spaceId)}/logout`;
+    await fetch(logoutUrl, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(sessionId ? { 'X-Session-Id': sessionId } : {}),
+      },
+      body: JSON.stringify(sessionId ? { sessionId } : {}),
+    });
+  } catch {
+    // Local sign-out still has to complete if the network is unavailable.
+  }
+
+  try {
+    localStorage.removeItem(`space_session_${spaceId}`);
+    localStorage.removeItem(`space_subscription_${spaceId}`);
+    localStorage.removeItem(`space_thread_${spaceId}`);
+  } catch {
+    // Continue clearing the remaining session sources when storage is blocked.
+  }
+
+  try {
+    sessionStorage.removeItem('space_session_id');
+    sessionStorage.removeItem(`space_session_${spaceId}`);
+  } catch {
+    // Continue to cookie cleanup and navigation when storage is blocked.
+  }
+
+  if (typeof document !== 'undefined') {
+    const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+    const expired = '; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; SameSite=Lax';
+    // Also clear legacy page-written variants after the platform has expired
+    // its HttpOnly cookie. Host-only and shared-domain cookies can coexist.
+    document.cookie = `${WORKSPACE_SESSION_COOKIE}=${expired}${secure}`;
+    const hostname = window.location.hostname.toLowerCase();
+    if (hostname === 'casemateaud.com' || hostname.endsWith('.casemateaud.com')) {
+      document.cookie = `${WORKSPACE_SESSION_COOKIE}=${expired}; Domain=.casemateaud.com${secure}`;
+    }
+  }
+}
+
+export interface RenewedWorkspaceSession {
+  workspaceSessionId: string;
+  expiresAt: number;
+}
+
+/**
+ * Renew the canonical session through the browser so the platform can refresh
+ * both its server-side expiry and any HttpOnly/session cookie it owns. Register
+ * is idempotent for an existing email and session id; it does not create a new
+ * account. Callers throttle this to once per minute while the app is active.
+ */
+export async function renewWorkspaceSession(
+  spaceId: string,
+  workspaceSessionId: string,
+  email: string,
+): Promise<RenewedWorkspaceSession | null> {
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  if (!spaceId || !workspaceSessionId || !normalizedEmail.includes('@')) return null;
+
+  const response = await fetch(`/api/space/${spaceId}/register`, {
+    method: 'POST',
+    credentials: 'include',
+    cache: 'no-store',
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
+    body: JSON.stringify({
+      email: normalizedEmail,
+      sessionId: workspaceSessionId,
+      workspaceId: (window as any).__WORKSPACE_ID__ || undefined,
+    }),
+  });
+  if (!response.ok) return null;
+  const payload = await response.json().catch(() => null);
+  const renewedId = payload && typeof payload.workspaceSessionId === 'string'
+    ? payload.workspaceSessionId
+    : workspaceSessionId;
+  if (!renewedId) return null;
+
+  persistWorkspaceSessionCookie(renewedId);
+  return {
+    workspaceSessionId: renewedId,
+    expiresAt: Date.now() + WORKSPACE_SESSION_MAX_AGE_SECONDS * 1000,
+  };
+}
 
 export function isGoogleLoginConfigured(): boolean {
   return GOOGLE_CLIENT_ID.trim().length > 0;
@@ -157,6 +275,8 @@ export interface AuthActionResult {
   linkedinAuth?: boolean;
   provider?: 'google' | 'facebook' | 'linkedin';
   avatarUrl?: string | null;
+  returnTo?: string;
+  restartRequired?: boolean;
 }
 
 async function callAuthHook(payload: Record<string, unknown>): Promise<AuthActionResult> {
@@ -329,14 +449,9 @@ export interface SocialTokenGrant {
   idToken?: string;
 }
 
-interface StoredOAuthAttempt {
-  provider: 'google' | 'facebook' | 'linkedin';
-  state: string;
-  returnTo: string;
-  codeVerifier?: string;
-}
-
-const OAUTH_ATTEMPT_KEY = 'casemate_social_oauth_attempt_v1';
+// OAuth attempts are stored by casemate-auth-v1 in WorkspaceDB for ten minutes.
+// Browser storage is deliberately not part of the trust chain: a refresh,
+// callback retry, cold start, or server restart cannot erase the state/PKCE pair.
 
 function randomUrlToken(bytes = 32): string {
   const values = new Uint8Array(bytes);
@@ -383,8 +498,16 @@ export async function beginSocialOAuth(
 
   const state = randomUrlToken(24);
   const codeVerifier = provider === 'google' ? randomUrlToken(48) : undefined;
-  const attempt: StoredOAuthAttempt = { provider, state, returnTo, codeVerifier };
-  sessionStorage.setItem(OAUTH_ATTEMPT_KEY, JSON.stringify(attempt));
+  const beginResult = await callAuthHook({
+    action: 'oauth_begin',
+    provider,
+    state,
+    returnTo,
+    codeVerifier,
+  });
+  if (!beginResult.success) {
+    throw new Error(beginResult.error || 'Sign-in could not start. Please try again.');
+  }
 
   const redirectUri = oauthRedirectUri(provider);
   let authUrl: URL;
@@ -425,44 +548,37 @@ export async function completeSocialOAuthCallback(provider: 'google' | 'facebook
   returnTo: string;
 }> {
   const fallbackReturnTo = new URL(SOCIAL_OAUTH_SUCCESS_PATH, window.location.origin).toString();
-  let attempt: StoredOAuthAttempt | null = null;
-  try {
-    attempt = JSON.parse(sessionStorage.getItem(OAUTH_ATTEMPT_KEY) || 'null');
-  } catch {
-    attempt = null;
-  }
-  sessionStorage.removeItem(OAUTH_ATTEMPT_KEY);
-
   const params = new URLSearchParams(window.location.search);
   const providerError = params.get('error_description') || params.get('error');
   if (providerError) {
     return {
       result: { success: false, code: 'social_cancelled', error: providerError },
-      returnTo: attempt?.returnTo || fallbackReturnTo,
+      returnTo: fallbackReturnTo,
     };
   }
+
   const code = params.get('code') || '';
   const state = params.get('state') || '';
-  if (!attempt || attempt.provider !== provider || !state || state !== attempt.state) {
+  if (!code || !state) {
     return {
-      result: { success: false, code: 'oauth_state_invalid', error: 'That sign-in session expired. Please start again.' },
-      returnTo: attempt?.returnTo || fallbackReturnTo,
+      result: {
+        success: false,
+        code: 'oauth_restart_required',
+        restartRequired: true,
+        error: 'Please start sign-in again.',
+      },
+      returnTo: fallbackReturnTo,
     };
   }
-  if (!code) {
-    return {
-      result: { success: false, code: 'oauth_code_missing', error: 'The sign-in provider did not return a code. Please try again.' },
-      returnTo: attempt.returnTo,
-    };
-  }
+
   const result = await callAuthHook({
-    action: 'oauth_callback',
+    action: 'oauth_callback_v2',
     provider,
     code,
+    state,
     redirectUri: oauthRedirectUri(provider),
-    codeVerifier: attempt.codeVerifier,
   });
-  return { result, returnTo: attempt.returnTo };
+  return { result, returnTo: result.returnTo || fallbackReturnTo };
 }
 
 const scriptPromises: Record<string, Promise<void>> = {};
@@ -649,8 +765,10 @@ const AUTH_HOOK_DESCRIPTION =
   'TWILIO_BASIC_AUTH, host verify.twilio.com), and SERVER-VERIFIED Google/Facebook/LinkedIn sign-in. ' +
   'LinkedIn is callback-only at /auth/callback/linkedin, exchanges its code with LINKEDIN_CLIENT_SECRET, ' +
   'requests openid profile email, and maps verified userinfo name/email/picture into the account/session. ' +
-  'Google token audiences and Facebook app IDs are verified before any session exists. ' +
-  'Sessions are created with POST /api/space/workspace-539150/register so every method lands in the same ' +
+  'Google token audiences and Facebook app IDs are verified before any session exists. OAuth state and ' +
+  'Google PKCE verifiers are stored in WorkspaceDB oauth_states for ten minutes and marked consumed only ' +
+  'after a callback successfully creates a session. Sessions are created with POST ' +
+  '/api/space/workspace-539150/register so every method lands in the same '
   'CRM + session model. Source of truth: lib/authAccount.ts (' + AUTH_HOOK_VERSION + ') — edit THERE and ' +
   'let the installer re-deploy. NOTE: the AUTH_PEPPER value in this code is a deploy-time secret; it keys ' +
   'the identifier digests in auth_accounts, so changing it orphans existing rows — the installer preserves it.';
@@ -693,6 +811,9 @@ const AUTH_HOOK_TEMPLATE = String.raw`
 var AUTH_PEPPER = '__PEPPER__';
 var AUTH_VERSION = '__AUTH_HOOK_VERSION__';
 var AUTH_TABLE = 'auth_accounts';
+var OAUTH_STATE_TABLE = 'oauth_states';
+var OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
+var OAUTH_DEFAULT_RETURN_TO = 'https://app.casemateaud.com/#fit-assessment';
 var AUTH_API_BASE = 'https://audos.com';
 var AUTH_SPACE_ID = 'workspace-539150';
 
@@ -793,6 +914,36 @@ function sha256Hex(input) {
 // digest below remains the lookup key for EXISTING auth_accounts rows, so the
 // pepper MUST be preserved across redeploys (the installer does exactly that).
 function digestIdentifier(kind, value) { return sha256Hex(AUTH_PEPPER + '|id|' + kind + '|' + value); }
+function digestOAuthState(value) { return sha256Hex(AUTH_PEPPER + '|oauth-state|' + value); }
+
+function safeOAuthReturnTo(raw) {
+  var value = String(raw || '');
+  return value.indexOf('https://app.casemateaud.com/') === 0 ? value : OAUTH_DEFAULT_RETURN_TO;
+}
+
+function oauthPkceKeyByte(state, index) {
+  var key = sha256Hex(AUTH_PEPPER + '|oauth-pkce|' + state);
+  var offset = (index * 2) % key.length;
+  return parseInt(key.slice(offset, offset + 2), 16);
+}
+function encryptOAuthCodeVerifier(value, state) {
+  var out = '';
+  for (var i = 0; i < value.length; i++) {
+    var hex = (value.charCodeAt(i) ^ oauthPkceKeyByte(state, i)).toString(16);
+    out += hex.length === 1 ? '0' + hex : hex;
+  }
+  return out;
+}
+function decryptOAuthCodeVerifier(value, state) {
+  if (!value || value.length % 2 !== 0) return '';
+  var out = '';
+  for (var i = 0; i < value.length; i += 2) {
+    var encryptedByte = parseInt(value.slice(i, i + 2), 16);
+    if (!isFinite(encryptedByte)) return '';
+    out += String.fromCharCode(encryptedByte ^ oauthPkceKeyByte(state, i / 2));
+  }
+  return out;
+}
 
 // ---- Normalization & masking -------------------------------------------------
 function normEmail(raw) {
@@ -1220,8 +1371,8 @@ async function handleSmsVerify() {
   });
 }
 
-async function finishVerifiedSocialSignin(provider, verified) {
-  if (!verified.ok) return fail(verified.code, verified.error);
+async function finishVerifiedSocialSignin(provider, verified, oauthStateRow) {
+  if (!verified.ok) return fail(verified.code, verified.error, oauthStateRow ? { returnTo: oauthStateRow.return_to } : undefined);
 
   // From here on the email is the provider's answer, not the caller's claim.
   var email = verified.email;
@@ -1256,6 +1407,15 @@ async function finishVerifiedSocialSignin(provider, verified) {
       last_login_at: now,
     });
   }
+  if (oauthStateRow) {
+    try {
+      await db.update(OAUTH_STATE_TABLE, { id: oauthStateRow.id }, { consumed_at: now, code_verifier: null });
+    } catch (error) {
+      // The provider code has already been exchanged and the user session was
+      // created. Do not strand the user because the audit marker was slow.
+      console.error('[casemate-auth] OAuth state consume marker failed: ' + (error && error.message ? error.message : String(error)));
+    }
+  }
   ok({
     workspaceSessionId: registration.workspaceSessionId,
     email: email,
@@ -1263,6 +1423,7 @@ async function finishVerifiedSocialSignin(provider, verified) {
     displayName: verified.name || null,
     avatarUrl: verified.avatarUrl || null,
     isReturningUser: !!row || !!registration.isReturningUser,
+    returnTo: oauthStateRow ? oauthStateRow.return_to : undefined,
   });
 }
 
@@ -1273,12 +1434,72 @@ async function handleSocialSignin(provider) {
   return await finishVerifiedSocialSignin(provider, verified);
 }
 
-async function handleOAuthCallback() {
+async function handleOAuthBegin() {
+  var provider = String(body.provider || '');
+  var state = String(body.state || '');
+  var codeVerifier = String(body.codeVerifier || '');
+  if (provider !== 'google' && provider !== 'facebook' && provider !== 'linkedin') {
+    return fail('oauth_provider_invalid', 'Unknown sign-in provider.');
+  }
+  if (state.length < 20 || state.length > 256) {
+    return fail('oauth_state_invalid', 'Sign-in could not start. Please try again.');
+  }
+  if (provider === 'google' && (codeVerifier.length < 43 || codeVerifier.length > 128)) {
+    return fail('oauth_pkce_invalid', 'Google sign-in could not start. Please try again.');
+  }
+  var returnTo = safeOAuthReturnTo(body.returnTo);
+  try {
+    await db.insert(OAUTH_STATE_TABLE, {
+      state_digest: digestOAuthState(state),
+      provider: provider,
+      return_to: returnTo,
+      code_verifier: provider === 'google' ? encryptOAuthCodeVerifier(codeVerifier, state) : null,
+      expires_at: new Date(Date.now() + OAUTH_STATE_TTL_MS).toISOString(),
+      consumed_at: null,
+    });
+  } catch (error) {
+    console.error('[casemate-auth] OAuth state persistence failed: ' + (error && error.message ? error.message : String(error)));
+    return fail('oauth_state_unavailable', 'Sign-in could not start. Please try again.');
+  }
+  return ok({ expiresIn: OAUTH_STATE_TTL_MS / 1000 });
+}
+
+async function handleOAuthCallback(requireState) {
   var provider = String(body.provider || '');
   var code = String(body.code || '');
+  var state = String(body.state || '');
   var redirectUri = String(body.redirectUri || '');
   if (provider !== 'google' && provider !== 'facebook' && provider !== 'linkedin') {
     return fail('oauth_provider_invalid', 'Unknown sign-in provider.');
+  }
+  // The currently published bundle predates database-backed state and sends no
+  // state to this hook. Keep that request shape working until this draft is
+  // published; every new bundle sends state and takes the durable path below.
+  var legacyCallback = !requireState && !state;
+  var stateRow = null;
+  var restartExtra = {
+    restartRequired: true,
+    returnTo: OAUTH_DEFAULT_RETURN_TO,
+  };
+  if (!legacyCallback) {
+    var stateResult = await db.query(OAUTH_STATE_TABLE, {
+      where: { state_digest: digestOAuthState(state) },
+      limit: 1,
+    });
+    stateRow = stateResult && stateResult.rows && stateResult.rows[0];
+    restartExtra.returnTo = stateRow ? safeOAuthReturnTo(stateRow.return_to) : OAUTH_DEFAULT_RETURN_TO;
+    if (!stateRow || stateRow.provider !== provider) {
+      return fail('oauth_restart_required', 'Please start sign-in again.', restartExtra);
+    }
+    if (stateRow.consumed_at || !stateRow.expires_at || Date.parse(stateRow.expires_at) <= Date.now()) {
+      return fail('oauth_restart_required', 'Please start sign-in again.', restartExtra);
+    }
+  }
+  var oauthCodeVerifier = stateRow
+    ? decryptOAuthCodeVerifier(String(stateRow.code_verifier || ''), state)
+    : String(body.codeVerifier || '');
+  if (provider === 'google' && !oauthCodeVerifier) {
+    return fail('oauth_restart_required', 'Please start sign-in again.', restartExtra);
   }
   var expectedRedirect = provider === 'google'
     ? GOOGLE_REDIRECT_URI
@@ -1302,7 +1523,7 @@ async function handleOAuthCallback() {
           client_secret: '{{secrets.GOOGLE_CLIENT_SECRET}}',
           redirect_uri: GOOGLE_REDIRECT_URI,
           grant_type: 'authorization_code',
-          code_verifier: String(body.codeVerifier || ''),
+          code_verifier: oauthCodeVerifier,
         },
       });
     } else if (provider === 'facebook') {
@@ -1366,7 +1587,7 @@ async function handleOAuthCallback() {
     : provider === 'facebook'
       ? await verifyFacebookIdentity({ accessToken: exchange.body.access_token })
       : await verifyLinkedInIdentity({ accessToken: exchange.body.access_token });
-  return await finishVerifiedSocialSignin(provider, verified);
+  return await finishVerifiedSocialSignin(provider, verified, stateRow);
 }
 
 async function authMain() {
@@ -1389,9 +1610,11 @@ async function authMain() {
   if (action === 'sms_verify') return await handleSmsVerify();
   if (action === 'google_signin') return await handleSocialSignin('google');
   if (action === 'facebook_signin') return await handleSocialSignin('facebook');
+  if (action === 'oauth_begin') return await handleOAuthBegin();
   // LinkedIn is intentionally callback-only: accepting an arbitrary bearer
   // token here would not prove that it was issued to Casemate's OAuth client.
-  if (action === 'oauth_callback') return await handleOAuthCallback();
+  if (action === 'oauth_callback') return await handleOAuthCallback(false);
+  if (action === 'oauth_callback_v2') return await handleOAuthCallback(true);
   return fail('unknown_action', 'Unknown auth action: ' + action);
 }
 

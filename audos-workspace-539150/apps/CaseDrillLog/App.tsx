@@ -16,6 +16,7 @@ import {
   Info,
   Lightbulb,
   Loader2,
+  Maximize2,
   MessageSquareText,
   Network,
   PenLine,
@@ -28,29 +29,31 @@ import {
   TrendingDown,
   TrendingUp,
   Wrench,
+  X,
   XCircle,
 } from 'lucide-react';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import { emitLiveSourceEventsOnce } from '../../lib/liveFeatureTracking';
 import { tw } from '../../lib/colors';
 import PaywallGate from '../../components/PaywallGate';
-import FeatureShowcase from '../../components/FeatureShowcase';
 import CasePoolLibrary from '../../components/CasePoolLibrary';
 import type { LibraryGradeResult } from '../../components/CasePoolLibrary';
 import ConsultingToolkit from '../../components/ConsultingToolkit';
 import PercentileRankingWidget from '../../components/PercentileRankingWidget';
-import { CASE_POOL_LIBRARY, POOL_TYPE_LABELS } from '../../lib/casePoolLibrary';
+import { CASE_POOL_LIBRARY, POOL_INDUSTRY_LABELS, POOL_TYPE_LABELS } from '../../lib/casePoolLibrary';
 import type { FullCase } from '../../lib/casePoolLibrary';
 import { CONSULTING_FRAMEWORKS } from '../../lib/consultingFrameworks';
 import { DIFFICULTY_LABELS } from '../../lib/caseLibraryShared';
+import { CaseChartVisual } from '../../components/CaseExhibits';
 import { callCaseDrillServerFunction } from './serverFunctions';
+import StructuresWorkspace from '../CaseDrill/StructuresWorkspace';
 import { CASE_TYPE_CATALOG, relevantCaseTypesForDirection } from './caseTypeCatalog';
 import type { RelevantCaseTypes } from './caseTypeCatalog';
 
-// 'library' — 100 prebuilt cases, readable immediately on open (no AI call).
-// 'toolkit' — reference area with 43 thinking frameworks, diagrams, and examples.
-// 'practice'/'dashboard' — the original Case Room flow generated and graded by Mate, unchanged.
-type Tab = 'library' | 'practice' | 'toolkit' | 'dashboard';
+// 'library' - 100 prebuilt cases, readable immediately on open (no AI call).
+// 'toolkit' - reference area with 43 thinking frameworks, diagrams, and examples.
+// 'practice'/'dashboard' - the original Case Room flow generated and graded by Mate, unchanged.
+type Tab = 'library' | 'structures' | 'practice' | 'toolkit' | 'dashboard';
 
 type JsonValue = Record<string, any> | any[] | string | null;
 
@@ -204,9 +207,33 @@ function toLibraryResult(item: PracticeCase): LibraryGradeResult {
 
 /** Flatten a library case's exhibits into the plain text the grader reads. */
 function exhibitsToText(item: FullCase): string {
+  if (item.journey_exhibits?.length) {
+    return item.journey_exhibits
+      .map((exhibit, index) => {
+        const heading = `Exhibit ${index + 1} - ${exhibit.title}${exhibit.unit ? ` (${exhibit.unit})` : ''}`;
+        const notes = [exhibit.subtitle, exhibit.timePeriod, exhibit.footnote].filter(Boolean).join(' · ');
+        if (exhibit.columns?.length && exhibit.rows?.length) {
+          const rows = exhibit.rows.map((row) => `- ${row.join(' | ')}`).join('\n');
+          return `${heading}\nColumns: ${exhibit.columns.join(' | ')}\n${rows}${notes ? `\nNote: ${notes}` : ''}`;
+        }
+        if (exhibit.categories?.length && exhibit.series?.length) {
+          const series = exhibit.series.map((entry) => {
+            const values = entry.displayValues?.length ? entry.displayValues : entry.values;
+            return `- ${entry.name}: ${exhibit.categories!.map((category, pointIndex) => `${category}=${values[pointIndex] ?? '-'}`).join('; ')}`;
+          }).join('\n');
+          return `${heading}\n${series}${notes ? `\nNote: ${notes}` : ''}`;
+        }
+        if (exhibit.labels?.length && exhibit.values?.length) {
+          return `${heading}\n${exhibit.labels.map((label, pointIndex) => `- ${label}: ${exhibit.values![pointIndex]}`).join('\n')}${notes ? `\nNote: ${notes}` : ''}`;
+        }
+        return `${heading}${notes ? `\nNote: ${notes}` : ''}`;
+      })
+      .join('\n\n');
+  }
+
   return (item.data_exhibits || [])
     .map((exhibit, index) => {
-      const heading = `Exhibit ${index + 1} \u2014 `;
+      const heading = `Exhibit ${index + 1} - `;
       if (exhibit.type === 'table') {
         const rows = exhibit.rows.map((row) => `- ${row.join(' | ')}`).join('\n');
         return `${heading}${exhibit.title}\nColumns: ${exhibit.columns.join(' | ')}\n${rows}${
@@ -231,10 +258,13 @@ function libraryCasePayload(item: FullCase): Record<string, unknown> {
       id: item.id,
       title: item.title,
       type_label: POOL_TYPE_LABELS[item.type] || item.type,
+      industry_label: POOL_INDUSTRY_LABELS[item.industry] || item.industry,
       difficulty_label: DIFFICULTY_LABELS[item.difficulty] || item.difficulty,
       pool_type: item.type,
       pool_industry: item.industry,
       difficulty_id: item.difficulty,
+      journey_id: item.journey_id || null,
+      related_drill_ids: item.related_drill_ids || [],
       situation: item.situation,
       key_question: item.key_question,
       exhibits_text: exhibitsToText(item),
@@ -267,18 +297,18 @@ interface DrillPreset {
 const DRILL_PRESET_KEY = 'casemate-drill-preset';
 
 // Difficulty dial (Easy / Medium / Hard): the user's last choice is persisted
-// per session and applied to every NEWLY generated case — changing it never
+// per session and applied to every NEWLY generated case - changing it never
 // alters the case (or walkthrough) currently in progress.
 type Difficulty = 'easy' | 'medium' | 'hard';
 const DIFFICULTY_OPTIONS: Array<{ id: Difficulty; label: string; hint: string }> = [
-  { id: 'easy', label: 'Easy', hint: 'More guidance and simple, round numbers — great for your first reps' },
-  { id: 'medium', label: 'Medium', hint: 'Balanced — a realistic interview case' },
-  { id: 'hard', label: 'Hard', hint: 'Ambiguous prompt, two exhibits, tougher multi-step quant — final-round level' },
+  { id: 'easy', label: 'Easy', hint: 'More guidance and simple, round numbers - great for your first reps' },
+  { id: 'medium', label: 'Medium', hint: 'Balanced - a realistic interview case' },
+  { id: 'hard', label: 'Hard', hint: 'Ambiguous prompt, two exhibits, tougher multi-step quant - final-round level' },
 ];
 const difficultyStorageKey = (sessionId: string) => `casemate-case-difficulty:${sessionId}`;
 
 // Extra per-case state (mode, photo provenance, walkthrough transcript) rides
-// inside rubric_json._casemate — the hook strips it before grading.
+// inside rubric_json._casemate - the hook strips it before grading.
 function caseMeta(item?: PracticeCase | null): Record<string, any> {
   return asObject(asObject(item?.rubric_json)._casemate);
 }
@@ -361,7 +391,7 @@ function buildPhotoPrompt(practiceCase: PracticeCase): string {
     "This photo shows a candidate's handwritten working notes for a case-interview practice question.",
     'CASE TITLE: ' + practiceCase.case_title,
     'CASE PROMPT: ' + practiceCase.prompt,
-    'Transcribe and organize ONLY what the candidate actually wrote — never invent or complete their work. Write [unclear] where handwriting is illegible.',
+    'Transcribe and organize ONLY what the candidate actually wrote - never invent or complete their work. Write [unclear] where handwriting is illegible.',
     'Sort their work into three sections: structure (their framework or issue tree), math (their calculations, typed out), recommendation (their conclusion). If a section is missing from the page, return an empty string for it.',
     'If they drew a framework tree or diagram, reproduce it in "diagram" as an indented text outline using two spaces per level; otherwise return an empty string.',
     'Return ONLY valid JSON, no markdown, exactly this shape:',
@@ -374,14 +404,14 @@ function buildPhotoPrompt(practiceCase: PracticeCase): string {
 // issue-tree (MECE) builder with standard structure templates (profitability
 // tree, market entry, market sizing, growth levers, M&A, competitive
 // response) and a hypothesis-driven worksheet. Each tool composes text the
-// candidate inserts straight into their working answer — the same tools
+// candidate inserts straight into their working answer - the same tools
 // consultants actually use to break cases.
 const TREE_TEMPLATES: Array<{ id: string; label: string; match: RegExp; outline: string; info: { what: string; when: string } }> = [
   {
     id: 'blank',
     label: 'Blank MECE tree',
     info: {
-      what: 'An empty MECE scaffold — core question, drivers, sub-questions — for building a structure tailored to this exact case.',
+      what: 'An empty MECE scaffold - core question, drivers, sub-questions - for building a structure tailored to this exact case.',
       when: 'Use it when no standard framework fits and you want to show original, case-specific structuring.',
     },
     match: /$^/,
@@ -414,18 +444,18 @@ const TREE_TEMPLATES: Array<{ id: string; label: string; match: RegExp; outline:
     id: 'sizing',
     label: 'Market sizing',
     info: {
-      what: 'Builds an estimate from explicit assumptions — base × share × frequency × price — instead of guessing one number.',
+      what: 'Builds an estimate from explicit assumptions - base × share × frequency × price - instead of guessing one number.',
       when: 'Use it when you must size a market or quantity and no exhibit hands you the answer.',
     },
     match: /sizing|estimat/i,
     outline:
-      'Market size (bottom-up)\n  Base population / units\n  % who are potential users — state your assumption\n  Purchase frequency per year\n  Price per purchase\n  Size = base × % users × frequency × price\n  Sanity check: compare against a known anchor',
+      'Market size (bottom-up)\n  Base population / units\n  % who are potential users - state your assumption\n  Purchase frequency per year\n  Price per purchase\n  Size = base × % users × frequency × price\n  Sanity check: compare against a known anchor',
   },
   {
     id: 'growth',
     label: 'Growth levers',
     info: {
-      what: 'Lays out every route to more revenue — core business, new segments, channels, products, geographies, M&A — so you can size and rank them.',
+      what: 'Lays out every route to more revenue - core business, new segments, channels, products, geographies, M&A - so you can size and rank them.',
       when: 'Use it when the client wants to grow and you need a prioritized path, not a list of ideas.',
     },
     match: /growth/i,
@@ -437,7 +467,7 @@ const TREE_TEMPLATES: Array<{ id: string; label: string; match: RegExp; outline:
     label: 'M&A / acquisition',
     info: {
       what: 'Compares the target’s standalone value plus synergies against the asking price, risks, and integration challenges.',
-      when: 'Use it when the client is deciding whether to acquire a company — and at what price.',
+      when: 'Use it when the client is deciding whether to acquire a company - and at what price.',
     },
     match: /m\s*&\s*a|acquisi|merger/i,
     outline:
@@ -459,16 +489,16 @@ const TREE_TEMPLATES: Array<{ id: string; label: string; match: RegExp; outline:
     label: 'Product launch',
     info: {
       what: 'Structures a new product launch: who it is for, how it wins, how it reaches customers, and whether the numbers work.',
-      when: 'Use it when the client is launching (or just launched) a new product — common in FMCG and e-commerce programs.',
+      when: 'Use it when the client is launching (or just launched) a new product - common in FMCG and e-commerce programs.',
     },
     match: /launch/i,
     outline:
-      'Should we launch — and how?\n  Target & positioning\n    Who exactly is it for?\n    Why do they pick us over alternatives?\n  Go-to-market\n    Channels (retail / e-commerce / direct)\n    Pricing vs anchors\n    Launch marketing plan\n  Launch economics\n    Unit economics per sale\n    Break-even volume vs realistic demand\n  Risks & kill criteria',
+      'Should we launch - and how?\n  Target & positioning\n    Who exactly is it for?\n    Why do they pick us over alternatives?\n  Go-to-market\n    Channels (retail / e-commerce / direct)\n    Pricing vs anchors\n    Launch marketing plan\n  Launch economics\n    Unit economics per sale\n    Break-even volume vs realistic demand\n  Risks & kill criteria',
   },
 ];
 
 // Small ℹ️ affordance: tap to see “What is this for?” and “When to use it”
-// for a framework — 1–2 sentences each, never a lecture.
+// for a framework - 1–2 sentences each, never a lecture.
 function InfoTip({ label, what, when }: { label: string; what: string; when: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -606,7 +636,7 @@ function FrameworkToolkit({
             <div className="space-y-2.5">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-xs leading-5 text-[var(--space-text-secondary)]">
-                  Break the question into branches that don’t overlap and together cover everything (MECE). Start from a template or build your own — two spaces per level.
+                  Break the question into branches that don’t overlap and together cover everything (MECE). Start from a template or build your own - two spaces per level.
                 </p>
                 <InfoTip
                   label="Issue tree (MECE)"
@@ -663,7 +693,7 @@ function FrameworkToolkit({
                   data-testid="button-insert-tree"
                 >
                   <ArrowRight className="h-3.5 w-3.5" />
-                  {inserted === 'tree' ? 'Added — add again' : 'Add to my answer'}
+                  {inserted === 'tree' ? 'Added - add again' : 'Add to my answer'}
                 </button>
               </div>
             </div>
@@ -671,12 +701,12 @@ function FrameworkToolkit({
             <div className="space-y-2.5">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-xs leading-5 text-[var(--space-text-secondary)]">
-                  Work like a consultant: commit to a likely answer FIRST, then use the case facts to prove or kill it — don’t boil the ocean.
+                  Work like a consultant: commit to a likely answer FIRST, then use the case facts to prove or kill it - don’t boil the ocean.
                 </p>
                 <InfoTip
                   label="Hypothesis-driven approach"
                   what="Commits you to a likely answer up front, then uses the case facts to prove or kill it."
-                  when="Use it when data or time is limited — it keeps you from boiling the ocean and shows interviewers you drive to an answer."
+                  when="Use it when data or time is limited - it keeps you from boiling the ocean and shows interviewers you drive to an answer."
                 />
               </div>
               <div>
@@ -691,7 +721,7 @@ function FrameworkToolkit({
                 />
               </div>
               <div>
-                <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">How I’ll test it — which case facts or exhibits</label>
+                <label className="text-[11px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">How I’ll test it - which case facts or exhibits</label>
                 <textarea
                   value={tests}
                   onChange={(event) => setTests(event.target.value)}
@@ -720,7 +750,7 @@ function FrameworkToolkit({
                   data-testid="button-insert-hypothesis"
                 >
                   <ArrowRight className="h-3.5 w-3.5" />
-                  {inserted === 'hypothesis' ? 'Added — add again' : 'Add to my answer'}
+                  {inserted === 'hypothesis' ? 'Added - add again' : 'Add to my answer'}
                 </button>
               </div>
             </div>
@@ -740,7 +770,7 @@ const GUIDED_STEPS: Array<{ key: 'structure' | 'math' | 'recommendation'; label:
   {
     key: 'math',
     label: 'Step 2 · Math',
-    fallback: 'Now the numbers: using the case facts and exhibits, set up and work the calculations that matter most — and say what the result means.',
+    fallback: 'Now the numbers: using the case facts and exhibits, set up and work the calculations that matter most - and say what the result means.',
   },
   {
     key: 'recommendation',
@@ -751,7 +781,7 @@ const GUIDED_STEPS: Array<{ key: 'structure' | 'math' | 'recommendation'; label:
 
 // Case types the drill engine can generate (mirrors CASE_TYPES in
 // serverFunctions.ts). 'mixed' lets the hook rotate through the types this
-// candidate has practiced least — within their matched relevant set once a
+// candidate has practiced least - within their matched relevant set once a
 // fit assessment exists. The full catalog and the documented
 // industry/function-to-case-type relevance mapping live in caseTypeCatalog.ts.
 const CASE_TYPE_OPTIONS: Array<{ id: string; label: string; hint: string }> = [
@@ -820,7 +850,7 @@ function TrendSparkline({ values }: { values: number[] }) {
         </svg>
       </div>
       <p className="mt-2 text-xs text-[var(--space-text-secondary)]">
-        Running average after each graded case — started at{' '}
+        Running average after each graded case - started at{' '}
         <span className="font-semibold text-[var(--space-text-primary)]">{first.toFixed(1)}/5</span>, now at{' '}
         <span className="font-semibold text-[var(--space-text-primary)]">{latest.toFixed(1)}/5</span>.
       </p>
@@ -828,7 +858,7 @@ function TrendSparkline({ values }: { values: number[] }) {
   );
 }
 
-// SVG donut ring — a glanceable alternative to raw percentages for the
+// SVG donut ring - a glanceable alternative to raw percentages for the
 // dashboard (user feedback: fewer walls of numbers, more simple visuals).
 function ProgressRing({ percent, label, size = 88 }: { percent: number; label?: string; size?: number }) {
   const stroke = 9;
@@ -876,13 +906,13 @@ function ProgressBar({ value, label }: { value: number; label?: string }) {
   );
 }
 
-// Horizontal 0–5 gauge with a tick at the target bar — shows the average
+// Horizontal 0–5 gauge with a tick at the target bar - shows the average
 // grade as a position on the scale instead of only a raw number.
 function ScoreGauge({ value, target }: { value: number; target: number }) {
   const pct = Math.max(0, Math.min(100, (value / 5) * 100));
   const targetPct = Math.max(0, Math.min(100, (target / 5) * 100));
   return (
-    <div role="img" aria-label={`Average grade ${value.toFixed(1)} of 5 — target bar ${target.toFixed(1)} of 5`}>
+    <div role="img" aria-label={`Average grade ${value.toFixed(1)} of 5 - target bar ${target.toFixed(1)} of 5`}>
       <div className="relative h-2.5 rounded-full bg-[var(--space-surface-muted)]">
         <div
           className="h-full rounded-full bg-[var(--space-brand-highlight-600)] transition-all duration-500"
@@ -933,7 +963,7 @@ interface CaseTypeStat {
   average: number | null;
 }
 
-// Vertical bar chart — average grade per case type (X axis = case type,
+// Vertical bar chart - average grade per case type (X axis = case type,
 // Y axis = 0–5 grade). Plain SVG, no chart library: a fixed slot per type
 // inside a horizontal scroller keeps it readable on mobile no matter how
 // many types have been drilled. Exact numbers stay accessible via the value
@@ -950,7 +980,7 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
   const baseline = topPad + plotHeight;
   const yFor = (grade: number) => baseline - (grade / 5) * plotHeight;
   // Wrap a case-type name into at most two short lines (SVG text can't wrap
-  // on its own); anything longer is ellipsized — the tooltip has the full name.
+  // on its own); anything longer is ellipsized - the tooltip has the full name.
   const wrapLabel = (name: string): string[] => {
     const words = name.split(/\s+/);
     const lines: string[] = [];
@@ -999,7 +1029,7 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
               <title>
                 {avg !== null
                   ? `${row.name}: average ${avg.toFixed(1)}/5 across ${row.gradedCount} graded of ${row.count} total`
-                  : `${row.name}: ${row.count} case${row.count === 1 ? '' : 's'} — none graded yet`}
+                  : `${row.name}: ${row.count} case${row.count === 1 ? '' : 's'} - none graded yet`}
               </title>
               <rect
                 x={centerX - 13}
@@ -1011,7 +1041,7 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
                 opacity={avg !== null ? 1 : 0.7}
               />
               <text x={centerX} y={barTop - 5} textAnchor="middle" fontSize="10" fontWeight="700" fill="var(--space-text-primary)">
-                {avg !== null ? avg.toFixed(1) : '—'}
+                {avg !== null ? avg.toFixed(1) : '-'}
               </text>
               {labelLines.map((line, lineIndex) => (
                 <text key={lineIndex} x={centerX} y={baseline + 12 + lineIndex * 11} textAnchor="middle" fontSize="9" fill="var(--space-text-secondary)">
@@ -1029,7 +1059,7 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
   );
 }
 
-// Slice palette for the case-mix donut — brand green shades ordered for
+// Slice palette for the case-mix donut - brand green shades ordered for
 // adjacent contrast, with a neutral reserved for the "Other" bucket.
 const DONUT_SLICE_COLORS = [
   'var(--space-brand-primary-600)',
@@ -1040,7 +1070,7 @@ const DONUT_SLICE_COLORS = [
 ];
 const DONUT_OTHER_COLOR = 'var(--space-border-strong)';
 
-// Donut chart — how practiced cases are distributed across case types. The
+// Donut chart - how practiced cases are distributed across case types. The
 // top five types get their own slice; the rest fold into "Other". Plain SVG;
 // every slice keeps its exact count and percent in the legend and in a
 // native tooltip, so no number is lost to the visual.
@@ -1140,14 +1170,14 @@ const EXHIBIT_CHART_TYPES = ['bar', 'pie', 'line', 'funnel', 'table'] as const;
 // repair shapes a chart cannot show honestly (a 2-point "line" → bars, a
 // non-descending "funnel" → bars, a one-dominant-slice pie → bars) and
 // return null when the numbers simply don't chart (zero/negative values,
-// wildly mixed magnitudes, or a text grid without a numeric column) — the
+// wildly mixed magnitudes, or a text grid without a numeric column) - the
 // exhibit then shows the table alone.
 function parseNumericCell(raw: string): number | null {
   const text = String(raw ?? '').trim();
   if (!text) return null;
   const match = text.replace(/,/g, '').match(/-?\d+(?:\.\d+)?/);
   if (!match) return null;
-  // A short unit suffix ("%", "VND", "$M") is fine — a sentence that merely
+  // A short unit suffix ("%", "VND", "$M") is fine - a sentence that merely
   // contains a digit is not a data point.
   const leftover = text.replace(/-?[\d.,\s]+/g, '');
   if (leftover.length > 6) return null;
@@ -1316,19 +1346,19 @@ function ExhibitBars({ data, funnel }: { data: ExhibitChartSpec['data']; funnel?
   const max = Math.max(...data.map((point) => point.value), 1);
   return (
     <div
-      className="space-y-2"
+      className="space-y-3"
       role="img"
       aria-label={data.map((point) => `${point.label}: ${formatExhibitValue(point.value)}`).join(', ')}
     >
       {data.map((point, index) => (
         <div key={`${point.label}-${index}`} title={`${point.label}: ${formatExhibitValue(point.value)}`}>
-          <div className="flex items-baseline justify-between gap-2 text-[11px] leading-4">
-            <span className="min-w-0 truncate text-[var(--space-text-secondary)]">{point.label}</span>
-            <span className="shrink-0 font-semibold text-[var(--space-text-primary)]">{formatExhibitValue(point.value)}</span>
+          <div className="flex items-baseline justify-between gap-3 text-[14px] leading-5">
+            <span className="min-w-0 break-words text-[var(--space-text-secondary)]">{point.label}</span>
+            <span className="shrink-0 font-bold tabular-nums text-[var(--space-text-primary)]">{formatExhibitValue(point.value)}</span>
           </div>
           <div className={`mt-1 ${funnel ? 'flex justify-center' : ''}`}>
             <div
-              className="h-3.5 rounded bg-[var(--space-brand-primary-600)]"
+              className="h-4 rounded bg-[var(--space-brand-primary-600)]"
               style={{ width: `${Math.max(4, (point.value / max) * 100)}%`, opacity: funnel ? Math.max(0.45, 1 - index * 0.13) : 1 }}
             />
           </div>
@@ -1438,7 +1468,7 @@ function ExhibitLine({ data }: { data: ExhibitChartSpec['data'] }) {
   );
 }
 
-// Clean exhibit table — for reference/anchor facts, mixed units, or any data
+// Clean exhibit table - for reference/anchor facts, mixed units, or any data
 // where a chart would not beat a table for legibility. Renders either the
 // full columns/rows payload or a simple label/value table from chart points.
 function ExhibitTable({ chart }: { chart: ExhibitChartSpec }) {
@@ -1449,14 +1479,14 @@ function ExhibitTable({ chart }: { chart: ExhibitChartSpec }) {
     : chart.data.map((point) => [point.label, formatExhibitValue(point.value)]);
   return (
     <div className="overflow-x-auto" data-testid="exhibit-table">
-      <table className="w-full border-collapse text-xs">
+      <table className="w-full border-collapse text-[11px]">
         <thead>
           <tr>
             {columns.map((column, index) => (
               <th
                 key={`${column}-${index}`}
                 scope="col"
-                className={`border-b border-[var(--space-border-strong)] px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)] ${index === 0 ? 'text-left' : 'text-right'}`}
+                className={`border-b border-[var(--space-border-strong)] px-1.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)] ${index === 0 ? 'text-left' : 'text-right'}`}
               >
                 {column}
               </th>
@@ -1469,7 +1499,7 @@ function ExhibitTable({ chart }: { chart: ExhibitChartSpec }) {
               {columns.map((_, cellIndex) => (
                 <td
                   key={cellIndex}
-                  className={`border-b border-[var(--space-border-default)] px-2.5 py-1.5 leading-4 ${
+                  className={`border-b border-[var(--space-border-default)] px-1.5 py-1 text-[11px] leading-4 ${
                     cellIndex === 0
                       ? 'text-left font-medium text-[var(--space-text-primary)]'
                       : 'text-right tabular-nums text-[var(--space-text-secondary)]'
@@ -1487,33 +1517,39 @@ function ExhibitTable({ chart }: { chart: ExhibitChartSpec }) {
 }
 
 // UX fix #5: the exhibit card renders the chart AND the data table together
-// — the chart makes the shape of the numbers instant, while the table stays
+// - the chart makes the shape of the numbers instant, while the table stays
 // the authoritative reference (charts complement, never replace, the data).
 function ExhibitChartCard({ chart }: { chart: ExhibitChartSpec }) {
+  const [expanded, setExpanded] = useState(false);
   const chartView = chartViewOf(chart);
   const displayType = chartView ? exhibitDisplayType(chartView) : null;
-  return (
-    <div className="mt-4 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4" data-testid="exhibit-chart">
+  const renderCard = (inOverlay: boolean) => (
+    <div className={`${inOverlay ? '' : 'mt-4'} rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5`} data-testid={inOverlay ? 'exhibit-chart-expanded' : 'exhibit-chart'}>
       <div className="flex items-center justify-between gap-2">
         <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-brand)]">Exhibit 1 · Data provided</p>
-        {chartView ? (
+        {!inOverlay ? (
+          <button type="button" onClick={() => setExpanded(true)} className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-2.5 text-[11px] font-bold text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]" aria-label={`Expand ${chart.title}`}>
+            <Maximize2 className="h-3.5 w-3.5" /> Expand
+          </button>
+        ) : chartView ? (
           <BarChart3 className="h-3.5 w-3.5 shrink-0 text-[var(--space-text-muted)]" aria-hidden="true" />
         ) : (
           <Table2 className="h-3.5 w-3.5 shrink-0 text-[var(--space-text-muted)]" aria-hidden="true" />
         )}
       </div>
-      <h4 className="mt-1 text-sm font-semibold text-[var(--space-text-primary)]">{chart.title}</h4>
+      <h4 className="mt-1 break-words text-sm font-semibold leading-5 text-[var(--space-text-primary)]">{chart.title}</h4>
       {chart.unit && !chart.columns && (
         <p className="mt-0.5 text-[11px] text-[var(--space-text-muted)]">{chart.unit}</p>
       )}
       {chartView && (
-        <div className="mt-3" data-testid="exhibit-chart-visual">
-          {displayType === 'pie' ? (
-            <ExhibitPie data={chartView.data} />
-          ) : displayType === 'line' ? (
-            <ExhibitLine data={chartView.data} />
-          ) : displayType === 'column' ? (
-            <ExhibitColumns data={chartView.data} />
+        <div className="mt-3 w-full" data-testid="exhibit-chart-visual">
+          {displayType === 'pie' || displayType === 'line' || displayType === 'column' ? (
+            <CaseChartVisual
+              kind={displayType}
+              labels={chartView.data.map((point) => point.label)}
+              values={chartView.data.map((point) => point.value)}
+              unit={chartView.unit}
+            />
           ) : (
             <ExhibitBars data={chartView.data} funnel={displayType === 'funnel'} />
           )}
@@ -1526,9 +1562,24 @@ function ExhibitChartCard({ chart }: { chart: ExhibitChartSpec }) {
         <ExhibitTable chart={chart} />
       </div>
       <p className="mt-3 text-[10px] leading-4 text-[var(--space-text-muted)]">
-        Read it like a real interview handout — the chart and the table show the same numbers.
+        Read it like a real interview handout - the chart and the table show the same numbers.
       </p>
     </div>
+  );
+  return (
+    <>
+      {renderCard(false)}
+      {expanded ? (
+        <div className="fixed inset-0 z-[100] overflow-y-auto bg-[color-mix(in_srgb,var(--space-neutral-950)_72%,transparent)] p-3 sm:p-8" role="dialog" aria-modal="true" aria-label={`Expanded ${chart.title}`}>
+          <div className="w-full">
+            <div className="mb-3 flex justify-end">
+              <button type="button" onClick={() => setExpanded(false)} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[var(--space-surface-card)] px-4 text-sm font-bold text-[var(--space-text-primary)]"><X className="h-4 w-4" /> Close</button>
+            </div>
+            {renderCard(true)}
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 
@@ -1595,7 +1646,6 @@ function DiagramOutline({ text }: { text: string }) {
 export default function CaseDrillLog() {
   return (
     <>
-      <FeatureShowcase variant="case-solver" />
       <PaywallGate appId="case-drill-log" appName="Case Pool">
         <CaseDrillLogInner />
       </PaywallGate>
@@ -1625,13 +1675,13 @@ function CaseDrillLogInner() {
   });
 
   // First-load latch for the room skeleton. The platform's useWorkspaceDB
-  // refresh() flips `loading` back to true on EVERY refetch — and grading a
+  // refresh() flips `loading` back to true on EVERY refetch - and grading a
   // Case Library case awaits refreshCases(), so gating the whole tab on the
   // raw loading flag swapped the tree to the skeleton mid-grade, unmounting
   // CasePoolLibrary and wiping its freshly graded state. That is exactly why
   // the percentile ranking widget never appeared for library results (and no
-  // ranking record was written) while the Case Room flow — whose ranking
-  // state lives up here in the host — kept working. Once the first load has
+  // ranking record was written) while the Case Room flow - whose ranking
+  // state lives up here in the host - kept working. Once the first load has
   // landed, later refreshes keep the current screen mounted and update it in
   // place.
   const [bootstrapped, setBootstrapped] = useState(false);
@@ -1640,7 +1690,7 @@ function CaseDrillLogInner() {
   }, [casesLoading, assessmentLoading]);
 
   const [tab, setTab] = useState<Tab>('library');
-  // Set when a library attempt is tapped in the dashboard history — the nonce
+  // Set when a library attempt is tapped in the dashboard history - the nonce
   // makes tapping the same case twice reopen it.
   const [libraryOpenRequest, setLibraryOpenRequest] = useState<{ id: string; nonce: number } | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -1649,7 +1699,6 @@ function CaseDrillLogInner() {
   const [manualTarget, setManualTarget] = useState<number | null>(null);
   const [targetInput, setTargetInput] = useState('');
   const [targetEditing, setTargetEditing] = useState(false);
-  const [checklistExpanded, setChecklistExpanded] = useState(true);
   const [busyAction, setBusyAction] = useState<'generate' | 'grade' | 'reveal' | null>(null);
   const [actionError, setActionError] = useState('');
   const [answerMode, setAnswerMode] = useState<'type' | 'photo'>('type');
@@ -1667,7 +1716,7 @@ function CaseDrillLogInner() {
   const assessmentDirection = asObject(latestAssessment?.result_json);
   // Industry/function personalization (see caseTypeCatalog.ts): once a fit
   // assessment exists, the case-type menu filters and reorders to the types
-  // the candidate's matched industry/function actually tests — closest match
+  // the candidate's matched industry/function actually tests - closest match
   // first. Everything else stays one tap away behind "Show all case types".
   const caseTypeRelevance = useMemo(
     () => relevantCaseTypesForDirection(asObject(latestAssessment?.result_json)),
@@ -1711,7 +1760,7 @@ function CaseDrillLogInner() {
         autoStartedRef.current = false;
         setProgramPreset(preset);
       } catch {
-        /* stale or malformed preset — ignore */
+        /* stale or malformed preset - ignore */
       }
     };
     consumePreset();
@@ -1722,7 +1771,7 @@ function CaseDrillLogInner() {
     return () => window.removeEventListener('openApp', onOpenApp);
   }, []);
 
-  // Graded cases only — skipped/revealed cases stay in history but never
+  // Graded cases only - skipped/revealed cases stay in history but never
   // count toward the average, trend, or readiness metrics.
   const completedCases = useMemo(
     () => (cases || []).filter((item) => item.status === 'completed' && !caseMeta(item).skipped && validTarget(item.score)),
@@ -1736,13 +1785,13 @@ function CaseDrillLogInner() {
   const activeCase = useMemo(() => {
     if (transientCase && (!selectedId || transientCase.id === selectedId)) return transientCase;
     if (selectedId) return (cases || []).find((item) => item.id === selectedId) || null;
-    // Library attempts share this table but belong to the Case Library tab —
+    // Library attempts share this table but belong to the Case Library tab -
     // they must never be picked up as the Case Room's working case.
     const roomCases = (cases || []).filter((item) => !libraryCaseIdOf(item));
     return roomCases.find((item) => item.status === 'pending') || roomCases[0] || null;
   }, [cases, selectedId, transientCase]);
 
-  // Graded library attempts keyed by library case id — drives the score badges
+  // Graded library attempts keyed by library case id - drives the score badges
   // and the saved report shown when a solved case is reopened.
   const libraryResults = useMemo(() => {
     const map: Record<string, LibraryGradeResult> = {};
@@ -1772,7 +1821,7 @@ function CaseDrillLogInner() {
   // Percentile ranking (performance-rankings-v1): the clock is stamped when a
   // case becomes the working case on this page load; grading turns the
   // open→submit elapsed time plus the grade into one ranking record, and the
-  // widget renders only under THAT freshly graded case — reopening an older
+  // widget renders only under THAT freshly graded case - reopening an older
   // graded case from history has no timing, so it shows no widget.
   const caseOpenedAtRef = useRef<number>(Date.now());
   const [freshRoomRanking, setFreshRoomRanking] = useState<{
@@ -1822,7 +1871,7 @@ function CaseDrillLogInner() {
   }, [cases]);
 
   // Per-case-type breakdown: how many cases of each type AND the average
-  // grade across the graded ones — drives the performance bar chart.
+  // grade across the graded ones - drives the performance bar chart.
   const typeMix = useMemo(() => {
     const groups = new Map<string, { count: number; gradedCount: number; total: number }>();
     (cases || []).forEach((item) => {
@@ -1867,17 +1916,6 @@ function CaseDrillLogInner() {
     return { scores, averageTrend, average, trendDelta, scoreBar, readiness };
   }, [cases, completedCases, effectiveTarget]);
 
-  const checklist = [
-    { label: 'Complete the fit assessment with Mate (optional — it makes every case personal)', done: Boolean(latestAssessment) },
-    { label: 'Pick a case type and generate your first practice case', done: (cases || []).length > 0 },
-    { label: 'Submit your answer and get graded', done: completedCases.length > 0 },
-  ];
-  const checklistComplete = checklist.every((item) => item.done);
-
-  useEffect(() => {
-    if (checklistComplete) setChecklistExpanded(false);
-  }, [checklistComplete]);
-
   const saveManualTarget = () => {
     const value = validTarget(targetInput);
     if (!value) {
@@ -1890,7 +1928,7 @@ function CaseDrillLogInner() {
     setActionError('');
   };
 
-  // Changing difficulty only affects the NEXT generated case — the active
+  // Changing difficulty only affects the NEXT generated case - the active
   // case (and any in-progress walkthrough) is left untouched.
   const chooseDifficulty = (level: Difficulty) => {
     setDifficulty(level);
@@ -1915,7 +1953,7 @@ function CaseDrillLogInner() {
           targetCount: effectiveTarget ?? undefined,
           mode,
           caseType: chosenType,
-          // Easy / Medium / Hard — the persisted dial applies to every newly
+          // Easy / Medium / Hard - the persisted dial applies to every newly
           // generated case; an in-progress case is never altered by it.
           difficulty,
           // "Mix it up" rotates within the candidate's matched case types
@@ -2052,7 +2090,7 @@ function CaseDrillLogInner() {
   };
 
   // "Start Case Pool for this program" launches straight into a tailored
-  // case — the click in the program guide is the explicit user intent.
+  // case - the click in the program guide is the explicit user intent.
   useEffect(() => {
     if (!programPreset || autoStartedRef.current) return;
     if (!sessionId || casesLoading || busyAction !== null) return;
@@ -2129,25 +2167,18 @@ function CaseDrillLogInner() {
   const targetFunction = assessmentDirection.function_fit?.[0]?.name;
   const remainingCases = effectiveTarget ? Math.max(0, effectiveTarget - completedCases.length) : null;
 
-  // FULL-BLEED LAYOUT: Casemate is a desktop product — candidates work a case on
-  // a laptop, never a phone — so every row below spans the whole window instead
-  // of sitting in a narrow centred column with empty margins either side.
-  // Exhibit tables, card grids and the dashboard all read better the more width
-  // they get; the few blocks that are pure prose (a case narrative, a model
-  // answer) keep their own readable measure inside CasePoolLibrary.
+  // FULL-BLEED LAYOUT: every case row spans the usable app panel instead of
+  // sitting inside a centered max-width wrapper. Exhibit grids take the full
+  // width; pure prose keeps its own readable measure inside CasePoolLibrary.
   return (
-    <div className="flex mx-auto h-full min-h-0 w-full max-w-7xl flex-col bg-transparent">
-      {/* Section nav. Case Pool is four separate tools, but the old underline tab
-          strip drew them in muted grey below the target card, and customers were
-          walking past the Library and the Toolkit without realising they existed.
-          Each section is now a labelled card — icon, name, and a one-line note on
-          what is inside — sitting at the very top of the app, with all four visible
-          at once (2×2 on phones, one row from sm up) rather than scrolling away. */}
-      <div className="border-b border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-2 sm:px-6 lg:px-8 xl:px-12">
+    <div className="flex h-full min-h-0 w-full flex-col bg-transparent">
+      {/* Section nav. Case Pool's tools share one native navigation level so
+          customers can move between the library, room, toolkit, and dashboard. */}
+      <div className="border-b border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-2 sm:px-6 lg:px-8 xl:px-8">
         <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">
           Everything in Case Pool
         </p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="tablist" aria-label="Case Pool sections">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5" role="tablist" aria-label="Case Pool sections">
           {([
             {
               id: 'library' as Tab,
@@ -2155,6 +2186,7 @@ function CaseDrillLogInner() {
               hint: `${CASE_POOL_LIBRARY.length} ready-made cases`,
               icon: BookOpen,
             },
+            { id: 'structures' as Tab, label: 'Structures', hint: 'Shared with Case Drill', icon: Network },
             { id: 'practice' as Tab, label: 'Case Room', hint: 'A case written for you', icon: ClipboardList },
             {
               id: 'toolkit' as Tab,
@@ -2206,7 +2238,8 @@ function CaseDrillLogInner() {
         </div>
       </div>
 
-      <div className="border-b border-[var(--space-border-default)] px-3 py-2.5 sm:px-6 lg:px-8 xl:px-12">
+      {(!effectiveTarget || completedCases.length < effectiveTarget) && (
+      <div className="border-b border-[var(--space-border-default)] px-3 py-2.5 sm:px-6 lg:px-8 xl:px-8" data-testid="practice-target-widget">
         <div className={`${tw.card.default} overflow-hidden rounded-2xl`}>
           <div className="flex flex-col gap-2 bg-[var(--space-surface-accent-soft)] p-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
@@ -2225,8 +2258,8 @@ function CaseDrillLogInner() {
                   {assessmentTarget
                     ? 'Mate set this target from your saved roadmap.'
                     : effectiveTarget
-                      ? 'Manual target — update it whenever your roadmap changes.'
-                      : 'No target yet — Mate assumes 12 graded cases until you or your roadmap set one.'}
+                      ? 'Manual target - update it whenever your roadmap changes.'
+                      : 'No target yet - Mate assumes 12 graded cases until you or your roadmap set one.'}
                 </p>
               </div>
             </div>
@@ -2258,13 +2291,14 @@ function CaseDrillLogInner() {
           {effectiveTarget && <ProgressBar value={(completedCases.length / effectiveTarget) * 100} />}
         </div>
       </div>
+      )}
 
       <div className="min-h-0 flex-1 overflow-y-auto [overflow-anchor:none]">
         {loading ? (
-          /* Instant skeleton — perceived performance: the room never looks broken
+          /* Instant skeleton - perceived performance: the room never looks broken
              or blank while WorkspaceDB loads. */
           <div
-            className="w-full space-y-3 px-3 py-3 sm:space-y-4 sm:px-6 sm:py-5 lg:px-8 xl:px-12"
+            className="w-full space-y-3 px-3 py-3 sm:space-y-4 sm:px-6 sm:py-5 lg:px-8 xl:px-8"
             aria-busy="true"
             data-testid="case-room-skeleton"
           >
@@ -2302,50 +2336,7 @@ function CaseDrillLogInner() {
             </button>
           </div>
         ) : (
-          <div className="w-full space-y-3 px-3 py-3 sm:space-y-4 sm:px-6 sm:py-5 lg:px-8 xl:px-12">
-            <div className={`${tw.card.default} rounded-xl`}>
-              <button
-                onClick={() => setChecklistExpanded((value) => !value)}
-                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
-              >
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className={`h-4 w-4 ${checklistComplete ? 'text-[var(--space-semantic-success)]' : 'text-[var(--space-brand-primary)]'}`} />
-                  <span className="text-sm font-semibold text-[var(--space-text-primary)]">
-                    {checklistComplete ? 'Case room ready' : 'Get your case room ready'}
-                  </span>
-                  <span className={`${tw.badge.default} ${tw.badge.neutral}`}>
-                    {checklist.filter((item) => item.done).length}/3
-                  </span>
-                </div>
-                {checklistExpanded ? <ChevronUp className="h-4 w-4 text-[var(--space-text-muted)]" /> : <ChevronDown className="h-4 w-4 text-[var(--space-text-muted)]" />}
-              </button>
-              {checklistExpanded && (
-                <div className="space-y-2 border-t border-[var(--space-border-default)] px-4 py-3">
-                  {checklist.map((item, index) => (
-                    <div key={item.label} className="flex items-center gap-2.5">
-                      <span
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-                          item.done
-                            ? 'bg-[var(--space-semantic-success)] text-white'
-                            : 'border border-[var(--space-border-strong)] bg-[var(--space-surface-muted)] text-[var(--space-text-muted)]'
-                        }`}
-                      >
-                        {item.done ? <Check className="h-3 w-3" /> : index + 1}
-                      </span>
-                      <span className={`text-xs ${item.done ? 'text-[var(--space-text-muted)] line-through' : 'text-[var(--space-text-secondary)]'}`}>
-                        {item.label}
-                      </span>
-                    </div>
-                  ))}
-                  {!latestAssessment && (
-                    <p className="pt-1 text-[11px] text-[var(--space-text-muted)]">
-                      You can start drilling right away — cases stay general until you share your CV with Mate, then every new case locks onto your target industry and function.
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-
+          <div className="w-full space-y-3 px-3 py-3 sm:space-y-4 sm:px-6 sm:py-5 lg:px-8 xl:px-8">
             {actionError && (
               <div className="rounded-xl border border-[var(--space-semantic-danger)] bg-[var(--space-surface-card)] px-4 py-3 text-sm text-[var(--space-semantic-danger)]">
                 {actionError}
@@ -2360,7 +2351,7 @@ function CaseDrillLogInner() {
                     <span className="font-semibold text-[var(--space-text-primary)]">
                       Drilling for {programPreset.program || programPreset.company}
                     </span>{' '}
-                    — Mate preset your case type to{' '}
+                    - Mate preset your case type to{' '}
                     {CASE_TYPE_OPTIONS.find((option) => option.id === programPreset.caseType)?.label || 'the most relevant type'}
                     {Array.isArray(programPreset.caseTypes) && programPreset.caseTypes.length > 1
                       ? `; also drill ${programPreset.caseTypes
@@ -2391,12 +2382,14 @@ function CaseDrillLogInner() {
                 onGrade={handleGradeLibraryCase}
                 openRequest={libraryOpenRequest}
               />
+            ) : tab === 'structures' ? (
+              <StructuresWorkspace />
             ) : tab === 'toolkit' ? (
               <ConsultingToolkit />
             ) : tab === 'practice' ? (
               <>
                 {/* UX fix #6: the moment "Generate" fires, the previous case is
-                    hidden and this loading card takes its place — the fresh
+                    hidden and this loading card takes its place - the fresh
                     case renders only when it is fully ready, so old and new
                     case content are never visible together. */}
                 {busyAction === 'generate' ? (
@@ -2406,7 +2399,7 @@ function CaseDrillLogInner() {
                     </div>
                     <h2 className="mt-3 text-base font-bold leading-snug text-[var(--space-text-primary)] sm:mt-4 sm:text-lg">Mate is building your case…</h2>
                     <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--space-text-secondary)]">
-                      A fresh prompt, realistic exhibit data, and a grading rubric are being written for you right now —
+                      A fresh prompt, realistic exhibit data, and a grading rubric are being written for you right now -
                       your case appears here the moment it is fully ready.
                     </p>
                     <div className="mx-auto mt-5 w-full max-w-md space-y-2.5" aria-hidden="true">
@@ -2423,8 +2416,8 @@ function CaseDrillLogInner() {
                     <h2 className="mt-3 text-base font-bold leading-snug text-[var(--space-text-primary)] sm:mt-4 sm:text-lg">Ready for a case built around you?</h2>
                     <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--space-text-secondary)]">
                       {latestAssessment
-                        ? `Mate will use your ${targetIndustry || 'target industry'} and ${targetFunction || 'target function'} roadmap to create a fresh case — and the case menu below is reordered to the types your matched programs actually test.`
-                        : 'Mate will build you a realistic interview case right away — share your CV with Mate anytime and every new case locks onto your target industry and function.'}{' '}
+                        ? `Mate will use your ${targetIndustry || 'target industry'} and ${targetFunction || 'target function'} roadmap to create a fresh case - and the case menu below is reordered to the types your matched programs actually test.`
+                        : 'Mate will build you a realistic interview case right away - share your CV with Mate anytime and every new case locks onto your target industry and function.'}{' '}
                       Pick a case type below (or let Mate mix them), then type your answer, snap a photo of your handwritten work, or get walked through it step by step.
                     </p>
                     <div className="mt-5">
@@ -2460,7 +2453,7 @@ function CaseDrillLogInner() {
                 ) : (
                   /* Case room layout: case-type switching + generate controls live
                      in a LEFT sidebar on desktop (stacked below on mobile) so they
-                     are always easy to reach — user feedback said the old bottom
+                     are always easy to reach - user feedback said the old bottom
                      placement was hard to find. */
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
                     <aside className="order-last lg:order-first lg:w-60 lg:flex-shrink-0">
@@ -2497,7 +2490,7 @@ function CaseDrillLogInner() {
                           </button>
                         </div>
                         <p className="mt-2 text-center text-[10px] leading-tight text-[var(--space-text-muted)]">
-                          New cases use the type selected above — “Mix it up” fills what you’ve practiced least
+                          New cases use the type selected above - “Mix it up” fills what you’ve practiced least
                           {caseTypeRelevance.personalized ? ' across your matched case types' : ''}.
                         </p>
                       </div>
@@ -2528,17 +2521,17 @@ function CaseDrillLogInner() {
                       <div className="mt-4 rounded-xl bg-[var(--space-surface-muted)] p-4">
                         <p className="whitespace-pre-wrap text-[13px] leading-5 text-[var(--space-text-primary)] sm:text-sm sm:leading-6">{activeCase.prompt}</p>
                       </div>
-                      {activeExhibitChart && <ExhibitChartCard chart={activeExhibitChart} />}
                       {activeCase.case_data && (
                         <div className="mt-4">
-                          <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Case facts & exhibits</h3>
+                          <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Case facts & data</h3>
                           <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]">{activeCase.case_data}</p>
                         </div>
                       )}
+                      {activeExhibitChart && <ExhibitChartCard chart={activeExhibitChart} />}
                       {activeCase.status === 'pending' && (
                         <div className="mt-4 flex flex-col gap-2 border-t border-[var(--space-border-default)] pt-3 sm:flex-row sm:items-center sm:justify-between">
                           <p className="text-[11px] leading-4 text-[var(--space-text-muted)]">
-                            Completely stuck? You can reveal Mate’s model answer — the case stays in your history as skipped and never counts toward your grades.
+                            Completely stuck? You can reveal Mate’s model answer - the case stays in your history as skipped and never counts toward your grades.
                           </p>
                           {confirmGiveUp ? (
                             <div className="flex shrink-0 items-center gap-2">
@@ -2559,7 +2552,7 @@ function CaseDrillLogInner() {
                                 data-testid="button-confirm-give-up"
                               >
                                 {busyAction === 'reveal' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Eye className="h-3.5 w-3.5" />}
-                                {busyAction === 'reveal' ? 'Revealing…' : 'Yes — reveal, don’t score me'}
+                                {busyAction === 'reveal' ? 'Revealing…' : 'Yes - reveal, don’t score me'}
                               </button>
                             </div>
                           ) : (
@@ -2689,7 +2682,7 @@ function CaseDrillLogInner() {
                                       />
                                     )}
                                     <div>
-                                      <p className="text-sm font-semibold text-[var(--space-text-primary)]">Here’s what Mate read — fix anything before grading.</p>
+                                      <p className="text-sm font-semibold text-[var(--space-text-primary)]">Here’s what Mate read - fix anything before grading.</p>
                                       {photoNote && <p className="mt-1 text-xs text-[var(--space-semantic-warning)]">{photoNote}</p>}
                                       <button onClick={resetPhoto} className="mt-1 text-xs font-medium text-[var(--space-text-brand)] underline">
                                         Use a different photo
@@ -2784,7 +2777,7 @@ function CaseDrillLogInner() {
                       ) : null}
                       <div className="min-w-0">
                         <p className="text-lg font-bold text-[var(--space-text-primary)] sm:text-xl">
-                          {completedCases.length}<span className="text-sm font-normal text-[var(--space-text-muted)]">/{effectiveTarget || '—'}</span>
+                          {completedCases.length}<span className="text-sm font-normal text-[var(--space-text-muted)]">/{effectiveTarget || '-'}</span>
                         </p>
                         <p className="mt-1 text-xs text-[var(--space-text-secondary)]">
                           {remainingCases === null ? 'Set a target' : remainingCases === 0 ? 'Target reached' : `${remainingCases} to close the gap`}
@@ -2796,12 +2789,12 @@ function CaseDrillLogInner() {
                   <div className={`${tw.card.default} rounded-xl p-4`}>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Average grade</p>
                     <p className="mt-1 text-2xl font-bold text-[var(--space-text-primary)]">
-                      {stats.scores.length ? stats.average.toFixed(1) : '—'}<span className="text-sm font-normal text-[var(--space-text-muted)]">/5</span>
+                      {stats.scores.length ? stats.average.toFixed(1) : '-'}<span className="text-sm font-normal text-[var(--space-text-muted)]">/5</span>
                     </p>
                     <div className="mt-2">
                       <ScoreGauge value={stats.scores.length ? stats.average : 0} target={stats.scoreBar} />
                     </div>
-                    <p className="mt-1 text-xs text-[var(--space-text-secondary)]">Target bar {stats.scoreBar.toFixed(1)}/5 — the tick on the gauge</p>
+                    <p className="mt-1 text-xs text-[var(--space-text-secondary)]">Target bar {stats.scoreBar.toFixed(1)}/5 - the tick on the gauge</p>
                   </div>
                   <div className={`${tw.card.default} rounded-xl p-4`}>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Trend</p>
@@ -2815,7 +2808,7 @@ function CaseDrillLogInner() {
                           <BarChart3 className="h-5 w-5 text-[var(--space-text-muted)]" />
                         )}
                         <span className="text-lg font-bold text-[var(--space-text-primary)]">
-                          {!stats.scores.length ? '—' : stats.trendDelta > 0.1 ? 'Improving' : stats.trendDelta < -0.1 ? 'Dipping' : 'Steady'}
+                          {!stats.scores.length ? '-' : stats.trendDelta > 0.1 ? 'Improving' : stats.trendDelta < -0.1 ? 'Dipping' : 'Steady'}
                         </span>
                       </div>
                       <RecentScoreBars scores={stats.scores} />
@@ -2851,9 +2844,9 @@ function CaseDrillLogInner() {
 
                 <div className={`${tw.card.default} rounded-2xl p-3.5 sm:p-5`}>
                   <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">Performance by case type</h3>
-                  <p className="mt-1 text-xs text-[var(--space-text-muted)]">Bar height = your average grade for that type, out of 5 — hover or tap a bar for the exact numbers. Real interviews mix case types — “Mix it up” automatically fills the gaps.</p>
+                  <p className="mt-1 text-xs text-[var(--space-text-muted)]">Bar height = your average grade for that type, out of 5 - hover or tap a bar for the exact numbers. Real interviews mix case types - “Mix it up” automatically fills the gaps.</p>
                   {typeMix.length === 0 ? (
-                    <p className="mt-3 text-xs text-[var(--space-text-muted)]">No cases yet — your breakdown appears after your first drill.</p>
+                    <p className="mt-3 text-xs text-[var(--space-text-muted)]">No cases yet - your breakdown appears after your first drill.</p>
                   ) : (
                     <div className="mt-4">
                       <TypePerformanceBarChart data={typeMix} />
@@ -2863,9 +2856,9 @@ function CaseDrillLogInner() {
 
                 <div className={`${tw.card.default} rounded-2xl p-3.5 sm:p-5`}>
                   <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">Case mix</h3>
-                  <p className="mt-1 text-xs text-[var(--space-text-muted)]">How your practice splits across case types — each slice shows its share, with counts in the legend.</p>
+                  <p className="mt-1 text-xs text-[var(--space-text-muted)]">How your practice splits across case types - each slice shows its share, with counts in the legend.</p>
                   {typeMix.length === 0 ? (
-                    <p className="mt-3 text-xs text-[var(--space-text-muted)]">No cases yet — generate your first case to see your mix take shape.</p>
+                    <p className="mt-3 text-xs text-[var(--space-text-muted)]">No cases yet - generate your first case to see your mix take shape.</p>
                   ) : (
                     <div className="mt-4">
                       <CaseTypeDonut data={typeMix} />
@@ -2950,7 +2943,7 @@ function CaseDrillLogInner() {
   );
 }
 
-// Easy / Medium / Hard dial for the NEXT generated case — a plain segmented
+// Easy / Medium / Hard dial for the NEXT generated case - a plain segmented
 // control; the active level's hint spells out what changes at that level.
 function DifficultyPicker({
   value,
@@ -3017,7 +3010,7 @@ function CaseTypePicker({
 }) {
   // Personalized menu (see caseTypeCatalog.ts): the case types mapped to the
   // candidate's matched industry/function come first, ordered closest-match
-  // first. Every other type stays reachable behind "Show all case types" —
+  // first. Every other type stays reachable behind "Show all case types" -
   // the filtering is a default view, never a hard lock. Without a completed
   // assessment the menu shows the general consulting mix plus a prompt to
   // complete the assessment with Mate.
@@ -3034,8 +3027,8 @@ function CaseTypePicker({
   const expanded = showAll || lockedOpen;
   const visible = expanded ? [...primary, ...rest] : primary;
   const caption = relevance.personalized
-    ? `Matched to your ${fitLabel || 'matched industry and function'} fit — closest match first.`
-    : 'General mix — complete the fit assessment with Mate to unlock the case types your target industry and function actually test.';
+    ? `Matched to your ${fitLabel || 'matched industry and function'} fit - closest match first.`
+    : 'General mix - complete the fit assessment with Mate to unlock the case types your target industry and function actually test.';
   const toggle =
     rest.length > 0 && !lockedOpen ? (
       <button
@@ -3138,7 +3131,7 @@ function GradeReport({ practiceCase }: { practiceCase: PracticeCase }) {
   const recommendations = normalizeActionPlan(practiceCase.recommendations_json);
   const meta = caseMeta(practiceCase);
   // v12 grade report: model answer + delta live under meta.grade_report.
-  // Older graded cases have none of it — those sections simply don't render.
+  // Older graded cases have none of it - those sections simply don't render.
   const report = asObject(meta.grade_report);
   const modelAnswer = asObject(report.model_answer);
   const modelFramework = String(modelAnswer.framework || '').trim();
@@ -3159,7 +3152,7 @@ function GradeReport({ practiceCase }: { practiceCase: PracticeCase }) {
         <div className="flex flex-col gap-3 border-b border-[var(--space-border-default)] pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Answer revealed</p>
-            <h3 className="mt-1 text-lg font-bold text-[var(--space-text-primary)]">Skipped — this one isn’t scored</h3>
+            <h3 className="mt-1 text-lg font-bold text-[var(--space-text-primary)]">Skipped - this one isn’t scored</h3>
             <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">
               It stays in your history so you can review it, but it doesn’t count toward your average grade, trend, or readiness.
             </p>
@@ -3179,7 +3172,7 @@ function GradeReport({ practiceCase }: { practiceCase: PracticeCase }) {
           </div>
         )}
         <p className="mt-4 text-xs leading-5 text-[var(--space-text-brand)]">
-          Study the structure, then generate a fresh case of the same type — solving one yourself is what moves your grade.
+          Study the structure, then generate a fresh case of the same type - solving one yourself is what moves your grade.
         </p>
       </div>
     );
@@ -3241,7 +3234,7 @@ function GradeReport({ practiceCase }: { practiceCase: PracticeCase }) {
               <div className="flex items-center justify-between gap-2">
                 <h4 className="text-xs font-bold text-[var(--space-text-primary)]">{label}</h4>
                 <span className={`${tw.badge.default} ${Number(item.score) >= 4 ? tw.badge.success : tw.badge.warning}`}>
-                  {item.score || '—'}/5
+                  {item.score || '-'}/5
                 </span>
               </div>
               <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]">{item.evidence || 'No evidence returned.'}</p>
@@ -3304,7 +3297,7 @@ function GradeReport({ practiceCase }: { practiceCase: PracticeCase }) {
               </ul>
             ) : (
               <p className="mt-2 text-xs leading-5 text-[var(--space-text-muted)]">
-                Nothing matched the model answer this time — check what you missed on the right to see where to start.
+                Nothing matched the model answer this time - check what you missed on the right to see where to start.
               </p>
             )}
           </div>
@@ -3323,7 +3316,7 @@ function GradeReport({ practiceCase }: { practiceCase: PracticeCase }) {
               </ul>
             ) : (
               <p className="mt-2 text-xs leading-5 text-[var(--space-text-muted)]">
-                No major gaps compared to the model answer — keep it up!
+                No major gaps compared to the model answer - keep it up!
               </p>
             )}
           </div>
@@ -3414,12 +3407,12 @@ function GuidedWalkthrough({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <GraduationCap className="h-4 w-4 text-[var(--space-brand-primary)]" />
-          <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">Guided drill — Mate walks you through it</h3>
+          <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">Guided drill - Mate walks you through it</h3>
         </div>
         <span className={`${tw.badge.default} ${tw.badge.primary}`}>{done ? 'Wrap-up' : GUIDED_STEPS[currentIndex].label}</span>
       </div>
       <p className="mt-1 text-xs text-[var(--space-text-muted)]">
-        One step at a time: structure, then math, then your recommendation. Mate coaches each step before you move on — and the consulting toolkit below gives you an issue tree, a hypothesis-driven worksheet, and standard frameworks to work with.
+        One step at a time: structure, then math, then your recommendation. Mate coaches each step before you move on - and the consulting toolkit below gives you an issue tree, a hypothesis-driven worksheet, and standard frameworks to work with.
       </p>
 
       <div className="mt-4 space-y-4">
@@ -3437,7 +3430,7 @@ function GuidedWalkthrough({
               <div className="flex items-center justify-between gap-2">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Mate’s coaching</p>
                 <span className={`${tw.badge.default} ${Number(entry.step_score) >= 4 ? tw.badge.success : tw.badge.warning}`}>
-                  {entry.step_score || '—'}/5
+                  {entry.step_score || '-'}/5
                 </span>
               </div>
               <p className="mt-1.5 text-sm leading-6 text-[var(--space-text-secondary)]">{String(entry.feedback || '')}</p>
@@ -3485,7 +3478,7 @@ function GuidedWalkthrough({
               value={input}
               onChange={(event) => setInput(event.target.value)}
               rows={6}
-              placeholder="Think out loud — Mate coaches this step before you move on…"
+              placeholder="Think out loud - Mate coaches this step before you move on…"
               className={`${tw.input.base} ${tw.input.default} resize-y text-sm leading-6`}
             />
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -3502,7 +3495,7 @@ function GuidedWalkthrough({
           </div>
         ) : (
           <div className="space-y-2 border-t border-[var(--space-border-default)] pt-4">
-            <p className="text-sm font-semibold text-[var(--space-text-primary)]">Walkthrough complete — review your assembled answer</p>
+            <p className="text-sm font-semibold text-[var(--space-text-primary)]">Walkthrough complete - review your assembled answer</p>
             <p className="text-xs text-[var(--space-text-muted)]">
               Mate stitched your three steps into one full answer. Polish it, then submit for your final grade.
             </p>

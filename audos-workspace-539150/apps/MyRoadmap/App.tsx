@@ -109,15 +109,6 @@ function openDockApp(appId: string) {
   window.dispatchEvent(new CustomEvent('openApp', { detail: { appId } }));
 }
 
-function recommendationAppId(name: string): string | null {
-  if (name === 'Case Drill') return 'case-drill';
-  if (name === 'Case Pool') return 'case-drill-log';
-  if (name === 'Domain Knowledge') return 'industry-knowledge';
-  if (name === 'Aptitude Test') return 'aptitude-test';
-  if (name === 'Update Profile / CV') return 'fit-assessment';
-  return null;
-}
-
 const KNOWLEDGE_ICONS: Record<string, typeof BookOpen> = {
   BookOpen, Briefcase, Cpu, Factory, Globe2, HeartPulse, Landmark, Layers3,
   ShieldCheck, ShoppingCart, Store, Target, Truck, Zap,
@@ -179,6 +170,34 @@ function parseJsonish(value: unknown): any {
   } catch (e) {
     return null;
   }
+}
+
+function dbRows(value: any): any[] {
+  if (Array.isArray(value)) return value;
+  if (Array.isArray(value?.data)) return value.data;
+  if (Array.isArray(value?.rows)) return value.rows;
+  return [];
+}
+
+// A logout/login issues a new session id, so the session-scoped rows belong to
+// the previous session while the account's own rows are still keyed by email.
+// Read by email first and only fall back to the session scope.
+async function loadRecentAssessmentRows(email: string | null): Promise<any[]> {
+  const db = (window as any).__workspaceDb;
+  if (!db?.from) return [];
+  if (email) {
+    const byEmail = await db
+      .from('assessment_results', { shared: true })
+      .eq('user_email', email)
+      .orderBy('id', 'desc')
+      .limit(5)
+      .get()
+      .catch(() => null);
+    const rows = dbRows(byEmail);
+    if (rows.length > 0) return rows;
+  }
+  const bySession = await db.from('assessment_results').orderBy('id', 'desc').limit(5).get().catch(() => null);
+  return dbRows(bySession);
 }
 
 interface AssessmentTarget {
@@ -405,8 +424,8 @@ function WeekRow({
 }
 
 export default function MyRoadmapApp() {
-  const { sessionId } = useSpaceRuntime();
-  const userId = useMemo(() => resolveRoadmapIdentity(sessionId).userKey, [sessionId]);
+  const { sessionId, userEmail } = useSpaceRuntime();
+  const userId = useMemo(() => resolveRoadmapIdentity(sessionId, userEmail).userKey, [sessionId, userEmail]);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [roadmap, setRoadmap] = useState<SavedRoadmap | null>(null);
   const [progress, setProgress] = useState<Record<number, WeekProgress>>({});
@@ -419,6 +438,8 @@ export default function MyRoadmapApp() {
   const [restarting, setRestarting] = useState(false);
   const [restartError, setRestartError] = useState<string | null>(null);
   const restartCancelRef = useRef<HTMLButtonElement>(null);
+  const loadRequestRef = useRef(0);
+  const roadmapOwnerRef = useRef<string | null>(null);
   const [expandedMonths, setExpandedMonths] = useState<Record<number, boolean>>({});
   const [domainProgress, setDomainProgress] = useState<DomainProgressMap>(() => readDomainProgress(userId));
 
@@ -433,42 +454,73 @@ export default function MyRoadmapApp() {
     };
   }, [userId]);
 
+  // Roadmaps are stored under 'email:<sign-in email>'. Without that email the
+  // identity falls back to the device key and a returning account looks empty.
+  useEffect(() => {
+    if (sessionId && !userEmail) {
+      console.warn('[My Roadmap] The active workspace session exposes no sign-in email, so the saved roadmap for this account cannot be loaded.');
+    }
+  }, [sessionId, userEmail]);
+
   const load = useCallback(async () => {
+    const requestId = ++loadRequestRef.current;
+    const isStale = () => requestId !== loadRequestRef.current;
+
+    // During login/renewal the session id can arrive one render before its
+    // account email. Never query with a temporary device key in that window:
+    // it would make an existing email-keyed roadmap appear to have vanished.
+    // Incrementing the request id above also invalidates any older load.
+    if (sessionId && !userEmail) {
+      setStatus((previous) => (previous === 'ready' ? 'ready' : 'loading'));
+      return;
+    }
     try {
       const selectedTarget = readSelectedRoadmapTarget(sessionId);
-      const saved = await loadLatestRoadmap(sessionId);
-      setRoadmap(saved);
+      const saved = await loadLatestRoadmap(sessionId, userEmail);
+      if (isStale()) return;
       if (saved) {
-        const byWeek = await loadRoadmapProgress(saved, sessionId).catch(() => ({}));
+        roadmapOwnerRef.current = userId;
+        setRoadmap(saved);
+        const byWeek = await loadRoadmapProgress(saved, sessionId, userEmail).catch(() => ({}));
+        if (isStale()) return;
         setProgress(byWeek);
         if (selectedTarget && selectedTarget.program !== saved.target_program) {
           setAssessmentTarget(selectedTarget);
           setHasPendingSelection(true);
         }
-      } else if (selectedTarget) {
-        setAssessmentTarget(selectedTarget);
-        setHasPendingSelection(true);
       } else {
-        // No roadmap yet — is there a saved direction to generate from?
-        try {
-          const db = (window as any).__workspaceDb;
-          const response = await db.from('assessment_results').orderBy('id', 'desc').limit(5).get();
-          const rows = Array.isArray(response) ? response : response?.data || response?.rows || [];
-          let target: AssessmentTarget | null = null;
-          for (const row of rows) {
-            target = pickTargetProgram(row?.result_json);
-            if (target && target.program) break;
+        // An empty background read must not erase a roadmap that this same
+        // account just generated successfully. It can clear only when the
+        // resolved account identity changed.
+        if (roadmapOwnerRef.current !== userId) {
+          roadmapOwnerRef.current = userId;
+          setRoadmap(null);
+        }
+        if (selectedTarget) {
+          setAssessmentTarget(selectedTarget);
+          setHasPendingSelection(true);
+        } else {
+          // No roadmap yet — is there a saved direction to generate from?
+          try {
+            const rows = await loadRecentAssessmentRows(userEmail);
+            if (isStale()) return;
+            let target: AssessmentTarget | null = null;
+            for (const row of rows) {
+              target = pickTargetProgram(row?.result_json);
+              if (target && target.program) break;
+            }
+            setAssessmentTarget(target && target.program ? target : null);
+          } catch (e) {
+            if (isStale()) return;
+            setAssessmentTarget(null);
           }
-          setAssessmentTarget(target && target.program ? target : null);
-        } catch (e) {
-          setAssessmentTarget(null);
         }
       }
-      setStatus('ready');
+      if (!isStale()) setStatus('ready');
     } catch (e) {
-      setStatus((previous) => (previous === 'ready' ? 'ready' : 'error'));
+      if (!isStale()) setStatus((previous) => (previous === 'ready' ? 'ready' : 'error'));
     }
-  }, [sessionId]);
+  }, [sessionId, userEmail, userId]);
 
   useEffect(() => {
     void load();
@@ -501,11 +553,13 @@ export default function MyRoadmapApp() {
           roadmapTaskStatus: existing?.roadmap_task_status,
           matchPercent: target.matchPercent,
           sessionId,
+          accountEmail: userEmail,
         });
+        roadmapOwnerRef.current = userId;
         setRoadmap(saved);
         setConfirmRegenerate(false);
         setExpandedMonths({});
-        const byWeek = await loadRoadmapProgress(saved, sessionId).catch(() => ({}));
+        const byWeek = await loadRoadmapProgress(saved, sessionId, userEmail).catch(() => ({}));
         setProgress(byWeek);
       } catch (e) {
         setGenerateError('Roadmap generation didn\u2019t go through — please try again in a moment.');
@@ -513,7 +567,7 @@ export default function MyRoadmapApp() {
         setGenerating(false);
       }
     },
-    [sessionId, roadmap],
+    [sessionId, userEmail, userId, roadmap],
   );
 
   useEffect(() => {
@@ -532,10 +586,8 @@ export default function MyRoadmapApp() {
     setRestarting(true);
     setRestartError(null);
     try {
-      await restartRoadmapJourney(sessionId);
+      await restartRoadmapJourney(sessionId, userEmail);
       setConfirmRestart(false);
-      setRoadmap(null);
-      setProgress({});
       setAssessmentTarget(null);
       setHasPendingSelection(false);
       openDockApp('fit-assessment');
@@ -544,7 +596,7 @@ export default function MyRoadmapApp() {
     } finally {
       setRestarting(false);
     }
-  }, [restarting, sessionId]);
+  }, [restarting, sessionId, userEmail]);
 
   const months = useMemo(() => (roadmap ? groupWeeksIntoMonths(roadmap.plan_json) : []), [roadmap]);
   const currentWeek = useMemo(() => (roadmap ? currentWeekNumber(roadmap) : null), [roadmap]);
@@ -562,7 +614,6 @@ export default function MyRoadmapApp() {
   const knowledgeAreas = useMemo(() => roadmap
     ? knowledgeRecommendationsForProgram(roadmap.target_program, roadmap.target_company).slice(0, 4)
     : [], [roadmap]);
-
   // Default-expand the month containing the current week (or the first month).
   useEffect(() => {
     if (!roadmap || months.length === 0) return;
@@ -589,31 +640,6 @@ export default function MyRoadmapApp() {
     return { done, target, pct: target > 0 ? Math.round((done / target) * 100) : 0 };
   }, [roadmap, progress]);
 
-  const roadmapTaskStatus = useMemo(() => {
-    if (!roadmap) return {} as Record<string, string>;
-    const casePoolDone = Object.values(progress).some((item) => item.case_pool_done > 0);
-    const caseDrillDone = Object.values(progress).some((item) => item.case_drill_done > 0);
-    const aptitudeDone = Object.values(progress).some((item) => item.aptitude_done > 0);
-    return roadmap.preparation_recommendations.reduce<Record<string, string>>((statuses, item) => {
-      const supportedComplete =
-        (item.casemateFunction === 'Case Pool' && casePoolDone) ||
-        (item.casemateFunction === 'Case Drill' && caseDrillDone) ||
-        (item.casemateFunction === 'Aptitude Test' && aptitudeDone);
-      statuses[item.id] = supportedComplete ? 'completed' : (roadmap.roadmap_task_status[item.id] || 'pending');
-      return statuses;
-    }, {});
-  }, [roadmap, progress]);
-
-  useEffect(() => {
-    if (!roadmap || roadmap.preparation_recommendations.length === 0) return;
-    if (JSON.stringify(roadmapTaskStatus) === JSON.stringify(roadmap.roadmap_task_status)) return;
-    const db = (window as any).__workspaceDb;
-    if (!db?.from) return;
-    void db.from('prep_roadmaps', { shared: true }).update(roadmap.id, { roadmap_task_status: roadmapTaskStatus }).then(() => {
-      setRoadmap((current) => current && current.id === roadmap.id ? { ...current, roadmap_task_status: roadmapTaskStatus } : current);
-    }).catch(() => undefined);
-  }, [roadmap, roadmapTaskStatus]);
-
   const regenerateTarget: AssessmentTarget | null = roadmap
     ? {
         program: roadmap.target_program,
@@ -624,7 +650,7 @@ export default function MyRoadmapApp() {
 
   return (
     <div className="flex min-h-full w-full flex-col bg-[var(--space-surface-page)] [&_button]:min-h-11 [&_button]:min-w-11">
-      <div className="mx-auto w-full max-w-7xl space-y-4 p-3 sm:space-y-5 sm:p-6 lg:p-7">
+      <div className="w-full space-y-4 p-3 sm:space-y-5 sm:p-6 lg:p-7">
         <div>
           <h1 className="flex items-center gap-2 text-lg font-bold text-[var(--space-text-primary)]">
             <MapIcon className="h-5 w-5 text-[var(--space-text-brand)]" />
@@ -785,27 +811,6 @@ export default function MyRoadmapApp() {
             </div>
 
             <ReadinessApp embedded />
-
-            {roadmap.preparation_recommendations.length > 0 && (
-              <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5" data-testid="roadmap-target-gap-plan">
-                <div>
-                  <p className="text-sm font-bold text-[var(--space-text-primary)]">Target-specific preparation priorities</p>
-                  <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">Each action comes from a gap in your confirmed Target Fit evidence and points to an existing Casemate function.</p>
-                </div>
-                <div className="mt-3 space-y-2">
-                  {roadmap.preparation_recommendations.slice().sort((a, b) => a.order - b.order).map((item) => {
-                    const appId = recommendationAppId(item.casemateFunction);
-                    const completed = roadmapTaskStatus[item.id] === 'completed';
-                    return <article key={item.id} className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3">
-                      <div className="flex flex-wrap items-start justify-between gap-2"><div><span className="rounded-full bg-[var(--space-surface-card)] px-2 py-1 text-[10px] font-bold text-[var(--space-text-brand)]">{item.priority}</span>{completed && <span className="ml-1 rounded-full bg-[color-mix(in_srgb,var(--space-semantic-success-500)_12%,transparent)] px-2 py-1 text-[10px] font-bold text-[var(--space-semantic-success)]">Completed from practice</span>}<h3 className="mt-2 text-sm font-bold text-[var(--space-text-primary)]">{item.gap}</h3></div><span className="text-[10px] font-bold uppercase tracking-wide text-[var(--space-text-muted)]">{item.category}</span></div>
-                      <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]"><b>Why:</b> {item.reason}</p>
-                      <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]"><b>Action:</b> {item.recommendedAction}</p>
-                      {appId && <button type="button" onClick={() => openDockApp(appId)} className="mt-2 inline-flex items-center gap-1 rounded-lg bg-[var(--space-surface-accent-soft)] px-3 py-1.5 text-[11px] font-bold text-[var(--space-text-brand)]">Open {item.casemateFunction} <ChevronRight className="h-3.5 w-3.5" /></button>}
-                    </article>;
-                  })}
-                </div>
-              </section>
-            )}
 
             <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5" data-testid="roadmap-case-priorities">
               <div className="flex flex-wrap items-start justify-between gap-3">
@@ -974,7 +979,7 @@ export default function MyRoadmapApp() {
               data-testid="button-restart-progress"
             >
               <RefreshCw className="h-3.5 w-3.5" />
-              Restart my progress
+              Restart fit assessment
             </button>
           </div>
         )}
@@ -991,10 +996,10 @@ export default function MyRoadmapApp() {
             data-testid="restart-progress-dialog"
           >
             <h2 id="restart-progress-title" className="text-lg font-bold text-[var(--space-text-primary)]">
-              Restart your progress?
+              Restart your fit assessment?
             </h2>
             <p id="restart-progress-description" className="mt-2 text-sm leading-6 text-[var(--space-text-secondary)]">
-              This will reset your fit assessment results and roadmap. You'll need to go through the assessment again. Your aptitude test, case drill, and domain knowledge progress will not be affected.
+              This clears your fit assessment results and questionnaire state so you can assess again. Your saved roadmap and practice progress stay available; the roadmap changes only when you explicitly regenerate it.
             </p>
             {restartError && (
               <p className="mt-3 rounded-xl bg-[color-mix(in_srgb,var(--space-semantic-danger)_10%,transparent)] p-3 text-xs font-semibold text-[var(--space-semantic-danger)]" role="alert">
@@ -1023,7 +1028,7 @@ export default function MyRoadmapApp() {
                 data-testid="button-confirm-restart"
               >
                 {restarting && <Loader2 className="h-4 w-4 animate-spin" />}
-                {restarting ? 'Restarting…' : 'Yes, restart'}
+                {restarting ? 'Restarting…' : 'Yes, restart assessment'}
               </button>
             </div>
           </div>

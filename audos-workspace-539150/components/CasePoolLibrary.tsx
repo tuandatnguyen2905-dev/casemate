@@ -1,5 +1,5 @@
 /**
- * CasePoolLibrary.tsx — the library of 100 prebuilt full consulting cases for Case Pool.
+ * CasePoolLibrary.tsx - 114 prebuilt full cases: the preserved 100-case core plus 14 eligible Case Journey adaptations.
  *
  * Unlike the “Case Room” tab (where Mate generates and grades a bespoke case),
  * this tab opens a fully prepared case instantly: situation, key question, data
@@ -15,7 +15,7 @@
  * to the host app (it owns the server-function client), so this component takes an
  * `onGrade` callback and a `results` map of already-graded attempts. That keeps the
  * library free of backend plumbing and lets the host reuse the same graded rows it
- * already loads for the dashboard — which is why a solved case can show its score
+ * already loads for the dashboard - which is why a solved case can show its score
  * on the list row and reopen with its full report intact.
  */
 
@@ -24,9 +24,11 @@ import {
   ArrowLeft,
   BookOpen,
   CheckCircle2,
+  Clock,
   Eye,
   Lightbulb,
   Loader2,
+  Network,
   PenLine,
   RefreshCw,
   Search,
@@ -37,6 +39,7 @@ import {
 } from 'lucide-react';
 import { tw } from '../lib/colors';
 import { CaseExhibitList } from './CaseExhibits';
+import ExhibitRenderer from './ExhibitRenderer';
 import PercentileRankingWidget from './PercentileRankingWidget';
 import { DIFFICULTY_LABELS, DIFFICULTY_ORDER } from '../lib/caseLibraryShared';
 import type { CaseDifficulty } from '../lib/caseLibraryShared';
@@ -46,7 +49,6 @@ import {
   POOL_INDUSTRY_LABELS,
   POOL_TYPES,
   POOL_TYPE_LABELS,
-  pickRandomPoolCase,
   poolRecommendationReason,
   recommendPoolCases,
 } from '../lib/casePoolLibrary';
@@ -54,11 +56,20 @@ import type { FullCase, PoolHistoryRecord } from '../lib/casePoolLibrary';
 
 const HISTORY_LIMIT = 200;
 
-/** Cases shown per page — dumping all 100 at once makes the list too long to scan. */
+/** Cases shown per page - dumping all 114 at once makes the list too long to scan. */
 const PAGE_SIZE = 24;
 
 /** Shorter answers cannot carry a structure, a number, and a recommendation. */
 const MIN_ANSWER_LENGTH = 80;
+const CASE_POOL_REQUEST_KEY = 'casemate-open-case-pool';
+
+const SKILL_LABELS: Record<string, string> = {
+  charts: 'Charts',
+  calculations: 'Calculations',
+  structures: 'Issue structuring',
+  creativity: 'Creative options',
+  'market-sizing': 'Market sizing',
+};
 
 export interface LibraryGradeDimension {
   key: string;
@@ -102,6 +113,7 @@ function readHistory(sessionId: string): PoolHistoryRecord[] {
 
 function difficultyBadge(difficulty: CaseDifficulty): string {
   if (difficulty === 'easy') return 'bg-[var(--space-semantic-success-100)] text-[var(--space-neutral-800)]';
+  if (difficulty === 'expert') return 'bg-[var(--space-neutral-900)] text-[var(--space-neutral-0)]';
   if (difficulty === 'hard') return 'bg-[var(--space-semantic-danger-100)] text-[var(--space-neutral-800)]';
   return 'bg-[var(--space-semantic-warning-100)] text-[var(--space-neutral-800)]';
 }
@@ -128,7 +140,7 @@ export default function CasePoolLibrary({
 }: {
   sessionId: string;
   extraHistory?: PoolHistoryRecord[];
-  /** Graded attempts keyed by library case id — drives the score badges and saved reports. */
+  /** Graded attempts keyed by library case id - drives the score badges and saved reports. */
   results?: Record<string, LibraryGradeResult>;
   /** Sends an answer to Mate for grading; resolves with the saved report. */
   onGrade?: (item: FullCase, answer: string) => Promise<LibraryGradeResult>;
@@ -141,6 +153,9 @@ export default function CasePoolLibrary({
   const [difficulty, setDifficulty] = useState<CaseDifficulty | 'all'>('all');
   const [type, setType] = useState<string>('all');
   const [industry, setIndustry] = useState<string>('all');
+  const [skillFocus, setSkillFocus] = useState<string>('all');
+  const [estimatedTime, setEstimatedTime] = useState<'all' | 'under-25' | '25-30' | '30-plus'>('all');
+  const [completion, setCompletion] = useState<'all' | 'not-started' | 'opened' | 'completed'>('all');
   const [query, setQuery] = useState('');
   const [active, setActive] = useState<FullCase | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -167,6 +182,10 @@ export default function CasePoolLibrary({
   }, [sessionId]);
 
   const combinedHistory = useMemo(() => history.concat(extraHistory || []), [history, extraHistory]);
+  const practicedIds = useMemo(
+    () => new Set(history.map((item) => String(item.case_id || '')).filter(Boolean)),
+    [history],
+  );
 
   const remember = useCallback(
     (item: FullCase) => {
@@ -181,7 +200,7 @@ export default function CasePoolLibrary({
         try {
           localStorage.setItem(historyKey(sessionId), JSON.stringify(next));
         } catch {
-          /* storage full or private mode — recommendations still work this session */
+          /* storage full or private mode - recommendations still work this session */
         }
         return next;
       });
@@ -213,7 +232,7 @@ export default function CasePoolLibrary({
   );
 
   // Opening on request (a graded case tapped in the dashboard history). Only the
-  // request identity is watched — depending on openCase would reopen the case
+  // request identity is watched - depending on openCase would reopen the case
   // every time a grade lands and changes the results map.
   useEffect(() => {
     if (!openRequest?.id) return;
@@ -221,6 +240,29 @@ export default function CasePoolLibrary({
     if (requested) openCase(requested);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openRequest?.id, openRequest?.nonce]);
+
+  // Case Drill writes this request before opening Case Pool. Listening to the
+  // openApp event also handles a Case Pool window that is already mounted.
+  useEffect(() => {
+    const consumeRequest = () => {
+      try {
+        const id = sessionStorage.getItem(CASE_POOL_REQUEST_KEY);
+        if (!id) return;
+        const requested = CASE_POOL_LIBRARY.find((item) => item.id === id);
+        if (!requested) return;
+        sessionStorage.removeItem(CASE_POOL_REQUEST_KEY);
+        openCase(requested);
+      } catch {
+        /* sessionStorage can be unavailable in strict browser modes */
+      }
+    };
+    consumeRequest();
+    const onOpenApp = (event: Event) => {
+      if ((event as CustomEvent).detail?.appId === 'case-drill-log') consumeRequest();
+    };
+    window.addEventListener('openApp', onOpenApp);
+    return () => window.removeEventListener('openApp', onOpenApp);
+  }, [openCase]);
 
   const savedResult = active ? results[active.id] : undefined;
   const rawShownResult = retrying ? null : justGraded || savedResult || null;
@@ -241,7 +283,7 @@ export default function CasePoolLibrary({
     const text = attempt.trim();
     if (text.length < MIN_ANSWER_LENGTH) {
       setGradeError(
-        `Write at least ${MIN_ANSWER_LENGTH} characters — your structure, the numbers you worked out, and your recommendation — so the grade is useful.`,
+        `Write at least ${MIN_ANSWER_LENGTH} characters - your structure, the numbers you worked out, and your recommendation - so the grade is useful.`,
       );
       return;
     }
@@ -266,17 +308,6 @@ export default function CasePoolLibrary({
     }
   }, [active, attempt, onGrade]);
 
-  const drawRandom = useCallback(() => {
-    openCase(
-      pickRandomPoolCase({
-        difficulty,
-        type,
-        industry,
-        excludeIds: history.map((item) => String(item.case_id || '')).filter(Boolean),
-      }),
-    );
-  }, [difficulty, type, industry, history, openCase]);
-
   const recommendations = useMemo(() => recommendPoolCases(combinedHistory, 3), [combinedHistory]);
 
   const matches = useMemo(() => {
@@ -286,25 +317,37 @@ export default function CasePoolLibrary({
       if (difficulty !== 'all' && item.difficulty !== difficulty) return false;
       if (type !== 'all' && item.type !== type) return false;
       if (industry !== 'all' && item.industry !== industry) return false;
+      if (skillFocus !== 'all' && !(item.skill_focus || []).includes(skillFocus as any)) return false;
+      const minutes = item.estimated_minutes || 25;
+      if (estimatedTime === 'under-25' && minutes >= 25) return false;
+      if (estimatedTime === '25-30' && (minutes < 25 || minutes > 30)) return false;
+      if (estimatedTime === '30-plus' && minutes < 30) return false;
+      const isCompleted = Boolean(results[item.id]);
+      const isOpened = practicedIds.has(item.id);
+      if (completion === 'completed' && !isCompleted) return false;
+      if (completion === 'opened' && (!isOpened || isCompleted)) return false;
+      if (completion === 'not-started' && (isOpened || isCompleted)) return false;
       if (tokens.length === 0) return true;
       const haystack = normalize(
-        [item.title, item.situation, item.key_question, item.tags.join(' ')].join(' '),
+        [item.title, item.situation, item.key_question, item.objective || '', item.tags.join(' ')].join(' '),
       );
       return tokens.every((token) => haystack.includes(token));
     });
-  }, [query, difficulty, type, industry]);
+  }, [query, difficulty, type, industry, skillFocus, estimatedTime, completion, practicedIds, results]);
 
-  const practicedIds = useMemo(
-    () => new Set(history.map((item) => String(item.case_id || '')).filter(Boolean)),
-    [history],
-  );
+  const drawRandom = useCallback(() => {
+    const unseen = matches.filter((item) => !practicedIds.has(item.id));
+    const pool = unseen.length > 0 ? unseen : matches;
+    if (pool.length === 0) return;
+    openCase(pool[Math.floor(Math.random() * pool.length)] || null);
+  }, [matches, openCase, practicedIds]);
 
   const solvedCount = useMemo(() => Object.keys(results).length, [results]);
 
   // Changing filters resets to the first page instead of keeping the previous list length.
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [query, difficulty, type, industry]);
+  }, [query, difficulty, type, industry, skillFocus, estimatedTime, completion]);
 
   /* ------------------------------------------------------------ open case */
   if (active) {
@@ -329,13 +372,14 @@ export default function CasePoolLibrary({
               Solved · {savedResult.score}/5
             </span>
           ) : null}
+          <span className="inline-flex items-center gap-1 text-[11px] text-[var(--space-text-muted)]"><Clock className="h-3 w-3" /> {active.estimated_minutes || 25} min</span>
           <span className="text-[11px] text-[var(--space-text-muted)]">{active.id}</span>
         </div>
 
         <h2 className="mt-2 text-xl font-bold leading-7 text-[var(--space-text-primary)]">{active.title}</h2>
 
         {/* The page is full-bleed, so every block of running prose carries its
-            own reading measure — a case narrative stretched across a 1920px
+            own reading measure - a case narrative stretched across a 1920px
             monitor is unreadable, while the exhibits below still use the full
             width they need. */}
         <div className="mt-3 rounded-xl bg-[var(--space-surface-muted)] p-4">
@@ -344,14 +388,33 @@ export default function CasePoolLibrary({
           </p>
         </div>
 
-        <div className="mt-3 rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Key question</p>
-          <p className="mt-1 max-w-[80ch] text-sm font-semibold leading-6 text-[var(--space-text-primary)]">
+        {active.objective ? (
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <section className="rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Objective</p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{active.objective}</p>
+            </section>
+            <section className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Constraints</p>
+              <ul className="mt-1.5 space-y-1">
+                {(active.constraints || []).map((constraint) => <li key={constraint} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {constraint}</li>)}
+              </ul>
+            </section>
+          </div>
+        ) : null}
+
+        {active.journey_exhibits?.length ? (
+          <div className="mt-4"><ExhibitRenderer exhibits={active.journey_exhibits} displayMode="advanced" /></div>
+        ) : (
+          <CaseExhibitList exhibits={active.data_exhibits} className="mt-4" />
+        )}
+
+        <div className="mt-4 rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Case task</p>
+          <p className="mt-1 max-w-[90ch] text-sm font-semibold leading-6 text-[var(--space-text-primary)]">
             {active.key_question}
           </p>
         </div>
-
-        <CaseExhibitList exhibits={active.data_exhibits} className="mt-4" />
 
         <div className="mt-4">
           <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
@@ -592,8 +655,24 @@ export default function CasePoolLibrary({
               </p>
             </section>
 
+            {active.model_answer.issue_tree?.length ? (
+              <section>
+                <p className="text-xs font-bold text-[var(--space-text-primary)]">Issue tree</p>
+                <ol className="mt-1 grid gap-2 sm:grid-cols-2">
+                  {active.model_answer.issue_tree.map((branch, index) => <li key={branch} className="rounded-xl bg-[var(--space-surface-muted)] p-2.5 text-xs leading-5 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-brand)]">{index + 1}. </span>{branch}</li>)}
+                </ol>
+              </section>
+            ) : null}
+
+            {active.model_answer.key_calculations?.length ? (
+              <section>
+                <p className="text-xs font-bold text-[var(--space-text-primary)]">Key calculations</p>
+                <ul className="mt-1 space-y-1.5">{active.model_answer.key_calculations.map((item) => <li key={item} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {item}</li>)}</ul>
+              </section>
+            ) : null}
+
             <section>
-              <p className="text-xs font-bold text-[var(--space-text-primary)]">Key findings</p>
+              <p className="text-xs font-bold text-[var(--space-text-primary)]">Insights and evidence</p>
               <ul className="mt-1 max-w-[85ch] space-y-1.5">
                 {active.model_answer.key_findings.map((finding, index) => (
                   <li key={index} className="flex gap-2 text-xs leading-5 text-[var(--space-text-secondary)]">
@@ -606,12 +685,47 @@ export default function CasePoolLibrary({
               </ul>
             </section>
 
+            {active.model_answer.implications?.length ? (
+              <section>
+                <p className="text-xs font-bold text-[var(--space-text-primary)]">Implications</p>
+                <ul className="mt-1 space-y-1.5">{active.model_answer.implications.map((item) => <li key={item} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {item}</li>)}</ul>
+              </section>
+            ) : null}
+
             <section className="rounded-xl border border-[var(--space-brand-primary-200)] bg-[var(--space-surface-accent-soft)] p-3">
               <p className="text-xs font-bold text-[var(--space-text-brand)]">Recommendation</p>
               <p className="mt-1 max-w-[85ch] text-xs leading-6 text-[var(--space-text-secondary)]">
                 {active.model_answer.recommendation}
               </p>
             </section>
+
+            {active.model_answer.plausible_alternatives?.length ? (
+              <section>
+                <p className="text-xs font-bold text-[var(--space-text-primary)]">Plausible alternatives</p>
+                <ul className="mt-1 space-y-1.5">{active.model_answer.plausible_alternatives.map((item) => <li key={item} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {item}</li>)}</ul>
+              </section>
+            ) : null}
+
+            {active.journey_stages?.length ? (
+              <section className="rounded-xl border border-[var(--space-border-default)] p-3" data-testid="related-case-drills">
+                <p className="flex items-center gap-1.5 text-xs font-bold text-[var(--space-text-primary)]"><Network className="h-3.5 w-3.5 text-[var(--space-text-brand)]" /> Practise the related skills in Case Drill</p>
+                <p className="mt-1 text-[11px] leading-4 text-[var(--space-text-muted)]">Drill scores stay separate from this full-case result.</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {active.journey_stages.map((stage) => {
+                    let drillCompleted = false;
+                    try { drillCompleted = Boolean(localStorage.getItem(`casemate-expert-completed:${stage.drillId}`)); } catch { /* best effort */ }
+                    return (
+                      <button key={stage.drillId} type="button" onClick={() => {
+                        try { sessionStorage.setItem('casemate-open-case-drill', stage.drillId); } catch { /* best effort */ }
+                        window.dispatchEvent(new CustomEvent('openApp', { detail: { appId: 'case-drill' } }));
+                      }} className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.secondary}`}>
+                        {stage.role}: {stage.drillType}{drillCompleted ? ' · Completed' : ''}
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            ) : null}
           </div>
         ) : (
           <button
@@ -621,7 +735,7 @@ export default function CasePoolLibrary({
             data-testid="button-reveal-model-answer"
           >
             <Eye className="h-4 w-4" />
-            Done with my attempt — show the model answer
+            Done with my attempt - show the model answer
           </button>
         )}
 
@@ -689,6 +803,8 @@ export default function CasePoolLibrary({
                 ) : null}
               </div>
               <span className="mt-2 text-xs font-bold leading-4 text-[var(--space-text-primary)]">{item.title}</span>
+              <span className="mt-1 line-clamp-2 text-[11px] leading-4 text-[var(--space-text-secondary)]">{item.objective || item.key_question}</span>
+              <span className="mt-1.5 flex items-center gap-1 text-[10px] text-[var(--space-text-muted)]"><Clock className="h-3 w-3" /> {item.estimated_minutes || 25} min</span>
               <span className="mt-1.5 flex items-start gap-1 text-[10px] leading-4 text-[var(--space-text-muted)]">
                 <Sparkles className="mt-0.5 h-3 w-3 shrink-0" />
                 {poolRecommendationReason(combinedHistory, item)}
@@ -750,7 +866,7 @@ export default function CasePoolLibrary({
           </div>
 
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Case type</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Business problem</p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {['all', ...POOL_TYPES].map((item) => (
                 <button
@@ -767,6 +883,13 @@ export default function CasePoolLibrary({
                   {item === 'all' ? 'All' : POOL_TYPE_LABELS[item] || item}
                 </button>
               ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Skill focus</p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {['all', ...Object.keys(SKILL_LABELS)].map((value) => <button key={value} type="button" onClick={() => setSkillFocus(value)} className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${skillFocus === value ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]' : 'border border-[var(--space-border-default)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]'}`}>{value === 'all' ? 'All' : SKILL_LABELS[value]}</button>)}
             </div>
           </div>
 
@@ -789,6 +912,11 @@ export default function CasePoolLibrary({
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Estimated time<select value={estimatedTime} onChange={(event) => setEstimatedTime(event.target.value as typeof estimatedTime)} className={`${tw.input.base} ${tw.input.default} mt-1.5 py-2 text-xs normal-case tracking-normal`}><option value="all">Any length</option><option value="under-25">Under 25 min</option><option value="25-30">25–30 min</option><option value="30-plus">30+ min</option></select></label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Completion status<select value={completion} onChange={(event) => setCompletion(event.target.value as typeof completion)} className={`${tw.input.base} ${tw.input.default} mt-1.5 py-2 text-xs normal-case tracking-normal`}><option value="all">Any status</option><option value="not-started">Not started</option><option value="opened">Opened</option><option value="completed">Completed</option></select></label>
           </div>
         </div>
 
@@ -835,9 +963,10 @@ export default function CasePoolLibrary({
                     </span>
                     <span className="mt-1 block text-[10px] text-[var(--space-text-muted)]">
                       {POOL_INDUSTRY_LABELS[item.industry] || item.industry} ·{' '}
-                      {POOL_TYPE_LABELS[item.type] || item.type} · {DIFFICULTY_LABELS[item.difficulty]}
-                      {results[item.id] ? '' : practicedIds.has(item.id) ? ' · opened' : ''}
+                      {POOL_TYPE_LABELS[item.type] || item.type} · {DIFFICULTY_LABELS[item.difficulty]} · {item.estimated_minutes || 25} min
+                      {results[item.id] ? ' · completed' : practicedIds.has(item.id) ? ' · opened' : ' · not started'}
                     </span>
+                    <span className="mt-1.5 block line-clamp-2 text-[11px] leading-4 text-[var(--space-text-secondary)]">{item.objective || item.key_question}</span>
                   </span>
                   {results[item.id] ? (
                     <span

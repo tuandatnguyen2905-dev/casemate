@@ -6,7 +6,8 @@ import {
   BookOpen,
   Loader2,
   ChevronLeft,
-  Smartphone,
+  ChevronRight,
+  ChevronDown,
   Layers,
   Check,
   CheckCircle2,
@@ -14,6 +15,19 @@ import {
   Target,
   GraduationCap,
   LineChart,
+  ArrowLeft,
+  BrainCircuit,
+  CalendarClock,
+  Clock3,
+  Compass,
+  Dumbbell,
+  FileText,
+  Grid2X2,
+  LockKeyhole,
+  Table2,
+  Trophy,
+  Users,
+  Menu,
 } from 'lucide-react';
 import { useSpaceRuntime } from '../SpaceRuntimeContext';
 import type { DesktopThemeTokens } from '../types';
@@ -21,22 +35,19 @@ import { isValidEmailFormat, INVALID_EMAIL_MESSAGE } from '../lib/emailValidatio
 import BrandSplash from './BrandSplash';
 import BrandLogoMark from './BrandLogoMark';
 import {
-  AuthServiceStatus,
   beginSocialOAuth,
   completeSocialOAuthCallback,
-  composeE164,
-  DEFAULT_PHONE_COUNTRY,
-  fetchAuthServiceStatus,
   isFacebookLoginConfigured,
   isGoogleLoginConfigured,
   isLinkedInLoginConfigured,
-  PHONE_COUNTRY_CODES,
   SOCIAL_OAUTH_SUCCESS_PATH,
-  smsSendOtp,
-  smsVerifyOtp,
+  WORKSPACE_SESSION_MAX_AGE_SECONDS,
+  persistWorkspaceSessionCookie,
+  renewWorkspaceSession,
 } from '../lib/authAccount';
 import { prefetchCasemateEntitlement } from '../lib/proAccess';
 import { formatVnd, PRICING_PLANS } from '../lib/pricing';
+import { getCompanyLogoUrl } from '../data/companyLogos';
 const mujiProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAMAAADWtUEnAAAAwFBMVEUAAACFABp+ABh6AAqBABmBABmCABmDABmDABl9ABd+ABeqAAD/AACCABhxACeJABNVAAB+ABh+ABg/AAB9ABiNACN+ABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABfBVYjAAAAQHRSTlMA/PsI05JPM7KLdQMBbgYQA1QqBMsMqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADGDN5QAAA4FJREFUeNrtmYuO4yAMRe3wDAklSWf2/z91fQ19jdTR7kpDIm3cKgFClSNjG+MSnXLKKaccUua3na8j87cT/0cxkGIu2inSwrcNm/a8mM/H9KIPnn/1o1IGHkQ4k9AstnYcFbTYXmbyGOIRj4kmctoNbTjV4R9V4MAiA0cyMwWuHUfGolUBMfIMKAMegI/hnwaELqyRt6tahgb4nQYVUH7ZR4PKxBtdKP0d4NAREO+8UDwyYKKl+chBAZ204Q5HBGSFuYoTD0p4PECLoGIoI9wcExDRzWuMc38EGHoDSnyRvUT0aPMxAbEvOPERjusxAZUNPuL8QQHb6vL6HlBk2guQ1T/EgTm8XWLaU4OsEQY7snmnwc+cUvZmN8Cax7ClN4DJaya2F6Bteatkha+Akjo3DYbap3EfwEvNE+SFr3FQJrwCmr28uGZat0S0AepBoD5IoZpom7cDYFKAQM2Lm61hl1bjDKGagNPEgkt/QN9srGmQQsvCmvPcbKB2o+kPqEsY6abBosbYBOcBHJ7u3VDndQEsLXxgs0M4zriLDZra0jOfDbTACOrxCme6QjXs9DjVjW50Tl6T5S6KCuh6ea8o1VngxIyO9pXWKa7Ok4nLfiWHBWWEEIqWE3CRbwhBWXvKBLnVQHCVrqhsalj04DFVWxfkDDTLLEzsVt0y4blcg7LVPM9an1mM2UIxy0y9dfdsiRL3Uq0XFR3Y/PNjy6GV24JXKd35cqvKaAzcchTfUBFvkKsEohjFIZBtqYS+ulzAh20Dn4xdRG4VZUM8sRbHvgTDdJz9ansDSjQUnFE+jkeD5faIxKPhAVuGKvMO6EuJvQF146oLPLAeP93qxSjJfgE0jyWe+y4xYvLH8CFL/CFxWCkij3PToI1tiT/N6kYRt5ne/rxZ/lWXuFwFcExig+N0A9SsxtE1whxThEl23kMM38UuAihRJeEkP5TZc5RMZgSg3K02LQxh6gq4SqoXs+yurAcjl8UGR8lYNklzom7CTuMhfMeyutHU1QiTMLFHQlrDjNqgKEpzfKGzHIXc8jpi2EdeewLOtDFOxBKfPWKc41+wweRd0LTKOhMQukkr66Nec98lLn4lk0Pwl9VfqAR5uY8JT0LM4YqGtxJ/ok8xubi62D/Reg1sNcGa7vnMblnC3QqRac34B2lBavOCalrVQ6/mcT3llFNOOeUf5DctfSLOH5X2CwAAAABJRU5ErkJggg==';
 const cpGroupProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAMAAADWtUEnAAAAwFBMVEUAAAAAqVIAqFIAplEAp1EAtFgAp1EAplEA/wAAqVMAqVIAf38Avz8AmU0A/38AfwAAfz8AmjkA//8AmWYAVVUAzGYAf1IAsk4AvHoAjTgAjE8AqjoAn08AzDMA/1UAsVMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8WZGXAAAAQHRSTlMA9gpvjf1PLAHRrgIEDgICBAcBBQMFBw4ECQkKIAUDKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg3rUdQAAA0xJREFUeNrtWdmO2zAMpKhbtnxks9m7/f+/7IycYFv0uZAKmEDgIy+DIWdIyiJnnHHGGf9RpBZjQtNt+n7YdBoL3h3Penuvdd/uiAdiD/A0uJLNEbm4EPF+FBaBIxTjictZBJHiKYgsY/An1XnjQv3t3RZt9iXKCGm+JM3eNSSLzrM+4dd0bI2PI2R5mYu3Iq+S/mB1SRL9CAhVLPDBYt4vpFNipQ+mD03PQFgGoFBNXnVJNUeIeZJsgRmoAe0Z2EPvMpwPECrOO16CNzUBruHbZcqlt5IXKeZVfkiE/aHgFFYIoOJghpp2XG+9LeZqCvrIlR5dqFwCnQjXMNfBdJbJihK0UHAAY0BWeUGui8/Z53qRin/nvk0kotiegKio8QWGrfjBAYP1hgLJri9AqiJSybAaQCJ7Lb2Zr5w8S+mskg1V9ynUriYKJEPIrEP0YaT5tkrJkjq7jEEPdnBkKgIVd5uYa6EHGligy71t0DUY3iVdlMJoDEaUZeBlCIAf6WCQFKIUW/FhvB4H4J6OdM6KujOK+5h+fAF03qcBAFqmWOHSF9EZCi65qZdsOqlDAIytIZvCId/RYt5EXo5eN3e3mcMHF6QSQz42ERQeZmtb4Ij5J/qMYFrY+ncSBZSAHud925k8bzBjg7qtd6tLj267cq373ups5KCD8dV0HwgFQ0xqyQZflZ04KtcnjPyiidPM2nniL+hyrZspMVqfAWg6Thnan91XksCV5P70lQDwI905my7aptfOWydmBH2goN/k/TEecKDuv9ZdQWG53qW6EeB9gU9ox94NsLovAFUAap5I3Futx8mRcggrQxxyLWy74X6iheVYj9YBQWeVbe0Nb5J0ZePNNn4fzjzFgNbi3iRFbssDxG55oAWHLs4VHsOhlUTKJNreKgmq78Gi4mLguRvH/lycjUpNyx5cVx0vEpy1QPb3YaVGQI8BjNZL11khOEwvkYSJWhTcxPvX9hAtmLT60jfFL2DKgccQASjAo207PYoaeNRqu6uDLqKhJRpMhgCcYA1JJ2Yb5xEknGgrEeWGlCIAjyfVgFpllGjOvEcJEciUNH7qzhId55PO+hgQrH2gGu+DU5IJczU1m9ZBP4edccYZZ5zxD+IXKTEa7pUGshgAAAAASUVORK5CYII=';
 const maerskProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAMAAADWtUEnAAAAwFBMVEUfGSKd3+kiHyB11ONp6/Ft0+Ng0uSH2+na6OgiHh9jAABisbxVqvAzmZk/v/9/f/8iIB4AAP8Af38Af/9VAFV/f3+E2eb/qqoAAABbyNkkICEjHiBj1eciHh4kICAcGxwA//9dzuAiIiIjHiAjICE/v78jHiBcy90iHh4jHR0iHh4mGRljzNwiICBVqqpcy9xbydkiHiBJttk7AAAjICAiHR7///9t1OQkHCE8ADwjHiBy1uWu5usjICE6OjoiHh+Pv599AAAAQHRSTlMaJ1RnDpf4YA7NAgYEBQQChwECAgMCiQMA/f31/PC2EQH+E7PNBM3YTi1wFfMxBWmPcQcEd4wE0DcEkLAXlASobo6mvQAABTBJREFUeNrtmFd36jgQgF2ouWX77kSSJYqjYBsny6WG+v//1Y6KC8EQHmA356zngSPJsvg83Xbgk4tTA9aANWANWAPWgDcE7J2RTwLYWJzb9dL7DIAI8eVHlXz5pi/+14A9aDSfq6XV/AFl7SZiIPKJECLJDhOOGBR7csHF/SCfC3tvtqCnepO9MXFEBWADGow99ivlkTWPzD+iAfGyyZBSaQ4UkgbZGDgNcqEeRMWUhiO8PiP5QhgBpDjVd8Z4dtepAPwJmuyxJONxecZ8fIICkFBCLciqGI+IkpFZl7iei4cAJUGUqJhRMtT3asAZTuWgwsQ9+PZcJmptWv0y4N/wdARISWw1RQJitYZMuC6zddrlQy2cp7CiNOBqziVuSvUzmmuSEG6OxFPWeBoXUAn48nxE5G/YZUDznKlm0kemuDrC2cgCFl6AElGjIfxH1LgCNE8yhVEY7vSRwUDgU5F1dZCcALr+ZUALsiY5ICINYah+7Gz0DtCB6cMUosAChmUOZeJI8cVwHeB48SGgAklwZE3saGZlusgCHuL5BGUe54BlDVI6tzKygF2814PLgOMxsy4Iro0SxsangESi6yDIBDEs4A51It5ESMjc+mAWBaEGVD6IMuQ4MoB5mMTWawLyM9r8IiBrbzQia4K77Gs8/09WAchnyrcRh3oGUOAfTCD3dgVoJAcsgHCDcyDZBmqChASKMP5Ag63lwt1gPsS0otIOY82tyypMTIaJyi6K1DGAMf7fYT1fzwMFOlUmjtNIySq1gDoJqjyY6phKV0rSOckAU3mFD7INgNtkzAXwW0t/Cy7rVwFywIPnGBJegoAJvBV5zwTNSRTTYDUQKW6amMqR2L+OszQTCCdEHc4+CBI0LiK2t/Znu2w9VmrQ6IR0pwpwAF5uMGUzTwPGiRUsblmamSB/8rBX+0N9KSkAB+BIJJx8EMWsDV+L+mfLS4UGMaNoa2LakI5KL1KYuovDbskHTUZKsyjuqofbK1ArgfbB1Lgu6pAe67AizaB5vyvEXqMBWa45BvR0lvWUOROlG6or16jARxXKcm3zwMG9jknnNmpLsjM+iI4CUajm+8uAy05PtwYLcFl1HuR8pxIL52gOgeUKJnx4yCvUmvNYXRyWSl2EY/NfE8w1WIRiLq2EO+yG0lAOdVMU8ZCHowuALbb0F/CLBfQZ658CnsrDbZtAcT4PsmW7aKxw1GkvFeJHgPdvWA0g2/gnOxb+kn0SQNRep7N1t9ttx/T4aui6HRe1+DkAx1bYFvtX+ALtYuUYcJ3nKk95eLxbmdkE15P1+oCyO6yT25vYNqvLv3rQgZe8X+i/NzE1LRWmhZlqGWTWU4dYdiNCMTJR5OpegFhMvi/QGxudZXW7BZQfAYbS9tGhTrnx/YIk66ZVBcGKAht2BvBYgyH3sBHeZ4AT2N8XcOyi9+mK4l8JGGJnHWML829p8EVXEGy92lcDwsGoUvUtkisX5HcDZJuFbWGai/HVgAkNHQNIpK5vu/sB+tkbMvbX7ErAPb4gc5DWB+9r4vEmf3vKh2cAfy80qDrPWMq7BQn2fs+tLA+WXu4yE7++BxTmm0sJUL2CmiBxsEUVYnBbwK/wevTp40j6/Qb8Vmo2qGk3MV7nJUBsVbUPZm3qTRM19HpPzT47Jz78WrrpLZ7FKJNZBKsZKsqzbx/JDAcDcxElua2JlZVfqwUTd+MzfGFdnN/2jm+6nypRsXAUD3oyfdMXp2+3/0bdeDojf9Rf+WvAGrAGrAFrwBrw/wr4D2bjybgDbQ2hAAAAAElFTkSuQmCC';
@@ -46,19 +57,72 @@ const shopeeProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA
 const jtiProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAMAAADWtUEnAAAAwFBMVEUAAAAAsoYAt4kA//8BqHwAf38DtIYA/wAAt4cAqqoHtXoAqlUAt4kFtIcA/38Ar4MAxJMCqoYAtokBtYgAnHMA/6oAmZkAAP8AbUgfn18AzJkFwI0AxZQ/fz9VqlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTdX1oAAAAQHRSTlMA+68BDwIpAVMDDQPSFQL8/xSUcAkDBQEHCAUttgQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfwL6DwAAAblJREFUeNrtmddywyAQRZcuEMioxOn5/88MCNW4PyRLZrgPLrJmdOYgVrAGKCkpKfnvUSm54rEznzITaAZjDDciU3/OkhQrIUNGDb2fAH0HA7au0wiVj8FLV/9yjnPu3CuCMbUm8L20/DROuPFweDFo9SNFzmO5Cx2Ww38+xJ9mDefn+YjlBAdQXDBGDrs3QrEAzVo/5nQyhC5fKzkG2eDGF32Lx6vl5ptOxAKMl3brKFsZ5mgjjs0KWGshRM3wAOPVuh++9NZgnOYK06AyYrnjqGD5AUINdI9TAAtgASyABbAA/hpgWO+0oPIFDHzV32/qHjFIW4TWx/2Atoq/5QloiCedgwajdXQDsEmb0/4j6HtC6SVcBawSYFp8I3XedoDNDpDKZU4IpjHghNgAHkgPZgEMJaWHDBpFTG0MOnheDQZ9Ar0V+C4jJk3+7DygYbcc7z7QgOwvbohpayaDXbsZUOeAYetjmvqxYxoAD2MRrrc9L409urH4TssTO+rbFWGWQzP/mFoelnqLVoSv179U7bzvDM4z7I5ZQm0QmKW+uQ4aN+A9w26niU+2poaMk/HfgyUlJSWP5Bt/1BMNwIEiFwAAAABJRU5ErkJggg==';
 import CompanyLogoGrid from './CompanyLogoGrid';
 import LandingInfoPage, { SocialIconLinks } from './LandingInfoPage';
+import LandingFeaturePages, { type LandingFeaturePage } from './features/LandingFeaturePages';
 
 // Version marker for auto-upgrade detection
 // Increment this when making breaking changes that stale copies need
-export const EMAIL_GATE_VERSION = 125; // v125: embeds program logos as data URLs so the space compiler does not require a PNG module loader. v124: adds normalized local logos for every company in the current 30-day program window. v123: restores logo-first ordering, guaranteed logo motion, uniform logo sizing, program-type cards, and the 30-day display window. v122: corrects the live application calendar cards, exact brand accents, date windows, and landing-section order. v121: adds full-color uniform logo and live-program marquees with database-driven application windows. v119: adds durable company marks, live program windows, VND pricing, product navigation, and full-page company information views. v118: adds early social proof with a responsive, monochrome company-logo grid. v117: verified OTP, OAuth, and phone sessions eagerly prefetch the shared Pro entitlement cache. v116: Facebook sign-in is greyed out and inert while Facebook OAuth is unavailable; LinkedIn uses the white Google-style button. v115: successful Google/Facebook/LinkedIn callbacks enter #fit-assessment directly instead of restoring the public root first. v113: Facebook now returns to /auth/callback/facebook, the route this gate consumes so callback failures remain visible. v110: email sign-in reverted to OTP-only — password fields, sign-up tabs and the reset flow are removed; Google & Facebook remain on the server-verified OAuth callback flow. v109: Google/Facebook use production OAuth authorization-code callbacks with fixed redirect URIs and server-side code exchange; Facebook is active whenever its App ID is configured. v108: social sign-in is server-verified — Google/Facebook send provider tokens to casemate-auth-v1 before a session exists. v107: multi-method sign-in — email+password, Google/Facebook OAuth, and phone/SMS OTP
+export const EMAIL_GATE_VERSION = 146; // v146: temporarily marks every social sign-in method as Coming soon and keeps email OTP as the only active sign-in path. v145: Google OAuth preserves the current app path in returnUrl so shared-host and preview sign-in are accepted as safe. v144: keeps the configured Google button active in draft and published surfaces while retaining the platform-owned canonical account handoff. v143: Google uses the platform-owned OAuth callback, validates the canonical session, and restores it from the HttpOnly cookie before entering the app. v142: removes phone/SMS sign-in, isolates email draft state for responsive typing, and serves the hero as prioritized WebP with a PNG fallback. v141: the application calendar shows every active dated program in a seamless infinite marquee. v140: all landing program data now comes from the unified programs catalog. v139: OAuth state/PKCE is persisted server-side for 10 minutes; invalid or consumed callbacks return to the login modal. v138: "Programs Expecting to Open" marquee now falls back to apply_url when career_url is absent, and caps the visible set at 8 programs (data then sourced from the wider legacy program catalog). v137: OAuth sessions receive a seven-day browser cookie and immediate sliding server renewal. v136: the emailed-code screen sits on the light gate surface with near-black heading ink. v135: opens Product directly into the trial, adds explicit sample submissions with feedback CTAs, and uses canonical VND pricing. v134: adds trial tab navigation, brand typography, pricing conversion cards, and deterministic case grading. v131: removes Case Arena navigation and the inline preview-before-signup block.  v129: adds Case Arena navigation plus larger, linked program cards with industries, function tracks, and featured Knauf/JTI programs. v125: embeds program logos as data URLs so the space compiler does not require a PNG module loader. v124: adds normalized local logos for every company in the current 30-day program window. v123: restores logo-first ordering, guaranteed logo motion, uniform logo sizing, program-type cards, and the 30-day display window. v122: corrects the live application calendar cards, exact brand accents, date windows, and landing-section order. v121: adds full-color uniform logo and live-program marquees with database-driven application windows. v119: adds durable company marks, live program windows, VND pricing, product navigation, and full-page company information views. v118: adds early social proof with a responsive, monochrome company-logo grid. v117: verified OTP, OAuth, and phone sessions eagerly prefetch the shared Pro entitlement cache. v116: Facebook sign-in is greyed out and inert while Facebook OAuth is unavailable; LinkedIn uses the white Google-style button. v115: successful Google/Facebook/LinkedIn callbacks enter #fit-assessment directly instead of restoring the public root first. v113: Facebook now returns to /auth/callback/facebook, the route this gate consumes so callback failures remain visible. v110: email sign-in reverted to OTP-only — password fields, sign-up tabs and the reset flow are removed; Google & Facebook remain on the server-verified OAuth callback flow. v109: Google/Facebook use production OAuth authorization-code callbacks with fixed redirect URIs and server-side code exchange; Facebook is active whenever its App ID is configured. v108: social sign-in is server-verified — Google/Facebook send provider tokens to casemate-auth-v1 before a session exists. v107: multi-method sign-in — email+password, Google/Facebook OAuth, and phone/SMS OTP
+
+type ProductTrialPage = 'landing' | 'fit-assessment' | 'case-drill' | 'case-pool' | 'aptitude-test' | 'case-arena';
+type PublicLandingPage = 'landing' | LandingFeaturePage;
+
+const LANDING_PRODUCT_ITEMS = [
+  {
+    id: 'fit-assessment',
+    page: 'fit-assessment' as const,
+    group: 'Direction' as const,
+    icon: Compass,
+    name: 'Fit Assessment',
+    description: 'Discover the industries, functions, and programs that fit you.',
+  },
+  {
+    id: 'case-drill',
+    page: 'case-drill' as const,
+    group: 'Practice' as const,
+    icon: Dumbbell,
+    name: 'Case Drill',
+    description: 'Work through a guided, interview-style business case.',
+  },
+  {
+    id: 'case-pool',
+    page: 'case-pool' as const,
+    group: 'Practice' as const,
+    icon: Grid2X2,
+    name: 'Case Pool',
+    description: 'Browse realistic cases across industries and difficulty levels.',
+  },
+  {
+    id: 'aptitude-test',
+    page: 'aptitude-test' as const,
+    group: 'Practice' as const,
+    icon: BrainCircuit,
+    name: 'Aptitude Test',
+    description: 'Test your numerical, logical, and pattern reasoning skills.',
+  },
+  {
+    id: 'case-arena',
+    page: 'case-arena' as const,
+    group: 'Compete' as const,
+    icon: Trophy,
+    name: 'Case Arena',
+    description: 'Compete with peers, receive scores, and climb the leaderboard.',
+  },
+] as const;
+
+const PRODUCT_GROUPS = ['Direction', 'Practice', 'Compete'] as const;
 
 type LandingProgramRow = {
   id: number;
   program_id: string;
   program_name?: string | null;
+  company?: string | null;
+  rubric_program_name?: string | null;
   program_type?: string | null;
   open_date?: string | null;
   active?: boolean | null;
   version?: number | null;
+  career_url?: string | null;
+  apply_url?: string | null;
 };
 
 type LandingProgram = {
@@ -67,6 +131,10 @@ type LandingProgram = {
   program: string;
   programType: string;
   openDate: Date;
+  openDateLabel: string;
+  industry?: string;
+  tracks?: readonly string[];
+  link?: string;
 };
 
 type WorkspaceDbHook = <T>(table: string, options: Record<string, unknown>) => {
@@ -84,25 +152,25 @@ type LandingCompanyBrand = {
 
 const LANDING_COMPANY_BRANDS: LandingCompanyBrand[] = [
   { aliases: ['Shopee'], color: '#EE4D2D', logoUrl: shopeeProgramLogo },
-  { aliases: ['Central Retail'], color: '#E01A22' },
-  { aliases: ['Techcombank'], color: '#D0021B' },
-  { aliases: ['JTI', 'Japan Tobacco'], color: '#003087', logoUrl: jtiProgramLogo },
-  { aliases: ['MUJI'], color: '#7F0019', logoUrl: mujiProgramLogo },
-  { aliases: ['C.P. Group', 'C.P Group', 'CP Group'], color: '#E31837', logoUrl: cpGroupProgramLogo },
+  { aliases: ['Central Retail'], color: '#E01A22', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/2200a6c5-0680-4e68-b49b-421bee1e01bc.png' },
+  { aliases: ['Techcombank'], color: '#D0021B', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/techcombank.com.vn' },
+  { aliases: ['JTI', 'Japan Tobacco'], color: '#003087', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/8bb64456-402c-43b0-9a0e-5e726cd5f00b.png' },
+  { aliases: ['MUJI'], color: '#7F0019', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/4868f81a-38da-431d-b548-3250ced09973.png' },
+  { aliases: ['C.P. Group', 'C.P Group', 'CP Group', 'C.P. Vietnam'], color: '#E31837', logoUrl: cpGroupProgramLogo },
   { aliases: ['Maersk'], color: '#42B0D5', logoUrl: maerskProgramLogo },
   { aliases: ['Fast Retailing'], color: '#E40521', logoUrl: fastRetailingProgramLogo },
-  { aliases: ['Knauf'], color: '#009FE3', logoUrl: knaufProgramLogo },
-  { aliases: ["L'Oréal", 'Loreal'], color: '#A50034' },
+  { aliases: ['Knauf'], color: '#009FE3', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/c6a02e60-2376-47eb-9ee2-4fbb4a2f9125.png' },
+  { aliases: ["L'Oréal", 'Loreal'], color: '#A50034', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/loreal.com' },
   { aliases: ['Unilever'], color: '#1F36C7', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/4b442312-ddbc-4fbf-9e04-35354ffc752d.png' },
-  { aliases: ['Nestlé', 'Nestle'], color: '#009A44' },
-  { aliases: ['MoMo'], color: '#A50064' },
-  { aliases: ['Viettel'], color: '#CC0000' },
-  { aliases: ['AB InBev'], color: '#F5A800', darkText: true },
-  { aliases: ['Home Credit'], color: '#E31837' },
-  { aliases: ['Carlsberg'], color: '#006835' },
-  { aliases: ['P&G', 'Procter & Gamble'], color: '#003087' },
-  { aliases: ['Deloitte'], color: '#86BC25', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/776fe6a7-2180-481c-9dcc-457c1550ecc9.png' },
-  { aliases: ['EY'], color: '#FFE600', darkText: true },
+  { aliases: ['Nestlé', 'Nestle'], color: '#009A44', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/4f3b4dec-149a-42bf-be81-4770337e7494.png' },
+  { aliases: ['MoMo'], color: '#A50064', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/momo.vn' },
+  { aliases: ['Viettel'], color: '#CC0000', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/viettel.com.vn' },
+  { aliases: ['AB InBev'], color: '#F5A800', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/105908bd-9e37-412c-a0c9-efa1290c8774.png', darkText: true },
+  { aliases: ['Home Credit'], color: '#E31837', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/homecredit.vn' },
+  { aliases: ['Carlsberg'], color: '#006835', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/7812e23e-7533-41d0-a660-4c9df8968b07.png' },
+  { aliases: ['P&G', 'Procter & Gamble'], color: '#003087', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/pg.com' },
+  { aliases: ['Deloitte'], color: '#86BC25', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/e761e5b4-2159-48f3-95af-a840f2a14331.png' },
+  { aliases: ['EY'], color: '#FFE600', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/ey.com', darkText: true },
   { aliases: ['Suntory PepsiCo', 'PepsiCo'], color: '#0078C8', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/2f5be2a7-b927-47d1-94db-786ad4cbba03.jpg' },
   { aliases: ['TikTok'], color: '#111827', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/c175bc23-297a-4cb8-8ec8-ab00cd5d7ec5.png' },
   { aliases: ['Kimberly-Clark'], color: '#374151', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/c05b4f9f-78d5-4c39-baa2-8c402e6bd02a.png' },
@@ -115,6 +183,47 @@ const LANDING_COMPANY_BRANDS: LandingCompanyBrand[] = [
   { aliases: ['Garena'], color: '#CC0000', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/8d8c8dc0-4f8e-444c-a295-f651b40b1c5d.png' },
   { aliases: ['Nielsen'], color: '#374151', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/efe5af79-04d2-4001-96c4-3657bda9c417.png' },
   { aliases: ['WPP'], color: '#374151', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/df982513-6caf-4e73-8e07-734bf76017c8.png' },
+  { aliases: ['Panasonic'], color: '#0041C0', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/panasonic.com' },
+  { aliases: ['PMAX'], color: '#ED1C24', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/d71f69ce-761e-4b71-bc9b-76fbff88d52b.png' },
+  { aliases: ['Masan Group', 'Masan'], color: '#E31837', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/masangroup.com' },
+  { aliases: ['UNIQLO', 'Uniqlo'], color: '#FF0000', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/58a529af-1787-42c2-9102-98ebc5adf3b6.png' },
+  { aliases: ['NAB Innovation Centre', 'NAB'], color: '#C20000', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/nab.com.au' },
+  { aliases: ['Crystal International'], color: '#006B54', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/crystalgroup.com' },
+  { aliases: ['OPPO'], color: '#1FA463', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/oppo.com' },
+  { aliases: ['DKSH'], color: '#E30613', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/0f34067a-3e31-48a3-856f-31d7aeef2b5c.png' },
+  { aliases: ['Starbucks'], color: '#00754A', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/f39744e8-e72e-4247-a352-90cf409a1a25.png' },
+  { aliases: ['HSBC'], color: '#DB0011', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/hsbc.com.vn' },
+  { aliases: ['Standard Chartered'], color: '#0072AA', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/34d6175f-1ec8-438e-a41f-227b17cbea07.png' },
+  { aliases: ['Zalo'], color: '#0068FF', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/zalo.me' },
+  { aliases: ['MSB'], color: '#E65300', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/msb.com.vn' },
+  { aliases: ['Bosch'], color: '#EA0016', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/bosch.com.vn' },
+  { aliases: ['Techtronic Industries', 'TTI'], color: '#E31B23', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/9e8a22b9-0dcb-487f-8298-61d76fd4155c.png' },
+  { aliases: ['SPX', 'Shopee Xpress'], color: '#EE4D2D', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/spx.vn' },
+  { aliases: ['Schneider Electric'], color: '#3DCD58', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/98a6b4bf-969a-40f4-9f77-8a5771d51df5.png', darkText: true },
+  { aliases: ['Mondelēz Kinh Đô', 'Mondelez Kinh Do', 'Mondelēz Vietnam', 'Mondelez Vietnam'], color: '#4F2170', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/mondelezinternational.com' },
+  { aliases: ['ACB'], color: '#005BAC', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/ec9b9843-5ef9-4778-be74-739160b113dd.png' },
+  { aliases: ['Vinamilk'], color: '#0072BC', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/9ee3504c-007b-450e-b369-fd7c057d3771.png' },
+  { aliases: ['BAT', 'British American Tobacco'], color: '#1B365D', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/f6942620-508b-42fc-9076-108ee023fce0.png' },
+  { aliases: ['VNG'], color: '#F58220', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/4176c716-9b3f-495c-96dd-aa3c01657f6b.png' },
+  { aliases: ['Louis Dreyfus Company'], color: '#009A44', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/a54a302e-d031-4760-a90b-00569a88032b.png' },
+  { aliases: ['Hitachi Energy'], color: '#F00000', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/58920530-9f4a-4938-a8a7-61cf60fdd673.png' },
+  { aliases: ['Manulife'], color: '#00A758', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/manulife.com.vn' },
+  { aliases: ['Decathlon'], color: '#3643BA', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/decathlon.vn' },
+  { aliases: ['VPBank'], color: '#007A33', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/vpbank.com.vn' },
+  { aliases: ['Expeditors'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/expeditors.com' },
+  { aliases: ['UOB'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/uob.com' },
+  { aliases: ['Prudential'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/prudential.com.vn' },
+  { aliases: ['PropertyGuru'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/propertyguru.com' },
+  { aliases: ['CapitaLand Development', 'CapitaLand Vietnam', 'CapitaLand'], color: '#005BAC', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/0ec26f72-af80-452f-9c23-43134ae80241.png' },
+  { aliases: ['Colgate-Palmolive', 'Colgate Palmolive', 'Colgate'], color: '#005CB9', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/be0c4eef-f031-4b44-bfce-c986c0c0c450.png' },
+  { aliases: ['ITL & SOTRANS', 'ITL', 'SOTRANS'], color: '#005CB9', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/5fe68020-ae6c-4281-b5f1-f504c41c07b1.png' },
+  { aliases: ['FPT Long Châu', 'FPT Long Chau', 'Long Châu', 'Long Chau'], color: '#1F4AA8', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/8b31cc46-74b4-4af5-8a60-59a424c3aace.png' },
+  { aliases: ['Abbott'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/abbott.com' },
+  { aliases: ['McKinsey'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/mckinsey.com' },
+  { aliases: ['Bain'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/bain.com' },
+  { aliases: ['Goldman Sachs'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/goldmansachs.com' },
+  { aliases: ['KPMG'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/kpmg.com' },
+  { aliases: ['PwC'], color: '#374151', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/pwc.com' },
 ];
 
 const DEFAULT_LANDING_BRAND: LandingCompanyBrand = { aliases: [], color: '#374151' };
@@ -125,11 +234,68 @@ function normalizeLandingCompany(value: string) {
 
 function landingCompanyBrand(company: string) {
   const normalized = normalizeLandingCompany(company);
-  return LANDING_COMPANY_BRANDS.find((brand) => brand.aliases.some((alias) => normalized.includes(normalizeLandingCompany(alias)))) || DEFAULT_LANDING_BRAND;
+  const configuredBrand = LANDING_COMPANY_BRANDS.find((brand) =>
+    brand.aliases.some((alias) => normalized.includes(normalizeLandingCompany(alias)))
+  );
+  const reusableLogoUrl = getCompanyLogoUrl(company);
+
+  if (configuredBrand) {
+    return reusableLogoUrl ? { ...configuredBrand, logoUrl: reusableLogoUrl } : configuredBrand;
+  }
+  return reusableLogoUrl
+    ? { aliases: [company], color: '#374151', logoUrl: reusableLogoUrl }
+    : DEFAULT_LANDING_BRAND;
 }
 
 function landingCompanyInitials(company: string) {
   return company.split(/\s+/).filter(Boolean).slice(0, 3).map((word) => word[0]).join('').toUpperCase() || 'P';
+}
+
+const LANDING_PROGRAM_TRACKS = [
+  { companyAliases: ['Nestlé', 'Nestle'], programAliases: ['Nesternship'], tracks: ['Marketing', 'Market Research', 'Sales', 'Supply Chain', 'Finance', 'Data Analytics', 'Legal', 'HR', 'Manufacturing'] },
+  { companyAliases: ['AB InBev'], programAliases: ['Dreamship'], tracks: ['Commercial & Strategy', 'Finance', 'Marketing', 'Supply Chain', 'Tech & Analytics', 'Legal'] },
+  { companyAliases: ['Techcombank'], programAliases: ['Future Gen'], tracks: ['Technology', 'Data & AI', 'Digital', 'General Management', 'Business'] },
+  { companyAliases: ['MoMo'], programAliases: ['Talent'], tracks: ['Product', 'Growth', 'Product Growth'] },
+  { companyAliases: ['Viettel'], programAliases: ['Future Changemakers'], tracks: ['Business', 'Technology', 'Customer'] },
+  { companyAliases: ['Central Retail'], programAliases: ['MA 2026', 'Management Associate'], tracks: ['Food Retail', 'Non-Food', 'Property'] },
+  { companyAliases: ['EY'], programAliases: ['Vietnam Tax', 'Tax 2027'], tracks: ['Transfer Pricing', 'GCR', 'International Tax', 'Indirect Tax', 'People Advisory'] },
+  { companyAliases: ['Unilever'], programAliases: ['ULMA', 'ULP'], tracks: ['Marketing', 'Sales', 'Supply Chain', 'Finance', 'R&D', 'HR', 'IT'] },
+  { companyAliases: ["L'Oréal", 'Loreal'], programAliases: ['Management Trainee'], tracks: ['Marketing', 'Sales', 'Finance', 'Operations', 'Digital'] },
+  { companyAliases: ['Suntory PepsiCo', 'PepsiCo'], programAliases: ['MT', 'Management Trainee'], tracks: ['Sales', 'Marketing', 'Supply Chain', 'Finance'] },
+  { companyAliases: ['Shopee'], programAliases: ['Graduate Development'], tracks: ['Product Management', 'Operations', 'Data', 'Engineering', 'Business Development'] },
+  { companyAliases: ['P&G', 'Procter & Gamble'], programAliases: ['LeadGen'], tracks: ['Sales', 'Brand', 'Finance', 'HR', 'IT', 'Supply Chain'] },
+  { companyAliases: ['Knauf'], programAliases: ['Management Trainee'], tracks: ['Marketing', 'Sales', 'Finance', 'Engineering', 'Operations', 'HR'] },
+  { companyAliases: ['JTI', 'Japan Tobacco'], programAliases: ['Management Trainee'], tracks: ['Marketing', 'Sales', 'Finance', 'Supply Chain', 'Corporate Affairs'] },
+] as const;
+
+const LANDING_INDUSTRY_DEFAULTS = [
+  { aliases: ['Nestlé', 'Nestle', 'AB InBev', 'Unilever', "L'Oréal", 'Loreal', 'Suntory PepsiCo', 'PepsiCo', 'P&G', 'Procter & Gamble', 'JTI', 'Japan Tobacco', 'Carlsberg', 'Coca-Cola', 'Heineken', 'Kimberly-Clark', 'Perfetti Van Melle', 'FrieslandCampina', 'Abbott'], industry: 'FMCG / Consumer Goods', tracks: ['Marketing', 'Sales', 'Finance', 'Supply Chain', 'HR', 'Operations'] },
+  { aliases: ['Techcombank', 'UOB', 'ACB', 'VPBank', 'HSBC', 'MSB', 'NAB', 'Goldman Sachs', 'Home Credit', 'Prudential', 'Manulife'], industry: 'Banking / Financial Services', tracks: ['Finance', 'Technology', 'Digital', 'Risk', 'Business'] },
+  { aliases: ['Central Retail', 'Fast Retailing', 'Uniqlo', 'Decathlon', 'MUJI', 'Starbucks'], industry: 'Retail', tracks: ['Merchandising', 'Operations', 'Finance', 'Marketing', 'Expansion'] },
+  { aliases: ['Maersk', 'Expeditors', 'SPX', 'Shopee Xpress', 'DKSH'], industry: 'Logistics / Supply Chain', tracks: ['Operations', 'Sales', 'Finance', 'Technology'] },
+  { aliases: ['MoMo'], industry: 'Fintech', tracks: ['Product', 'Technology', 'Finance', 'Marketing', 'Operations'] },
+  { aliases: ['Shopee', 'Viettel', 'TikTok', 'Samsung', 'Garena', 'VNG', 'Zalo', 'OPPO'], industry: 'Technology', tracks: ['Product', 'Technology', 'Data', 'Marketing', 'Operations'] },
+  { aliases: ['Deloitte', 'EY', 'BCG', 'Boston Consulting Group', 'McKinsey', 'Bain', 'KPMG', 'PwC'], industry: 'Consulting / Professional Services', tracks: ['Consulting', 'Strategy', 'Finance', 'Risk', 'Technology'] },
+  { aliases: ['Knauf', 'Bosch', 'Schneider Electric', 'Techtronic', 'TTI', 'Panasonic', 'Hitachi', 'Texas Instruments'], industry: 'Building Materials / Engineering', tracks: ['Marketing', 'Sales', 'Finance', 'Engineering', 'Operations', 'HR'] },
+] as const;
+
+function landingIndustryDefaults(company: string) {
+  const normalized = normalizeLandingCompany(company);
+  return LANDING_INDUSTRY_DEFAULTS.find((entry) => entry.aliases.some((alias) => normalized.includes(normalizeLandingCompany(alias))));
+}
+
+function landingProgramTracks(item: LandingProgram): readonly string[] {
+  if (item.tracks?.length) return item.tracks;
+  const company = normalizeLandingCompany(item.company);
+  const program = normalizeLandingCompany(item.program);
+  return LANDING_PROGRAM_TRACKS.find((entry) =>
+    entry.companyAliases.some((alias) => company.includes(normalizeLandingCompany(alias)))
+    && entry.programAliases.some((alias) => program.includes(normalizeLandingCompany(alias)))
+  )?.tracks || landingIndustryDefaults(item.company)?.tracks || ['Business', 'Finance', 'Marketing', 'Operations'];
+}
+
+function landingProgramIndustry(item: LandingProgram) {
+  return item.industry || landingIndustryDefaults(item.company)?.industry || 'Business / General Management';
 }
 
 type LandingDayMonth = { day: number; month: number };
@@ -165,59 +331,97 @@ function splitLandingProgramName(value: string) {
 function inferLandingProgramType(row: LandingProgramRow) {
   const explicitType = row.program_type?.trim();
   if (explicitType) return explicitType;
-  const name = row.program_name?.toLowerCase() || '';
+  const name = (row.rubric_program_name || row.program_name)?.toLowerCase() || '';
   if (name.includes('intern')) return 'Internship Program';
   if (name.includes('management trainee') || name.includes('leader') || name.includes('leadership')) return 'Leadership Program';
   return 'Graduate Program';
 }
 
-function landingWindowForToday(row: LandingProgramRow, now = new Date()): LandingProgram | null {
-  if (row.active === false || !row.program_name) return null;
-  const opens = landingDateParts(row.open_date);
-  if (opens.length === 0) return null;
-
+function landingOpenDateInWindow(value?: string | null, now = new Date()): Date | null {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const years = [today.getFullYear() - 1, today.getFullYear(), today.getFullYear() + 1];
-  for (const year of years) {
-    for (const open of opens) {
-      const openDate = new Date(year, open.month - 1, open.day);
-      const displayUntil = new Date(year, open.month - 1, open.day + 30);
-      if (today >= openDate && today <= displayUntil) {
-        return {
-          row,
-          ...splitLandingProgramName(row.program_name),
-          programType: inferLandingProgramType(row),
-          openDate,
-        };
-      }
-    }
-  }
-  return null;
+  const candidateYears = [today.getFullYear() - 1, today.getFullYear(), today.getFullYear() + 1];
+  const matches = landingDateParts(value)
+    .flatMap(({ day, month }) => candidateYears.map((year) => new Date(year, month - 1, day)))
+    .filter((openDate) => {
+      const windowStart = new Date(openDate);
+      windowStart.setDate(windowStart.getDate() - 15);
+      const windowEnd = new Date(openDate);
+      windowEnd.setDate(windowEnd.getDate() + 60);
+      return today >= windowStart && today <= windowEnd;
+    })
+    .sort((a, b) => a.getTime() - b.getTime());
+  return matches[0] || null;
+}
+
+function landingCalendarProgram(row: LandingProgramRow): LandingProgram | null {
+  if (row.active === false) return null;
+  const openDate = landingOpenDateInWindow(row.open_date);
+  if (!openDate) return null;
+
+  const fallbackName = splitLandingProgramName(row.rubric_program_name || row.program_name || '');
+  const company = row.company?.trim() || fallbackName.company;
+  const program = row.program_name?.trim() || fallbackName.program;
+  if (!company || !program) return null;
+
+  return {
+    row,
+    company,
+    program,
+    programType: inferLandingProgramType(row),
+    openDate,
+    openDateLabel: `${String(openDate.getDate()).padStart(2, '0')}/${String(openDate.getMonth() + 1).padStart(2, '0')}`,
+    link: row.career_url?.trim() || row.apply_url?.trim() || '',
+  };
 }
 
 function LandingProgramLogo({ company, duplicate = false }: { company: string; duplicate?: boolean }) {
   const brand = landingCompanyBrand(company);
-  if (brand.logoUrl) {
-    return <img src={brand.logoUrl} alt={duplicate ? '' : `${company} logo`} className="h-11 w-[116px] object-contain object-center" loading="lazy" decoding="async" />;
-  }
-  return (
-    <span className="flex h-11 min-w-11 items-center justify-center rounded-xl px-2 text-xs font-black" style={{ backgroundColor: brand.color, color: brand.darkText ? '#111827' : '#ffffff' }} aria-label={duplicate ? undefined : `${company} initials`}>
+  const initials = (
+    <span className="absolute inset-0 flex items-center justify-center rounded-lg text-[10px] font-black" style={{ backgroundColor: brand.color, color: brand.darkText ? '#111827' : '#ffffff' }} aria-label={duplicate ? undefined : `${company} initials`}>
       {landingCompanyInitials(company)}
     </span>
   );
+  if (brand.logoUrl) {
+    return (
+      <div className="rounded-lg" style={{ width: 128, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', backgroundColor: '#ffffff' }}>
+        {initials}
+        <img src={brand.logoUrl} alt={duplicate ? '' : company} className="rounded-lg" style={{ maxWidth: '100%', maxHeight: '100%', width: '100%', height: '100%', objectFit: 'contain', position: 'relative', backgroundColor: '#ffffff' }} onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} loading="lazy" decoding="async" />
+      </div>
+    );
+  }
+  return <div className="relative h-16 w-32">{initials}</div>;
 }
 
 function LandingProgramCard({ item, duplicate = false }: { item: LandingProgram; duplicate?: boolean }) {
   const brand = landingCompanyBrand(item.company);
-  return (
-    <article className="flex min-h-[220px] w-[240px] shrink-0 snap-start flex-col rounded-2xl border border-t-4 border-[#e5e7eb] bg-white p-5 shadow-[0_18px_48px_-30px_rgba(15,23,42,0.45)]" style={{ borderTopColor: brand.color }} aria-hidden={duplicate || undefined}>
-      <div className="flex h-11 items-center"><LandingProgramLogo company={item.company} duplicate={duplicate} /></div>
-      <h3 className="mt-4 text-sm font-extrabold leading-5 text-[#111827]">{item.program}</h3>
-      <p className="mt-1.5 text-xs font-bold text-[#6b7280]">{item.company}</p>
+  const tracks = landingProgramTracks(item);
+  const industry = landingProgramIndustry(item);
+  const card = (
+    <article className={`flex min-h-[320px] w-full flex-col rounded-2xl border border-t-4 border-[#e5e7eb] bg-white p-5 shadow-[0_18px_48px_-30px_rgba(15,23,42,0.45)] transition ${item.link ? 'group-hover:border-[#cc0000]' : ''}`} style={{ borderTopColor: brand.color }}>
+      <div className="flex h-20 items-center"><LandingProgramLogo company={item.company} duplicate={duplicate} /></div>
+      <h3 className="mt-4 text-base font-extrabold leading-6 text-[#111827]">{item.company} — {item.program} · Opens: {item.openDateLabel}</h3>
+      <p className="mt-1 text-[11px] font-semibold text-[#6b7280]">{industry}</p>
+      <p className="mt-3 text-[11px] leading-5 text-[#4b5563]" aria-label={`Available functions: ${tracks.join(', ')}`}>
+        <span className="font-extrabold text-[#111827]">Functions:</span> {tracks.join(', ')}
+      </p>
       <span className="mt-auto w-fit rounded-full px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wide" style={{ backgroundColor: `${brand.color}14`, color: brand.color }}>
         {item.programType}
       </span>
     </article>
+  );
+  const sharedClass = 'group block w-[280px] shrink-0 snap-start rounded-2xl transition duration-200';
+  if (!item.link) return <div className={sharedClass} aria-hidden={duplicate || undefined}>{card}</div>;
+  return (
+    <a
+      href={item.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      tabIndex={duplicate ? -1 : undefined}
+      aria-hidden={duplicate || undefined}
+      className={`${sharedClass} cursor-pointer hover:-translate-y-1 hover:shadow-[0_22px_55px_-24px_rgba(204,0,0,0.45)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#cc0000]`}
+    >
+      {card}
+    </a>
   );
 }
 
@@ -231,54 +435,70 @@ function LandingProgramSequence({ items, duplicate = false }: { items: LandingPr
 
 function LandingLivePrograms(_props: { onStart: () => void }) {
   const useWorkspaceDB = (window as any).useWorkspaceDB as WorkspaceDbHook;
-  const { data, loading, error } = useWorkspaceDB<LandingProgramRow>('program_fit_rubrics', {
+  const programListRef = useRef<HTMLDivElement | null>(null);
+  const { data, loading } = useWorkspaceDB<LandingProgramRow>('programs', {
     shared: true,
-    filters: [{ column: 'active', operator: 'eq', value: true }],
-    orderBy: { column: 'program_name', direction: 'asc' },
+    columns: ['id', 'program_id', 'program_name', 'company', 'rubric_program_name', 'program_type', 'open_date', 'active', 'career_url', 'apply_url'],
+    filters: [
+      { column: 'active', operator: 'eq', value: true },
+      { column: 'open_date', operator: 'neq', value: '' },
+    ],
     limit: 500,
   });
-  const newest = new Map<string, LandingProgramRow>();
-  for (const row of data || []) {
-    const current = newest.get(row.program_id);
-    if (!current || Number(row.version || 0) > Number(current.version || 0) || (Number(row.version || 0) === Number(current.version || 0) && row.id > current.id)) newest.set(row.program_id, row);
-  }
-  const programs = Array.from(newest.values())
-    .map((row) => landingWindowForToday(row))
+  const programs = (data || [])
+    .map((row) => landingCalendarProgram(row))
     .filter((item): item is LandingProgram => item !== null)
-    .sort((a, b) => b.openDate.getTime() - a.openDate.getTime() || a.program.localeCompare(b.program));
+    .sort((a, b) => a.openDate.getTime() - b.openDate.getTime() || a.company.localeCompare(b.company) || a.program.localeCompare(b.program));
 
-  if (!loading && (error || programs.length === 0)) return null;
+  if (!loading && programs.length === 0) return null;
+
+  const scrollPrograms = (direction: -1 | 1) => {
+    const list = programListRef.current;
+    if (!list) return;
+    const cardsPerPage = Math.max(1, Math.floor(list.clientWidth / 300));
+    list.scrollBy({ left: direction * cardsPerPage * 300, behavior: 'smooth' });
+  };
 
   return (
     <section id="programs-open" className="border-y border-[#e5e7eb] bg-white" aria-labelledby="landing-live-programs-title">
-      <style>{`
-        @keyframes casemate-program-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .casemate-program-track { animation: casemate-program-marquee 42s linear infinite; }
-        .casemate-program-marquee:hover .casemate-program-track { animation-play-state: paused; }
-        @media (max-width: 639px) {
-          .casemate-program-marquee { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
-          .casemate-program-marquee::-webkit-scrollbar { display: none; }
-          .casemate-program-track { animation: none; }
-          .casemate-program-duplicate { display: none; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .casemate-program-marquee { overflow-x: auto; scroll-snap-type: x mandatory; }
-          .casemate-program-track { animation: none; }
-          .casemate-program-duplicate { display: none; }
-        }
-      `}</style>
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#cc0000]">EXPECTING APPLICATION CALENDAR</p>
-          <h2 id="landing-live-programs-title" className="mt-4 text-3xl font-extrabold tracking-tight text-[#111827] sm:text-5xl">MT Programs Now Accepting Applications</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#6b7280]">Programs currently open for applications — updated automatically from Casemate&apos;s program database.</p>
+          <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#cc0000]">UPCOMING APPLICATION CALENDAR</p>
+          <h2 id="landing-live-programs-title" className="mt-4 text-3xl font-extrabold tracking-tight text-[#111827] sm:text-5xl">Programs Opening for Applications</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#6b7280]">Programs opening within the next 15 days or opened within the last 60 days — use the arrows to browse the current list.</p>
         </div>
         {loading ? (
           <div className="mt-10 flex items-center justify-center gap-2 rounded-2xl border border-[#e5e7eb] bg-[#f9fafb] p-8 text-sm font-semibold text-[#6b7280]"><Loader2 className="h-4 w-4 animate-spin" />Syncing application windows…</div>
         ) : (
-          <div className="casemate-program-marquee -mx-4 mt-12 overflow-hidden px-4 sm:-mx-6 sm:px-6" role="region" aria-label="Programs currently open for applications">
-            <div className="casemate-program-track flex w-max py-2"><LandingProgramSequence items={programs} /><LandingProgramSequence items={programs} duplicate /></div>
-          </div>
+          <>
+            <div className="mt-8 flex items-center justify-center gap-3" aria-label="Application Calendar controls">
+              <button
+                type="button"
+                onClick={() => scrollPrograms(-1)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d1d5db] bg-white text-[#111827] shadow-sm transition hover:border-[#cc0000] hover:text-[#cc0000] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cc0000]"
+                aria-label="View previous programs"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <span className="text-sm font-extrabold text-[#374151]">Browse program list</span>
+              <button
+                type="button"
+                onClick={() => scrollPrograms(1)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d1d5db] bg-white text-[#111827] shadow-sm transition hover:border-[#cc0000] hover:text-[#cc0000] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cc0000]"
+                aria-label="View next programs"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
+            <div
+              ref={programListRef}
+              className="-mx-4 mt-6 flex snap-x snap-mandatory overflow-x-auto scroll-smooth px-4 pb-3 sm:-mx-6 sm:px-6"
+              role="region"
+              aria-label="Programs expected to open for applications"
+            >
+              <LandingProgramSequence items={programs} />
+            </div>
+          </>
         )}
       </div>
     </section>
@@ -359,7 +579,6 @@ interface SpaceRegisterResponseBody {
   isReturningUser?: boolean;
   firstName?: string | null;
   lastName?: string | null;
-  phone?: string | null;
   visitorId?: string | null;
   workspaceId?: string;
   metadata?: Record<string, unknown>;
@@ -388,9 +607,87 @@ interface EmailGateProps {
 
 type GateStep = 'loading' | 'email' | 'code' | 'complete';
 
-// Views inside the login modal: the main screen (email OTP + social + phone)
-// and the SMS code entry step.
-type PanelView = 'main' | 'phoneCode';
+type EmailLoginFormProps = {
+  initialEmail: string;
+  loading: boolean;
+  error: string;
+  sectionBackground: string;
+  borderColor: string;
+  textPrimary: string;
+  textSubtle: string;
+  dangerColor: string;
+  primaryColor: string;
+  onPrimary: string;
+  onSubmit: (event: React.FormEvent, value: string) => void;
+  onClearError: () => void;
+};
+
+// Keep draft input state local so a keystroke does not re-render the entire
+// landing page. The parent receives the final value only when the form submits.
+function EmailLoginForm({
+  initialEmail,
+  loading,
+  error,
+  sectionBackground,
+  borderColor,
+  textPrimary,
+  textSubtle,
+  dangerColor,
+  primaryColor,
+  onPrimary,
+  onSubmit,
+  onClearError,
+}: EmailLoginFormProps) {
+  const [value, setValue] = useState(initialEmail);
+  const disabled = loading || !value;
+
+  return (
+    <form onSubmit={(event) => onSubmit(event, value)} className="space-y-3">
+      <input
+        type="email"
+        value={value}
+        onChange={(event) => {
+          setValue(event.target.value);
+          if (error) onClearError();
+        }}
+        placeholder="Enter your email"
+        className="w-full rounded-xl px-4 py-3 text-sm transition-all focus:outline-none"
+        style={{
+          backgroundColor: sectionBackground,
+          border: `2px solid ${error ? dangerColor : borderColor}`,
+          color: textPrimary,
+        }}
+        disabled={loading}
+        required
+        autoFocus
+        data-testid="input-email"
+      />
+      <p className="text-xs" style={{ color: textSubtle }}>
+        We’ll email you a 4-digit code — no password needed.
+      </p>
+      {error && (
+        <p className="text-xs" style={{ color: dangerColor }} data-testid="text-error">
+          {error}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={disabled}
+        className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all hover:scale-[1.02] sm:text-base"
+        style={{
+          backgroundColor: disabled ? colorWithAlpha(primaryColor, 0.35) : primaryColor,
+          color: disabled ? colorWithAlpha(onPrimary, 0.45) : onPrimary,
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          boxShadow: disabled ? 'none' : `0 10px 24px ${colorWithAlpha(primaryColor, 0.34)}`,
+        }}
+        data-testid="button-continue"
+      >
+        {loading ? 'Just a moment...' : 'Start talking with Mate'}
+        {!loading && <ArrowRight size={18} strokeWidth={2.6} />}
+      </button>
+    </form>
+  );
+}
 
 // Derive a usable color set from a single hex primary color
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -427,6 +724,385 @@ function readableTextColor(hex: string): string {
   return luminance > 0.58 ? '#111827' : '#ffffff';
 }
 
+const TRIAL_CASES = [
+  { title: 'Reviving a Legacy Coffee Brand', industry: 'FMCG', difficulty: 'Intermediate', time: '35 min' },
+  { title: 'A Retailer’s Southeast Asia Expansion', industry: 'Retail', difficulty: 'Advanced', time: '45 min' },
+  { title: 'Digital Bank Growth Strategy', industry: 'Financial Services', difficulty: 'Intermediate', time: '40 min' },
+  { title: 'Last-Mile Delivery Profitability', industry: 'Logistics', difficulty: 'Advanced', time: '45 min' },
+  { title: 'New Product Launch for Gen Z', industry: 'Consumer', difficulty: 'Beginner', time: '30 min' },
+  { title: 'Hospital Network Capacity', industry: 'Healthcare', difficulty: 'Intermediate', time: '35 min' },
+] as const;
+
+const APTITUDE_QUESTIONS = [
+  {
+    question: 'A product’s price rises from $80 to $92. What is the percentage increase?',
+    answers: ['10%', '12%', '15%', '18%'],
+    correct: 2,
+  },
+  {
+    question: 'All associates are analysts. Some analysts are mentors. Which statement must be true?',
+    answers: ['All mentors are associates', 'Some associates are mentors', 'All associates are analysts', 'No analysts are mentors'],
+    correct: 2,
+  },
+  {
+    question: 'What number comes next: 3, 7, 15, 31, …?',
+    answers: ['47', '55', '62', '63'],
+    correct: 3,
+  },
+] as const;
+
+function ProductTrialPages({
+  page,
+  onBack,
+  onNavigate,
+  onSignUp,
+  brandName,
+  headingFontStack,
+  bodyFontStack,
+}: {
+  page: Exclude<ProductTrialPage, 'landing'>;
+  onBack: () => void;
+  onNavigate: (page: Exclude<ProductTrialPage, 'landing'>) => void;
+  onSignUp: () => void;
+  brandName: string;
+  headingFontStack: string;
+  bodyFontStack: string;
+}) {
+  type MockTier = 'Needs structure' | 'Developing' | 'Proficient';
+  type MockGrade = { score: number; tier: MockTier };
+
+  const [fitAnswers, setFitAnswers] = useState<Record<number, number>>({});
+  const [fitCvName, setFitCvName] = useState('');
+  const [fitSubmitted, setFitSubmitted] = useState(false);
+  const [lockedCase, setLockedCase] = useState<(typeof TRIAL_CASES)[number] | null>(null);
+  const [drillAnswer, setDrillAnswer] = useState('');
+  const [drillGrade, setDrillGrade] = useState<MockGrade | null>(null);
+  const [poolAnswers, setPoolAnswers] = useState<Record<string, string>>({});
+  const [poolGrades, setPoolGrades] = useState<Record<string, MockGrade>>({});
+  const [aptitudeAnswers, setAptitudeAnswers] = useState<Record<number, number>>({});
+  const [aptitudeSubmitted, setAptitudeSubmitted] = useState(false);
+  const score = APTITUDE_QUESTIONS.reduce((total, question, index) => total + (aptitudeAnswers[index] === question.correct ? 1 : 0), 0);
+  const aptitudeComplete = Object.keys(aptitudeAnswers).length === APTITUDE_QUESTIONS.length;
+  const scrollToTrialResult = (id: string) => {
+    window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0);
+  };
+  const trialTabs = [
+    { page: 'fit-assessment', name: 'Fit Assessment' },
+    { page: 'case-drill', name: 'Case Drill' },
+    { page: 'case-pool', name: 'Case Pool' },
+    { page: 'aptitude-test', name: 'Aptitude Test' },
+  ] as const;
+  const activeTrialTab = trialTabs.find((item) => item.page === page) || trialTabs[0];
+
+  const gradeAnswer = (answer: string): MockGrade => {
+    const trimmed = answer.trim();
+    const wordCount = trimmed ? trimmed.split(/\s+/).length : 0;
+    if (wordCount < 10) return { score: 38, tier: 'Needs structure' };
+    if (wordCount < 30) return { score: 62, tier: 'Developing' };
+    return { score: 81, tier: 'Proficient' };
+  };
+
+  const signupButton = (label = 'Sign up to unlock full access') => (
+    <button
+      type="button"
+      onClick={onSignUp}
+      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#DC2626] px-5 py-3 text-sm font-extrabold text-[#FFFFFF] shadow-[0_8px_24px_rgba(31,41,55,0.16)] transition hover:-translate-y-0.5 hover:bg-[#B91C1C]"
+    >
+      {label}<ArrowRight className="h-4 w-4" />
+    </button>
+  );
+
+  const GradeFeedback = ({ grade, mode, resultId }: { grade: MockGrade; mode: 'drill' | 'pool'; resultId: string }) => {
+    const observations = grade.tier === 'Proficient'
+      ? ['Clear quantitative framing', 'Logical structure from the start']
+      : grade.tier === 'Developing'
+        ? ['Recognized the core trade-off', 'Made an initial estimate']
+        : ['Attempted an answer', 'Identified the problem space'];
+    const improvement = grade.tier === 'Proficient'
+      ? 'Add sensitivity analysis — what if volume is 20% lower?'
+      : grade.tier === 'Developing'
+        ? 'Structure first: state your approach before computing numbers'
+        : 'Use MECE structure: split the problem into mutually exclusive parts, then solve each';
+    const tierColors = grade.tier === 'Proficient'
+      ? { backgroundColor: '#DCFCE7', color: '#166534', barColor: '#16A34A' }
+      : grade.tier === 'Developing'
+        ? { backgroundColor: '#FEF3C7', color: '#92400E', barColor: '#D97706' }
+        : { backgroundColor: '#FEE2E2', color: '#B91C1C', barColor: '#DC2626' };
+
+    return (
+      <section
+        id={resultId}
+        className="mt-5 scroll-mt-24 overflow-hidden rounded-2xl border border-[#FEE2E2] bg-[#FFFFFF] shadow-sm"
+        style={{ animation: 'trialFeedbackIn 280ms ease-out both' }}
+        aria-live="polite"
+      >
+        <div className="p-5 sm:p-6">
+          <span className="inline-flex rounded-full px-3 py-1.5 text-sm font-extrabold" style={{ backgroundColor: tierColors.backgroundColor, color: tierColors.color }}>
+            {grade.score}/100 · {grade.tier}
+          </span>
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#F3F4F6]" aria-label={`Score ${grade.score} out of 100`}>
+            <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${grade.score}%`, backgroundColor: tierColors.barColor }} />
+          </div>
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+            <div>
+              <h3 className="text-sm font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>{mode === 'drill' ? 'What worked' : 'Key observations'}</h3>
+              <ul className="mt-3 space-y-2">
+                {observations.map((observation) => <li key={observation} className="flex gap-2 text-sm leading-6 text-[#1F2937]"><CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[#16A34A]" />{observation}</li>)}
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>{mode === 'drill' ? 'To improve' : 'Next step to improve'}</h3>
+              <p className="mt-3 text-sm leading-6 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>{improvement}</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3 border-t border-[#FEE2E2] bg-[#FEF2F2] p-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <p className="text-sm font-bold text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>{mode === 'drill' ? 'Want real AI-powered feedback on your answers?' : 'Ready for detailed feedback across full case briefs?'}</p>
+          <button type="button" onClick={onSignUp} className="shrink-0 rounded-xl bg-[#DC2626] px-4 py-2.5 text-sm font-extrabold text-[#FFFFFF] hover:bg-[#B91C1C]">
+            {mode === 'drill' ? 'Continue with Pro — from 150.000₫' : 'Unlock real graded cases — from 150.000₫'}
+          </button>
+        </div>
+      </section>
+    );
+  };
+
+  const PricingConversion = () => (
+    <section className="bg-[#F9FAFB] px-4 pb-12 sm:px-6 sm:pb-16" aria-label="Casemate pricing options">
+      <div className="mx-auto max-w-6xl rounded-2xl border border-[#FEE2E2] bg-[#FEF2F2] p-5 sm:p-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#DC2626]" style={{ fontFamily: bodyFontStack }}>Casemate Pro</p>
+          <h2 className="mt-2 text-2xl font-black text-[#111827] sm:text-3xl" style={{ fontFamily: headingFontStack }}>Choose the plan that fits your preparation</h2>
+          <p className="mt-3 text-sm leading-6 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Fit Assessment and your personalized roadmap stay free. Upgrade when you want the complete practice toolkit.</p>
+        </div>
+        <div className="mt-7 grid gap-4 lg:grid-cols-3">
+          {PRICING_PLANS.map((plan) => {
+            const featured = plan.id === 'price_monthly_promo';
+            const interval = plan.days === 180 ? '/ 6 months' : plan.id === 'price_monthly_promo' ? '/ first month' : '/ month';
+            const detail = plan.id === 'price_monthly_promo' ? `Then ${formatVnd(200000)} / month` : plan.id === 'price_6month' ? `Save ${formatVnd(400000)}` : 'Cancel anytime';
+            return (
+              <article key={plan.id} className={`relative flex flex-col rounded-2xl border bg-[#FFFFFF] p-5 shadow-sm sm:p-6 ${featured ? 'border-[#DC2626]' : 'border-[#FEE2E2]'}`}>
+                {'badge' in plan && <span className="mb-3 w-fit rounded-full bg-[#FEE2E2] px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-[#DC2626]">{plan.badge}</span>}
+                <h3 className="text-lg font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>{plan.title}</h3>
+                <div className="mt-3 flex flex-wrap items-end gap-2"><span className="text-3xl font-black tracking-tight text-[#111827]">{formatVnd(plan.vnd)}</span><span className="pb-1 text-xs font-semibold text-[#1F2937]">{interval}</span></div>
+                <p className="mt-2 text-xs font-bold text-[#DC2626]" style={{ fontFamily: bodyFontStack }}>{detail}</p>
+                <ul className="mt-5 flex-1 space-y-2 text-sm font-semibold text-[#1F2937]">
+                  {['Case Pool', 'Case Drill', 'Aptitude Test', 'Domain Knowledge'].map((item) => <li key={item} className="flex items-center gap-2"><Check className="h-4 w-4 text-[#DC2626]" />{item}</li>)}
+                </ul>
+                <button type="button" onClick={onSignUp} className={`mt-6 rounded-xl px-4 py-3 text-sm font-extrabold transition ${featured ? 'bg-[#DC2626] text-[#FFFFFF] hover:bg-[#B91C1C]' : 'border border-[#DC2626] bg-[#FFFFFF] text-[#DC2626] hover:bg-[#FEF2F2]'}`}>Choose {formatVnd(plan.vnd)}</button>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+
+  const TrialHeader = () => (
+    <header className="sticky top-0 z-[70] min-h-16 border-b border-[#FEE2E2] bg-[#FFFFFF]">
+      <div className="mx-auto grid min-h-16 max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 sm:px-6 lg:px-8">
+        <button type="button" onClick={onBack} className="flex min-w-0 items-center gap-2 text-left" aria-label={`Back to ${brandName} home`}>
+          <BrandLogoMark size={30} style={{ color: '#DC2626' }} />
+          <span className="hidden truncate text-base sm:inline" style={{ fontFamily: headingFontStack, color: '#111827', fontWeight: 700, letterSpacing: '-0.01em' }}>{brandName}</span>
+        </button>
+        <nav className="hidden h-full items-stretch justify-center sm:flex" aria-label="Trial features">
+          {trialTabs.map((item) => {
+            const active = item.page === page;
+            return (
+              <button key={item.page} type="button" onClick={() => onNavigate(item.page)} className={`relative px-2.5 text-xs transition md:px-4 md:text-sm ${active ? 'font-bold text-[#DC2626]' : 'font-semibold text-[#374151] hover:text-[#DC2626]'}`}>
+                {item.name}
+                {active && <span className="absolute inset-x-2.5 bottom-0 h-0.5 rounded-full bg-[#DC2626] md:inset-x-4" aria-hidden="true" />}
+              </button>
+            );
+          })}
+        </nav>
+        <div className="relative mx-auto sm:hidden">
+          <span className="inline-flex items-center gap-1 rounded-full border border-[#FEE2E2] bg-[#FEF2F2] px-3 py-2 text-xs font-bold text-[#DC2626]">
+            {activeTrialTab.name}<ChevronDown className="h-3.5 w-3.5" />
+          </span>
+          <select
+            aria-label="Choose a trial feature"
+            value={activeTrialTab.page}
+            onChange={(event) => onNavigate(event.target.value as (typeof trialTabs)[number]['page'])}
+            className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+          >
+            {trialTabs.map((item) => <option key={item.page} value={item.page}>{item.name}</option>)}
+          </select>
+        </div>
+        <button type="button" onClick={onSignUp} className="shrink-0 rounded-xl bg-[#DC2626] px-3 py-2.5 text-xs font-extrabold text-[#FFFFFF] hover:bg-[#B91C1C] sm:px-4 sm:text-sm">Sign up free</button>
+      </div>
+    </header>
+  );
+
+  const TrialFooter = () => (
+    <section className="border-t border-[#FEE2E2] bg-[#FFFFFF] px-4 py-12 text-center sm:px-6">
+      <h2 className="text-2xl font-black tracking-tight text-[#111827]" style={{ fontFamily: headingFontStack }}>Ready to keep going?</h2>
+      <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Create your free account to save progress and unlock Casemate’s complete preparation experience.</p>
+      <div className="mt-6">{signupButton()}</div>
+    </section>
+  );
+
+  const FitAssessment = () => {
+    const questions = [
+      { question: 'Which work environment energizes you most?', options: ['Fast-moving consumer brand', 'Structured financial institution', 'Technology-led scale-up'] },
+      { question: 'Which challenge would you choose first?', options: ['Shape a go-to-market plan', 'Improve operational efficiency', 'Build a financial model'] },
+      { question: 'What kind of impact motivates you?', options: ['Influence customer behavior', 'Transform an organization', 'Launch a new business'] },
+    ];
+    const fitComplete = questions.every((_, index) => fitAnswers[index] !== undefined);
+    const fitProfiles = [
+      { industry: 'FMCG / Consumer', function: 'Marketing & Growth', programs: 'Unilever Future Leaders · L’Oréal SeedZ · Nestlé Management Trainee' },
+      { industry: 'Financial Services', function: 'Strategy & Operations', programs: 'Techcombank Future Gen · UOB Management Associate · Prudential Graduate Program' },
+      { industry: 'Technology', function: 'Product & Business', programs: 'Shopee Graduate Development · MoMo Talent · Viettel Future Changemakers' },
+    ];
+    const fitProfile = fitProfiles[questions.reduce((total, _, index) => total + (fitAnswers[index] || 0), 0) % fitProfiles.length];
+    const submitFit = () => {
+      if (!fitComplete) return;
+      setFitSubmitted(true);
+      scrollToTrialResult('fit-trial-result');
+    };
+    return (
+      <>
+        <main className="bg-[#F9FAFB] px-4 py-10 sm:px-6 sm:py-14">
+          <div className="mx-auto max-w-5xl">
+            <div className="max-w-3xl">
+              <span className="inline-flex rounded-full border border-[#FEE2E2] bg-[#FFFFFF] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.16em] text-[#DC2626]">Direction</span>
+              <h1 className="mt-4 text-3xl font-black tracking-tight text-[#111827] sm:text-5xl" style={{ fontFamily: headingFontStack }}>Find the career path that fits you.</h1>
+              <p className="mt-4 max-w-2xl text-base leading-7 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Share a little about your experience and preferences. Casemate turns it into a focused industry, function, and program direction.</p>
+            </div>
+
+            <div className="mt-10 space-y-6">
+              <section className="rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] p-5 shadow-sm sm:p-7">
+                <div className="flex items-start gap-4"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2] font-black text-[#DC2626]">1</span><div><h2 className="text-xl font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>Upload your CV</h2><p className="mt-1 text-sm text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Add a CV if you want to make this sample feel more personal.</p></div></div>
+                <label className="mt-5 flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#FEE2E2] bg-[#F9FAFB] px-6 text-center transition hover:border-[#DC2626]">
+                  <Upload className="h-8 w-8 text-[#DC2626]" />
+                  <span className="mt-3 text-sm font-extrabold text-[#111827]">{fitCvName || 'Drag and drop your CV here'}</span>
+                  <span className="mt-1 text-xs text-[#1F2937]">or click to choose a PDF or DOCX file</span>
+                  <input type="file" accept=".pdf,.doc,.docx" className="sr-only" onChange={(event) => setFitCvName(event.target.files?.[0]?.name || '')} />
+                </label>
+              </section>
+
+              <section className="rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] p-5 shadow-sm sm:p-7">
+                <div className="flex items-start gap-4"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2] font-black text-[#DC2626]">2</span><div><h2 className="text-xl font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>Tell us what you prefer</h2><p className="mt-1 text-sm text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Choose one answer for each sample question, then submit for feedback.</p></div></div>
+                <div className="mt-6 space-y-6">
+                  {questions.map((question, questionIndex) => (
+                    <fieldset key={question.question}>
+                      <legend className="text-sm font-extrabold text-[#111827]">{questionIndex + 1}. {question.question}</legend>
+                      <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                        {question.options.map((option, optionIndex) => {
+                          const selected = fitAnswers[questionIndex] === optionIndex;
+                          return <button key={option} type="button" onClick={() => { setFitAnswers((current) => ({ ...current, [questionIndex]: optionIndex })); setFitSubmitted(false); }} className={`rounded-xl border px-4 py-3 text-left text-sm font-bold transition ${selected ? 'border-[#DC2626] bg-[#FEE2E2] text-[#DC2626]' : 'border-[#FEE2E2] bg-[#FFFFFF] text-[#1F2937] hover:border-[#DC2626]'}`}>{option}</button>;
+                        })}
+                      </div>
+                    </fieldset>
+                  ))}
+                </div>
+                <button type="button" onClick={submitFit} disabled={!fitComplete} className="mt-7 w-full rounded-xl bg-[#DC2626] px-5 py-3 text-sm font-extrabold text-[#FFFFFF] transition enabled:hover:bg-[#B91C1C] disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto">Submit assessment</button>
+              </section>
+
+              {fitSubmitted && <section id="fit-trial-result" className="scroll-mt-24 rounded-3xl border border-[#DC2626] bg-[#FFFFFF] p-5 shadow-sm sm:p-7" style={{ animation: 'trialFeedbackIn 280ms ease-out both' }} aria-live="polite">
+                <div className="flex items-start gap-4"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#DCFCE7] text-[#166534]"><CheckCircle2 className="h-5 w-5" /></span><div><h2 className="text-xl font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>Your sample direction</h2><p className="mt-1 text-sm text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Your preferences point toward a focused starting direction.</p></div></div>
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-2xl bg-[#FEF2F2] p-5"><p className="text-xs font-black uppercase tracking-wider text-[#DC2626]" style={{ fontFamily: bodyFontStack }}>Industry fit</p><p className="mt-2 text-xl font-black text-[#111827]" style={{ fontFamily: bodyFontStack }}>{fitProfile.industry}</p></div>
+                  <div className="rounded-2xl bg-[#FEF2F2] p-5"><p className="text-xs font-black uppercase tracking-wider text-[#DC2626]" style={{ fontFamily: bodyFontStack }}>Function fit</p><p className="mt-2 text-xl font-black text-[#111827]" style={{ fontFamily: bodyFontStack }}>{fitProfile.function}</p></div>
+                  <div className="rounded-2xl border border-[#FEE2E2] p-5 sm:col-span-2"><p className="text-xs font-black uppercase tracking-wider text-[#DC2626]" style={{ fontFamily: bodyFontStack }}>Suggested programs</p><p className="mt-2 font-bold leading-6 text-[#111827]" style={{ fontFamily: bodyFontStack }}>{fitProfile.programs}</p></div>
+                </div>
+                <div className="mt-6 flex flex-col gap-3 rounded-2xl bg-[#FEF2F2] p-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm font-bold text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Create a free account for your full fit report and personalized roadmap.</p>{signupButton('Get my full report')}</div>
+              </section>}
+            </div>
+          </div>
+        </main>
+        <PricingConversion />
+        <TrialFooter />
+      </>
+    );
+  };
+
+  const CaseDrill = () => (
+    <>
+      <main className="bg-[#F9FAFB] px-4 py-10 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-extrabold"><span className="rounded-full bg-[#FEE2E2] px-3 py-1 text-[#DC2626]">Retail</span><span className="rounded-full bg-[#FEE2E2] px-3 py-1 text-[#DC2626]">Profitability</span><span className="inline-flex items-center gap-1 rounded-full border border-[#FEE2E2] bg-[#FFFFFF] px-3 py-1 text-[#1F2937]"><Clock3 className="h-3.5 w-3.5" /> 35 minutes</span></div>
+          <h1 className="mt-5 text-3xl font-black tracking-tight text-[#111827] sm:text-5xl" style={{ fontFamily: headingFontStack }}>UrbanCart’s profitability challenge</h1>
+          <p className="mt-4 max-w-3xl text-base leading-7 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>UrbanCart is a regional convenience retailer with 120 stores. Revenue grew 14% last year, but operating profit fell by 8%. The CEO wants to understand the decline and identify practical actions for the next twelve months.</p>
+
+          <section className="mt-8 rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] p-5 shadow-sm sm:p-8">
+            <div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#DC2626] font-black text-[#FFFFFF]">1</span><div><p className="text-xs font-black uppercase tracking-wider text-[#DC2626]" style={{ fontFamily: bodyFontStack }}>First question</p><h2 className="mt-1 text-xl font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>How would you structure the profitability problem?</h2></div></div>
+            <p className="mt-5 text-sm leading-6 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Take two minutes to outline the main revenue and cost drivers you would investigate. Consider both the store network and customer behavior.</p>
+            <textarea value={drillAnswer} onChange={(event) => setDrillAnswer(event.target.value)} aria-label="Your case structure" placeholder="Write your structure here…" className="mt-5 min-h-32 w-full resize-y rounded-2xl border border-[#FEE2E2] bg-[#F9FAFB] p-4 text-sm text-[#111827] outline-none placeholder:text-[#6B7280] focus:border-[#DC2626]" />
+            <button type="button" onClick={() => { setDrillGrade(gradeAnswer(drillAnswer)); scrollToTrialResult('drill-trial-result'); }} className="mt-4 rounded-xl bg-[#DC2626] px-5 py-3 text-sm font-extrabold text-[#FFFFFF] transition hover:bg-[#B91C1C]">Submit answer</button>
+            {drillGrade && <GradeFeedback grade={drillGrade} mode="drill" resultId="drill-trial-result" />}
+          </section>
+
+          <section className="mt-6 overflow-hidden rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] shadow-sm">
+            <div className="flex items-center gap-3 border-b border-[#FEE2E2] p-5 sm:p-6"><Table2 className="h-5 w-5 text-[#DC2626]" /><div><h2 className="font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>Supporting data</h2><p className="text-xs text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>UrbanCart performance by store format</p></div></div>
+            <div className="overflow-x-auto p-5 sm:p-6"><table className="w-full min-w-[34rem] text-left text-sm"><thead><tr className="border-b border-[#FEE2E2] text-[#1F2937]"><th className="pb-3 font-black">Format</th><th className="pb-3 font-black">Stores</th><th className="pb-3 font-black">Revenue growth</th><th className="pb-3 font-black">Operating margin</th></tr></thead><tbody><tr className="border-b border-[#FEE2E2] text-[#111827]"><td className="py-4 font-bold">City center</td><td className="py-4">46</td><td className="py-4">+18%</td><td className="py-4">9.2%</td></tr><tr className="blur-[5px]"><td className="py-4">Neighborhood</td><td>51</td><td>+11%</td><td>4.1%</td></tr><tr className="blur-[5px]"><td className="py-4">Transit</td><td>23</td><td>+7%</td><td>2.6%</td></tr></tbody></table></div>
+            <div className="border-t border-[#FEE2E2] bg-[#F9FAFB] p-5 text-center">{signupButton('Sign up to access full case drill')}</div>
+          </section>
+        </div>
+      </main>
+      <PricingConversion />
+      <TrialFooter />
+    </>
+  );
+
+  const CasePool = () => {
+    const selectedAnswer = lockedCase ? poolAnswers[lockedCase.title] || '' : '';
+    const selectedGrade = lockedCase ? poolGrades[lockedCase.title] : undefined;
+    return (
+      <>
+        <main className="min-h-[70vh] bg-[#F9FAFB] px-4 py-10 sm:px-6 sm:py-14">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-3xl"><span className="inline-flex rounded-full bg-[#FEE2E2] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.16em] text-[#DC2626]">Practice library</span><h1 className="mt-4 text-3xl font-black tracking-tight text-[#111827] sm:text-5xl" style={{ fontFamily: headingFontStack }}>Choose a case. Test your thinking.</h1><p className="mt-4 text-base leading-7 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Preview Casemate’s case library across industries, formats, and difficulty levels.</p></div>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {TRIAL_CASES.map((trialCase, index) => <button key={trialCase.title} type="button" onClick={() => setLockedCase(trialCase)} className="group rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-[#DC2626]"><div className="flex items-center justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FEE2E2] text-sm font-black text-[#DC2626]">0{index + 1}</span><ArrowRight className="h-4 w-4 text-[#DC2626] transition-transform group-hover:translate-x-1" /></div><h2 className="mt-5 text-lg font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>{trialCase.title}</h2><div className="mt-5 flex flex-wrap gap-2 text-[11px] font-extrabold"><span className="rounded-full bg-[#FEE2E2] px-2.5 py-1 text-[#DC2626]">{trialCase.industry}</span><span className="rounded-full border border-[#FEE2E2] px-2.5 py-1 text-[#1F2937]">{trialCase.difficulty}</span><span className="inline-flex items-center gap-1 rounded-full border border-[#FEE2E2] px-2.5 py-1 text-[#1F2937]"><Clock3 className="h-3 w-3" />{trialCase.time}</span></div></button>)}
+            </div>
+          </div>
+        </main>
+        <PricingConversion />
+        <TrialFooter />
+        {lockedCase && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1F2937]/80 p-4" role="dialog" aria-modal="true" aria-labelledby="pool-case-title" onClick={(event) => { if (event.target === event.currentTarget) setLockedCase(null); }}><div className="relative max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] p-6 shadow-2xl sm:p-8"><button type="button" onClick={() => setLockedCase(null)} className="absolute right-4 top-4 rounded-full border border-[#FEE2E2] p-2 text-[#111827]" aria-label="Close case preview"><X className="h-4 w-4" /></button><span className="inline-flex rounded-full bg-[#FEE2E2] px-3 py-1 text-xs font-extrabold text-[#DC2626]">{lockedCase.industry} · {lockedCase.difficulty}</span><h2 id="pool-case-title" className="mt-4 pr-10 text-2xl font-black text-[#111827]" style={{ fontFamily: headingFontStack }}>{lockedCase.title}</h2><p className="mt-4 text-sm leading-6 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Your client is evaluating an urgent strategic decision. Identify the key drivers, explain how you would test them, and recommend the first action the client should take.</p><textarea value={selectedAnswer} onChange={(event) => setPoolAnswers((current) => ({ ...current, [lockedCase.title]: event.target.value }))} aria-label={`Your answer for ${lockedCase.title}`} placeholder="Write your answer here…" className="mt-5 min-h-32 w-full resize-y rounded-2xl border border-[#FEE2E2] bg-[#F9FAFB] p-4 text-sm text-[#111827] outline-none placeholder:text-[#6B7280] focus:border-[#DC2626]" /><button type="button" onClick={() => { setPoolGrades((current) => ({ ...current, [lockedCase.title]: gradeAnswer(selectedAnswer) })); scrollToTrialResult('pool-trial-result'); }} className="mt-4 rounded-xl bg-[#DC2626] px-5 py-3 text-sm font-extrabold text-[#FFFFFF] transition hover:bg-[#B91C1C]">Submit</button>{selectedGrade && <GradeFeedback grade={selectedGrade} mode="pool" resultId="pool-trial-result" />}</div></div>}
+      </>
+    );
+  };
+
+  const AptitudeTest = () => (
+    <>
+      <main className="bg-[#F9FAFB] px-4 py-10 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-4xl"><div className="max-w-3xl"><span className="inline-flex rounded-full bg-[#FEE2E2] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.16em] text-[#DC2626]">3-question sample</span><h1 className="mt-4 text-3xl font-black tracking-tight text-[#111827] sm:text-5xl" style={{ fontFamily: headingFontStack }}>Put your reasoning to the test.</h1><p className="mt-4 text-base leading-7 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>Choose all three answers, then submit to receive your score and feedback.</p></div>
+          <div className="mt-10 space-y-5">
+            {APTITUDE_QUESTIONS.map((question, questionIndex) => { const selected = aptitudeAnswers[questionIndex]; const answered = selected !== undefined; const correct = selected === question.correct; return <section key={question.question} className="rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] p-5 shadow-sm sm:p-7"><div className="flex gap-4"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2] font-black text-[#DC2626]">{questionIndex + 1}</span><div className="min-w-0 flex-1"><h2 className="font-black leading-6 text-[#111827]" style={{ fontFamily: headingFontStack }}>{question.question}</h2><div className="mt-4 grid gap-2 sm:grid-cols-2">{question.answers.map((answer, answerIndex) => <button key={answer} type="button" onClick={() => { setAptitudeAnswers((current) => ({ ...current, [questionIndex]: answerIndex })); setAptitudeSubmitted(false); }} className={`rounded-xl border px-4 py-3 text-left text-sm font-bold transition ${selected === answerIndex ? 'border-[#DC2626] bg-[#FEE2E2] text-[#DC2626]' : 'border-[#FEE2E2] bg-[#FFFFFF] text-[#1F2937] hover:border-[#DC2626]'}`}>{answer}</button>)}</div>{aptitudeSubmitted && answered && <p className={`mt-4 flex items-center gap-2 text-sm font-black ${correct ? 'text-[#166534]' : 'text-[#DC2626]'}`} style={{ fontFamily: bodyFontStack }}>{correct ? <CheckCircle2 className="h-4 w-4" /> : <X className="h-4 w-4" />}{correct ? 'Correct — strong reasoning.' : `Incorrect — the answer is ${question.answers[question.correct]}.`}</p>}</div></div></section>; })}
+          </div>
+          <button type="button" disabled={!aptitudeComplete} onClick={() => { setAptitudeSubmitted(true); scrollToTrialResult('aptitude-trial-result'); }} className="mt-6 rounded-xl bg-[#DC2626] px-5 py-3 text-sm font-extrabold text-[#FFFFFF] transition enabled:hover:bg-[#B91C1C] disabled:cursor-not-allowed disabled:opacity-40">Submit sample test</button>
+          {aptitudeSubmitted && aptitudeComplete && <section id="aptitude-trial-result" className="mt-6 scroll-mt-24 rounded-3xl border border-[#DC2626] bg-[#FFFFFF] p-6 text-center shadow-sm sm:p-8" style={{ animation: 'trialFeedbackIn 280ms ease-out both' }} aria-live="polite"><p className="text-xs font-black uppercase tracking-[0.18em] text-[#DC2626]" style={{ fontFamily: bodyFontStack }}>Sample complete</p><p className="mt-2 text-5xl font-black text-[#111827]" style={{ fontFamily: bodyFontStack }}>{score}/3</p><p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-[#1F2937]" style={{ fontFamily: bodyFontStack }}>{score === 3 ? 'Excellent accuracy. Your next step is building speed across a larger question bank.' : score >= 2 ? 'Good foundation. Review the explanation for the missed question, then practice under time pressure.' : 'This is a useful baseline. Focus on one reasoning type at a time before adding time pressure.'}</p><div className="mt-6">{signupButton('Continue to the full test bank')}</div></section>}
+        </div>
+      </main>
+      <PricingConversion />
+      <TrialFooter />
+    </>
+  );
+
+  const CaseMastery = () => (
+    <>
+      <main className="bg-[#FFFFFF]">
+        <section className="border-b border-[#FEE2E2] bg-[#F9FAFB] px-4 py-14 sm:px-6 sm:py-20"><div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]"><div><span className="inline-flex items-center gap-2 rounded-full bg-[#FEE2E2] px-3 py-1 text-xs font-extrabold uppercase tracking-[0.16em] text-[#DC2626]"><Trophy className="h-4 w-4" /> Casemate competition</span><h1 className="mt-5 text-4xl font-black tracking-tight text-[#111827] sm:text-6xl">Case Arena</h1><p className="mt-3 text-xl font-extrabold text-[#DC2626]">Think clearly. Compete confidently. Rise together.</p><p className="mt-5 max-w-2xl text-base leading-7 text-[#1F2937]">Join a structured live case session, collaborate with an assigned team, and receive a transparent performance score across analysis, communication, and recommendation quality.</p></div><div className="rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] p-6 shadow-sm"><div className="flex items-center gap-3"><CalendarClock className="h-6 w-6 text-[#DC2626]" /><div><p className="text-xs font-black uppercase tracking-wider text-[#DC2626]">Session status</p><h2 className="mt-1 text-2xl font-black text-[#111827]">Next session: TBA</h2></div></div><p className="mt-4 text-sm leading-6 text-[#1F2937]">Register your interest and be first to know when the next competition opens.</p><button type="button" onClick={onSignUp} className="mt-6 w-full rounded-xl bg-[#DC2626] px-5 py-3 text-sm font-extrabold text-[#FFFFFF]">Register for Case Arena</button></div></div></section>
+        <section className="px-4 py-14 sm:px-6 sm:py-20"><div className="mx-auto max-w-6xl"><div className="text-center"><p className="text-xs font-black uppercase tracking-[0.18em] text-[#DC2626]">How it works</p><h2 className="mt-3 text-3xl font-black text-[#111827]">From registration to the leaderboard</h2></div><div className="mt-10 grid gap-4 md:grid-cols-3">{[{ icon: FileText, step: '01', title: 'Register', text: 'Create your profile and confirm your availability.' }, { icon: Users, step: '02', title: 'Get Assigned', text: 'Meet your team and receive the live case brief.' }, { icon: Trophy, step: '03', title: 'Compete & Score', text: 'Present your recommendation and receive your score.' }].map((item) => { const ItemIcon = item.icon; return <article key={item.step} className="rounded-3xl border border-[#FEE2E2] bg-[#F9FAFB] p-6"><div className="flex items-center justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#DC2626] text-[#FFFFFF]"><ItemIcon className="h-5 w-5" /></span><span className="text-sm font-black text-[#DC2626]">{item.step}</span></div><h3 className="mt-5 text-xl font-black text-[#111827]">{item.title}</h3><p className="mt-2 text-sm leading-6 text-[#1F2937]">{item.text}</p></article>; })}</div></div></section>
+        <section className="bg-[#F9FAFB] px-4 py-14 sm:px-6 sm:py-20"><div className="mx-auto max-w-4xl"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[0.18em] text-[#DC2626]">Sample leaderboard</p><h2 className="mt-2 text-3xl font-black text-[#111827]">Top teams</h2></div><Trophy className="h-8 w-8 text-[#DC2626]" /></div><div className="mt-7 overflow-hidden rounded-3xl border border-[#FEE2E2] bg-[#FFFFFF] shadow-sm">{[{ team: 'North Star', score: '92.4' }, { team: 'Red Thread', score: '88.7' }, { team: 'Market Makers', score: '84.9' }].map((row, index) => <div key={row.team} className="grid grid-cols-[3rem_1fr_auto] items-center gap-3 border-b border-[#FEE2E2] px-5 py-4 last:border-0"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FEE2E2] text-sm font-black text-[#DC2626]">{index + 1}</span><div><p className="font-black text-[#111827]">{row.team}</p><p className="text-xs text-[#1F2937]">Sample team</p></div><span className="text-xl font-black text-[#DC2626]">{row.score}</span></div>)}</div></div></section>
+      </main>
+      <TrialFooter />
+    </>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#F9FAFB] text-[#111827]" style={{ fontFamily: bodyFontStack }}>
+      <style>{`@keyframes trialFeedbackIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+      <TrialHeader />
+      {page === 'fit-assessment' && <FitAssessment />}
+      {page === 'case-drill' && <CaseDrill />}
+      {page === 'case-pool' && <CasePool />}
+      {page === 'aptitude-test' && <AptitudeTest />}
+      {page === 'case-arena' && <CaseMastery />}
+    </div>
+  );
+}
 export default function EmailGate({
   spaceId,
   branding,
@@ -445,19 +1121,13 @@ export default function EmailGate({
   const [loginOpen, setLoginOpen] = useState(false);
   const [entered, setEntered] = useState(false);
   const [navOverLight, setNavOverLight] = useState(false);
+  const [currentPage, setCurrentPage] = useState<PublicLandingPage>('landing');
   const [infoPage, setInfoPage] = useState<'about' | 'contact' | 'privacy' | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [cvDragOver, setCvDragOver] = useState(false);
 
-  // Multi-method auth state (v114 — email OTP + Google/Facebook/LinkedIn + phone)
-  const [panelView, setPanelView] = useState<PanelView>('main');
-  const [phoneCountry, setPhoneCountry] = useState(DEFAULT_PHONE_COUNTRY);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [phoneCode, setPhoneCode] = useState('');
-  const [phoneMasked, setPhoneMasked] = useState('');
-  const [authNotice, setAuthNotice] = useState('');
+  // Email OTP and social authentication state.
   const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | 'linkedin' | null>(null);
-  const [authStatus, setAuthStatus] = useState<AuthServiceStatus | null>(null);
   const socialCallbackStartedRef = useRef(false);
 
   // Get workspaceId from window context
@@ -493,20 +1163,16 @@ export default function EmailGate({
     }
   }, [resendCooldown]);
 
-  // Which auth methods are live: phone/SMS needs the casemate-auth-v1 hook
-  // (deployed from the founder-only Usage dashboard), Google/Facebook need
-  // their public IDs in lib/authAccount.ts. Checked when the login modal
-  // first opens; the lib caches the answer for 10 minutes.
+  // Keep public feature previews addressable and browser-history friendly.
   useEffect(() => {
-    if (!loginOpen || authStatus) return;
-    let cancelled = false;
-    fetchAuthServiceStatus().then((status) => {
-      if (!cancelled) setAuthStatus(status);
-    });
-    return () => {
-      cancelled = true;
+    const syncFeatureHash = () => {
+      const hash = window.location.hash.replace(/^#/, '');
+      setCurrentPage(hash === 'fit-assessment' || hash === 'practice-tool' || hash === 'case-arena' ? hash : 'landing');
     };
-  }, [loginOpen, authStatus]);
+    syncFeatureHash();
+    window.addEventListener('hashchange', syncFeatureHash);
+    return () => window.removeEventListener('hashchange', syncFeatureHash);
+  }, []);
 
   // Landing hero entrance animation (client-only; defaults visible if JS is slow)
   useEffect(() => {
@@ -544,78 +1210,32 @@ export default function EmailGate({
   }, [step]);
 
   const checkExistingSession = async () => {
-    // `?as=visitor` preview: never adopt a stored session — skip straight to the
-    // logged-out email form instead of jumping to the empty 'complete' state.
+    // `?as=visitor` preview must never adopt either local storage or the
+    // platform’s HttpOnly session cookie.
     const forceVisitor = typeof window !== 'undefined' && (window as any).__AUDOS_FORCE_VISITOR__ === true;
     const sessionKey = `space_session_${spaceId}`;
     const existingSession = forceVisitor ? null : localStorage.getItem(sessionKey);
+    let storedSession: Record<string, any> | null = null;
+    let storedSessionId: string | null = null;
+    let storedEmail: string | null = null;
 
     if (existingSession) {
       try {
-        const session = JSON.parse(existingSession);
-        const effectiveSessionId = session.workspaceSessionId || session.id;
-
-        if (effectiveSessionId) {
-          // Sessions created by Google / Facebook / phone sign-in were
-          // verified by their own method (provider OAuth or SMS code)
-          // rather than the email-OTP flow —
-          // adopt them directly instead of bouncing the returning user back
-          // through the emailed-code gate.
-          if (
-            session.verified === true &&
-            typeof session.authMethod === 'string' &&
-            session.authMethod.length > 0
-          ) {
-            setSessionId(effectiveSessionId);
-            setStep('complete');
-            return;
-          }
-          if (workspaceId) {
-            try {
-              const configRes = await fetch(`/api/auth/otp/space/config/${workspaceId}`);
-              const configData = await configRes.json();
-              const otpConfig = configData.config || configData;
-
-              if (otpConfig.enabled) {
-                setOtpEnabled(true);
-                const checkRes = await fetch(`/api/auth/otp/space/check-session?workspaceId=${workspaceId}&sessionUuid=${encodeURIComponent(effectiveSessionId)}`, {
-                  credentials: 'include'
-                });
-                const checkData = await checkRes.json();
-
-                if (checkData.verified) {
-                  setSessionId(effectiveSessionId);
-                  setStep('complete');
-                  return;
-                } else {
-                  // v1.1: a session exists on this device but was never
-                  // OTP-verified (legacy email-only sign-in, or an expired /
-                  // signed-out device). Prefill the saved email so the
-                  // returning user only confirms it and enters the emailed
-                  // code instead of retyping their address — same email,
-                  // same account, history preserved.
-                  if (typeof session.email === 'string' && session.email.includes('@')) {
-                    setEmail(session.email);
-                  }
-                  setStep('email');
-                  return;
-                }
-              }
-            } catch (e) {
-              console.log('[EmailGate] OTP config check failed, using simple mode');
-            }
-          }
-
-          setSessionId(effectiveSessionId);
-          setStep('complete');
-          return;
+        const parsed = JSON.parse(existingSession);
+        if (parsed && typeof parsed === 'object') {
+          storedSession = parsed;
+          const candidateId = parsed.workspaceSessionId || parsed.id;
+          storedSessionId = typeof candidateId === 'string' && candidateId ? candidateId : null;
+          storedEmail = typeof parsed.email === 'string' && parsed.email.includes('@')
+            ? parsed.email.toLowerCase().trim()
+            : null;
         }
       } catch (e) {
         console.error('Failed to parse session:', e);
       }
     }
 
-    if (workspaceId) {
+    if (workspaceId && !forceVisitor) {
       try {
         const configRes = await fetch(`/api/auth/otp/space/config/${workspaceId}`);
         const configData = await configRes.json();
@@ -624,28 +1244,108 @@ export default function EmailGate({
       } catch (e) {
         setOtpEnabled(false);
       }
+
+      const checkPlatformSession = async (sessionUuid?: string | null) => {
+        const query = new URLSearchParams({ workspaceId, spaceId });
+        if (sessionUuid) query.set('sessionUuid', sessionUuid);
+        const response = await fetch(`/api/auth/otp/space/check-session?${query.toString()}`, {
+          credentials: 'include',
+          cache: 'no-store',
+        });
+        if (!response.ok) return null;
+        return response.json().catch(() => null);
+      };
+
+      const adoptPlatformSession = (result: any, fallbackId?: string | null) => {
+        const accepted = result?.verified === true
+          || (result?.authorized === true && result?.identityMode === 'legacy_registration');
+        const canonicalId = typeof result?.canonicalSessionId === 'string' && result.canonicalSessionId
+          ? result.canonicalSessionId
+          : typeof result?.workspaceSessionId === 'string' && result.workspaceSessionId
+            ? result.workspaceSessionId
+            : accepted ? fallbackId || null : null;
+        if (!accepted || !canonicalId) return false;
+
+        const restoredEmail = typeof result?.email === 'string' && result.email.includes('@')
+          ? result.email.toLowerCase().trim()
+          : storedEmail;
+        const restoredSession = {
+          ...(storedSession || {}),
+          id: canonicalId,
+          workspaceSessionId: canonicalId,
+          workspaceId,
+          email: restoredEmail,
+          timestamp: Date.now(),
+          verified: result?.verified === true,
+          authorized: result?.authorized === true,
+          identityMode: result?.identityMode || (result?.verified === true ? 'strict_verified' : undefined),
+        };
+        localStorage.setItem(sessionKey, JSON.stringify(restoredSession));
+        try {
+          window.dispatchEvent(new CustomEvent('audos:session-established', {
+            detail: { workspaceSessionId: canonicalId, email: restoredEmail },
+          }));
+        } catch (e) {}
+        if (restoredEmail) setEmail(restoredEmail);
+        void prefetchCasemateEntitlement(canonicalId);
+        setSessionId(canonicalId);
+        setStep('complete');
+        return true;
+      };
+
+      try {
+        // First validate the exact locally stored session. If it was produced
+        // by the old custom Google flow, it will be rejected instead of being
+        // trusted merely because page JavaScript marked it `verified`.
+        if (storedSessionId) {
+          const exact = await checkPlatformSession(storedSessionId);
+          if (adoptPlatformSession(exact, storedSessionId)) return;
+        }
+
+        // Google OAuth and Safari/iOS cold starts can return with only the
+        // platform’s HttpOnly cookie. Ask the platform to resolve that cookie
+        // and adopt the canonical wses_ session it returns.
+        const restored = await checkPlatformSession();
+        if (adoptPlatformSession(restored)) return;
+      } catch (e) {
+        console.log('[EmailGate] Session verification failed; showing sign-in');
+      }
+
+      if (storedEmail) setEmail(storedEmail);
+      try { localStorage.removeItem(sessionKey); } catch (e) {}
+      setStep('email');
+      return;
+    }
+
+    // Template previews have no workspace session service. Preserve their
+    // local guest behavior, but never use this fallback for a real workspace.
+    if (storedSessionId) {
+      setSessionId(storedSessionId);
+      setStep('complete');
+      return;
     }
 
     setStep('email');
   };
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent, submittedEmail = email) => {
     e.preventDefault();
 
     // Format validation at the front door: a malformed email must never
     // reach /register (the CRM/lead capture) or trigger an OTP send. The
     // user retries inline; the OTP step remains the real deliverability
     // check for well-formed addresses.
-    if (!isValidEmailFormat(email)) {
+    if (!isValidEmailFormat(submittedEmail)) {
       setError(INVALID_EMAIL_MESSAGE);
       return;
     }
 
+    setEmail(submittedEmail);
     setError('');
     setLoading(true);
 
     try {
-      const normalizedEmail = email.toLowerCase().trim();
+      const normalizedEmail = submittedEmail.toLowerCase().trim();
 
       if (otpEnabled && workspaceId) {
         const attribution = getAttribution();
@@ -762,7 +1462,7 @@ export default function EmailGate({
         setResendCooldown(otpBody.resendCooldown ?? 60);
         setStep('code');
       } else {
-        await registerSession();
+        await registerSession(submittedEmail);
       }
     } catch (err) {
       console.error('[EmailGate] Network error in handleEmailSubmit:', err);
@@ -911,8 +1611,8 @@ export default function EmailGate({
     setLoading(false);
   };
 
-  const registerSession = async () => {
-    const normalizedEmail = email.toLowerCase().trim();
+  const registerSession = async (emailValue = email) => {
+    const normalizedEmail = emailValue.toLowerCase().trim();
 
     // Template previews have no workspace, so the server-side register can
     // never succeed ("Could not resolve workspace from space."). Create a
@@ -1075,13 +1775,15 @@ export default function EmailGate({
   };
 
   const handleSocialLogin = (provider: string) => {
-    // Every platform-managed provider returns to the authenticated app deep
-    // link. The EmailGate remains the fallback only when authentication fails.
-    let socialReturnTo = new URL(SOCIAL_OAUTH_SUCCESS_PATH, window.location.origin).toString();
+    // Preserve the exact app pathname. On the shared audos.com host, returning
+    // to the origin root is outside the workspace route and is rejected as an
+    // unsafe return URL; custom domains can legitimately use `/`.
+    let socialReturnTo = window.location.href;
     try {
-      const url = new URL(SOCIAL_OAUTH_SUCCESS_PATH, window.location.origin);
-      url.searchParams.delete('as');
-      socialReturnTo = url.toString();
+      const returnTarget = new URL(window.location.href);
+      returnTarget.searchParams.delete('as');
+      returnTarget.hash = 'fit-assessment';
+      socialReturnTo = returnTarget.toString();
     } catch (e) {}
     const returnUrl = encodeURIComponent(socialReturnTo);
     const url = workspaceId
@@ -1094,28 +1796,38 @@ export default function EmailGate({
 
   /** Store the session for ANY successful method exactly like the classic
    *  email flow does, fire the same lead events, and enter the space. */
-  const adoptAuthSession = (
+  const adoptAuthSession = async (
     wsSessionId: string,
     emailValue: string | null,
-    method: 'google' | 'facebook' | 'linkedin' | 'phone',
+    method: 'google' | 'facebook' | 'linkedin',
     extra: {
-      phone?: string | null;
-      phoneMasked?: string | null;
       displayName?: string | null;
       avatarUrl?: string | null;
       isReturningUser?: boolean;
     } = {},
   ) => {
+    // The auth hook calls /register server-to-server, so its Set-Cookie header
+    // cannot reach this browser. Touch the same idempotent registration from
+    // here before entering the app; this establishes the real browser session
+    // and starts the seven-day sliding lifetime for every OAuth provider.
+    const renewed = emailValue
+      ? await renewWorkspaceSession(spaceId, wsSessionId, emailValue).catch(() => null)
+      : null;
+    const effectiveSessionId = renewed?.workspaceSessionId || wsSessionId;
+    const expiresAt = renewed?.expiresAt
+      || Date.now() + WORKSPACE_SESSION_MAX_AGE_SECONDS * 1000;
+    persistWorkspaceSessionCookie(effectiveSessionId);
+
     const sessionKey = `space_session_${spaceId}`;
     const session = {
-      id: wsSessionId,
-      workspaceSessionId: wsSessionId,
+      id: effectiveSessionId,
+      workspaceSessionId: effectiveSessionId,
       email: emailValue,
-      phone: extra.phone || null,
-      phoneMasked: extra.phoneMasked || null,
       displayName: extra.displayName || null,
       avatarUrl: extra.avatarUrl || null,
       timestamp: Date.now(),
+      lastRefreshedAt: Date.now(),
+      expiresAt,
       verified: true,
       authMethod: method,
       isReturningUser: !!extra.isReturningUser,
@@ -1125,10 +1837,10 @@ export default function EmailGate({
       },
     };
     localStorage.setItem(sessionKey, JSON.stringify(session));
-    void prefetchCasemateEntitlement(wsSessionId);
+    void prefetchCasemateEntitlement(effectiveSessionId);
     try {
       window.dispatchEvent(new CustomEvent('audos:session-established', {
-        detail: { workspaceSessionId: wsSessionId, email: emailValue, authMethod: method },
+        detail: { workspaceSessionId: effectiveSessionId, email: emailValue, authMethod: method },
       }));
     } catch (e) {}
     if (emailValue) {
@@ -1137,7 +1849,7 @@ export default function EmailGate({
       }
       fireLeadEventWithRetry(emailValue);
     }
-    setSessionId(wsSessionId);
+    setSessionId(effectiveSessionId);
     completeGateEntry();
   };
 
@@ -1150,13 +1862,12 @@ export default function EmailGate({
     if (!match || socialCallbackStartedRef.current) return;
     socialCallbackStartedRef.current = true;
     const provider = match[1] as 'google' | 'facebook' | 'linkedin';
-    setPanelView('main');
     setLoginOpen(true);
     setError('');
     setSocialLoading(provider);
 
     void completeSocialOAuthCallback(provider)
-      .then(({ result, returnTo }) => {
+      .then(async ({ result, returnTo }) => {
         let safeReturnTo = '/';
         try {
           const parsed = new URL(returnTo, window.location.origin);
@@ -1165,17 +1876,24 @@ export default function EmailGate({
           }
         } catch (e) {}
         const oauthSucceeded = result.success && !!result.workspaceSessionId;
+        const restartRequired = result.restartRequired === true || result.code === 'oauth_restart_required';
         window.history.replaceState(
           {},
           '',
-          oauthSucceeded ? SOCIAL_OAUTH_SUCCESS_PATH : safeReturnTo,
+          oauthSucceeded ? SOCIAL_OAUTH_SUCCESS_PATH : restartRequired ? '/' : safeReturnTo,
         );
         if (oauthSucceeded && result.workspaceSessionId) {
-          adoptAuthSession(result.workspaceSessionId, result.email || null, provider, {
+          await adoptAuthSession(result.workspaceSessionId, result.email || null, provider, {
             displayName: result.displayName || null,
             avatarUrl: result.avatarUrl || null,
             isReturningUser: !!result.isReturningUser,
           });
+          return;
+        }
+        if (restartRequired) {
+          // Keep the already-open login modal interactive instead of leaving
+          // the visitor on a callback error screen with no recovery path.
+          setError('Please start sign-in again.');
           return;
         }
         setError(
@@ -1212,7 +1930,6 @@ export default function EmailGate({
       return;
     }
     setError('');
-    setAuthNotice('');
     setSocialLoading(provider);
     try {
       const appReturnTo = new URL(SOCIAL_OAUTH_SUCCESS_PATH, window.location.origin);
@@ -1229,7 +1946,14 @@ export default function EmailGate({
   };
 
   const handleGoogleLogin = () => {
-    void runSocialSignIn('google');
+    if (socialLoading || loading) return;
+    if (!isGoogleLoginConfigured()) {
+      setError('Google sign-in is not activated yet. Please use email for now.');
+      return;
+    }
+    setError('');
+    setSocialLoading('google');
+    handleSocialLogin('google');
   };
 
   const handleLinkedInLogin = () => {
@@ -1239,64 +1963,6 @@ export default function EmailGate({
   // Password sign-in/sign-up and the emailed password-reset flow were removed
   // in v110 — email authentication is the original OTP-only flow again
   // (handleEmailSubmit → /register → emailed 4-digit code → handleCodeSubmit).
-
-  const handlePhoneSend = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    const fullPhone = composeE164(phoneCountry, phoneNumber);
-    if (!fullPhone) {
-      setError('Please enter a valid phone number.');
-      return;
-    }
-    setError('');
-    setAuthNotice('');
-    setLoading(true);
-    try {
-      const result = await smsSendOtp(fullPhone);
-      if (result.success) {
-        setPhoneMasked(result.phoneMasked || fullPhone);
-        setPhoneCode('');
-        setAuthNotice(`We texted a code to ${result.phoneMasked || fullPhone}.`);
-        setPanelView('phoneCode');
-      } else if (result.code === 'sms_not_configured' || result.code === 'service_unavailable') {
-        setError('Phone sign-in is coming soon — please use another method for now.');
-      } else {
-        setError(result.error || 'Could not send the code. Please double-check the number and try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePhoneVerify = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    const fullPhone = composeE164(phoneCountry, phoneNumber);
-    if (!fullPhone) {
-      setError('Please re-enter your phone number.');
-      setPanelView('main');
-      return;
-    }
-    const cleanCode = phoneCode.replace(/\D/g, '');
-    if (cleanCode.length < 4) {
-      setError('Please enter the code we texted you.');
-      return;
-    }
-    setError('');
-    setLoading(true);
-    try {
-      const result = await smsVerifyOtp(fullPhone, cleanCode, { visitorId: getVisitorId() });
-      if (result.success && result.workspaceSessionId) {
-        adoptAuthSession(result.workspaceSessionId, result.email || null, 'phone', {
-          phone: result.phone || fullPhone,
-          phoneMasked: result.phoneMasked || phoneMasked,
-          isReturningUser: !!result.isReturningUser,
-        });
-        return;
-      }
-      setError(result.error || 'That code did not work. Please try again or request a new one.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   function getVisitorId(): string {
     const key = 'audos_visitor_id';
@@ -1583,6 +2249,8 @@ export default function EmailGate({
   // rendered eagerly above the fold with no autoplay video.
   const heroImageUrl =
     'https://storage.googleapis.com/audos-images/generated-images/agent/workspace-539150/img-1789529370697-nsmyb9.png';
+  const heroImageWebpUrl =
+    'https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto:good,w_1920/https://storage.googleapis.com/audos-images/generated-images/agent/workspace-539150/img-1789529370697-nsmyb9.png';
   // Near-black ink for section headings (consultancy-grade hierarchy): the
   // brand red stays an accent (rules, icons, CTAs) instead of coloring whole
   // headlines.
@@ -1590,14 +2258,8 @@ export default function EmailGate({
   const loginPanelId = 'email-gate-login-panel';
 
   const openLogin = () => {
-    setPanelView('main');
     setError('');
-    setAuthNotice('');
     setLoginOpen(true);
-    setTimeout(() => {
-      const input = document.querySelector<HTMLInputElement>('[data-testid="input-email"]');
-      input?.focus();
-    }, 0);
   };
 
   // Bain-style top navigation: in-page section links. The landing scrolls
@@ -1607,11 +2269,25 @@ export default function EmailGate({
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Adaptive navbar ink. The mark is drawn as a vector outline rather than as an
-  // image, so it is exactly white over the dark hero and exactly near-black once a
-  // light section has scrolled under the bar — and in both states the only thing
-  // painted is the outline itself. All nav text uses the same high-contrast ink.
-  const lightNavInk = '#111827';
+  const openProductFeature = (page: LandingFeaturePage) => {
+    setCurrentPage(page);
+    window.history.pushState({}, '', `${window.location.pathname}${window.location.search}#${page}`);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  const openLandingSection = (section?: 'cv-drop' | 'programs-open' | 'pricing') => {
+    setCurrentPage('landing');
+    window.history.pushState({}, '', `${window.location.pathname}${window.location.search}`);
+    window.setTimeout(() => {
+      if (section) scrollToSection(section);
+      else document.querySelector('.eg-root')?.scrollTo({ top: 0, behavior: 'auto' });
+    }, 0);
+  };
+
+  // Adaptive navbar ink. The mark is white over the dark hero and switches to
+  // Casemate red over light sections, keeping the landing identity white + red.
+  // All nav text uses the same high-contrast brand ink.
+  const lightNavInk = primaryColor;
   const navInk = navOverLight ? lightNavInk : '#ffffff';
   const navLinkInk = navOverLight ? lightNavInk : '#ffffff';
 
@@ -1817,16 +2493,11 @@ export default function EmailGate({
   // Public provider IDs control button availability. Secret verification
   // happens during the server-side callback exchange, so a transient status
   // probe can never put an already-configured provider back into “Coming soon”.
-  const googleConfigured = isGoogleLoginConfigured();
-  const linkedinConfigured = isLinkedInLoginConfigured();
-  const smsAuthLive = !!authStatus?.smsAuth;
-
-  const fieldStyle = (hasError = false) => ({
-    backgroundColor: sectionBackground,
-    border: `2px solid ${hasError ? dangerColor : borderColor}`,
-    color: textPrimary,
-  });
-
+  // Temporarily keep every social provider visible but unavailable. Email OTP
+  // remains the only active sign-in path until account/session unification is
+  // fully verified end to end.
+  const googleConfigured = false;
+  const linkedinConfigured = false;
   const renderComingSoonPill = () => (
     <span
       className="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"
@@ -1891,9 +2562,9 @@ export default function EmailGate({
         <button
           type="button"
           onClick={handleLinkedInLogin}
-          disabled={!!socialLoading || loading}
+          disabled={!linkedinConfigured || !!socialLoading || loading}
           className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all hover:-translate-y-0.5"
-          style={socialButtonStyle(!socialLoading && !loading)}
+          style={socialButtonStyle(linkedinConfigured && !socialLoading && !loading)}
           data-testid="button-linkedin-login"
         >
           {socialLoading === 'linkedin' ? <Loader2 size={18} className="animate-spin" /> : renderLinkedInMark()}
@@ -1905,106 +2576,20 @@ export default function EmailGate({
       {renderDivider('or')}
 
       {/* 3 — email: the original OTP-only flow (4-digit emailed code, no password) */}
-      {(
-        <form onSubmit={handleEmailSubmit} className="space-y-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setError('');
-            }}
-            placeholder="Enter your email"
-            className="w-full rounded-xl px-4 py-3 text-sm transition-all focus:outline-none"
-            style={fieldStyle(!!error)}
-            disabled={loading}
-            required
-            autoFocus={loginOpen}
-            data-testid="input-email"
-          />
-          <p className="text-xs" style={{ color: textSubtle }}>
-            We’ll email you a 4-digit code — no password needed.
-          </p>
-          {error && (
-            <p className="text-xs" style={{ color: dangerColor }} data-testid="text-error">
-              {error}
-            </p>
-          )}
-          <button
-            type="submit"
-            disabled={loading || !email}
-            className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all hover:scale-[1.02] sm:text-base"
-            style={{
-              backgroundColor: loading || !email ? colorWithAlpha(primaryColor, 0.35) : primaryColor,
-              color: loading || !email ? colorWithAlpha(onPrimary, 0.45) : onPrimary,
-              cursor: loading || !email ? 'not-allowed' : 'pointer',
-              boxShadow: loading || !email ? 'none' : `0 10px 24px ${colorWithAlpha(primaryColor, 0.34)}`,
-            }}
-            data-testid="button-continue"
-          >
-            {loading ? 'Just a moment...' : 'Start talking with Mate'}
-            {!loading && <ArrowRight size={18} strokeWidth={2.6} />}
-          </button>
-        </form>
-      )}
-
-      {renderDivider('or')}
-
-      {/* 4 — phone + SMS code */}
-      <div>
-        <div className="mb-2 flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold" style={{ color: textPrimary }}>
-            <Smartphone size={14} />
-            Phone number
-          </span>
-          {!smsAuthLive && renderComingSoonPill()}
-        </div>
-        <form onSubmit={handlePhoneSend} className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
-          <select
-            value={phoneCountry}
-            onChange={(e) => setPhoneCountry(e.target.value)}
-            disabled={!smsAuthLive || loading}
-            className="rounded-2xl px-2 py-3 text-sm font-semibold focus:outline-none"
-            style={{ ...fieldStyle(false), opacity: smsAuthLive ? 1 : 0.6 }}
-            aria-label="Country code"
-            data-testid="select-phone-country"
-          >
-            {PHONE_COUNTRY_CODES.map((country) => (
-              <option key={country.code} value={country.code}>
-                {country.label}
-              </option>
-            ))}
-          </select>
-          <input
-            type="tel"
-            inputMode="tel"
-            value={phoneNumber}
-            onChange={(e) => {
-              setPhoneNumber(e.target.value.replace(/[^0-9\s]/g, ''));
-              setError('');
-            }}
-            placeholder="90 123 4567"
-            disabled={!smsAuthLive || loading}
-            className="w-full min-w-0 flex-1 rounded-2xl px-3 py-3 text-base transition-all focus:outline-none"
-            style={{ ...fieldStyle(false), opacity: smsAuthLive ? 1 : 0.6 }}
-            data-testid="input-phone"
-          />
-          <button
-            type="submit"
-            disabled={!smsAuthLive || loading || !phoneNumber.trim()}
-            className="w-full whitespace-nowrap rounded-xl px-4 py-3 text-sm font-bold transition-all sm:w-auto"
-            style={{
-              backgroundColor:
-                !smsAuthLive || loading || !phoneNumber.trim() ? colorWithAlpha(primaryColor, 0.25) : primaryColor,
-              color: !smsAuthLive || loading || !phoneNumber.trim() ? colorWithAlpha(onPrimary, 0.5) : onPrimary,
-              cursor: !smsAuthLive || loading || !phoneNumber.trim() ? 'not-allowed' : 'pointer',
-            }}
-            data-testid="button-send-otp"
-          >
-            Send code
-          </button>
-        </form>
-      </div>
+      <EmailLoginForm
+        initialEmail={email}
+        loading={loading}
+        error={error}
+        sectionBackground={sectionBackground}
+        borderColor={borderColor}
+        textPrimary={textPrimary}
+        textSubtle={textSubtle}
+        dangerColor={dangerColor}
+        primaryColor={primaryColor}
+        onPrimary={onPrimary}
+        onSubmit={handleEmailSubmit}
+        onClearError={() => setError('')}
+      />
 
       {gdprEnabled && (
         <div
@@ -2056,84 +2641,6 @@ export default function EmailGate({
     </>
   );
 
-  const renderBackButton = (label = 'All sign-in options') => (
-    <button
-      type="button"
-      onClick={() => {
-        setPanelView('main');
-        setError('');
-        setAuthNotice('');
-      }}
-      className="mb-3 inline-flex items-center gap-1 text-xs font-semibold transition-opacity hover:opacity-70"
-      style={{ color: textMuted }}
-      data-testid="button-back-to-methods"
-    >
-      <ChevronLeft size={14} />
-      {label}
-    </button>
-  );
-
-  const renderPhoneCodeView = () => (
-    <div>
-      {renderBackButton()}
-      <p className="text-base font-extrabold" style={{ color: textPrimary }}>
-        Enter the code we texted you
-      </p>
-      <p className="mt-1 text-sm" style={{ color: textMuted }}>
-        Sent to <span className="font-semibold" style={{ color: textPrimary }}>{phoneMasked || 'your phone'}</span>
-      </p>
-      <form onSubmit={handlePhoneVerify} className="mt-4 space-y-3">
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          maxLength={8}
-          value={phoneCode}
-          onChange={(e) => {
-            setPhoneCode(e.target.value.replace(/\D/g, ''));
-            setError('');
-          }}
-          placeholder="000000"
-          className="w-full rounded-2xl px-4 py-3.5 text-center font-mono text-xl tracking-[0.35em] transition-all focus:outline-none sm:text-2xl sm:tracking-[0.4em]"
-          style={fieldStyle(!!error)}
-          disabled={loading}
-          autoFocus
-          data-testid="input-phone-code"
-        />
-        {error && (
-          <p className="text-xs" style={{ color: dangerColor }} data-testid="text-error">
-            {error}
-          </p>
-        )}
-        <button
-          type="submit"
-          disabled={loading || phoneCode.length < 4}
-          className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all hover:scale-[1.02] sm:text-base"
-          style={{
-            backgroundColor: loading || phoneCode.length < 4 ? colorWithAlpha(primaryColor, 0.3) : primaryColor,
-            color: onPrimary,
-            cursor: loading || phoneCode.length < 4 ? 'not-allowed' : 'pointer',
-          }}
-          data-testid="button-verify-phone"
-        >
-          {loading ? 'Verifying...' : 'Verify & continue'}
-          {!loading && <ArrowRight size={18} strokeWidth={2.6} />}
-        </button>
-        <div className="text-center">
-          <button
-            type="button"
-            onClick={() => handlePhoneSend()}
-            disabled={loading}
-            className="text-xs font-semibold transition-opacity hover:opacity-70"
-            style={{ color: textMuted }}
-          >
-            Resend code
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-
   const renderLoginPanel = (compact = false) => (
     <div
       id={loginPanelId}
@@ -2144,7 +2651,7 @@ export default function EmailGate({
         border: `1px solid ${borderColor}`,
       }}
     >
-      {!compact && panelView === 'main' && (
+      {!compact && (
         <div className="mb-5 text-center">
           <div
             className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl"
@@ -2161,7 +2668,7 @@ export default function EmailGate({
         </div>
       )}
 
-      {panelView === 'phoneCode' ? renderPhoneCodeView() : renderMainView()}
+      {renderMainView()}
     </div>
   );
 
@@ -2187,12 +2694,12 @@ export default function EmailGate({
               <div className="flex justify-center mb-4">
                 <BrandMark size={56} />
               </div>
-              <h1 className="text-lg font-extrabold tracking-tight sm:text-2xl" style={{ color: textPrimary, fontFamily: headingFontStack }}>
+              <h1 className="text-lg font-extrabold tracking-tight sm:text-2xl" style={{ color: headingInk, fontFamily: headingFontStack }}>
                 Check your inbox
               </h1>
               <p className="mt-2 text-sm" style={{ color: textMuted }}>
                 We sent a 4-digit code to<br />
-                <span className="font-medium" style={{ color: textPrimary }}>{email}</span>
+                <span className="font-medium" style={{ color: headingInk }}>{email}</span>
               </p>
               <p className="mt-3 text-xs" style={{ color: textSubtle }}>
                 can’t find it? Check your spam or junk folder.
@@ -2292,6 +2799,17 @@ export default function EmailGate({
         See server/services/kickoff-email-gate-variants.service.ts.
       */}
       {/* AUDOS:LANDING_SHELL:START */}
+      {currentPage !== 'landing' ? (
+        <LandingFeaturePages
+          page={currentPage}
+          onHome={openLandingSection}
+          onNavigate={openProductFeature}
+          onSignUp={openLogin}
+          brandName={brandName}
+          headingFontStack={headingFontStack}
+          bodyFontStack={bodyFontStack}
+        />
+      ) : (
     <div className="eg-root h-screen overflow-x-hidden overflow-y-auto" style={{ height: '100dvh', WebkitOverflowScrolling: 'touch', fontFamily: bodyFontStack, backgroundColor: pageBackground }}>
   {/* Adaptive navbar: it never paints a bar of its own. It floats over whatever
       section is underneath (the negative margin pulls the hero up behind it) and
@@ -2318,18 +2836,25 @@ export default function EmailGate({
         <BrandLogoMark size={30} style={{ color: navInk, transition: 'color 0.35s ease' }} />
         <span className="max-w-[45vw] truncate text-sm sm:max-w-none sm:text-base" style={{ fontFamily: headingFontStack, color: navInk, fontWeight: 700, letterSpacing: '-0.01em', transition: 'color 0.35s ease' }}>{brandName}</span>
       </div>
-      <div className="hidden items-center gap-5 md:flex" aria-label="Page sections">
-        {[
-          { label: 'Try Now', id: 'cv-drop' },
-          { label: 'Programs Open', id: 'programs-open' },
-          { label: 'Product', id: 'toolkit' },
-          { label: 'Pricing', id: 'pricing' },
-        ].map((link) => (
-          <button key={link.id} type="button" onClick={() => scrollToSection(link.id)} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>
-            {link.label}
-          </button>
-        ))}
+      <div className="ml-auto hidden items-center gap-5 lg:flex" aria-label="Page sections">
+        <button type="button" onClick={() => scrollToSection('cv-drop')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Try Now</button>
+        <button type="button" onClick={() => scrollToSection('programs-open')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Programs Open</button>
+        <button type="button" onClick={() => openProductFeature('fit-assessment')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Fit Assessment</button>
+        <button type="button" onClick={() => openProductFeature('practice-tool')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Practice Tool</button>
+        <button type="button" onClick={() => openProductFeature('case-arena')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Case Arena</button>
+        <button type="button" onClick={() => scrollToSection('pricing')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Pricing</button>
       </div>
+      <details className="group relative ml-auto lg:hidden">
+        <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-xl border border-white/30" style={{ color: navLinkInk }} aria-label="Open navigation menu"><Menu className="h-5 w-5" /></summary>
+        <nav className="absolute right-0 top-12 z-[90] w-72 rounded-2xl border border-[#e5e7eb] bg-white p-2 text-[#111827] shadow-2xl" aria-label="Mobile page navigation">
+          <button type="button" onClick={() => scrollToSection('cv-drop')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Try Now</button>
+          <button type="button" onClick={() => scrollToSection('programs-open')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Programs Open</button>
+          <button type="button" onClick={() => openProductFeature('fit-assessment')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Fit Assessment</button>
+          <button type="button" onClick={() => openProductFeature('practice-tool')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Practice Tool</button>
+          <button type="button" onClick={() => openProductFeature('case-arena')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Case Arena</button>
+          <button type="button" onClick={() => scrollToSection('pricing')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Pricing</button>
+        </nav>
+      </details>
       <button onClick={openLogin} className="shrink-0 rounded-xl bg-[#cc0000] px-3.5 py-2 text-xs hover:-translate-y-0.5 hover:bg-[#b91c1c] sm:rounded-full sm:px-5 sm:py-2.5 sm:text-sm" style={{ color: '#ffffff', fontWeight: 700, transition: 'background-color 0.35s ease, transform 0.2s ease' }}>
         Start free
       </button>
@@ -2337,13 +2862,19 @@ export default function EmailGate({
   </nav>
 
   <section id="hero" className="relative flex items-center overflow-hidden" style={{ minHeight: '84svh', backgroundColor: '#0f172a' }}>
-    <img
-      src={heroImageUrl}
-      alt=""
-      decoding="async"
-      fetchPriority="high"
-      className="absolute inset-0 h-full w-full object-cover"
-    />
+    <picture className="absolute inset-0 block h-full w-full">
+      <source srcSet={heroImageWebpUrl} type="image/webp" />
+      <img
+        src={heroImageUrl}
+        alt=""
+        width={1536}
+        height={1024}
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+        className="h-full w-full object-cover"
+      />
+    </picture>
     <div aria-hidden="true" data-audos-hero-scrim="1" className="absolute inset-0" style={{ background: heroScrim, pointerEvents: 'none' }} />
     <div aria-hidden="true" className="absolute inset-x-0 top-0 h-32" style={{ background: 'linear-gradient(180deg, rgba(2,6,23,0.55) 0%, rgba(2,6,23,0) 100%)', pointerEvents: 'none' }} />
     <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-40" style={{ background: 'linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,0.4) 100%)', pointerEvents: 'none' }} />
@@ -2556,6 +3087,7 @@ export default function EmailGate({
     </div>
   </footer>
 </div>
+      )}
       {/* AUDOS:LANDING_SHELL:END */}
 
       {loginOpen && (
@@ -2589,11 +3121,9 @@ export default function EmailGate({
               <h2 id="email-gate-login-title" className="mb-1 pr-10 text-lg font-extrabold sm:text-2xl" style={{ color: textPrimary }}>
                 Welcome to {brandName}
               </h2>
-              {panelView === 'main' && (
-                <p className="mb-4 text-xs leading-snug sm:text-sm" style={{ color: textMuted }}>
-                  Enter your email and you’ll be talking with Mate in seconds — your free MT &amp; consulting fit assessment starts right away.
-                </p>
-              )}
+              <p className="mb-4 text-xs leading-snug sm:text-sm" style={{ color: textMuted }}>
+                Enter your email and you’ll be talking with Mate in seconds — your free MT &amp; consulting fit assessment starts right away.
+              </p>
               {renderLoginPanel(true)}
             </div>
           </div>

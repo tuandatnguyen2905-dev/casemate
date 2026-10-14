@@ -16,7 +16,7 @@
 //   1. After the current free-form matching computes `direction` (with its
 //      ranked programs) and the per-program `program_guides`, the hook calls
 //      applyRubricScoringV2(...). For every program in direction.programs
-//      that has an ACTIVE rubric row in the program_fit_rubrics table
+//      that has an ACTIVE rubric row in the programs table
 //      (newest active version per program_id wins), the LLM re-scores that
 //      program CRITERION BY CRITERION against the CV + gap answers.
 //   2. Every criterion scored above 'chua_dat' MUST carry a VERBATIM quote
@@ -36,12 +36,11 @@
 //      per-program LLM/JSON failure — keeps its existing free-form score
 //      untouched. The scoring_note says which method applied.
 //
-// RUBRIC LIFECYCLE (enforced by convention + the table's docs):
-//   - Drafts are seeded at runtime by the app (lib/programFitRubrics.ts,
-//     ensureProgramFitRubricSeeds) with verified=false, version=1.
-//   - The founder reviews and locks a rubric by setting verified=true.
-//   - A verified row is NEVER overwritten: changes = INSERT a new row with
-//     version+1. active=false retires a version.
+// RUBRIC LIFECYCLE (enforced by the unified catalog):
+//   - programs contains one server-managed row per program.
+//   - verified=false marks a draft; the founder lock sets verified=true.
+//   - Future rubric revisions update that program's rubric fields and bump
+//     version on the same canonical row. Browser code never writes this table.
 //
 // INTEGRATION STEPS FOR OTTO (server-functions registry):
 //   1. Paste the snippet below into the registered fit-assessment hook,
@@ -71,10 +70,10 @@
 // After editing this template, bump RUBRIC_SCORING_HOOK_VERSION so the
 // deployed hook and this source can be compared at a glance.
 
-export const RUBRIC_SCORING_HOOK_VERSION = 'rubric-fit-v2';
+export const RUBRIC_SCORING_HOOK_VERSION = 'rubric-fit-v3-unified-catalog';
 
 export const RUBRIC_SCORING_HOOK_SNIPPET = `
-// === Casemate rubric-based program scoring (rubric-fit-v2) ==================
+// === Casemate rubric-based program scoring (rubric-fit-v3-unified-catalog) ==================
 // Source of truth: lib/rubricScoringHook.ts in the workspace. Do not edit the
 // deployed copy without updating that file.
 
@@ -96,7 +95,7 @@ function rubricParseJsonV2(value) {
 
 // Newest ACTIVE rubric per program_id; verified beats draft at equal version.
 async function loadActiveRubricsV2() {
-  var result = await db.query('program_fit_rubrics', { limit: 500 });
+  var result = await db.query('programs', { limit: 500 });
   var rows = (result && result.rows) || [];
   var byProgram = {};
   for (var i = 0; i < rows.length; i++) {
@@ -116,7 +115,7 @@ async function loadActiveRubricsV2() {
       byProgram[row.program_id] = {
         row_id: Number(row.id) || 0,
         program_id: String(row.program_id),
-        program_name: String(row.program_name || row.program_id),
+        program_name: String(row.rubric_program_name || ((row.company && row.program_name) ? row.company + ' — ' + row.program_name : row.program_name) || row.program_id),
         version: version,
         verified: verified,
         criteria: criteria,
@@ -330,5 +329,5 @@ async function applyRubricScoringV2(direction, programGuides, cvText, gapAnswers
   }
   return { applied: applied, scoringNote: note };
 }
-// === end rubric-fit-v2 ======================================================
+// === end rubric-fit-v3-unified-catalog ======================================================
 `;

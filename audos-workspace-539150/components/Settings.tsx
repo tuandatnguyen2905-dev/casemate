@@ -11,11 +11,14 @@ import {
   Sparkles,
   TriangleAlert,
   UserRound,
+  X,
 } from 'lucide-react';
 import { useSpaceRuntime } from '../SpaceRuntimeContext';
+import { clearWorkspaceAuthState } from '../lib/authAccount';
 import { CasemateEntitlement, fetchCasemateEntitlement, storedSessionEmail } from '../lib/proAccess';
-import { checkoutReturnFromLocation, confirmCasemateCheckout, startCasemateCheckout } from '../lib/casemateCheckout';
+import { checkCasematePayosPayment, checkoutReturnFromLocation, confirmCasemateCheckout, payosReturnFromLocation, startCasemateCheckout } from '../lib/casemateCheckout';
 import { formatVnd, getPricingPlan, PRICING_PLANS, PricingPlan } from '../lib/pricing';
+import PayosQrPayment from './PayosQrPayment';
 
 interface SettingsProps {
   spaceId: string;
@@ -54,6 +57,7 @@ export default function Settings({ spaceId }: SettingsProps) {
   const [entitlement, setEntitlement] = useState<CasemateEntitlement | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkoutPlan, setCheckoutPlan] = useState<string | null>(null);
+  const [paymentPlan, setPaymentPlan] = useState<PricingPlan | null>(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
@@ -79,6 +83,37 @@ export default function Settings({ spaceId }: SettingsProps) {
     setAccount(storedSession(spaceId));
     void refreshAccess();
   }, [spaceId, sessionId, refreshAccess]);
+
+  useEffect(() => {
+    const paymentReturn = payosReturnFromLocation();
+    if (!paymentReturn) return;
+    if (paymentReturn.state === 'cancelled') {
+      setError('PayOS payment was cancelled. Try a new QR code below or choose card payment.');
+      window.history.replaceState({}, '', `${window.location.pathname}#settings`);
+      return;
+    }
+    if (!sessionId || !email || !paymentReturn.orderCode) {
+      setError('Payment was received, but Casemate needs you to sign in again to activate Pro.');
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    setError('');
+    void checkCasematePayosPayment(sessionId, email, paymentReturn.orderCode)
+      .then(async (result) => {
+        if (cancelled || result.status !== 'paid') return;
+        setNotice('Payment successful. Casemate Pro is now active.');
+        await refreshAccess();
+        if (!cancelled) window.history.replaceState({}, '', `${window.location.pathname}#settings`);
+      })
+      .catch((reason) => {
+        if (!cancelled) setError(reason instanceof Error ? reason.message : 'Payment is still being confirmed.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [email, sessionId, refreshAccess]);
 
   useEffect(() => {
     const paymentReturn = checkoutReturnFromLocation();
@@ -126,13 +161,17 @@ export default function Settings({ spaceId }: SettingsProps) {
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Could not start checkout.');
       setCheckoutPlan(null);
+      setPaymentPlan(null);
     }
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem(`space_session_${spaceId}`);
+  const handleSignOut = async () => {
+    const currentSessionId = sessionId;
     setSessionId('');
-    window.location.reload();
+    await clearWorkspaceAuthState(spaceId, currentSessionId);
+    // A document-level navigation clears every mounted app store and removes
+    // the #settings route, so the unauthenticated root renders EmailGate.
+    window.location.replace('/');
   };
 
   return (
@@ -150,7 +189,7 @@ export default function Settings({ spaceId }: SettingsProps) {
         </header>
 
         {notice && <div className="flex items-start gap-2 rounded-2xl border border-[var(--space-semantic-success)] bg-[color-mix(in_srgb,var(--space-semantic-success-500)_10%,transparent)] p-4 text-sm text-[var(--space-text-primary)]"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--space-semantic-success)]" />{notice}</div>}
-        {error && <div className="flex items-start gap-2 rounded-2xl border border-[var(--space-semantic-warning)] bg-[color-mix(in_srgb,var(--space-semantic-warning-500)_10%,transparent)] p-4 text-sm text-[var(--space-text-primary)]" role="alert"><TriangleAlert className="mt-0.5 h-4 w-4 shrink-0 text-[var(--space-semantic-warning)]" /><div><p>{error}</p>{checkoutReturnFromLocation() && <button type="button" onClick={() => window.location.reload()} className="mt-2 font-bold text-[var(--space-text-brand)] underline underline-offset-2">Confirm payment again</button>}</div></div>}
+        {error && <div className="flex items-start gap-2 rounded-2xl border border-[var(--space-semantic-warning)] bg-[color-mix(in_srgb,var(--space-semantic-warning-500)_10%,transparent)] p-4 text-sm text-[var(--space-text-primary)]" role="alert"><TriangleAlert className="mt-0.5 h-4 w-4 shrink-0 text-[var(--space-semantic-warning)]" /><div><p>{error}</p>{(checkoutReturnFromLocation() || payosReturnFromLocation()?.state === 'success') && <button type="button" onClick={() => window.location.reload()} className="mt-2 font-bold text-[var(--space-text-brand)] underline underline-offset-2">Confirm payment again</button>}</div></div>}
 
         <section className="rounded-3xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 shadow-sm sm:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -160,12 +199,12 @@ export default function Settings({ spaceId }: SettingsProps) {
             </div>
             <div className="flex items-center gap-2">
               <span className={`rounded-full px-3 py-1.5 text-xs font-bold ${isPro ? 'bg-[color-mix(in_srgb,var(--space-semantic-success-500)_12%,transparent)] text-[var(--space-semantic-success)]' : isTrial ? 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]' : 'bg-[color-mix(in_srgb,var(--space-semantic-danger-500)_12%,transparent)] text-[var(--space-semantic-danger)]'}`}>{statusLabel}</span>
-              {email && <button type="button" onClick={handleSignOut} className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-[var(--space-border-default)] px-3 text-xs font-semibold text-[var(--space-text-secondary)] hover:bg-[var(--space-surface-muted)]"><LogOut className="h-3.5 w-3.5" />Sign Out</button>}
+              {email && <button type="button" onClick={() => void handleSignOut()} className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-[var(--space-border-default)] px-3 text-xs font-semibold text-[var(--space-text-secondary)] hover:bg-[var(--space-surface-muted)]"><LogOut className="h-3.5 w-3.5" />Sign Out</button>}
             </div>
           </div>
 
           <div className="mt-5 rounded-2xl bg-[var(--space-surface-muted)] p-4">
-            {loading ? <div className="flex items-center gap-2 text-sm text-[var(--space-text-secondary)]"><Loader2 className="h-4 w-4 animate-spin" />{accountSummary}</div> : isTrial ? <div className="flex items-start gap-3"><Sparkles className="mt-0.5 h-5 w-5 text-[var(--space-text-brand)]" /><div><p className="font-bold text-[var(--space-text-primary)]">{daysRemaining} free access days remaining</p><p className="mt-1 text-xs text-[var(--space-text-secondary)]"><CalendarDays className="mr-1 inline h-3.5 w-3.5" />Expires {displayDate(entitlement?.expiresAt || entitlement?.trial_end_date)}</p></div></div> : isPro ? <div className="flex items-start gap-3"><BadgeCheck className="mt-0.5 h-5 w-5 text-[var(--space-semantic-success)]" /><div><p className="font-bold text-[var(--space-text-primary)]">Casemate Pro is active</p><p className="mt-1 text-xs text-[var(--space-text-secondary)]"><ShieldCheck className="mr-1 inline h-3.5 w-3.5" />Subscription expires: {displayDate(entitlement?.expiresAt)}</p></div></div> : <div className="flex items-start gap-3"><CreditCard className="mt-0.5 h-5 w-5 text-[var(--space-semantic-danger)]" /><div><p className="font-bold text-[var(--space-text-primary)]">Free access has ended</p><p className="mt-1 text-xs text-[var(--space-text-secondary)]">Get Pro Plan to restore access to Case Pool, Case Drill, Domain Knowledge, and Aptitude Test.</p></div></div>}
+            {loading ? <div className="flex items-center gap-2 text-sm text-[var(--space-text-secondary)]"><Loader2 className="h-4 w-4 animate-spin" />{accountSummary}</div> : isTrial ? <div className="flex items-start gap-3"><Sparkles className="mt-0.5 h-5 w-5 text-[var(--space-text-brand)]" /><div><p className="font-bold text-[var(--space-text-primary)]">{daysRemaining} free access days remaining</p><p className="mt-1 text-xs text-[var(--space-text-secondary)]"><CalendarDays className="mr-1 inline h-3.5 w-3.5" />Expires {displayDate(entitlement?.expiresAt || entitlement?.trial_end_date)}</p></div></div> : isPro ? <div className="flex items-start gap-3"><BadgeCheck className="mt-0.5 h-5 w-5 text-[var(--space-semantic-success)]" /><div><p className="font-bold text-[var(--space-text-primary)]">Casemate Pro is active</p><p className="mt-1 text-xs text-[var(--space-text-secondary)]"><ShieldCheck className="mr-1 inline h-3.5 w-3.5" />Subscription expires: {displayDate(entitlement?.expiresAt)}</p></div></div> : <div className="flex items-start gap-3"><CreditCard className="mt-0.5 h-5 w-5 text-[var(--space-semantic-danger)]" /><div><p className="font-bold text-[var(--space-text-primary)]">Free access has ended</p><p className="mt-1 text-xs text-[var(--space-text-secondary)]">Get Pro Plan to restore access to Case Pool, Case Arena, Case Drill, Domain Knowledge, and Aptitude Test.</p></div></div>}
           </div>
         </section>
 
@@ -177,13 +216,52 @@ export default function Settings({ spaceId }: SettingsProps) {
                 {'badge' in plan && <span className="mb-3 w-fit rounded-full bg-[var(--space-surface-accent-soft)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">{plan.badge}</span>}
                 <h3 className="font-bold text-[var(--space-text-primary)]">{plan.title}</h3>
                 <div className="mt-3 flex items-end gap-1"><span className="text-3xl font-extrabold text-[var(--space-text-primary)]">{formatVnd(plan.vnd)}</span><span className="pb-1 text-xs text-[var(--space-text-muted)]">{plan.days === 180 ? '/ 6 months' : '/ month'}</span></div>
-                <div className="mt-5 flex-1 space-y-2 text-xs text-[var(--space-text-secondary)]">{['Fit Assessment', 'Case Drill', 'Case Pool', 'Aptitude Test', 'Domain Knowledge'].map((feature) => <p key={feature} className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[var(--space-semantic-success)]" />{feature}</p>)}</div>
-                {!isPro && <button type="button" onClick={() => void handleCheckout(plan)} disabled={!!checkoutPlan || !email || !sessionId} className="mt-5 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[var(--space-brand-primary-600)] px-4 py-3 text-sm font-bold text-[var(--space-text-on-primary)] hover:bg-[var(--space-brand-primary-700)] disabled:cursor-not-allowed disabled:opacity-50">{checkoutPlan === plan.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}Get Pro Plan</button>}
+                <div className="mt-5 flex-1 space-y-2 text-xs text-[var(--space-text-secondary)]">{['Fit Assessment', 'Case Drill', 'Case Pool', 'Case Arena', 'Aptitude Test', 'Domain Knowledge'].map((feature) => <p key={feature} className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[var(--space-semantic-success)]" />{feature}</p>)}</div>
+                {!isPro && <button type="button" onClick={() => { setError(''); setNotice(''); setPaymentPlan(plan); }} disabled={!!checkoutPlan || !email || !sessionId} className="mt-5 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[var(--space-brand-primary-600)] px-4 py-3 text-sm font-bold text-[var(--space-text-on-primary)] hover:bg-[var(--space-brand-primary-700)] disabled:cursor-not-allowed disabled:opacity-50"><CreditCard className="h-4 w-4" />Get Pro Plan</button>}
               </article>
             ))}
           </div>
+
           {!email && <p className="mt-3 text-center text-xs font-semibold text-[var(--space-semantic-warning)]">Please sign in to choose a Pro plan.</p>}
         </section>
+
+        {paymentPlan && !isPro && (
+          <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[color-mix(in_srgb,var(--space-neutral-950)_55%,transparent)] p-4 backdrop-blur-sm" role="presentation">
+            <section role="dialog" aria-modal="true" aria-labelledby="payment-method-title" className="relative w-full max-w-lg rounded-3xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 shadow-2xl sm:p-6">
+              <button type="button" onClick={() => setPaymentPlan(null)} disabled={!!checkoutPlan} aria-label="Close payment methods" className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-[var(--space-text-muted)] hover:bg-[var(--space-surface-muted)] disabled:opacity-50"><X className="h-4 w-4" /></button>
+              <div className="pr-10">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--space-text-brand)]">Casemate Pro · {paymentPlan.title}</p>
+                <h2 id="payment-method-title" className="mt-1 text-xl font-extrabold text-[var(--space-text-primary)]">Choose payment method</h2>
+                <p className="mt-1 text-sm text-[var(--space-text-secondary)]">{formatVnd(paymentPlan.vnd)} · {paymentPlan.days === 180 ? '6 months' : '30 days'} Pro. Choose card or PayOS QR at the same plan price.</p>
+              </div>
+
+              <div className="mt-5 grid gap-3">
+                <button type="button" onClick={() => void handleCheckout(paymentPlan)} disabled={!!checkoutPlan} className="flex min-h-[76px] w-full items-center gap-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-left transition hover:border-[var(--space-brand-primary-500)] hover:bg-[var(--space-surface-accent-soft)] disabled:cursor-not-allowed disabled:opacity-60">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--space-surface-accent-soft)]"><CreditCard className="h-5 w-5 text-[var(--space-text-brand)]" /></span>
+                  <span className="min-w-0 flex-1"><span className="block text-sm font-extrabold text-[var(--space-text-primary)]">Card / Thẻ</span><span className="mt-0.5 block text-xs text-[var(--space-text-secondary)]">Secure card checkout · {formatVnd(paymentPlan.vnd)}</span></span>
+                  {checkoutPlan === paymentPlan.id && <Loader2 className="h-5 w-5 shrink-0 animate-spin text-[var(--space-text-brand)]" />}
+                </button>
+
+                <PayosQrPayment
+                  sessionId={sessionId || ''}
+                  userEmail={email}
+                  source="settings"
+                  buyerName={displayName}
+                  plan={paymentPlan}
+                  disabled={!!checkoutPlan || !email || !sessionId}
+                  triggerLabel="PayOS QR / Chuyển khoản ngân hàng"
+                  triggerDescription={`${formatVnd(paymentPlan.vnd)} · ${paymentPlan.days === 180 ? '6 months' : '30 days'} Pro · Vietnamese banking app`}
+                  onSuccess={async () => {
+                    setNotice('Payment successful. Casemate Pro is now active.');
+                    setError('');
+                    await refreshAccess();
+                  }}
+                  onSwitchToCard={() => setError('Choose Card / Thẻ above to continue with card payment.')}
+                />
+              </div>
+            </section>
+          </div>
+        )}
       </div>
     </div>
   );

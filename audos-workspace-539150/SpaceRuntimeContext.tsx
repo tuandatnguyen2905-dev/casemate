@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import type { SpaceConfig } from '@shared/schema';
+import {
+  WORKSPACE_SESSION_REFRESH_INTERVAL_MS,
+  persistWorkspaceSessionCookie,
+  renewWorkspaceSession,
+} from './lib/authAccount';
 
 export type SpaceMode = 'entrepreneur' | 'customer';
 
@@ -69,6 +74,8 @@ interface SpaceRuntimeContextValue {
   sessionId?: string;
   setSessionId: (sessionId: string) => void;
   visitorId?: string;
+  /** Normalized sign-in email for the active session, or null when signed out. */
+  userEmail: string | null;
   isBootstrappingSession: boolean;
   
   config: SpaceConfig | null;
@@ -187,6 +194,23 @@ function isPlatformDomain(hostname: string): boolean {
     }
   }
   return false;
+}
+
+/**
+ * Normalized sign-in email for the active session. Account-scoped app data
+ * (fit assessment results, prep roadmaps) is keyed by this value, so it must
+ * match exactly across sessions.
+ */
+function readStoredSessionEmail(spaceId: string): string | null {
+  try {
+    const stored = localStorage.getItem(`space_session_${spaceId}`);
+    if (!stored) return null;
+    const session = JSON.parse(stored);
+    const email = typeof session?.email === 'string' ? session.email.toLowerCase().trim() : '';
+    return email.includes('@') ? email : null;
+  } catch {
+    return null;
+  }
 }
 
 function getVisitorId(): string {
@@ -319,8 +343,28 @@ export function SpaceRuntimeProvider({
     return {};
   });
 
+  const [userEmail, setUserEmail] = useState<string | null>(() => readStoredSessionEmail(spaceId));
+
+  // The stored session is replaced underneath us by the email gate, an OAuth
+  // callback, and the post-checkout bootstrap, so the email has to track those
+  // transitions rather than be read once at mount.
+  useEffect(() => {
+    const syncUserEmail = () => setUserEmail((current) => {
+      const next = readStoredSessionEmail(spaceId);
+      return next === current ? current : next;
+    });
+    syncUserEmail();
+    window.addEventListener('audos:session-established', syncUserEmail);
+    window.addEventListener('storage', syncUserEmail);
+    return () => {
+      window.removeEventListener('audos:session-established', syncUserEmail);
+      window.removeEventListener('storage', syncUserEmail);
+    };
+  }, [spaceId, sessionId]);
+
   const setSessionId = useCallback((newSessionId: string) => {
     setSessionIdRaw(newSessionId);
+    setUserEmail(readStoredSessionEmail(spaceId));
     try {
       const stored = localStorage.getItem(`space_session_${spaceId}`);
       if (stored) {
@@ -477,6 +521,83 @@ export function SpaceRuntimeProvider({
     return () =>
       window.removeEventListener('audos:session-established', onSessionEstablished);
   }, [sessionId, setSessionId]);
+
+  // OAuth sessions are initially created by casemate-auth-v1 on the server.
+  // Keep their platform row and browser cookie on a seven-day sliding lifetime
+  // while the customer is actively using the app. Hidden tabs do not renew;
+  // returning to the tab or coming back online renews immediately.
+  useEffect(() => {
+    if (mode !== 'customer' || !sessionId || typeof window === 'undefined') return;
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const renewIfSocialSession = async () => {
+      if (cancelled || document.visibilityState === 'hidden') return;
+      const sessionKey = `space_session_${spaceId}`;
+      let storedSession: Record<string, any> | null = null;
+      try {
+        const raw = localStorage.getItem(sessionKey);
+        storedSession = raw ? JSON.parse(raw) : null;
+      } catch {
+        return;
+      }
+      if (!storedSession) return;
+      const authMethod = String(storedSession.authMethod || '');
+      if (!['google', 'facebook', 'linkedin'].includes(authMethod)) return;
+      const email = typeof storedSession.email === 'string' ? storedSession.email : '';
+      const currentId = String(storedSession.workspaceSessionId || storedSession.id || sessionId);
+      if (!email || !currentId) return;
+
+      // A newly adopted callback session has already been renewed. Reassert the
+      // cookie without issuing a duplicate request during the first interval.
+      const lastRefreshedAt = Number(storedSession.lastRefreshedAt || 0);
+      if (Date.now() - lastRefreshedAt < WORKSPACE_SESSION_REFRESH_INTERVAL_MS) {
+        persistWorkspaceSessionCookie(currentId);
+        return;
+      }
+
+      try {
+        const renewed = await renewWorkspaceSession(spaceId, currentId, email);
+        if (!renewed || cancelled) return;
+        const refreshedAt = Date.now();
+        const refreshedSession = {
+          ...storedSession,
+          id: renewed.workspaceSessionId,
+          workspaceSessionId: renewed.workspaceSessionId,
+          lastRefreshedAt: refreshedAt,
+          expiresAt: renewed.expiresAt,
+        };
+        localStorage.setItem(sessionKey, JSON.stringify(refreshedSession));
+        if (renewed.workspaceSessionId !== sessionId) {
+          setSessionId(renewed.workspaceSessionId);
+        }
+      } catch (error) {
+        console.warn('[SpaceRuntime] OAuth session renewal failed; will retry while active.', error);
+      }
+    };
+
+    const scheduleRenewal = () => {
+      timer = setTimeout(async () => {
+        await renewIfSocialSession();
+        if (!cancelled) scheduleRenewal();
+      }, WORKSPACE_SESSION_REFRESH_INTERVAL_MS);
+    };
+    const renewWhenActive = () => {
+      if (document.visibilityState === 'visible') void renewIfSocialSession();
+    };
+
+    void renewIfSocialSession();
+    scheduleRenewal();
+    document.addEventListener('visibilitychange', renewWhenActive);
+    window.addEventListener('online', renewWhenActive);
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+      document.removeEventListener('visibilitychange', renewWhenActive);
+      window.removeEventListener('online', renewWhenActive);
+    };
+  }, [mode, sessionId, setSessionId, spaceId]);
 
   const resolveSessionId = (): string | undefined => {
     if (sessionId) return sessionId;
@@ -1085,6 +1206,7 @@ export function SpaceRuntimeProvider({
     sessionId,
     setSessionId,
     visitorId,
+    userEmail,
     isBootstrappingSession,
     config,
     isLoading,

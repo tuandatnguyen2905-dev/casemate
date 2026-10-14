@@ -34,10 +34,12 @@ type RubricRow = {
   id: number;
   program_id: string;
   program_name: string;
+  company: string;
+  rubric_program_name?: string | null;
   criteria_json: ProgramFitRubric['criteria'] | string;
   ideal_profile_text: string;
   example_admit_profile: string | null;
-  industry: ProgramIndustryId | null;
+  rubric_industry?: ProgramIndustryId | null;
   verified: boolean;
   active: boolean;
   version: number;
@@ -284,6 +286,24 @@ function liveApplication(program: BrowseProgram, now = new Date()): LiveApplicat
   return closeDay == null
     ? { program, kind: 'expected', daysUntilOpen: nextOpen.delta, daysUntilClose: Number.POSITIVE_INFINITY, dateLabel }
     : null;
+}
+
+const EXPECTING_WINDOW_DAYS = 15;
+
+type ExpectingInfo = { daysUntilOpen: number; openLabel: string; closeLabel: string | null };
+
+function expectingToOpen(program: BrowseProgram, now = new Date()): ExpectingInfo | null {
+  const row = program.row;
+  const opens = dateParts(row?.open_date);
+  if (!opens.length) return null;
+  if (liveApplication(program, now)?.kind === 'open') return null;
+  const today = annualDay(now.getDate(), now.getMonth() + 1);
+  const next = opens
+    .map((open) => ({ ...open, delta: (annualDay(open.day, open.month) - today + 366) % 366 }))
+    .filter((open) => open.delta > 0 && open.delta <= EXPECTING_WINDOW_DAYS)
+    .sort((a, b) => a.delta - b.delta)[0];
+  if (!next) return null;
+  return { daysUntilOpen: next.delta, openLabel: next.label, closeLabel: dateParts(row?.close_date)[0]?.label || null };
 }
 
 const REQUIREMENT_CATEGORIES = [
@@ -585,9 +605,9 @@ export default function ProgramBrowser() {
   const [companyIntel, setCompanyIntel] = useState<CompanyIntelRow[]>(() => companyIntelligenceCache || []);
   const [cultureProfiles, setCultureProfiles] = useState<Record<string, CultureProfile | null>>({});
   const [shouldLoadCompanyIntel, setShouldLoadCompanyIntel] = useState(false);
-  const { data: rows, loading, error } = window.useWorkspaceDB<RubricRow>('program_fit_rubrics', {
+  const { data: rows, loading, error } = window.useWorkspaceDB<RubricRow>('programs', {
     shared: true,
-    orderBy: { column: 'program_name', direction: 'asc' },
+    orderBy: { column: 'company', direction: 'asc' },
     limit: 500,
   });
   const { data: assessmentRows, loading: assessmentLoading } = window.useWorkspaceDB<AssessmentRow>('assessment_results', {
@@ -647,15 +667,16 @@ export default function ProgramBrowser() {
     const drafts = new Map(PROGRAM_FIT_RUBRIC_DRAFTS.map((draft) => [draft.program_id, draft]));
     const fromDatabase = Array.from(newestRows.values()).map((row) => {
       const draft = drafts.get(row.program_id);
-      const nameParts = String(row.program_name || row.program_id).split(' — ');
-      const company = draft?.company || nameParts[0]?.trim() || row.program_id;
-      const programName = draft?.program || (nameParts.length > 1 ? nameParts.slice(1).join(' — ').trim() : String(row.program_name || row.program_id));
+      const rubricName = String(row.rubric_program_name || `${row.company || ''} — ${row.program_name || ''}`).replace(/^\s*—\s*|\s*—\s*$/g, '') || row.program_id;
+      const nameParts = rubricName.split(' — ');
+      const company = draft?.company || row.company?.trim() || nameParts[0]?.trim() || row.program_id;
+      const programName = draft?.program || row.program_name || (nameParts.length > 1 ? nameParts.slice(1).join(' — ').trim() : rubricName);
       const base: ProgramFitRubric = draft || {
         program_id: row.program_id,
-        program_name: row.program_name,
+        program_name: rubricName,
         company,
         program: programName,
-        industry: row.industry || classifyProgramCompany(company),
+        industry: row.rubric_industry || classifyProgramCompany(company),
         criteria: parseCriteria(row.criteria_json, []),
         ideal_profile_text: row.ideal_profile_text || '',
         example_admit_profile: row.example_admit_profile || null,
@@ -700,6 +721,18 @@ export default function ProgramBrowser() {
       return a.program.localeCompare(b.program);
     });
   }, [programs, industry, query]);
+
+  const { expectingPrograms, regularPrograms } = useMemo(() => {
+    const expecting: Array<{ program: BrowseProgram; info: ExpectingInfo }> = [];
+    const regular: BrowseProgram[] = [];
+    for (const program of filtered) {
+      const info = expectingToOpen(program);
+      if (info) expecting.push({ program, info });
+      else regular.push(program);
+    }
+    expecting.sort((a, b) => a.info.daysUntilOpen - b.info.daysUntilOpen || a.program.company.localeCompare(b.program.company));
+    return { expectingPrograms: expecting, regularPrograms: regular };
+  }, [filtered]);
 
   const selected = programs.find((program) => program.program_id === selectedId) || null;
   const applicationGroups = useMemo(() => {
@@ -756,7 +789,7 @@ export default function ProgramBrowser() {
             <div>
               <div className="flex items-center gap-2 text-sm font-semibold text-[var(--space-text-brand)]"><Building2 className="h-4 w-4" /> Explore Opportunities</div>
               <h1 className="mt-1 text-lg font-bold tracking-tight md:text-3xl">Browse Programs</h1>
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-[var(--space-text-secondary)]">Search 66 programs by industry, company, or program name — no CV assessment required.</p>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-[var(--space-text-secondary)]">Search 119 programs by industry, company, or program name — no CV assessment required.</p>
             </div>
             <div className="relative w-full md:max-w-md">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--space-text-muted)]" />
@@ -823,8 +856,55 @@ export default function ProgramBrowser() {
           )}
 
           {filtered.length ? (
+            <>
+            {expectingPrograms.length > 0 && (
+              <section className="mb-6" aria-labelledby="expecting-programs-title">
+                <div className="mb-3 flex items-center gap-2"><h2 id="expecting-programs-title" className="text-sm font-extrabold text-[var(--space-text-primary)]">Expecting to Open</h2><span className="text-xs font-semibold text-[var(--space-text-muted)]">{expectingPrograms.length}</span></div>
+                <div className="flex flex-col gap-2">
+                  {expectingPrograms.map(({ program, info }) => {
+                    const analysis = program.fitAnalysis;
+                    const isAnalyzing = analyzingId === program.program_id;
+                    const unavailable = !program.row;
+                    return (
+                      <article key={program.program_id} className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 shadow-sm md:px-4">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-[color-mix(in_srgb,var(--space-brand-primary-500)_30%,transparent)] bg-[color-mix(in_srgb,var(--space-brand-primary-500)_10%,transparent)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--space-text-brand)]">🔜 Expecting to Open</span>
+                        <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold text-[var(--space-text-brand)]">{program.company}</p>
+                            <h3 className="truncate text-sm font-bold text-[var(--space-text-primary)]">{program.program}</h3>
+                            <p className="mt-0.5 text-xs font-semibold text-[var(--space-text-muted)]">Opens {info.openLabel} (in {info.daysUntilOpen} {info.daysUntilOpen === 1 ? 'day' : 'days'}){info.closeLabel ? ` → closes ${info.closeLabel}` : ''}</p>
+                          </div>
+                          <div className="shrink-0">
+                            {analysis ? (
+                              <div className="flex items-center gap-3">
+                                <span className="rounded-full bg-[var(--space-brand-primary)] px-2.5 py-1 text-xs font-extrabold text-[var(--space-text-on-primary)]">{analysis.matching_ratio}% match</span>
+                                <button type="button" onClick={() => void openProgram(program)} className="text-xs font-bold text-[var(--space-text-brand)] hover:underline">View Details</button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => void analyzeProgram(program)}
+                                disabled={!hasAssessment || unavailable || isAnalyzing || !!analyzingId}
+                                title={unavailable ? 'No rubric is available for this program yet' : !hasAssessment ? 'Complete Fit Assessment to see your match' : undefined}
+                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--space-brand-primary)] px-4 py-2 text-xs font-bold text-[var(--space-text-on-primary)] transition hover:bg-[var(--space-brand-primary-700)] disabled:cursor-not-allowed disabled:bg-[var(--space-neutral-300)] disabled:text-[var(--space-neutral-600)] sm:w-auto"
+                              >
+                                {isAnalyzing ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</> : <><Sparkles className="h-4 w-4" /> Run Analysis</>}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        {analysisErrors[program.program_id] && (
+                          <p className="mt-2 flex items-start gap-1.5 text-xs leading-5 text-[var(--space-semantic-danger-700)]"><AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />{analysisErrors[program.program_id]}</p>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+            {regularPrograms.length > 0 && (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {filtered.map((program) => {
+              {regularPrograms.map((program) => {
                 const analysis = program.fitAnalysis;
                 const isAnalyzing = analyzingId === program.program_id;
                 const unavailable = !program.row;
@@ -878,6 +958,8 @@ export default function ProgramBrowser() {
                 );
               })}
             </div>
+            )}
+            </>
           ) : (
             <div className="rounded-2xl border border-dashed border-[var(--space-border-strong)] bg-[var(--space-surface-card)] px-4 py-10 text-center md:px-6 md:py-14">
               <Search className="mx-auto h-8 w-8 text-[var(--space-text-muted)]" />

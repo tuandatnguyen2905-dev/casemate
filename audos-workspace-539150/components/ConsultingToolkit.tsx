@@ -1,11 +1,11 @@
 /**
- * ConsultingToolkit.tsx — the framework reference area inside Case Pool.
+ * ConsultingToolkit.tsx - the framework reference area inside Case Pool.
  *
  * Each framework is an expandable card containing: when to use it, a visual
  * diagram, application steps, a Vietnam-context example, and common mistakes.
  * Content lives in lib/consultingFrameworks.ts; this file only handles display.
  *
- * DIAGRAMS: drawn with pure SVG and CSS per the brief — no static images. Each
+ * DIAGRAMS: drawn with pure SVG and CSS per the brief - no static images. Each
  * diagram kind (tree, 2x2 matrix, hub, chevron chain, partition, double funnel,
  * pillars, stages, cashflow) has its own renderer and shares the `--space-*`
  * tokens, so colors follow the space theme automatically.
@@ -165,7 +165,7 @@ function HubDiagram({ center, nodes }: Extract<FrameworkDiagram, { kind: 'hub' }
             </span>
             <span className="min-w-0">
               <span className="font-semibold text-[var(--space-text-primary)]">{node.label}</span>
-              <span className="text-[var(--space-text-secondary)]"> — {node.note}</span>
+              <span className="text-[var(--space-text-secondary)]"> - {node.note}</span>
             </span>
           </li>
         ))}
@@ -206,7 +206,7 @@ function ChevronsDiagram({ support, primary }: Extract<FrameworkDiagram, { kind:
         ))}
       </div>
       <p className="text-center text-[9px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-        Primary activities — value flows left to right
+        Primary activities - value flows left to right
       </p>
     </div>
   );
@@ -396,7 +396,7 @@ function FrameworkDiagramView({ diagram }: { diagram: FrameworkDiagram }) {
   }
   if (diagram.kind === 'funnels') {
     return (
-      <DiagramShell caption="Two paths running in opposite directions — use the second to cross-check your result.">
+      <DiagramShell caption="Two paths running in opposite directions - use the second to cross-check your result.">
         <FunnelsDiagram {...diagram} />
       </DiagramShell>
     );
@@ -531,7 +531,7 @@ function FrameworkCard({
           <section className="rounded-xl border border-[var(--space-brand-primary-200)] bg-[var(--space-surface-accent-soft)] p-3">
             <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">
               <Lightbulb className="h-3.5 w-3.5 shrink-0" />
-              Example — {framework.example.title}
+              Example - {framework.example.title}
             </p>
             <div className="mt-2 space-y-2">
               {framework.example.paragraphs.map((paragraph, index) => (
@@ -583,7 +583,7 @@ export default function ConsultingToolkit({ initialFrameworkId }: { initialFrame
           <div className="min-w-0">
             <h2 className="text-base font-bold text-[var(--space-text-primary)]">Consulting Toolkit</h2>
             <p className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)]">
-              The full {CONSULTING_FRAMEWORKS.length}-framework consulting library — from the interview classics to strategy, growth, business-model, innovation, and operations tools. Each comes with a diagram, application steps, a Vietnamese business example, and common mistakes.
+              The full {CONSULTING_FRAMEWORKS.length}-framework consulting library - from the interview classics to strategy, growth, business-model, innovation, and operations tools. Each comes with a diagram, application steps, a Vietnamese business example, and common mistakes.
             </p>
             <p className="mt-2 flex items-center gap-1.5 text-[11px] font-semibold leading-4 text-[var(--space-text-brand)]">
               <Star className="h-3.5 w-3.5 fill-current" />

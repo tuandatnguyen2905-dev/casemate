@@ -22,6 +22,7 @@ import { findProgramTimeline, deadlineStatus, formatDateVN } from './programTime
 import { resolveRankingUserId } from './performanceRankings';
 
 const WORKSPACE_ID = 'workspace-539150';
+const ROADMAP_SAVE_HOOK = '/api/hooks/execute/workspace-539150/casemate-roadmap-save-v1';
 
 /** Dispatched after a roadmap is saved so any mounted My Roadmap view refreshes. */
 export const ROADMAP_UPDATED_EVENT = 'casemate:roadmap-updated';
@@ -77,6 +78,10 @@ export interface PreparationRecommendation {
   gap: string;
   reason: string;
   recommendedAction: string;
+  timeline?: string;
+  impactPct?: number;
+  impactOnProgram?: string;
+  sourceRowId?: string;
   priority: 'Critical' | 'High' | 'Medium' | 'Optional';
   casemateFunction: 'Case Drill' | 'Case Pool' | 'Domain Knowledge' | 'Aptitude Test' | 'Update Profile / CV' | 'My Roadmap';
   order: number;
@@ -147,9 +152,18 @@ function currentSignInEmail(spaceId: string): string | null {
   return null;
 }
 
-export function resolveRoadmapIdentity(sessionId?: string | null): { userKey: string; email: string | null } {
+export function resolveRoadmapIdentity(
+  sessionId?: string | null,
+  accountEmail?: string | null,
+): { userKey: string; email: string | null } {
   const spaceId = currentSpaceId();
-  return { userKey: resolveRankingUserId(spaceId, sessionId || null), email: currentSignInEmail(spaceId) };
+  const normalizedEmail = typeof accountEmail === 'string' && accountEmail.includes('@')
+    ? accountEmail.toLowerCase().trim()
+    : currentSignInEmail(spaceId);
+  return {
+    userKey: normalizedEmail ? `email:${normalizedEmail}` : resolveRankingUserId(spaceId, sessionId || null),
+    email: normalizedEmail,
+  };
 }
 
 function toIso(date: Date): string {
@@ -283,9 +297,12 @@ function averagePercent(values: number[]): number | null {
  * source uses the same identity its own app uses, so the numbers here always
  * match what the candidate sees in those apps. No history = beginner.
  */
-export async function loadRoadmapBaseline(sessionId?: string | null): Promise<RoadmapBaseline> {
+export async function loadRoadmapBaseline(
+  sessionId?: string | null,
+  accountEmail?: string | null,
+): Promise<RoadmapBaseline> {
   const db = workspaceDb();
-  const { userKey } = resolveRoadmapIdentity(sessionId);
+  const { userKey } = resolveRoadmapIdentity(sessionId, accountEmail);
 
   const [casesRes, drillsRes, aptitudeRes] = await Promise.all([
     db.from('case_practice_cases').eq('status', 'completed').limit(500).get().catch(() => []),
@@ -477,9 +494,12 @@ function normalizeRow(row: any): SavedRoadmap | null {
 }
 
 /** Newest saved roadmap for the current account identity, or null. */
-export async function loadLatestRoadmap(sessionId?: string | null): Promise<SavedRoadmap | null> {
+export async function loadLatestRoadmap(
+  sessionId?: string | null,
+  accountEmail?: string | null,
+): Promise<SavedRoadmap | null> {
   const db = workspaceDb();
-  const { userKey } = resolveRoadmapIdentity(sessionId);
+  const { userKey } = resolveRoadmapIdentity(sessionId, accountEmail);
   const response = await db
     .from('prep_roadmaps', { shared: true })
     .eq('user_key', userKey)
@@ -507,16 +527,19 @@ async function deleteVisibleRows(
 }
 
 /**
- * Remove only the current candidate's fit, roadmap, and readiness state.
- * Practice history lives in separate tables and is deliberately untouched.
+ * Remove only the current candidate's assessment and readiness state.
+ * Saved roadmaps and practice history deliberately survive this reset. A roadmap
+ * is superseded only when the candidate explicitly regenerates it.
  */
-export async function restartRoadmapJourney(sessionId?: string | null): Promise<void> {
-  const { userKey } = resolveRoadmapIdentity(sessionId);
+export async function restartRoadmapJourney(
+  sessionId?: string | null,
+  accountEmail?: string | null,
+): Promise<void> {
+  const { userKey } = resolveRoadmapIdentity(sessionId, accountEmail);
   await Promise.all([
     deleteVisibleRows('assessment_results'),
     deleteVisibleRows('fit_assessments'),
     deleteVisibleRows('assessment_flow_events'),
-    deleteVisibleRows('prep_roadmaps', { shared: true, filterColumn: 'user_key', filterValue: userKey }),
     deleteVisibleRows('culture_fit_results', { shared: true, filterColumn: 'user_key', filterValue: userKey }),
     deleteVisibleRows('pending_mcq_answers', { shared: true, filterColumn: 'user_key', filterValue: userKey }),
     deleteVisibleRows('user_performance_rankings', { shared: true, filterColumn: 'user_id', filterValue: userKey }),
@@ -551,6 +574,8 @@ export interface GenerateRoadmapInput {
   roadmapTaskStatus?: Record<string, string>;
   matchPercent?: number | null;
   sessionId?: string | null;
+  /** Stable account identity supplied by SpaceRuntime; avoids a transient device-key fallback. */
+  accountEmail?: string | null;
 }
 
 /**
@@ -559,11 +584,11 @@ export interface GenerateRoadmapInput {
  */
 export async function generateAndSaveRoadmap(input: GenerateRoadmapInput): Promise<SavedRoadmap> {
   const db = workspaceDb();
-  const { userKey, email } = resolveRoadmapIdentity(input.sessionId);
+  const { userKey, email } = resolveRoadmapIdentity(input.sessionId, input.accountEmail);
   const now = new Date();
 
   const [baseline, windowInfo] = await Promise.all([
-    loadRoadmapBaseline(input.sessionId),
+    loadRoadmapBaseline(input.sessionId, input.accountEmail),
     Promise.resolve(resolveRoadmapWindow(input.targetCompany || input.targetProgram, input.targetProgram, now)),
   ]);
 
@@ -593,16 +618,29 @@ export async function generateAndSaveRoadmap(input: GenerateRoadmapInput): Promi
     plan_json: plan,
   };
 
-  await db.from('prep_roadmaps').insert(record);
-
-  try {
-    window.dispatchEvent(new CustomEvent(ROADMAP_UPDATED_EVENT));
-  } catch (e) {
-    // Non-browser environment — the app reloads on mount anyway.
+  const response = await fetch(ROADMAP_SAVE_HOOK, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(input.sessionId ? { 'X-Session-Id': input.sessionId } : {}),
+    },
+    body: JSON.stringify({ record }),
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok || payload.success === false) {
+    throw new Error(payload.error || 'Your roadmap could not be saved. Please sign in again and retry.');
   }
 
+  // Do not dispatch ROADMAP_UPDATED_EVENT here. A mounted roadmap view sets the
+  // returned row into memory first; dispatching before this function returns
+  // lets a slower background read overwrite that fresh row with an empty result.
+  const returned = normalizeRow(payload.roadmap);
+  if (returned) return returned;
   // Read the row back so the caller gets the server-stamped id/created_at.
-  const saved = await loadLatestRoadmap(input.sessionId);
+  // The insert already succeeded, so an unavailable read-back must not turn
+  // the user flow into a failure or discard the locally generated roadmap.
+  const saved = await loadLatestRoadmap(input.sessionId, input.accountEmail).catch(() => null);
   if (saved) return saved;
   // Extremely defensive fallback: render from the local record.
   return normalizeRow({ ...record, id: 0 }) as SavedRoadmap;
@@ -626,9 +664,10 @@ function completionTime(row: any): number {
 export async function loadRoadmapProgress(
   roadmap: SavedRoadmap,
   sessionId?: string | null,
+  accountEmail?: string | null,
 ): Promise<Record<number, WeekProgress>> {
   const db = workspaceDb();
-  const { userKey } = resolveRoadmapIdentity(sessionId);
+  const { userKey } = resolveRoadmapIdentity(sessionId, accountEmail);
 
   const [casesRes, drillsRes, aptitudeRes] = await Promise.all([
     db.from('case_practice_cases').eq('status', 'completed').limit(500).get().catch(() => []),

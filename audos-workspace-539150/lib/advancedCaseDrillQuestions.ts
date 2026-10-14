@@ -1,0 +1,237 @@
+import type { LibraryExhibit, LibraryQuestion } from './skillQuestionLibrary';
+
+const SOURCE = 'Casemate original practice data; figures are illustrative.';
+
+function exhibit(value: LibraryExhibit): LibraryExhibit {
+  return {
+    mutuallyExclusive: true,
+    legendConfig: { show: true, position: 'top' },
+    sourceNote: SOURCE,
+    ...value,
+  };
+}
+
+function question(value: Omit<LibraryQuestion, 'skill' | 'status'>): LibraryQuestion {
+  return {
+    ...value,
+    skill: 'charts',
+    status: 'draft-pending-review',
+  };
+}
+
+export const ADVANCED_CASE_DRILL_QUESTIONS: LibraryQuestion[] = [
+  question({
+    id: 'charts-101',
+    difficulty: 'hard',
+    title: 'An Phú Distribution - Regional Profit Gap',
+    businessContext: 'An Phú Distribution is deciding where a six-week sales-force intervention will create the most operating profit.',
+    estimatedMinutes: 5,
+    instruction: 'Read the ranked exhibit, identify the two leading regions, then calculate the value of closing one quarter of their gap.',
+    question: 'If North closes 25% of the contribution-profit gap to South while every other region is unchanged, how much incremental annual contribution profit is created?',
+    exhibits: [exhibit({
+      id: 'aphu-regional-profit', datasetId: 'aphu-fy26-region', kind: 'horizontal-bar', title: 'Regional Contribution Profit', subtitle: 'Ranked from highest to lowest', unit: 'VND bn', timePeriod: 'FY2026 forecast',
+      categories: ['North', 'Central', 'South', 'Mekong Delta'], series: [{ name: 'Contribution profit', values: [18.4, 11.2, 21.6, 9.8] }],
+      axisConfig: { xLabel: 'Contribution profit', yLabel: 'Region' }, analyticalPurpose: 'Compare regional profit pools and size the performance gap.', metrics: ['Contribution profit'], periods: ['FY2026'],
+      footnote: 'Contribution profit is after variable selling and logistics costs.',
+    })],
+    answerMode: 'number', answerFormat: 'currency', numericAnswer: 0.8, numericTolerance: 0.01, answerUnit: 'VND bn',
+    correctAnswer: 'VND 0.8 billion', options: ['VND 0.6 billion', 'VND 0.8 billion', 'VND 1.6 billion', 'VND 3.2 billion'],
+    calculationLogic: '(South contribution profit − North contribution profit) × 25%.',
+    stepByStepSolution: ['Gap to the leader = 21.6 − 18.4 = VND 3.2 billion.', 'One quarter of the gap = 3.2 × 25% = VND 0.8 billion.', 'Because other regions are unchanged, the full VND 0.8 billion is incremental.'],
+    explanation: 'South leads at VND 21.6 billion and North is second at VND 18.4 billion. Closing 25% of the VND 3.2 billion gap creates VND 0.8 billion.',
+    keyInsight: 'A ranked horizontal bar makes both the leader and the distance to the next-best region immediately visible.', commonMistake: 'Taking 25% of North profit instead of 25% of the gap.', learningObjective: 'Translate a ranked categorical comparison into an incremental value opportunity.', workingPrompt: 'Show the leader gap and the percentage captured.',
+  }),
+  question({
+    id: 'charts-102', difficulty: 'hard', title: 'LumiCare - Channel Growth Quality',
+    businessContext: 'LumiCare, a Vietnamese personal-care company, is comparing channel performance before allocating trade investment.', estimatedMinutes: 5,
+    instruction: 'Calculate growth for every channel from the grouped bars and select the highest rate.',
+    question: 'Which channel grew fastest from 2025 to 2026, and what was its growth rate?',
+    exhibits: [exhibit({
+      id: 'lumicare-channel-revenue', datasetId: 'lumicare-channel-2025-26', kind: 'grouped-bar', title: 'Net Revenue by Channel', unit: 'VND bn', timePeriod: 'FY2025–FY2026',
+      categories: ['Online', 'Modern trade', 'Traditional trade'], series: [{ name: '2025', values: [120, 90, 70] }, { name: '2026', values: [150, 105, 77] }],
+      axisConfig: { xLabel: 'Channel', yLabel: 'Net revenue' }, analyticalPurpose: 'Compare channel growth from a common base.', metrics: ['Net revenue'], periods: ['2025', '2026'],
+    })],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['Online - 25.0%', 'Modern trade - 16.7%', 'Traditional trade - 10.0%', 'Online - 30.0%'], correctAnswer: 'Online - 25.0%',
+    calculationLogic: '(2026 revenue ÷ 2025 revenue) − 1 for each channel.',
+    stepByStepSolution: ['Online: 150 ÷ 120 − 1 = 25.0%.', 'Modern trade: 105 ÷ 90 − 1 = 16.7%.', 'Traditional trade: 77 ÷ 70 − 1 = 10.0%.', 'Online has the highest growth rate.'],
+    explanation: 'Online grew by VND 30 billion on a VND 120 billion base, or 25.0%, which exceeds the other channels.', keyInsight: 'Absolute growth and percentage growth are different; grouped bars provide both bases needed for the rate.', commonMistake: 'Reporting the VND 30 billion absolute increase as 30%.', learningObjective: 'Calculate and compare growth rates from grouped bars.',
+  }),
+  question({
+    id: 'charts-103', difficulty: 'hard', title: 'Bếp Việt Foods - Product Contribution Mix',
+    businessContext: 'Bếp Việt Foods wants to understand which products fund its three major sales channels.', estimatedMinutes: 6,
+    instruction: 'Aggregate Product C across channels and divide by the grand total represented by the stack.',
+    question: 'What percentage of total contribution is generated by Product C across all channels?',
+    exhibits: [exhibit({
+      id: 'bepviet-channel-stack', datasetId: 'bepviet-contribution-fy26', kind: 'stacked-bar', title: 'Contribution by Channel and Product', unit: 'VND bn', timePeriod: 'FY2026 forecast',
+      categories: ['Online', 'Stores', 'Partners'], series: [{ name: 'Product A', values: [80, 70, 45] }, { name: 'Product B', values: [45, 50, 35] }, { name: 'Product C', values: [25, 30, 20] }],
+      axisConfig: { xLabel: 'Channel', yLabel: 'Contribution' }, analyticalPurpose: 'Show each product contribution and total channel economics.', metrics: ['Contribution by product'], periods: ['FY2026'],
+    })],
+    answerMode: 'percentage', answerFormat: 'percentage', numericAnswer: 18.75, numericTolerance: 0.1, answerUnit: 'Percent', correctAnswer: '18.8%',
+    calculationLogic: 'Sum Product C across channels ÷ sum all stacked values.', stepByStepSolution: ['Product C = 25 + 30 + 20 = VND 75 billion.', 'Total contribution = 150 + 150 + 100 = VND 400 billion.', 'Share = 75 ÷ 400 = 18.75%, rounded to 18.8%.'],
+    explanation: 'Product C contributes VND 75 billion out of VND 400 billion total, giving an 18.75% share.', keyInsight: 'Stacked bars support both total comparison and component-share analysis.', commonMistake: 'Dividing Product C by only the largest channel total.', learningObjective: 'Aggregate one component across multiple stacks and calculate its overall share.', workingPrompt: 'Sum the component and the grand total separately.',
+  }),
+  question({
+    id: 'charts-104', difficulty: 'hard', title: 'Mây Cloud - Customer Mix Migration',
+    businessContext: 'Mây Cloud is shifting from small-business subscriptions toward larger enterprise contracts.', estimatedMinutes: 5,
+    instruction: 'Compare percentage composition across years; do not use absolute percentage growth.',
+    question: 'By how many percentage points did the Enterprise share increase from 2024 to 2026?',
+    exhibits: [exhibit({
+      id: 'maycloud-customer-mix', datasetId: 'maycloud-mix-2024-26', kind: 'stacked-100', title: 'Annual Recurring Revenue Mix', unit: 'Percent', timePeriod: 'FY2024 and FY2026',
+      categories: ['2024', '2026'], series: [{ name: 'SMB', values: [50, 38] }, { name: 'Mid-market', values: [30, 34] }, { name: 'Enterprise', values: [20, 28] }],
+      axisConfig: { xLabel: 'Year', yLabel: 'Share of ARR' }, analyticalPurpose: 'Compare how revenue composition changed independent of total growth.', metrics: ['ARR mix'], periods: ['2024', '2026'],
+    })],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['8 percentage points', '40 percentage points', '8%', '28 percentage points'], correctAnswer: '8 percentage points',
+    calculationLogic: '2026 Enterprise share − 2024 Enterprise share.', stepByStepSolution: ['Enterprise share in 2024 = 20%.', 'Enterprise share in 2026 = 28%.', 'Mix increase = 28% − 20% = 8 percentage points.'],
+    explanation: 'The Enterprise portion moves from 20% to 28%, an 8 percentage-point increase.', keyInsight: 'A 100% stacked chart isolates mix shifts even when absolute totals differ.', commonMistake: 'Calling the 40% relative increase a 40 percentage-point increase.', learningObjective: 'Distinguish percentage-point change from relative percentage growth.',
+  }),
+  question({
+    id: 'charts-105', difficulty: 'hard', title: 'GoShip Express - Peak Capacity Plan',
+    businessContext: 'GoShip Express is planning sorting capacity for the year-end peak while monitoring service quality.', estimatedMinutes: 6,
+    instruction: 'Use the area chart for volume growth; use the scorecard only as a reasonableness check on operating quality.',
+    question: 'What is the total parcel-volume growth from Q1 to Q4?',
+    exhibits: [
+      exhibit({ id: 'goship-volume-area', datasetId: 'goship-fy26-ops', kind: 'area', title: 'Quarterly Parcel Volume', unit: 'Million parcels', timePeriod: 'FY2026', categories: ['Q1', 'Q2', 'Q3', 'Q4'], series: [{ name: 'Parcels', values: [80, 92, 105, 126] }], axisConfig: { xLabel: 'Quarter', yLabel: 'Parcel volume' }, analyticalPurpose: 'Emphasise the scale and growth of throughput over time.', metrics: ['Parcel volume'], periods: ['Q1', 'Q2', 'Q3', 'Q4'] }),
+      exhibit({ id: 'goship-kpis', datasetId: 'goship-fy26-ops', kind: 'kpi-scorecard', title: 'Operating Quality Scorecard', unit: '', timePeriod: 'Q4 FY2026', categories: ['On-time delivery', 'First-attempt delivery', 'Damage rate', 'NPS'], series: [{ name: 'Actual', values: [94, 88, 1.2, 51], displayValues: ['94%', '88%', '1.2%', '51'] }], analyticalPurpose: 'Check whether higher volume is compromising service quality.', metrics: ['Service quality'], periods: ['Q4'] }),
+    ],
+    answerMode: 'percentage', answerFormat: 'percentage', numericAnswer: 57.5, numericTolerance: 0.1, answerUnit: 'Percent', correctAnswer: '57.5%',
+    calculationLogic: '(Q4 volume ÷ Q1 volume) − 1.', stepByStepSolution: ['Absolute increase = 126 − 80 = 46 million parcels.', 'Growth = 46 ÷ 80 = 57.5%.', 'The Q4 scorecard should be reviewed before assuming that all growth is operationally healthy.'],
+    explanation: 'Volume increased from 80 million to 126 million parcels, so growth is 46 ÷ 80 = 57.5%.', keyInsight: 'An area chart highlights magnitude; the distinct KPI scorecard prevents a volume-only conclusion.', commonMistake: 'Dividing the increase by the ending volume.', learningObjective: 'Calculate end-to-end growth and synthesise a distinct quality exhibit.',
+  }),
+  question({
+    id: 'charts-106', difficulty: 'hard', title: 'Sông Xanh Energy - Portfolio Transition',
+    businessContext: 'Sông Xanh Energy is evaluating how quickly new businesses can reduce dependence on the core utility portfolio.', estimatedMinutes: 7,
+    instruction: 'Calculate the non-core share in both endpoint years and compare the mix.',
+    question: 'How much does the non-core revenue share increase from 2024 to 2027?',
+    exhibits: [exhibit({
+      id: 'songxanh-stacked-area', datasetId: 'songxanh-portfolio-plan', kind: 'stacked-area', title: 'Revenue Portfolio Evolution', unit: 'USD m', timePeriod: 'FY2024–FY2027',
+      categories: ['2024', '2025', '2026', '2027'], series: [{ name: 'Core utility', values: [80, 85, 88, 90] }, { name: 'Adjacent services', values: [20, 30, 42, 55] }, { name: 'New ventures', values: [0, 5, 15, 30] }],
+      axisConfig: { xLabel: 'Year', yLabel: 'Revenue' }, analyticalPurpose: 'Show total growth and the changing composition of the portfolio.', metrics: ['Revenue by portfolio'], periods: ['2024', '2025', '2026', '2027'],
+    })],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['28.6 percentage points', '65.0 percentage points', '48.6 percentage points', '32.5 percentage points'], correctAnswer: '28.6 percentage points',
+    calculationLogic: 'Non-core share in 2027 minus non-core share in 2024.', stepByStepSolution: ['2024 non-core = 20 + 0 = 20; total = 100; share = 20.0%.', '2027 non-core = 55 + 30 = 85; total = 175; share = 48.6%.', 'Increase = 48.6% − 20.0% = 28.6 percentage points.'],
+    explanation: 'Non-core businesses rise from 20.0% to 48.6% of revenue, a 28.6 percentage-point mix shift.', keyInsight: 'Stacked area charts combine portfolio magnitude and mix; the denominator changes each year.', commonMistake: 'Using the USD 65 million absolute increase as a percentage-point change.', learningObjective: 'Calculate composition change from a stacked area chart with changing totals.',
+  }),
+  question({
+    id: 'charts-107', difficulty: 'hard', title: 'Nắng Foods - Growth and Margin Expansion',
+    businessContext: 'Nắng Foods is assessing whether its three-year growth plan creates disproportionate profit.', estimatedMinutes: 7,
+    instruction: 'Translate the bar and line series into operating profit at the first and final points.',
+    question: 'By what percentage does operating profit increase from 2024 to 2027?',
+    exhibits: [exhibit({
+      id: 'nangfoods-combo', datasetId: 'nangfoods-plan-2024-27', kind: 'combo', title: 'Revenue and Operating Margin', unit: 'VND bn', timePeriod: 'FY2024–FY2027',
+      categories: ['2024', '2025', '2026', '2027'], series: [{ name: 'Revenue', values: [200, 230, 260, 300], axis: 'left', unit: 'VND bn' }, { name: 'Operating margin', values: [10, 11, 12, 14], axis: 'right', unit: 'Percent' }],
+      axisConfig: { xLabel: 'Year', yLabel: 'Revenue (VND bn)', rightYLabel: 'Operating margin (%)' }, analyticalPurpose: 'Combine an absolute metric with the rate that converts it into profit.', metrics: ['Revenue', 'Operating margin'], periods: ['2024', '2025', '2026', '2027'],
+    })],
+    answerMode: 'percentage', answerFormat: 'percentage', numericAnswer: 110, numericTolerance: 0.1, answerUnit: 'Percent', correctAnswer: '110%',
+    calculationLogic: 'Calculate operating profit in each endpoint year, then compute growth.', stepByStepSolution: ['2024 operating profit = 200 × 10% = VND 20 billion.', '2027 operating profit = 300 × 14% = VND 42 billion.', 'Profit growth = (42 ÷ 20) − 1 = 110%.'],
+    explanation: 'Profit more than doubles because both revenue and margin increase: VND 20 billion becomes VND 42 billion.', keyInsight: 'A bar-plus-line chart requires combining an absolute base with a rate; reading either series alone is insufficient.', commonMistake: 'Adding 50% revenue growth and 4 margin points.', learningObjective: 'Synthesize bars and a rate line to calculate profit growth.', workingPrompt: 'Calculate endpoint profit before calculating growth.',
+  }),
+  question({
+    id: 'charts-108', difficulty: 'hard', title: 'Viễn Đông Mobile - Scale and Retention',
+    businessContext: 'Viễn Đông Mobile is reviewing whether subscriber growth is accompanied by better retention.', estimatedMinutes: 6,
+    instruction: 'Read each axis separately and report both the relative scale change and the percentage-point retention change.',
+    question: 'Which statement correctly summarises the 2023–2026 change?',
+    exhibits: [exhibit({
+      id: 'viendong-dual-axis', datasetId: 'viendong-subscribers-2023-26', kind: 'dual-axis', title: 'Subscribers and Monthly Churn', unit: 'Million subscribers', timePeriod: 'FY2023–FY2026',
+      categories: ['2023', '2024', '2025', '2026'], series: [{ name: 'Subscribers', values: [1.2, 1.5, 1.9, 2.2], axis: 'left', unit: 'Million' }, { name: 'Monthly churn', values: [4.8, 4.2, 3.7, 3.5], axis: 'right', unit: 'Percent' }],
+      axisConfig: { xLabel: 'Year', yLabel: 'Subscribers (m)', rightYLabel: 'Monthly churn (%)' }, analyticalPurpose: 'Test whether customer-base growth coincides with improving retention.', metrics: ['Subscribers', 'Monthly churn'], periods: ['2023', '2024', '2025', '2026'], footnote: 'Axes use different units and must not be visually compared as if they share a scale.',
+    })],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['Subscribers grew 83.3%; churn improved by 1.3 percentage points', 'Subscribers grew 45.5%; churn improved by 27.1 percentage points', 'Subscribers grew 1.0%; churn fell 1.3%', 'Subscribers grew 83.3%; churn worsened by 1.3 percentage points'], correctAnswer: 'Subscribers grew 83.3%; churn improved by 1.3 percentage points',
+    calculationLogic: 'Subscriber growth is relative; churn change is reported in percentage points.', stepByStepSolution: ['Subscriber growth = 2.2 ÷ 1.2 − 1 = 83.3%.', 'Churn change = 3.5% − 4.8% = −1.3 percentage points.', 'Lower churn is an improvement, so scale and retention both improve.'],
+    explanation: 'The subscriber base grows by 83.3%, while churn declines by 1.3 percentage points.', keyInsight: 'Dual axes are useful only when both scales are explicitly labelled and interpreted independently.', commonMistake: 'Describing the churn reduction as 1.3% rather than 1.3 percentage points.', learningObjective: 'Interpret a dual-axis exhibit without mixing units or scales.',
+  }),
+  question({
+    id: 'charts-109', difficulty: 'hard', title: 'Đại Nam Manufacturing - Profit Bridge',
+    businessContext: 'Đại Nam Manufacturing needs to explain how operating profit moved from the 2025 base to the 2026 plan.', estimatedMinutes: 6,
+    instruction: 'Follow every bridge movement and reconcile the final operating profit.',
+    question: 'What is 2026 operating profit, and what is the percentage improvement versus the 2025 starting point?',
+    exhibits: [
+      exhibit({ id: 'dainam-profit-bridge', datasetId: 'dainam-plan-fy26', kind: 'waterfall', title: 'Operating Profit Bridge', unit: 'VND bn', timePeriod: 'FY2025 actual to FY2026 plan', categories: ['2025 profit', 'Price', 'Volume', 'Input cost', 'Labour', 'Productivity'], series: [{ name: 'Profit movement', values: [80, 18, 10, -12, -6, 8] }], axisConfig: { xLabel: 'Driver', yLabel: 'Operating profit movement' }, analyticalPurpose: 'Reconcile the starting profit to the planned ending profit by driver.', metrics: ['Operating profit movement'], periods: ['FY2025', 'FY2026'] }),
+      exhibit({ id: 'dainam-financial-table', datasetId: 'dainam-plan-fy26', kind: 'financial-table', title: '2025 P&L Reference', unit: 'VND bn', timePeriod: 'FY2025 actual', columns: ['P&L line', 'Value', '% of revenue'], rows: [['Revenue', '640', '100.0%'], ['Materials', '(310)', '48.4%'], ['Labour', '(150)', '23.4%'], ['Other operating cost', '(100)', '15.6%'], ['Operating profit', '80', '12.5%']], analyticalPurpose: 'Provide the detailed base-year economics used to contextualise the bridge.', metrics: ['Revenue', 'Cost structure'], periods: ['FY2025'] }),
+    ],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['VND 98 billion; 22.5%', 'VND 90 billion; 12.5%', 'VND 106 billion; 32.5%', 'VND 18 billion; 22.5%'], correctAnswer: 'VND 98 billion; 22.5%',
+    calculationLogic: 'Starting profit plus all positive and negative bridge movements; divide net change by starting profit.', stepByStepSolution: ['Ending profit = 80 + 18 + 10 − 12 − 6 + 8 = VND 98 billion.', 'Net increase = 98 − 80 = VND 18 billion.', 'Percentage improvement = 18 ÷ 80 = 22.5%.'],
+    explanation: 'All bridge drivers reconcile VND 80 billion to VND 98 billion, a VND 18 billion or 22.5% improvement.', keyInsight: 'A waterfall makes additive movements explicit; every bar must reconcile to the endpoint.', commonMistake: 'Ignoring negative cost movements or dividing by ending profit.', learningObjective: 'Reconcile a profit bridge and calculate improvement from the correct base.',
+  }),
+  question({
+    id: 'charts-110', difficulty: 'hard', title: 'Mộc Café - Marketing Saturation',
+    businessContext: 'Mộc Café is testing whether local marketing spend still produces proportional store traffic growth.', estimatedMinutes: 5,
+    instruction: 'Compare adjacent observations rather than relying only on the overall upward direction.',
+    question: 'What does the exhibit suggest about incremental returns at higher spend levels?',
+    exhibits: [exhibit({
+      id: 'moccafe-scatter', datasetId: 'moccafe-store-tests', kind: 'scatter', title: 'Marketing Spend vs Traffic Growth', unit: 'Percent growth', timePeriod: '12-week store tests',
+      categories: ['Store A', 'Store B', 'Store C', 'Store D', 'Store E'], series: [{ name: 'Store test', xValues: [2, 4, 6, 8, 10], values: [3, 5, 8, 9, 10] }],
+      axisConfig: { xLabel: 'Marketing spend (VND bn)', yLabel: 'Traffic growth (%)' }, analyticalPurpose: 'Assess the relationship and whether marginal returns flatten.', metrics: ['Marketing spend', 'Traffic growth'], periods: ['12-week test'],
+    })],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['Positive relationship with diminishing marginal returns above VND 6 billion', 'Negative relationship at every spend level', 'No relationship between spend and traffic', 'Every additional VND 2 billion always adds exactly 2 percentage points'], correctAnswer: 'Positive relationship with diminishing marginal returns above VND 6 billion',
+    calculationLogic: 'Compare changes in traffic growth for equal VND 2 billion spend increments.', stepByStepSolution: ['Spend increases in equal VND 2 billion steps.', 'Traffic gains are +2, +3, +1, and +1 percentage points.', 'The relationship remains positive, but gains flatten after VND 6 billion.'],
+    explanation: 'Traffic growth rises with spend, but the last two equal spend increments each add only one point, indicating diminishing returns.', keyInsight: 'Scatter plots reveal relationships, not causation; adjacent tests help identify saturation.', commonMistake: 'Assuming an upward pattern proves marketing is the sole cause.', learningObjective: 'Interpret direction and non-linearity in a scatter plot.',
+  }),
+  question({
+    id: 'charts-111', difficulty: 'hard', title: 'Horizon Health - Market Prioritisation',
+    businessContext: 'Horizon Health is prioritising one provincial market for a diagnostic-clinic pilot.', estimatedMinutes: 8,
+    instruction: 'Balance growth, margin, and market size; use the assumptions table to validate the selected market.',
+    question: 'Which market offers the strongest balanced profile rather than simply maximising one dimension?',
+    exhibits: [
+      exhibit({ id: 'horizon-market-bubbles', datasetId: 'horizon-market-screen', kind: 'bubble', title: 'Market Attractiveness Screen', unit: 'EBITDA margin percent', timePeriod: '2027 outlook', categories: ['Market A', 'Market B', 'Market C', 'Market D'], series: [{ name: 'Provincial market', xValues: [8, 14, 11, 6], values: [18, 12, 20, 25], sizes: [120, 80, 100, 50] }], axisConfig: { xLabel: 'Expected market growth (%)', yLabel: 'EBITDA margin (%)' }, analyticalPurpose: 'Compare growth and margin while using bubble size for addressable revenue.', metrics: ['Growth', 'Margin', 'Addressable revenue'], periods: ['2027'] }),
+      exhibit({ id: 'horizon-market-c-sizing', datasetId: 'horizon-market-screen', kind: 'market-sizing-table', title: 'Market C Sizing Assumptions', unit: '', timePeriod: '2027 outlook', columns: ['Assumption', 'Value', 'Rationale'], rows: [['Target population', '2.5 million', 'Insured urban adults'], ['Annual diagnostic visits', '1.4', 'Claims benchmark'], ['Average revenue per visit', 'VND 0.82m', 'Current private-clinic mix'], ['Addressable revenue', '≈ VND 100bn', 'Rounded after access adjustment']], analyticalPurpose: 'Make the selected market size transparent and auditable.', metrics: ['Sizing assumptions'], periods: ['2027'] }),
+    ],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['Market A - largest size only', 'Market B - highest growth only', 'Market C - strong growth, strong margin, and substantial size', 'Market D - highest margin only'], correctAnswer: 'Market C - strong growth, strong margin, and substantial size',
+    calculationLogic: 'Use a balanced screen: above-average growth and margin with material bubble size.', stepByStepSolution: ['Market B has the highest growth but the lowest margin.', 'Market D has the highest margin but low growth and the smallest size.', 'Market A is largest but has only moderate growth and margin.', 'Market C combines 11% growth, 20% margin, and VND 100 billion addressable revenue.'],
+    explanation: 'Market C is not the maximum on one metric, but it dominates on the balanced combination the client needs.', keyInsight: 'Bubble charts are designed for three-variable prioritisation; the largest bubble is not automatically the best choice.', commonMistake: 'Choosing a market by one axis and ignoring bubble size.', learningObjective: 'Synthesize growth, profitability, and size in a bubble chart.',
+  }),
+  question({
+    id: 'charts-112', difficulty: 'hard', title: 'FastLane Logistics - Delay Distribution',
+    businessContext: 'FastLane Logistics is deciding whether late deliveries are isolated exceptions or a material tail problem.', estimatedMinutes: 5,
+    instruction: 'Add the frequency bins at or above the stated delay threshold.',
+    question: 'What percentage of deliveries were delayed by at least 15 minutes?',
+    exhibits: [exhibit({
+      id: 'fastlane-delay-histogram', datasetId: 'fastlane-delivery-sample', kind: 'histogram', title: 'Delivery Delay Distribution', unit: 'Deliveries', timePeriod: 'Sample of 100 deliveries',
+      categories: ['0–5 min', '5–10 min', '10–15 min', '15–20 min', '20+ min'], series: [{ name: 'Frequency', values: [8, 22, 35, 25, 10] }],
+      axisConfig: { xLabel: 'Delay bin', yLabel: 'Number of deliveries' }, analyticalPurpose: 'Show the frequency distribution and quantify the late-delivery tail.', metrics: ['Delivery frequency'], periods: ['Sample period'], footnote: 'Bins are mutually exclusive; the lower bound is inclusive.',
+    })],
+    answerMode: 'percentage', answerFormat: 'percentage', numericAnswer: 35, numericTolerance: 0.1, answerUnit: 'Percent', correctAnswer: '35%',
+    calculationLogic: 'Deliveries in the 15–20 and 20+ minute bins ÷ sample size.', stepByStepSolution: ['At least 15 minutes includes 15–20 minutes and 20+ minutes.', 'Count = 25 + 10 = 35 deliveries.', 'Sample size is 100, so the share is 35%.'],
+    explanation: 'The two tail bins contain 35 of 100 deliveries, so 35% miss the threshold by at least 15 minutes.', keyInsight: 'A histogram answers distribution questions; do not treat bins as category values to average directly.', commonMistake: 'Including the 10–15 minute bin despite the “at least 15” threshold.', learningObjective: 'Aggregate histogram bins against a threshold.',
+  }),
+  question({
+    id: 'charts-113', difficulty: 'hard', title: 'Tâm Việt Bank - Margin Heatmap',
+    businessContext: 'Tâm Việt Bank is looking for cross-sell opportunities by region and product tier.', estimatedMinutes: 6,
+    instruction: 'Read the three Central-region cells and calculate their unweighted average.',
+    question: 'What is the average product margin in Central, and which product-region cell is the strongest?',
+    exhibits: [exhibit({
+      id: 'tamviet-margin-heatmap', datasetId: 'tamviet-margin-matrix', kind: 'heatmap', title: 'Product Margin by Region', unit: 'Percent', timePeriod: 'FY2026 forecast',
+      categories: ['North', 'Central', 'South'], series: [{ name: 'Basic', values: [12, 11, 13] }, { name: 'Plus', values: [18, 16, 20] }, { name: 'Premium', values: [22, 24, 21] }],
+      axisConfig: { xLabel: 'Product tier', yLabel: 'Region' }, analyticalPurpose: 'Identify high- and low-margin intersections across two categorical dimensions.', metrics: ['Product margin'], periods: ['FY2026'],
+    })],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['17.0%; Central Premium at 24%', '24.0%; Central Premium at 24%', '17.0%; South Plus at 20%', '15.7%; North Premium at 22%'], correctAnswer: '17.0%; Central Premium at 24%',
+    calculationLogic: 'Average Central margins across all tiers and scan the full matrix for the maximum.', stepByStepSolution: ['Central margins are 11%, 16%, and 24%.', 'Average = (11 + 16 + 24) ÷ 3 = 17.0%.', 'The highest individual cell in the matrix is Central Premium at 24%.'],
+    explanation: 'Central averages 17.0%, and its Premium tier is also the matrix maximum at 24%.', keyInsight: 'Heatmaps accelerate pattern recognition, but exact questions still require reading the displayed cell values.', commonMistake: 'Reporting the maximum cell as the regional average.', learningObjective: 'Read and calculate across a two-dimensional heatmap.',
+  }),
+  question({
+    id: 'charts-114', difficulty: 'hard', title: 'VietHouse Consumer - Portfolio Concentration',
+    businessContext: 'VietHouse Consumer is assessing whether its category portfolio is overly dependent on two businesses.', estimatedMinutes: 5,
+    instruction: 'Combine the two largest rectangles and compare the result with the 50% threshold.',
+    question: 'What share of portfolio revenue comes from the two largest categories?',
+    exhibits: [exhibit({
+      id: 'viethouse-treemap', datasetId: 'viethouse-portfolio-fy26', kind: 'treemap', title: 'Revenue Portfolio Composition', unit: 'Percent', timePeriod: 'FY2026 forecast',
+      categories: ['Home care', 'Personal care', 'Nutrition', 'Beverages', 'Other'], series: [{ name: 'Revenue share', values: [32, 26, 18, 14, 10] }],
+      analyticalPurpose: 'Show hierarchical composition and concentration within the portfolio.', metrics: ['Revenue share'], periods: ['FY2026'],
+    })],
+    answerMode: 'percentage', answerFormat: 'percentage', numericAnswer: 58, numericTolerance: 0.1, answerUnit: 'Percent', correctAnswer: '58%',
+    calculationLogic: 'Add the shares of the two largest categories.', stepByStepSolution: ['Home care is largest at 32%.', 'Personal care is second at 26%.', 'Combined share = 32% + 26% = 58%.'],
+    explanation: 'The two largest categories account for 58% of portfolio revenue, indicating meaningful concentration.', keyInsight: 'A treemap prioritises composition and hierarchy, while exact labels preserve numerical precision.', commonMistake: 'Adding the visually largest and third-largest blocks without checking labels.', learningObjective: 'Quantify concentration from a treemap.',
+  }),
+  question({
+    id: 'charts-115', difficulty: 'hard', title: 'Aster Electronics - Pricing Under Uncertainty',
+    businessContext: 'Aster Electronics must choose a launch price before demand uncertainty is resolved.', estimatedMinutes: 8,
+    instruction: 'Use the multi-series trend to understand demand paths, then use the separate sensitivity table for the economic decision.',
+    question: 'Which launch price is the robust choice if management wants positive profit in every demand scenario while maximising base-case profit?',
+    exhibits: [
+      exhibit({ id: 'aster-demand-lines', datasetId: 'aster-launch-scenarios', kind: 'multi-line', title: 'Quarterly Unit Demand Scenarios', unit: 'Thousand units', timePeriod: 'First four launch quarters', categories: ['Q1', 'Q2', 'Q3', 'Q4'], series: [{ name: 'Downside demand', values: [42, 45, 47, 50] }, { name: 'Base demand', values: [50, 56, 62, 68] }, { name: 'Upside demand', values: [58, 66, 76, 88] }], axisConfig: { xLabel: 'Launch quarter', yLabel: 'Unit demand' }, analyticalPurpose: 'Show how demand paths diverge over time under uncertainty.', metrics: ['Unit demand'], periods: ['Q1', 'Q2', 'Q3', 'Q4'] }),
+      exhibit({ id: 'aster-price-sensitivity', datasetId: 'aster-launch-scenarios', kind: 'sensitivity-table', title: 'Annual Operating Profit Sensitivity', unit: 'VND bn', timePeriod: 'Launch year', columns: ['Launch price', 'Downside demand', 'Base demand', 'Upside demand'], rows: [['VND 8.0m', '8', '24', '43'], ['VND 8.8m', '4', '29', '51'], ['VND 9.6m', '(3)', '27', '56']], analyticalPurpose: 'Test profit outcomes across price and demand assumptions.', metrics: ['Operating profit by price'], periods: ['Launch year'], footnote: 'Parentheses indicate negative operating profit.' }),
+    ],
+    answerMode: 'choice', answerFormat: 'single-choice', options: ['VND 8.0 million', 'VND 8.8 million', 'VND 9.6 million', 'Any price; all have identical downside risk'], correctAnswer: 'VND 8.8 million',
+    calculationLogic: 'Exclude prices with negative profit in any scenario, then maximise base-case profit among remaining choices.', stepByStepSolution: ['VND 9.6 million fails the robustness condition because downside profit is negative VND 3 billion.', 'VND 8.0 million and VND 8.8 million remain profitable in all scenarios.', 'Their base-case profits are VND 24 billion and VND 29 billion respectively.', 'Choose VND 8.8 million.'],
+    explanation: 'VND 8.8 million preserves positive downside profit and delivers the highest base-case profit among robust options.', keyInsight: 'The trend exhibit explains uncertainty, while the sensitivity table turns that uncertainty into a decision.', commonMistake: 'Selecting VND 9.6 million because it maximises upside profit while ignoring downside loss.', learningObjective: 'Combine a multi-series scenario chart with a sensitivity table to make a robust commercial decision.',
+  }),
+];

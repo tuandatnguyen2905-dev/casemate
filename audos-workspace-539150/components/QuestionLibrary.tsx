@@ -8,14 +8,20 @@ import {
   ChevronRight,
   Lightbulb,
   ListTree,
+  Plus,
   Search,
   Shuffle,
   Sparkles,
   Target,
+  Trash2,
 } from 'lucide-react';
 import { useSpaceRuntime } from '../SpaceRuntimeContext';
 import { tw } from '../lib/colors';
+import ExhibitRenderer from './ExhibitRenderer';
+import ExpertDrillExperience from './ExpertDrillExperience';
+import { CASE_JOURNEYS } from '../lib/caseJourneys';
 import {
+  ALL_LIBRARY_QUESTIONS,
   QUESTION_LIBRARY,
   SKILL_META,
   questionCountFor,
@@ -23,16 +29,27 @@ import {
 } from '../lib/skillQuestionLibrary';
 import type {
   LibraryDifficulty,
-  LibraryExhibit,
   LibraryQuestion,
   LibrarySkill,
 } from '../lib/skillQuestionLibrary';
+import { restoreArchivedHardQuestion } from '../lib/hardCaseDrillQuestions';
+import StructuresWorkspace from '../apps/CaseDrill/StructuresWorkspace';
 
 const PAGE_SIZE = 20;
 const DIFFICULTY_LABELS: Record<LibraryDifficulty, string> = {
   easy: 'Easy',
   medium: 'Medium',
   hard: 'Hard',
+  expert: 'Expert',
+};
+
+// The home list is ordered by difficulty so candidates meet Easy and Medium
+// reps before the Hard and Expert ones the library array happens to list first.
+const DIFFICULTY_RANK: Record<LibraryDifficulty, number> = {
+  easy: 0,
+  medium: 1,
+  hard: 2,
+  expert: 3,
 };
 
 const SKILL_ICONS = {
@@ -61,6 +78,7 @@ function createLibraryEventId(): string {
 
 function capitaliseLineStarts(value: string): string {
   return String(value || '')
+    .replace(/\u2014/g, '-')
     .split('\n')
     .map((line) => line.replace(/^([^A-Za-zÀ-ỹ]*)([a-zà-ỹ])/, (_, prefix, first) => `${prefix}${first.toUpperCase()}`))
     .join('\n');
@@ -70,123 +88,70 @@ function normalise(value: string): string {
   return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').trim();
 }
 
+function isQuestionCompleted(questionId: string): boolean {
+  try { return Boolean(localStorage.getItem(`casemate-expert-completed:${questionId}`)); } catch { return false; }
+}
+
 function difficultyClass(difficulty: LibraryDifficulty): string {
   if (difficulty === 'easy') return 'bg-[var(--space-semantic-success-100)] text-[var(--space-neutral-800)]';
+  if (difficulty === 'expert') return 'bg-[var(--space-neutral-900)] text-[var(--space-neutral-0)]';
   if (difficulty === 'hard') return 'bg-[var(--space-semantic-danger-100)] text-[var(--space-neutral-800)]';
   return 'bg-[var(--space-semantic-warning-100)] text-[var(--space-neutral-800)]';
 }
 
-function Exhibit({ exhibit }: { exhibit: LibraryExhibit }) {
-  const labels = exhibit.labels || [];
-  const values = exhibit.values || [];
-  const max = Math.max(...values, 1);
-  const total = values.reduce((sum, value) => sum + value, 0) || 1;
-  const tones = [
-    'var(--space-brand-primary-700)',
-    'var(--space-brand-primary-500)',
-    'var(--space-brand-primary-300)',
-    'var(--space-brand-primary-100)',
+type MarketSizingOperator = '×' | '+' | '−' | '÷';
+
+interface MarketSizingFactor {
+  id: string;
+  label: string;
+  value: string;
+  operator: MarketSizingOperator;
+}
+
+function initialMarketSizingFactors(): MarketSizingFactor[] {
+  return [
+    { id: 'factor-1', label: '', value: '', operator: '×' },
+    { id: 'factor-2', label: '', value: '', operator: '×' },
+    { id: 'factor-3', label: '', value: '', operator: '×' },
   ];
+}
 
-  return (
-    <section
-      className="overflow-hidden rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] shadow-sm"
-      data-testid="question-library-exhibit"
-    >
-      <div className="border-b border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-5 py-4 sm:px-7">
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Exhibit</p>
-        <div className="mt-1 flex flex-wrap items-end justify-between gap-2">
-          <h2 className="text-lg font-bold text-[var(--space-text-primary)] sm:text-xl">{capitaliseLineStarts(exhibit.title)}</h2>
-          <span className="text-xs font-medium text-[var(--space-text-muted)]">{capitaliseLineStarts(exhibit.unit)}</span>
-        </div>
-      </div>
+function parseMarketSizingValue(value: string): number | null {
+  const normalized = value.trim().replace(/,/g, '');
+  if (!normalized) return null;
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+}
 
-      <div className="p-5 sm:p-7">
-        {exhibit.kind === 'table' ? (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] border-collapse text-left text-sm">
-              <thead>
-                <tr className="border-b-2 border-[var(--space-border-strong)]">
-                  {(exhibit.columns || []).map((column) => (
-                    <th key={column} className="px-3 py-3 text-xs font-bold uppercase tracking-wide text-[var(--space-text-muted)]">
-                      {capitaliseLineStarts(column)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {(exhibit.rows || []).map((row, rowIndex) => (
-                  <tr key={rowIndex} className="border-b border-[var(--space-border-default)] last:border-b-0">
-                    {row.map((cell, cellIndex) => (
-                      <td key={cellIndex} className={`px-3 py-3.5 ${cellIndex === 0 ? 'font-semibold text-[var(--space-text-primary)]' : 'tabular-nums text-[var(--space-text-secondary)]'}`}>
-                        {capitaliseLineStarts(cell)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : exhibit.kind === 'pie' ? (
-          <div className="grid items-center gap-6 sm:grid-cols-[minmax(220px,0.9fr)_minmax(240px,1.1fr)]">
-            <div className="mx-auto h-56 w-56 rounded-full shadow-inner" style={{ background: `conic-gradient(${values.map((value, index) => {
-              const previous = values.slice(0, index).reduce((sum, item) => sum + item, 0) / total * 100;
-              const end = previous + value / total * 100;
-              return `${tones[index % tones.length]} ${previous}% ${end}%`;
-            }).join(', ')})` }} role="img" aria-label={capitaliseLineStarts(exhibit.title)} />
-            <ul className="space-y-3">
-              {labels.map((label, index) => (
-                <li key={label} className="flex items-center gap-3 rounded-xl border border-[var(--space-border-default)] px-3.5 py-3">
-                  <span className="h-3.5 w-3.5 rounded-sm" style={{ background: tones[index % tones.length] }} />
-                  <span className="flex-1 text-sm font-medium text-[var(--space-text-secondary)]">{capitaliseLineStarts(label)}</span>
-                  <span className="text-base font-bold tabular-nums text-[var(--space-text-primary)]">{values[index]}%</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : exhibit.kind === 'line' ? (
-          <div>
-            <svg viewBox="0 0 700 280" className="h-[280px] w-full" role="img" aria-label={capitaliseLineStarts(exhibit.title)} preserveAspectRatio="none">
-              {[0, 1, 2, 3, 4].map((index) => (
-                <line key={index} x1="48" x2="680" y1={35 + index * 50} y2={35 + index * 50} stroke="var(--space-border-default)" strokeWidth="1" />
-              ))}
-              <polyline
-                fill="none"
-                stroke="var(--space-brand-primary-600)"
-                strokeWidth="7"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                points={values.map((value, index) => `${60 + index * (610 / Math.max(values.length - 1, 1))},${235 - value / max * 180}`).join(' ')}
-              />
-              {values.map((value, index) => {
-                const x = 60 + index * (610 / Math.max(values.length - 1, 1));
-                const y = 235 - value / max * 180;
-                return <circle key={index} cx={x} cy={y} r="8" fill="var(--space-surface-card)" stroke="var(--space-brand-primary-600)" strokeWidth="5" />;
-              })}
-            </svg>
-            <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.max(labels.length, 1)}, minmax(0, 1fr))` }}>
-              {labels.map((label, index) => (
-                <div key={label} className="text-center">
-                  <p className="text-xs font-semibold text-[var(--space-text-muted)]">{capitaliseLineStarts(label)}</p>
-                  <p className="mt-1 text-base font-bold tabular-nums text-[var(--space-text-primary)]">{values[index]}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex h-[310px] items-end justify-around gap-4 border-b-2 border-[var(--space-border-strong)] px-3 pt-8 sm:gap-8 sm:px-8">
-            {labels.map((label, index) => (
-              <div key={label} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end">
-                <span className="mb-2 text-sm font-bold tabular-nums text-[var(--space-text-primary)]">{values[index]}</span>
-                <div className="w-full max-w-24 rounded-t-lg bg-[var(--space-brand-primary-600)]" style={{ height: `${Math.max(12, values[index] / max * 78)}%` }} />
-                <span className="mt-3 min-h-10 text-center text-xs font-semibold text-[var(--space-text-muted)]">{capitaliseLineStarts(label)}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-  );
+function calculateMarketSizingResult(factors: MarketSizingFactor[]): number | null {
+  const terms: Array<{ value: number; operator: MarketSizingOperator }> = [];
+  factors.forEach((factor) => {
+    const value = parseMarketSizingValue(factor.value);
+    if (value !== null) terms.push({ value, operator: factor.operator });
+  });
+  if (terms.length === 0) return null;
+
+  // Follow standard arithmetic precedence: multiplication and division are
+  // evaluated within each term before addition or subtraction.
+  let total = 0;
+  let currentTerm = terms[0].value;
+  for (let index = 1; index < terms.length; index += 1) {
+    const { value, operator } = terms[index];
+    if (operator === '×') currentTerm *= value;
+    else if (operator === '÷') {
+      if (value === 0) return null;
+      currentTerm /= value;
+    } else {
+      total += currentTerm;
+      currentTerm = operator === '+' ? value : -value;
+    }
+  }
+  const result = total + currentTerm;
+  return Number.isFinite(result) ? result : null;
+}
+
+function formatMarketSizingResult(value: number): string {
+  return value.toLocaleString(undefined, { maximumFractionDigits: 6 });
 }
 
 function SolutionPanel({ question, isCorrect }: { question: LibraryQuestion; isCorrect: boolean | null }) {
@@ -198,9 +163,19 @@ function SolutionPanel({ question, isCorrect }: { question: LibraryQuestion; isC
         </span>
         <div>
           <p className="text-sm font-bold text-[var(--space-text-primary)]">
-            {isCorrect === null ? 'Model Answer Revealed' : isCorrect ? 'Correct Answer' : 'Review The Worked Solution'}
+            {question.skill === 'creativity'
+              ? 'One Possible Approach'
+              : isCorrect === null
+                ? 'Model Answer Revealed'
+                : isCorrect
+                  ? 'Correct Answer'
+                  : 'Review The Worked Solution'}
           </p>
-          <p className="text-xs text-[var(--space-text-muted)]">Use The Explanation To Check Your Logic, Not Only The Final Answer.</p>
+          <p className="text-xs text-[var(--space-text-muted)]">
+            {question.skill === 'creativity'
+              ? 'Creativity questions can be tackled in many valid ways - use this as a structured example, not the only answer.'
+              : 'Use The Explanation To Check Your Logic, Not Only The Final Answer.'}
+          </p>
         </div>
       </div>
       <div className="space-y-4 px-5 py-5 sm:px-7">
@@ -208,10 +183,42 @@ function SolutionPanel({ question, isCorrect }: { question: LibraryQuestion; isC
           <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Answer</p>
           <p className="mt-1.5 whitespace-pre-wrap text-base font-bold leading-7 text-[var(--space-text-primary)]">{capitaliseLineStarts(question.correctAnswer)}</p>
         </div>
+        {question.stepByStepSolution?.length ? (
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Step-By-Step Solution</p>
+            <ol className="mt-2 space-y-2">
+              {question.stepByStepSolution.map((step, index) => <li key={index} className="flex gap-2 text-sm leading-6 text-[var(--space-text-secondary)]"><span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--space-surface-accent-soft)] text-[10px] font-bold text-[var(--space-text-brand)]">{index + 1}</span><span>{capitaliseLineStarts(step)}</span></li>)}
+            </ol>
+          </div>
+        ) : null}
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Explanation</p>
           <p className="mt-1.5 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]">{capitaliseLineStarts(question.explanation)}</p>
         </div>
+        {question.calibrationStatus === 'revised-v1' && question.alternativeConclusions?.length ? (
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Also Acceptable</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-[var(--space-text-secondary)]">
+              {question.alternativeConclusions.map((answer) => <li key={answer}>{capitaliseLineStarts(answer)}</li>)}
+            </ul>
+          </div>
+        ) : null}
+        {question.calibrationStatus === 'revised-v1' && question.scoringRubric?.length ? (
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Scoring Rubric</p>
+            <div className="mt-2 grid gap-2 sm:grid-cols-3">
+              {question.scoringRubric.map((item) => (
+                <div key={item.criterion} className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3">
+                  <p className="text-xs font-bold text-[var(--space-text-primary)]">{item.criterion} · {item.points} pts</p>
+                  <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">{capitaliseLineStarts(item.description)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        {question.keyInsight ? <div className="rounded-xl bg-[var(--space-surface-accent-soft)] p-3 text-sm leading-6 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-brand)]">Key Insight:</span> {capitaliseLineStarts(question.keyInsight)}</div> : null}
+        {question.commonMistake ? <div className="text-sm leading-6 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-primary)]">Common Mistake:</span> {capitaliseLineStarts(question.commonMistake)}</div> : null}
+        {question.learningObjective ? <div className="text-sm leading-6 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-primary)]">Learning Objective:</span> {capitaliseLineStarts(question.learningObjective)}</div> : null}
       </div>
     </section>
   );
@@ -227,8 +234,18 @@ export default function QuestionLibrary() {
   const [selectedOption, setSelectedOption] = useState('');
   const [answer, setAnswer] = useState('');
   const [working, setWorking] = useState('');
+  const [marketSizingFactors, setMarketSizingFactors] = useState<MarketSizingFactor[]>(initialMarketSizingFactors);
+  const [marketSizingManualResult, setMarketSizingManualResult] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [validationError, setValidationError] = useState('');
+  const [journey, setJourney] = useState('all');
+  const [drillType, setDrillType] = useState('all');
+  const [industry, setIndustry] = useState('all');
+  const [businessProblem, setBusinessProblem] = useState('all');
+  const [estimatedTime, setEstimatedTime] = useState<'all' | 'under-10' | '10-plus'>('all');
+  const [completion, setCompletion] = useState<'all' | 'completed' | 'not-completed'>('all');
+  const [recommendedOnly, setRecommendedOnly] = useState(false);
+  const [completionVersion, setCompletionVersion] = useState(0);
   const libraryOpenedTrackedRef = useRef(false);
   const submittedAttemptRef = useRef(false);
   const explanationViewedRef = useRef(false);
@@ -293,20 +310,93 @@ export default function QuestionLibrary() {
   }, [sessionId, emitLibraryEvent]);
 
   const libraryErrors = useMemo(() => validateQuestionLibrary(), []);
+  const marketSizingCalculation = useMemo(
+    () => calculateMarketSizingResult(marketSizingFactors),
+    [marketSizingFactors],
+  );
+  const marketSizingResult = marketSizingCalculation === null ? marketSizingManualResult : String(marketSizingCalculation);
   const skillMeta = SKILL_META.find((item) => item.id === skill) || SKILL_META[0];
   const questions = QUESTION_LIBRARY[skill];
+  const visibleQuestions = useMemo(
+    () => questions
+      .map(restoreArchivedHardQuestion)
+      .filter((question) => question.reviewStatus !== 'Archived'),
+    [questions],
+  );
+  const difficultyQuestions = useMemo(
+    () => difficulty === 'all' ? visibleQuestions : visibleQuestions.filter((question) => question.difficulty === difficulty),
+    [visibleQuestions, difficulty],
+  );
+  const filterOptions = useMemo(() => ({
+    journeyIds: [...new Set(difficultyQuestions.map((question) => question.journeyId).filter(Boolean))] as string[],
+    drillTypes: [...new Set(difficultyQuestions.map((question) => question.drillType).filter(Boolean))] as string[],
+    industries: [...new Set(difficultyQuestions.map((question) => question.industry).filter(Boolean))] as string[],
+    businessProblems: [...new Set(difficultyQuestions.map((question) => question.businessProblem).filter(Boolean))] as string[],
+  }), [difficultyQuestions]);
+  const recommendedIds = useMemo(() => {
+    const ids = new Set<string>();
+    // Preserve explicit next-drill chains (used by Expert and the new Hard set)
+    // whenever the learner has completed the source drill.
+    ALL_LIBRARY_QUESTIONS.forEach((question) => {
+      if (isQuestionCompleted(question.id) && question.recommendedNextDrillId) ids.add(question.recommendedNextDrillId);
+    });
+    // Every difficulty also receives progress-aware fallbacks: the first
+    // incomplete drill in each drill type. This keeps recommendations useful
+    // for Easy and Medium questions that predate explicit recommendation ids.
+    const representedTypes = new Set<string>();
+    difficultyQuestions.forEach((question) => {
+      const type = question.drillType || question.skill;
+      if (!isQuestionCompleted(question.id) && !representedTypes.has(type)) {
+        representedTypes.add(type);
+        ids.add(question.id);
+      }
+    });
+    return ids;
+  }, [difficultyQuestions, completionVersion]);
   const matches = useMemo(() => {
     const needle = normalise(query);
-    return questions.filter((question) => {
+    const filtered = visibleQuestions.filter((question) => {
       if (difficulty !== 'all' && question.difficulty !== difficulty) return false;
+      if (journey === 'journeys-only' && !question.journeyId) return false;
+      if (journey === 'standalone' && question.journeyId) return false;
+      if (journey !== 'all' && journey !== 'journeys-only' && journey !== 'standalone' && question.journeyId !== journey) return false;
+      if (drillType !== 'all' && question.drillType !== drillType) return false;
+      if (industry !== 'all' && question.industry !== industry) return false;
+      if (businessProblem !== 'all' && question.businessProblem !== businessProblem) return false;
+      if (estimatedTime === 'under-10' && (!question.estimatedMinutes || question.estimatedMinutes >= 10)) return false;
+      if (estimatedTime === '10-plus' && (!question.estimatedMinutes || question.estimatedMinutes < 10)) return false;
+      const completed = isQuestionCompleted(question.id);
+      if (completion === 'completed' && !completed) return false;
+      if (completion === 'not-completed' && completed) return false;
+      if (recommendedOnly && !recommendedIds.has(question.id)) return false;
       if (!needle) return true;
-      return normalise(`${question.title} ${question.question} ${question.explanation}`).includes(needle);
+      return normalise(`${question.title} ${question.question} ${question.explanation} ${question.drillType || ''} ${question.industry || ''} ${question.businessProblem || ''}`).includes(needle);
     });
-  }, [questions, difficulty, query]);
+    return filtered.sort((a, b) => DIFFICULTY_RANK[a.difficulty] - DIFFICULTY_RANK[b.difficulty]);
+  }, [visibleQuestions, difficulty, query, journey, drillType, industry, businessProblem, estimatedTime, completion, recommendedOnly, recommendedIds, completionVersion]);
+
+  useEffect(() => {
+    const namedJourney = journey !== 'all' && journey !== 'journeys-only' && journey !== 'standalone';
+    if (namedJourney && !filterOptions.journeyIds.includes(journey)) setJourney('all');
+    if (drillType !== 'all' && !filterOptions.drillTypes.includes(drillType)) setDrillType('all');
+    if (industry !== 'all' && !filterOptions.industries.includes(industry)) setIndustry('all');
+    if (businessProblem !== 'all' && !filterOptions.businessProblems.includes(businessProblem)) setBusinessProblem('all');
+  }, [difficulty, filterOptions, journey, drillType, industry, businessProblem]);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [skill, difficulty, query]);
+  }, [skill, difficulty, query, journey, drillType, industry, businessProblem, estimatedTime, completion, recommendedOnly]);
+
+  const clearFilters = () => {
+    setQuery('');
+    setJourney('all');
+    setDrillType('all');
+    setIndustry('all');
+    setBusinessProblem('all');
+    setEstimatedTime('all');
+    setCompletion('all');
+    setRecommendedOnly(false);
+  };
 
   const resetAttempt = () => {
     submittedAttemptRef.current = false;
@@ -314,6 +404,8 @@ export default function QuestionLibrary() {
     setSelectedOption('');
     setAnswer('');
     setWorking('');
+    setMarketSizingFactors(initialMarketSizingFactors());
+    setMarketSizingManualResult('');
     setSubmitted(false);
     setValidationError('');
   };
@@ -329,17 +421,52 @@ export default function QuestionLibrary() {
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Case Pool writes an exact drill id before opening this app. The openApp
+  // listener also covers a Case Drill window that is already mounted.
+  useEffect(() => {
+    const consumeRequest = () => {
+      try {
+        const id = sessionStorage.getItem('casemate-open-case-drill');
+        if (!id) return;
+        const requested = ALL_LIBRARY_QUESTIONS.find((question) => question.id === id);
+        if (!requested) return;
+        sessionStorage.removeItem('casemate-open-case-drill');
+        setSkill(requested.skill);
+        openQuestion(requested);
+      } catch {
+        /* sessionStorage can be unavailable in strict browser modes */
+      }
+    };
+    consumeRequest();
+    const onOpenApp = (event: Event) => {
+      if ((event as CustomEvent).detail?.appId === 'case-drill') consumeRequest();
+    };
+    window.addEventListener('openApp', onOpenApp);
+    return () => window.removeEventListener('openApp', onOpenApp);
+    // The request is event-driven; re-registering on every render would risk
+    // consuming the same navigation twice.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const switchSkill = (nextSkill: LibrarySkill) => {
     setSkill(nextSkill);
     setDifficulty('all');
     setQuery('');
+    setJourney('all');
+    setDrillType('all');
+    setIndustry('all');
+    setBusinessProblem('all');
+    setEstimatedTime('all');
+    setCompletion('all');
+    setRecommendedOnly(false);
     setActive(null);
     resetAttempt();
     void emitLibraryEvent('drill_skill_selected', 'step', { skill: nextSkill });
   };
 
   const randomQuestion = () => {
-    const pool = matches.length > 0 ? matches : questions;
+    const pool = matches.length > 0 ? matches : difficultyQuestions;
+    if (pool.length === 0) return;
     const nextQuestion = pool[Math.floor(Math.random() * pool.length)];
     if (active) void emitLibraryEvent('drill_next_question', 'retention', { question_id: nextQuestion.id });
     openQuestion(nextQuestion);
@@ -347,11 +474,15 @@ export default function QuestionLibrary() {
 
   const submit = () => {
     if (!active) return;
-    if (active.answerMode === 'choice' && !selectedOption) {
+    if (active.skill !== 'market-sizing' && active.answerMode === 'choice' && !selectedOption) {
       setValidationError('Choose An Answer Before Submitting.');
       return;
     }
-    if (active.answerMode !== 'choice' && !answer.trim() && !working.trim()) {
+    if (active.skill === 'market-sizing' && !marketSizingResult.trim()) {
+      setValidationError('Build Your Formula Or Enter A Final Market Size Before Submitting.');
+      return;
+    }
+    if (active.skill !== 'market-sizing' && active.answerMode !== 'choice' && !answer.trim() && !working.trim()) {
       setValidationError('Enter Your Answer Or Working Before Submitting.');
       return;
     }
@@ -365,6 +496,8 @@ export default function QuestionLibrary() {
         answer_mode: active.answerMode,
       }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
     }
+    try { localStorage.setItem(`casemate-expert-completed:${active.id}`, new Date().toISOString()); } catch { /* Best-effort completion filter. */ }
+    setCompletionVersion((version) => version + 1);
     setSubmitted(true);
   };
 
@@ -381,14 +514,59 @@ export default function QuestionLibrary() {
   const isCorrect = useMemo(() => {
     if (!active || !submitted) return null;
     if (active.answerMode === 'text') return null;
-    if (active.answerMode === 'choice') return selectedOption === active.correctAnswer;
-    const parsed = Number(answer.replace(/,/g, '').replace(/[^0-9.-]/g, ''));
+    if (active.skill !== 'market-sizing' && active.answerMode === 'choice') return selectedOption === active.correctAnswer;
+    const valueToGrade = active.skill === 'market-sizing' ? marketSizingResult : answer;
+    const parsed = Number(valueToGrade.replace(/,/g, '').replace(/[^0-9.-]/g, ''));
     if (!Number.isFinite(parsed) || active.numericAnswer == null) return false;
     return Math.abs(parsed - active.numericAnswer) <= (active.numericTolerance || 0.01);
-  }, [active, submitted, selectedOption, answer]);
+  }, [active, submitted, selectedOption, answer, marketSizingResult]);
+
+  if (active?.skill === 'structures') {
+    return (
+      <div className="mt-5" data-testid="question-library-active-structures">
+        <button type="button" onClick={() => setActive(null)} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.ghost}`}>
+          <ArrowLeft className="h-4 w-4" />
+          Back To Structures Library
+        </button>
+        <StructuresWorkspace
+          initialCaseId={active.id}
+          onSubmitted={() => {
+            try { localStorage.setItem(`casemate-expert-completed:${active.id}`, new Date().toISOString()); } catch { /* Best-effort completion filter. */ }
+            setCompletionVersion((version) => version + 1);
+            if (!submittedAttemptRef.current) {
+              submittedAttemptRef.current = true;
+              void emitLibraryEvent('drill_answer_submitted', 'core_action', {
+                question_id: active.id,
+                skill: active.skill,
+                difficulty: active.difficulty,
+                answer_mode: 'issue-tree',
+              }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
+            }
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (active?.structuredAnswer && active.skill !== 'market-sizing') {
+    return (
+      <ExpertDrillExperience
+        question={active}
+        onBack={() => setActive(null)}
+        onOpenQuestion={openQuestion}
+        onSubmitted={() => {
+          setCompletionVersion((version) => version + 1);
+          void emitLibraryEvent('drill_answer_submitted', 'core_action', { question_id: active.id, skill: active.skill, difficulty: active.difficulty, answer_mode: 'structured-expert' }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
+        }}
+      />
+    );
+  }
 
   if (active) {
     const isCaseCoachLayout = active.skill === 'charts' || active.skill === 'calculations';
+    const isMarketSizing = active.skill === 'market-sizing';
+    const activeExhibits = active.exhibits?.length ? active.exhibits : active.exhibit ? [active.exhibit] : [];
+    const isNumericMode = active.answerMode === 'number' || active.answerMode === 'percentage' || active.answerMode === 'currency';
     return (
       <div className="mt-5" data-testid={`question-library-active-${active.skill}`}>
         <button type="button" onClick={() => setActive(null)} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.ghost}`}>
@@ -399,14 +577,21 @@ export default function QuestionLibrary() {
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <span className={`${tw.badge.default} ${tw.badge.primary}`}>{capitaliseLineStarts(skillMeta.label)}</span>
           <span className={`${tw.badge.default} ${difficultyClass(active.difficulty)}`}>{DIFFICULTY_LABELS[active.difficulty]}</span>
-          <span className="text-xs font-medium text-[var(--space-text-muted)]">Question {active.id.split('-').pop()} Of 100</span>
+          <span className="text-xs font-medium text-[var(--space-text-muted)]">Question {active.id.split('-').pop()} Of {questionCountFor(active.skill)}</span>
+          {active.estimatedMinutes ? <span className="text-xs font-medium text-[var(--space-text-muted)]">· {active.estimatedMinutes} Min</span> : null}
         </div>
 
-        {active.skill === 'charts' && active.exhibit ? <div className="mt-4"><Exhibit exhibit={active.exhibit} /></div> : null}
+        <section className={`mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${isCaseCoachLayout ? 'px-5 py-6 shadow-sm sm:px-8 sm:py-8' : 'p-4 sm:p-5'}`}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Case Context</p>
+          <h2 className="mt-2 text-xl font-bold leading-8 text-[var(--space-text-primary)] sm:text-2xl">{capitaliseLineStarts(active.title)}</h2>
+          {active.businessContext ? <p className="mt-3 rounded-xl bg-[var(--space-surface-muted)] p-3 text-sm leading-6 text-[var(--space-text-secondary)]">{capitaliseLineStarts(active.businessContext)}</p> : null}
+        </section>
+
+        {activeExhibits.length ? <div className="mt-4"><ExhibitRenderer exhibits={activeExhibits} /></div> : null}
 
         <section className={`mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${isCaseCoachLayout ? 'px-5 py-6 shadow-sm sm:px-8 sm:py-8' : 'p-4 sm:p-5'}`}>
           <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Question</p>
-          <h2 className="mt-2 text-xl font-bold leading-8 text-[var(--space-text-primary)] sm:text-2xl">{capitaliseLineStarts(active.title)}</h2>
+          {active.instruction ? <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{capitaliseLineStarts(active.instruction)}</p> : null}
           <p className="mt-3 whitespace-pre-wrap text-base leading-7 text-[var(--space-text-secondary)]">{capitaliseLineStarts(active.question)}</p>
         </section>
 
@@ -414,7 +599,134 @@ export default function QuestionLibrary() {
           <section className={`mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${isCaseCoachLayout ? 'p-5 shadow-sm sm:p-7' : 'p-4 sm:p-5'}`} data-testid="question-library-answer-area">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">Your Answer</p>
 
-            {active.answerMode === 'choice' ? (
+            {isMarketSizing ? (
+              <div className="mt-4 space-y-4" data-testid="market-sizing-answer-layout">
+                <section className="overflow-hidden rounded-2xl border-2 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] shadow-md" data-testid="market-sizing-result-box">
+                  <div className="border-b border-[color-mix(in_srgb,var(--space-brand-primary-500)_24%,transparent)] px-4 py-3 sm:px-6">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Part 1 · Calculated Result</p>
+                    <p className="mt-1 text-xs text-[var(--space-text-secondary)]">
+                      {marketSizingCalculation === null ? 'Enter your final figure, or build the formula below.' : 'Updated automatically from your bottom-up formula.'}
+                    </p>
+                  </div>
+                  <div className="px-4 py-5 sm:px-6 sm:py-7">
+                    <label className="text-xs font-bold text-[var(--space-text-secondary)]" htmlFor="market-sizing-result">Final Market Size</label>
+                    <input
+                      id="market-sizing-result"
+                      value={marketSizingCalculation === null ? marketSizingManualResult : formatMarketSizingResult(marketSizingCalculation)}
+                      onChange={(event) => { setMarketSizingManualResult(event.target.value); setValidationError(''); }}
+                      readOnly={marketSizingCalculation !== null}
+                      placeholder="Enter your final estimate"
+                      className="mt-2 w-full bg-transparent text-3xl font-extrabold tabular-nums tracking-tight text-[var(--space-text-primary)] outline-none placeholder:text-[var(--space-text-muted)] sm:text-4xl"
+                      data-testid="input-market-sizing-result"
+                    />
+                    {active.answerUnit ? <p className="mt-2 text-sm font-semibold text-[var(--space-text-brand)]">{capitaliseLineStarts(active.answerUnit)}</p> : null}
+                  </div>
+                </section>
+
+                <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-4 sm:p-5" data-testid="market-sizing-formula-builder">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Part 2 · Bottom-Up Sizing Model</p>
+                      <h3 className="mt-1 text-base font-bold text-[var(--space-text-primary)]">Build Your Bottom-Up Formula</h3>
+                      <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">Name each component, enter its value, and choose the operator between terms. Use decimals for rates, for example 5% = 0.05.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setMarketSizingFactors((factors) => [...factors, { id: `factor-${Date.now()}-${factors.length}`, label: '', value: '', operator: '×' }])}
+                      className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold ${tw.button.secondary}`}
+                      data-testid="button-add-market-sizing-factor"
+                    >
+                      <Plus className="h-4 w-4" /> Add Component
+                    </button>
+                  </div>
+
+                  <div className="mt-4 space-y-2">
+                    {marketSizingFactors.map((factor, index) => (
+                      <div key={factor.id}>
+                        {index > 0 ? (
+                          <div className="flex h-10 items-center gap-3">
+                            <span className="h-px flex-1 bg-[var(--space-border-default)]" />
+                            <select
+                              value={factor.operator}
+                              onChange={(event) => {
+                                const operator = event.target.value as MarketSizingOperator;
+                                setMarketSizingFactors((factors) => factors.map((item) => item.id === factor.id ? { ...item, operator } : item));
+                                setValidationError('');
+                              }}
+                              aria-label={`Operator before component ${index + 1}`}
+                              className="h-8 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-2 text-xs font-bold text-[var(--space-text-brand)] outline-none focus:border-[var(--space-brand-primary-600)]"
+                              data-testid={`select-market-sizing-operator-${index - 1}`}
+                            >
+                              <option value="×">× Multiply</option>
+                              <option value="+">+ Add</option>
+                              <option value="−">− Subtract</option>
+                              <option value="÷">÷ Divide</option>
+                            </select>
+                            <span className="h-px flex-1 bg-[var(--space-border-default)]" />
+                          </div>
+                        ) : null}
+                        <div className="grid gap-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 sm:grid-cols-[minmax(0,1fr)_minmax(150px,0.55fr)_44px] sm:items-end">
+                          <label className="block text-xs font-bold text-[var(--space-text-secondary)]">
+                            Component {index + 1}
+                            <input
+                              value={factor.label}
+                              onChange={(event) => {
+                                const label = event.target.value;
+                                setMarketSizingFactors((factors) => factors.map((item) => item.id === factor.id ? { ...item, label } : item));
+                                setValidationError('');
+                              }}
+                              placeholder={['AOV', 'Traffic', 'Conversion Rate'][index] || 'Component label'}
+                              className={`${tw.input.base} ${tw.input.default} mt-1.5 text-sm`}
+                              data-testid={`input-market-sizing-label-${index}`}
+                            />
+                          </label>
+                          <label className="block text-xs font-bold text-[var(--space-text-secondary)]">
+                            Value
+                            <input
+                              type="number"
+                              inputMode="decimal"
+                              step="any"
+                              value={factor.value}
+                              onChange={(event) => {
+                                const value = event.target.value;
+                                setMarketSizingFactors((factors) => factors.map((item) => item.id === factor.id ? { ...item, value } : item));
+                                setValidationError('');
+                              }}
+                              placeholder="0"
+                              className={`${tw.input.base} ${tw.input.default} mt-1.5 text-sm font-bold tabular-nums`}
+                              data-testid={`input-market-sizing-value-${index}`}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setMarketSizingFactors((factors) => factors.filter((item) => item.id !== factor.id))}
+                            disabled={marketSizingFactors.length === 1}
+                            className={`flex h-11 items-center justify-center rounded-xl border border-[var(--space-border-default)] text-[var(--space-semantic-danger)] transition-colors hover:bg-[var(--space-surface-muted)] disabled:cursor-not-allowed disabled:opacity-35`}
+                            aria-label={`Remove component ${index + 1}`}
+                            data-testid={`button-remove-market-sizing-factor-${index}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-3 text-sm font-semibold text-[var(--space-text-secondary)]" data-testid="market-sizing-formula-summary">
+                    {marketSizingFactors.map((factor, index) => (
+                      <span key={factor.id} className="inline-flex items-center gap-2">
+                        {index > 0 ? <span className="font-bold text-[var(--space-text-brand)]">{factor.operator}</span> : null}
+                        <span>{factor.label.trim() || `Component ${index + 1}`}</span>
+                      </span>
+                    ))}
+                    <span className="font-bold text-[var(--space-text-brand)]">=</span>
+                    <span className="font-extrabold tabular-nums text-[var(--space-text-primary)]">
+                      {marketSizingCalculation === null ? (marketSizingManualResult.trim() || 'Final Result') : formatMarketSizingResult(marketSizingCalculation)}
+                    </span>
+                  </div>
+                </section>
+              </div>
+            ) : active.answerMode === 'choice' ? (
               <div className="mt-3 grid gap-2.5">
                 {(active.options || []).map((option, index) => (
                   <button
@@ -431,7 +743,7 @@ export default function QuestionLibrary() {
                 ))}
               </div>
             ) : active.skill === 'calculations' ? (
-              <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(220px,0.7fr)_minmax(320px,1.3fr)]">
+              <div className="mt-4 grid gap-4">
                 <div>
                   <label className="text-sm font-bold text-[var(--space-text-primary)]" htmlFor="calculation-answer">Final Numerical Answer</label>
                   <div className="mt-2 flex overflow-hidden rounded-xl border-2 border-[var(--space-border-strong)] bg-[var(--space-surface-page)] focus-within:border-[var(--space-brand-primary-600)]">
@@ -462,7 +774,7 @@ export default function QuestionLibrary() {
               </div>
             ) : (
               <div className="mt-3">
-                {active.answerMode === 'number' ? (
+                {isNumericMode ? (
                   <input
                     inputMode="decimal"
                     value={answer}
@@ -476,7 +788,7 @@ export default function QuestionLibrary() {
                   onChange={(event) => { setWorking(event.target.value); setValidationError(''); }}
                   rows={7}
                   placeholder={capitaliseLineStarts(active.workingPrompt || 'Write Your Answer In Clear, Structured Lines.')}
-                  className={`${tw.input.base} ${tw.input.default} ${active.answerMode === 'number' ? 'mt-3' : ''} min-h-36 text-sm leading-6`}
+                  className={`${tw.input.base} ${tw.input.default} ${isNumericMode ? 'mt-3' : ''} min-h-36 text-sm leading-6`}
                 />
               </div>
             )}
@@ -521,7 +833,7 @@ export default function QuestionLibrary() {
             </div>
             <div>
               <h2 className="text-base font-bold text-[var(--space-text-primary)]">Question Library</h2>
-              <p className="mt-1 text-sm leading-6 text-[var(--space-text-secondary)]">Choose One Of Five Consulting Skills. Every Skill Contains Exactly 100 Questions With Answers And Explanations.</p>
+              <p className="mt-1 text-sm leading-6 text-[var(--space-text-secondary)]">Choose one of five consulting skills. Alongside the standalone question bank, {CASE_JOURNEYS.length} Case Journeys run one business decision across linked drills - diagnosis, then implication, then a defensible recommendation. Open any journey drill or practise any standalone drill on its own.</p>
             </div>
           </div>
         </div>
@@ -573,7 +885,7 @@ export default function QuestionLibrary() {
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">
-          {(['all', 'easy', 'medium', 'hard'] as const).map((level) => (
+          {(['all', 'easy', 'medium', 'hard', 'expert'] as const).map((level) => (
             <button
               key={level}
               type="button"
@@ -584,12 +896,28 @@ export default function QuestionLibrary() {
             </button>
           ))}
         </div>
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--space-text-muted)]">Advanced Filters · {difficulty === 'all' ? 'All Difficulties' : DIFFICULTY_LABELS[difficulty]}</p>
+          <button type="button" onClick={clearFilters} className="text-xs font-bold text-[var(--space-text-brand)] hover:underline">Clear Filters</button>
+        </div>
+        <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <select value={drillType} onChange={(event) => setDrillType(event.target.value)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by drill type"><option value="all">All Drill Types</option>{filterOptions.drillTypes.map((value) => <option key={value} value={value}>{value}</option>)}</select>
+          <select value={industry} onChange={(event) => setIndustry(event.target.value)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by industry"><option value="all">All Industries</option>{filterOptions.industries.map((value) => <option key={value} value={value}>{value}</option>)}</select>
+          <select value={businessProblem} onChange={(event) => setBusinessProblem(event.target.value)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by business problem"><option value="all">All Business Problems</option>{filterOptions.businessProblems.map((value) => <option key={value} value={value}>{value}</option>)}</select>
+          <select value={estimatedTime} onChange={(event) => setEstimatedTime(event.target.value as typeof estimatedTime)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by estimated time"><option value="all">Any Estimated Time</option><option value="under-10">Under 10 Minutes</option><option value="10-plus">10–12 Minutes</option></select>
+          <select value={completion} onChange={(event) => setCompletion(event.target.value as typeof completion)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by completion"><option value="all">Completed Or Not</option><option value="completed">Completed</option><option value="not-completed">Not Completed</option></select>
+          <label className="flex min-h-11 items-center gap-2 rounded-xl border border-[var(--space-border-default)] px-3 text-xs font-semibold text-[var(--space-text-secondary)]"><input type="checkbox" checked={recommendedOnly} onChange={(event) => setRecommendedOnly(event.target.checked)} className="h-4 w-4 accent-[var(--space-brand-primary-600)]" /> Recommended For Me</label>
+        </div>
         <p className="mt-3 text-xs font-medium text-[var(--space-text-muted)]">Questions Matching Your Filters: {matches.length}.</p>
       </section>
 
       <section className="mt-4">
         {matches.length === 0 ? (
-          <p className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-7 text-center text-sm text-[var(--space-text-secondary)]">No Questions Match. Try A Different Search Or Difficulty.</p>
+          <div className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-7 text-center" data-testid="question-library-empty-state">
+            <p className="text-sm font-bold text-[var(--space-text-primary)]">No Drills Match These Filters</p>
+            <p className="mt-1 text-sm text-[var(--space-text-secondary)]">Clear the search and advanced filters to see {difficulty === 'all' ? 'this skill’s drills' : `${DIFFICULTY_LABELS[difficulty]} drills`} again.</p>
+            <button type="button" onClick={clearFilters} className={`mt-4 inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-bold ${tw.button.primary}`} data-testid="button-clear-library-filters">Clear Filters</button>
+          </div>
         ) : (
           <ul className="grid gap-2.5 sm:grid-cols-2">
             {matches.slice(0, visibleCount).map((question) => (
@@ -604,7 +932,11 @@ export default function QuestionLibrary() {
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-bold leading-5 text-[var(--space-text-primary)]">{capitaliseLineStarts(question.title)}</span>
                     <span className="mt-1.5 block line-clamp-2 text-xs leading-5 text-[var(--space-text-muted)]">{capitaliseLineStarts(question.question)}</span>
-                    <span className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${difficultyClass(question.difficulty)}`}>{DIFFICULTY_LABELS[question.difficulty]}</span>
+                    <span className="mt-2 flex flex-wrap gap-1.5">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${difficultyClass(question.difficulty)}`}>{DIFFICULTY_LABELS[question.difficulty]}</span>
+                      {question.structuredAnswer ? <><span className="inline-flex rounded-full border border-[var(--space-border-default)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-secondary)]">{question.difficulty === 'hard' ? '2 connected exhibits' : '2–3 connected exhibits'}</span><span className="inline-flex rounded-full border border-[var(--space-border-default)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-secondary)]">Insight + implication</span></> : null}
+                      {isQuestionCompleted(question.id) ? <span className="inline-flex rounded-full bg-[var(--space-semantic-success-100)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-neutral-800)]">Completed</span> : null}
+                    </span>
                   </span>
                   <ChevronRight className="mt-2 h-4 w-4 shrink-0 text-[var(--space-text-muted)] transition-transform group-hover:translate-x-0.5" />
                 </button>

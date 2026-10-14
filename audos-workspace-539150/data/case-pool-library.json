@@ -1,8 +1,28 @@
 {
   "version": 3,
   "name": "Casemate — the prebuilt full consulting case library (Case Pool)",
-  "count": 100,
-  "note": "MANIFEST of the library, not the full text. The full text of every case (situation, key question, data tables, charts, and model answer) is built by DETERMINISTIC builder functions in the source file named in \"source_of_truth\" — the space compiler cannot import JSON files at runtime (see the note at the top of lib/caseLibraryShared.ts), so the content must live in code. Each template (\"templates\") runs 5 times with 5 different parameter sets, so no two cases share a data table, and every number in a model answer is COMPUTED from that case's own data. Some templates adapt their wording by industry (see \"title_variants\"). When editing the library, update this file too.",
+  "count": 114,
+  "core_count": 100,
+  "journey_case_count": 14,
+  "note": "MANIFEST of the library, not the full text. The 100 core cases are built by deterministic builders in lib/casePoolLibrary.ts. The 14 Case Journey full cases reference the scenario, drill datasets, exhibits, calculations, and model sections in lib/caseJourneys.ts and its content modules directly, so Case Drill and Case Pool cannot drift. Only journeys marked complete or source-aligned in data/case-journey-manifest.json are included. When editing either library, update this file too.",
+  "journey_eligibility": {
+    "distinct_case_drill_scenarios": 24,
+    "eligible_and_added": 14,
+    "related_drills": 42,
+    "eligible_ids": ["jrn-11", "jrn-12", "jrn-13", "jrn-14", "jrn-15", "jrn-16", "jrn-17", "jrn-18", "jrn-19", "jrn-20", "jrn-21", "jrn-22", "jrn-23", "jrn-24"],
+    "held_ids": ["jrn-01", "jrn-02", "jrn-03", "jrn-04", "jrn-05", "jrn-06", "jrn-07", "jrn-08", "jrn-09", "jrn-10"],
+    "held_reason": "needs-source-alignment in data/case-journey-manifest.json; not surfaced in Case Pool"
+  },
+  "lower_tier_calibration_alignment": {
+    "easy_drills_revised": 20,
+    "medium_drills_revised": 20,
+    "already_at_target": 295,
+    "affected_shared_case_records": 0,
+    "shared_records_verified": 14,
+    "shared_record_changes": 0,
+    "reason": "The revised Easy/Medium items are standalone calculation drills. The 14 Case Pool shared records map only to Hard/Expert Case Journey drills, so linking a revised lower-tier item to one would create a false scenario identity. Existing shared records remain direct references to their source drills and exhibits.",
+    "dataset_changes": 0
+  },
   "source_of_truth": "lib/casePoolLibrary.ts",
   "consumed_by": [
     "components/CasePoolLibrary.tsx",
@@ -50,9 +70,11 @@
     "difficulty": {
       "easy": 20,
       "medium": 50,
-      "hard": 30
+      "hard": 30,
+      "expert": 14
     },
-    "exhibits_per_case": 2,
+    "exhibits_per_core_case": 2,
+    "journey_exhibits": 98,
     "exhibit_kinds": {
       "table": 100,
       "chart_line": 23,
@@ -189,6 +211,20 @@
     {"id": "case-097", "title": "Restructuring the staffing model — FPT Shop", "industry": "retail", "type": "other", "difficulty": "medium", "exhibits": ["table", "chart_bar"]},
     {"id": "case-098", "title": "Repricing and demand elasticity — Dược Hậu Giang", "industry": "healthcare", "type": "other", "difficulty": "hard", "exhibits": ["table", "chart_line"]},
     {"id": "case-099", "title": "Restructuring the staffing model — Deloitte Việt Nam", "industry": "consulting", "type": "other", "difficulty": "medium", "exhibits": ["table", "chart_bar"]},
-    {"id": "case-100", "title": "Repricing and demand elasticity — EY Việt Nam", "industry": "consulting", "type": "other", "difficulty": "hard", "exhibits": ["table", "chart_line"]}
+    {"id": "case-100", "title": "Repricing and demand elasticity — EY Việt Nam", "industry": "consulting", "type": "other", "difficulty": "hard", "exhibits": ["table", "chart_line"]},
+    {"id": "case-jrn-11", "title": "Corvex Cloud — The Churn Behind the Growth Number", "journeyId": "jrn-11", "difficulty": "expert", "sourceStatus": "original-complete", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-12", "title": "Harborlight Clinics — Full on Saturday, Empty on Tuesday", "journeyId": "jrn-12", "difficulty": "expert", "sourceStatus": "original-complete", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-13", "title": "VitaFlow — The 4pm Moment", "journeyId": "jrn-13", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-14", "title": "SweetVale — The Candy Aisle Stops Growing", "journeyId": "jrn-14", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-15", "title": "CleanCo × GreenMart — The Plan Both Sides Can Sign", "journeyId": "jrn-15", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-16", "title": "ActiveShield — The Benefit Space Nobody Owns", "journeyId": "jrn-16", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-17", "title": "PacificBev — The Profit That Improved Without Revenue", "journeyId": "jrn-17", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-18", "title": "PacificBev — The Peak and the Reversal", "journeyId": "jrn-18", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-19", "title": "FrostyBite — The Premium Entrant", "journeyId": "jrn-19", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-20", "title": "BakePure — Thirty Years Old and Feeling It", "journeyId": "jrn-20", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-21", "title": "DairyPeak — Twenty to Forty", "journeyId": "jrn-21", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-22", "title": "PawJoy — A New Line in a Shifting Aisle", "journeyId": "jrn-22", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-23", "title": "Summit Gear — Buying the Backpack Market", "journeyId": "jrn-23", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7},
+    {"id": "case-jrn-24", "title": "TangyTaste — Top Three in Five Years", "journeyId": "jrn-24", "difficulty": "expert", "sourceStatus": "source-aligned", "relatedDrills": 3, "sharedExhibits": 7}
   ]
 }

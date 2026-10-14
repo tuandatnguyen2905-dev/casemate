@@ -1,0 +1,1114 @@
+{
+  "artefact": "Casemate Case Drill — Case Journey content manifest",
+  "visibility": "Internal. Not rendered anywhere in the customer-facing product.",
+  "generatedBy": "gen/build.js — every derived figure is computed from the journey dataset, not typed by hand.",
+  "dataAndBrandTreatment": {
+    "rule": "No source brand name, company name, or source numeric figure appears in any shipped drill. Every company is fictional and every dataset is constructed.",
+    "sourcePdfStatus": "PARTIALLY AVAILABLE. The source PDF itself is still not in the workspace file tree, but the extracted analytical structure of source cases 1 to 17 was supplied in the build brief, together with a mandated fictional-brand mapping. Journeys jrn-13 to jrn-24 are built against those structures: the story shape, the analytical challenge and the exhibit types follow the source, and every brand name and every figure is reconstructed. Structures for source cases 18 to 26 were truncated out of the brief and have not been built \u2014 see openWork below.",
+    "brandMapping": "Every company in jrn-13 to jrn-24 comes from the brief's mandated fictional-brand list (VitaFlow, PacificBev, CleanCo, SweetVale, ActiveShield, BakePure, DairyPeak, PawJoy, Summit Gear, Ridgeline Outdoor, FrostyBite, ClearCool, TangyTaste, GreenMart). Competitor and SKU names not covered by that list were invented for this workspace (MetroMart, CityFresh, Chewmaster, LottoPop, Ricecrest, Biba, CrispBite, Northwave, Crestline, Halcyon, TopSauce, KimLee, Adabi, LadyCraft).",
+    "numericIntegrity": "Every dataset in jrn-13 to jrn-24 is internally reconciled: P&L lines sum, bridges close on the stated closing value, share tables total 100%, and every figure quoted in a model answer is recomputable from its exhibit. The numericalValidation array on each drill restates the decisive arithmetic."
+  },
+  "openWork": {
+    "sourceCasesNotBuilt": "Source cases 18 to 26 were cut off mid-sentence in the build brief (case 17, FreshMist packaging crisis, ends at 'Prioritize: wh'). Case 3 (PacificBev crisis management), case 8 (TechCore Systems HR recruitment), case 11 (GreenLeaf Distribution JBP recovery) and case 17 (FreshMist packaging crisis) were transmitted but not built in this pass.",
+    "builtThisPass": [1, 2, 4, 5, 6, 7, 9, 10, 12, 13, 14, 15, 16],
+    "transmittedNotBuilt": [3, 8, 11, 17],
+    "notTransmitted": [18, 19, 20, 21, 22, 23, 24, 25, 26]
+  },
+  "chartTypeCoverage": {
+    "note": "The exhibit renderer (components/ExhibitRenderer.tsx) has no dedicated 'pareto' or 'slope' kind. A Pareto exhibit is built as a combo chart with bars sorted descending on the left axis and cumulative share as a right-axis line; a slope exhibit is built as a two-period multi-line chart with one line per entity, which is the shape a slope chart draws.",
+    "groupedBar": ["calculations-journey-738", "calculations-journey-744", "calculations-journey-750", "structures-journey-754", "creativity-journey-760", "creativity-journey-766", "charts-journey-767"],
+    "stackedBar": ["charts-journey-737", "creativity-journey-739", "creativity-journey-748", "charts-journey-761"],
+    "stacked100": ["structures-journey-742", "charts-journey-743", "charts-journey-758"],
+    "line": ["structures-journey-742", "charts-journey-752", "market-sizing-journey-762", "charts-journey-767"],
+    "stackedArea": ["charts-journey-746", "creativity-journey-760"],
+    "comboBarLine": ["charts-journey-743", "charts-journey-749", "charts-journey-752", "charts-journey-755", "structures-journey-757", "calculations-journey-759", "charts-journey-761", "charts-journey-764", "structures-journey-769"],
+    "waterfall": ["structures-journey-745", "market-sizing-journey-747", "structures-journey-751", "calculations-journey-753", "calculations-journey-756", "structures-journey-763", "calculations-journey-765", "calculations-journey-768", "calculations-journey-771"],
+    "scatterBubble": ["charts-journey-737", "creativity-journey-739", "charts-journey-740", "charts-journey-746", "creativity-journey-748", "creativity-journey-766", "structures-journey-769", "charts-journey-770"],
+    "heatmap": ["structures-journey-745", "structures-journey-751", "structures-journey-757", "structures-journey-763", "charts-journey-770"],
+    "slope": ["calculations-journey-741", "structures-journey-754", "calculations-journey-756", "charts-journey-758", "structures-journey-772"],
+    "pareto": ["structures-journey-757", "calculations-journey-759"],
+    "conditionallyFormattedTable": ["calculations-journey-741", "calculations-journey-744", "charts-journey-749", "charts-journey-752", "charts-journey-755", "calculations-journey-759", "calculations-journey-765", "calculations-journey-768", "calculations-journey-771"],
+    "treemap": ["charts-journey-740", "charts-journey-764", "structures-journey-772"]
+  },
+  "counts": {
+    "journeys": 24,
+    "drills": 72,
+    "byDifficulty": {
+      "hard": 48,
+      "expert": 24
+    },
+    "bySkill": {
+      "charts": 25,
+      "calculations": 19,
+      "structures": 15,
+      "creativity": 8,
+      "market-sizing": 5
+    },
+    "exhibits": 168,
+    "addedInSourceAlignedPass": {
+      "journeys": 12,
+      "drills": 36,
+      "exhibits": 84,
+      "hardExhibitsPerDrill": 2,
+      "expertExhibitsPerDrill": 3
+    }
+  },
+  "journeys": [
+    {
+      "journeyId": "jrn-01",
+      "journeyName": "Arctis — The Summer That Did Not Arrive",
+      "company": "Arctis",
+      "industry": "FMCG — frozen desserts",
+      "domain": "FMCG",
+      "businessProblem": "Volume decline in a growing category",
+      "decision": "Fund a national summer trade-promotion package, or rebuild cold-chain distribution first.",
+      "timeframe": "FY2025–FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 1 — FMCG frozen dessert volume decline",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF was not present in the workspace; analytical structure and dataset are original Casemate constructions covering the FMCG volume-decline slot.",
+      "analyticalApproach": "Growth decomposition",
+      "drills": [
+        {
+          "drillId": "charts-journey-701",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Growth vs Profitability",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "combo · Arctis Revenue vs Category Index",
+            "waterfall · FY2025 to FY2026 Net Revenue Bridge"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-702"
+        },
+        {
+          "drillId": "calculations-journey-702",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Price–Volume–Mix Analysis",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · Distribution Base and Revenue per Outlet",
+            "grouped-bar · Outlets Served by Channel"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "structures-journey-703"
+        },
+        {
+          "drillId": "structures-journey-703",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "structures",
+          "difficulty": "expert",
+          "drillType": "Executive Recommendation Structure",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "stacked-100 · Frozen-Dessert Value Share",
+            "scatter · Revenue per Outlet vs Freezer Presence by Province",
+            "financial-table · Investment Options on a Common Three-Year Basis"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-704"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-02",
+      "journeyName": "Velta — Growth That Costs More Than It Earns",
+      "company": "Velta",
+      "industry": "FMCG — beverages",
+      "domain": "FMCG",
+      "businessProblem": "Channel mix shift diluting margin",
+      "decision": "Whether to keep scaling the e-commerce channel at its current economics.",
+      "timeframe": "FY2025–FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 2 — beverage channel mix and margin dilution",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable in the workspace; dataset is an original construction for the beverage channel-economics slot.",
+      "analyticalApproach": "Channel strategy",
+      "drills": [
+        {
+          "drillId": "charts-journey-704",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Mix-Shift Analysis",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "grouped-bar · Revenue by Channel",
+            "combo · Gross Profit and Blended Gross Margin"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-705"
+        },
+        {
+          "drillId": "calculations-journey-705",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Unit Economics and Customer Value",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · E-commerce Channel Economics",
+            "horizontal-bar · Gross Margin by Channel"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-706"
+        },
+        {
+          "drillId": "charts-journey-706",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "charts",
+          "difficulty": "expert",
+          "drillType": "Scenario and Decision Analysis",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "stacked-area · Revenue Mix by Channel",
+            "line · E-commerce Buyer Repeat Rate by Cohort",
+            "waterfall · FY2026 Gross-Profit Bridge by Channel"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-707"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-03",
+      "journeyName": "Solara — The Campaign That Built Awareness and Lost Buyers",
+      "company": "Solara",
+      "industry": "Beauty and personal care",
+      "domain": "Marketing",
+      "businessProblem": "Marketing spend not converting to sales",
+      "decision": "Where to move VND 30bn of next-year media budget.",
+      "timeframe": "FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 3 — marketing effectiveness and media mix",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable; original dataset built for the marketing-effectiveness slot.",
+      "analyticalApproach": "Marketing effectiveness",
+      "drills": [
+        {
+          "drillId": "charts-journey-707",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Benchmark and Performance Gap",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "multi-line · Brand Funnel by Quarter",
+            "donut · FY2026 Media Spend Allocation"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-708"
+        },
+        {
+          "drillId": "calculations-journey-708",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Investment Return and Sensitivity",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · Incremental Return by Channel",
+            "vertical-bar · Profit Return by Channel"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "creativity-journey-709"
+        },
+        {
+          "drillId": "creativity-journey-709",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "creativity",
+          "difficulty": "expert",
+          "drillType": "Channel or Go-to-Market Innovation",
+          "estimatedMinutes": 10,
+          "exhibits": [
+            "bubble · Channel Profit Return vs Funnel Stage and Capacity",
+            "financial-table · Channel Capacity and Incremental Cost",
+            "stacked-bar · Where Each Channel Acts on the Funnel"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-710"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-04",
+      "journeyName": "Verdant Foods — Growing Into a Cash Crisis",
+      "company": "Verdant Foods",
+      "industry": "Packaged food manufacturing",
+      "domain": "Finance",
+      "businessProblem": "Working capital absorbing all profit",
+      "decision": "Whether to fund further growth or release cash from the balance sheet first.",
+      "timeframe": "FY2024–FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 4 — working capital and cash conversion",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable; original dataset built for the working-capital slot.",
+      "analyticalApproach": "Working capital",
+      "drills": [
+        {
+          "drillId": "calculations-journey-710",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Profitability Bridge",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · Working Capital and Cash Conversion",
+            "combo · EBITDA vs Operating Cash After Working Capital"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-711"
+        },
+        {
+          "drillId": "charts-journey-711",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Root-Cause Analysis",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "vertical-bar · Inventory Value by Range",
+            "scatter · Inventory Value vs Annual Turns"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "structures-journey-712"
+        },
+        {
+          "drillId": "structures-journey-712",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "structures",
+          "difficulty": "expert",
+          "drillType": "Conflicting Evidence Structure",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "waterfall · Net Debt Bridge to the Covenant Test",
+            "sensitivity-table · Covenant Headroom Under Three Actions",
+            "grouped-bar · Export Line — Revenue and EBITDA Ramp"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-713"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-05",
+      "journeyName": "Anvil Components — The Line That Cannot Keep Up",
+      "company": "Anvil Components",
+      "industry": "Industrial manufacturing",
+      "domain": "Operations",
+      "businessProblem": "Capacity constraint limiting revenue",
+      "decision": "Buy a second heat-treatment line or recover capacity from the existing one.",
+      "timeframe": "FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 5 — operations capacity and throughput",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable; original dataset built for the operations-capacity slot.",
+      "analyticalApproach": "Capacity and supply chain",
+      "drills": [
+        {
+          "drillId": "charts-journey-713",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Root-Cause Analysis",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "vertical-bar · Capacity by Process Step",
+            "line · Utilisation by Process Step"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-714"
+        },
+        {
+          "drillId": "calculations-journey-714",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Capacity and Operational Bottleneck",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · Heat Treat — Overall Equipment Effectiveness",
+            "stacked-bar · Heat Treat Downtime by Cause"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "structures-journey-715"
+        },
+        {
+          "drillId": "structures-journey-715",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "structures",
+          "difficulty": "expert",
+          "drillType": "Multi-Stage Problem Structure",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "multi-line · Demand Forecast vs Capacity Options",
+            "sensitivity-table · Option Economics",
+            "vertical-bar · Demand Forecast Sensitivity"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "market-sizing-journey-716"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-06",
+      "journeyName": "Kaya Foods — Sizing a Border Before Crossing It",
+      "company": "Kaya Foods",
+      "industry": "Packaged food — international expansion",
+      "domain": "Market entry",
+      "businessProblem": "Market entry sizing and mode choice",
+      "decision": "Whether to enter a neighbouring market, and through which route.",
+      "timeframe": "FY2027 entry plan",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 6 — market entry sizing and mode selection",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable; original dataset built for the market-entry slot.",
+      "analyticalApproach": "Market entry",
+      "drills": [
+        {
+          "drillId": "market-sizing-journey-716",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "market-sizing",
+          "difficulty": "hard",
+          "drillType": "Top-Down and Bottom-Up Reconciliation",
+          "estimatedMinutes": 8,
+          "exhibits": [
+            "market-sizing-table · Bottom-Up Market Build",
+            "waterfall · From Total Market to Kaya’s Year-Three Target"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-717"
+        },
+        {
+          "drillId": "charts-journey-717",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Benchmark and Performance Gap",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "pie · Category Value Share",
+            "grouped-bar · Share Movement and Price Index"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "structures-journey-718"
+        },
+        {
+          "drillId": "structures-journey-718",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "structures",
+          "difficulty": "expert",
+          "drillType": "Executive Recommendation Structure",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "stacked-bar · Entry Cost by Component and Mode",
+            "sensitivity-table · Mode Economics and Control",
+            "line · Cumulative Cash Flow by Mode"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-719"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-07",
+      "journeyName": "Orbita — A Price Ladder Nobody Climbs",
+      "company": "Orbita",
+      "industry": "Telecommunications",
+      "domain": "Commercial strategy",
+      "businessProblem": "Pricing architecture suppressing upgrades",
+      "decision": "Whether to re-architect the plan ladder or raise prices across the board.",
+      "timeframe": "FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 7 — pricing architecture and plan migration",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable; original dataset built for the pricing-and-promotions slot.",
+      "analyticalApproach": "Pricing and promotions",
+      "drills": [
+        {
+          "drillId": "charts-journey-719",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Mix-Shift Analysis",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "vertical-bar · Subscribers and Price by Plan",
+            "grouped-bar · Annual Plan Migration and Churn"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-720"
+        },
+        {
+          "drillId": "calculations-journey-720",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Price–Volume–Mix Analysis",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · Plan Economics per Subscriber per Month",
+            "line · Price Step vs Incremental Data Delivered"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "creativity-journey-721"
+        },
+        {
+          "drillId": "creativity-journey-721",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "creativity",
+          "difficulty": "expert",
+          "drillType": "Growth Under Constraints",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "sensitivity-table · Proposed Ladder — Revenue Outcome by Migration Response",
+            "line · Price Step Under Current and Proposed Ladders",
+            "kpi-scorecard · Constraints on the Redesign"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-722"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-08",
+      "journeyName": "Lotus Court — Which Stores Actually Earn Their Space",
+      "company": "Lotus Court",
+      "industry": "Specialty retail",
+      "domain": "Commercial strategy",
+      "businessProblem": "Store network productivity and portfolio choice",
+      "decision": "Which store formats to grow, hold, or exit at lease renewal.",
+      "timeframe": "FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 8 — retail network productivity and portfolio",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable; original dataset built for the portfolio-choice slot.",
+      "analyticalApproach": "Portfolio choices",
+      "drills": [
+        {
+          "drillId": "charts-journey-722",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Performance Diagnosis",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "grouped-bar · Revenue per Store and Store Count",
+            "horizontal-bar · Sales Density by Format"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-723"
+        },
+        {
+          "drillId": "calculations-journey-723",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Profitability Bridge",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · Store Profit by Format",
+            "waterfall · Flagship Store — Revenue to Profit"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "structures-journey-724"
+        },
+        {
+          "drillId": "structures-journey-724",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "structures",
+          "difficulty": "expert",
+          "drillType": "Structure Prioritization",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "scatter · Store Profit vs Sales Density by Format",
+            "grouped-bar · Customer Behaviour in Flagship Catchments",
+            "sensitivity-table · Lease Options — Network Profit Impact"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "market-sizing-journey-725"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-09",
+      "journeyName": "Tutorloop — Buying Students Who Leave",
+      "company": "Tutorloop",
+      "industry": "Online education",
+      "domain": "Other business problems",
+      "businessProblem": "Subscription churn and acquisition quality",
+      "decision": "Whether to keep scaling paid acquisition or change how students are acquired.",
+      "timeframe": "FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 9 — subscription retention and acquisition economics",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable; original dataset built for the customer-segmentation slot.",
+      "analyticalApproach": "Customer segmentation",
+      "drills": [
+        {
+          "drillId": "market-sizing-journey-725",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "market-sizing",
+          "difficulty": "hard",
+          "drillType": "TAM, SAM, and SOM",
+          "estimatedMinutes": 8,
+          "exhibits": [
+            "market-sizing-table · Addressable Market Build",
+            "waterfall · From Student Population to Addressable Students"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-726"
+        },
+        {
+          "drillId": "charts-journey-726",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Root-Cause Analysis",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "multi-line · Retention by Acquisition Mechanism",
+            "stacked-100 · New Signups by Mechanism"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "creativity-journey-727"
+        },
+        {
+          "drillId": "creativity-journey-727",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "creativity",
+          "difficulty": "expert",
+          "drillType": "Turnaround Levers",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "financial-table · Channel Economics",
+            "bubble · Channel Cost, Retention and Signup Weight",
+            "sensitivity-table · CAC Payback Under Four Plans"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-728"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-10",
+      "journeyName": "Swiftline — The Parcel That Comes Back",
+      "company": "Swiftline",
+      "industry": "Parcel logistics",
+      "domain": "Operations",
+      "businessProblem": "Service failure driving cost",
+      "decision": "Whether to invest in parcel lockers or fix delivery execution.",
+      "timeframe": "FY2026",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 10 — service level, cost-to-serve and operations investment",
+      "rightsStatus": "Structure-only reference — brand names fictional, all figures constructed.",
+      "reviewStatus": "needs-source-alignment",
+      "reviewNote": "Source PDF unavailable; original dataset built for the operations service-cost slot.",
+      "analyticalApproach": "Profitability recovery",
+      "drills": [
+        {
+          "drillId": "charts-journey-728",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Performance Diagnosis",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "combo · On-Time Delivery and Volume by Region",
+            "pie · Root Cause of Late Deliveries"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-729"
+        },
+        {
+          "drillId": "calculations-journey-729",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Unit Economics and Customer Value",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · Cost of Failed First Attempts",
+            "vertical-bar · Failed First Attempt Rate by Region"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "structures-journey-730"
+        },
+        {
+          "drillId": "structures-journey-730",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "structures",
+          "difficulty": "expert",
+          "drillType": "Hypothesis Refinement",
+          "estimatedMinutes": 11,
+          "exhibits": [
+            "sensitivity-table · Intervention Economics",
+            "stacked-bar · Late-Delivery Cause by Region",
+            "horizontal-bar · Recipient Preference for Collection Point"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-731"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-11",
+      "journeyName": "Corvex Cloud — The Churn Behind the Growth Number",
+      "company": "Corvex Cloud",
+      "industry": "B2B software",
+      "domain": "Original — technology",
+      "businessProblem": "Net revenue retention and segment economics",
+      "decision": "Whether to keep serving the SMB segment, and where to put the customer-success budget.",
+      "timeframe": "FY2026",
+      "provenance": "original",
+      "sourceSlot": null,
+      "rightsStatus": "Original Casemate case — no source dependency.",
+      "reviewStatus": "complete",
+      "reviewNote": "Original Casemate case. No source dependency; dataset constructed and internally reconciled.",
+      "analyticalApproach": "Growth decomposition",
+      "drills": [
+        {
+          "drillId": "charts-journey-731",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Growth vs Profitability",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "waterfall · FY2026 ARR Bridge",
+            "kpi-scorecard · Retention Measures"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "calculations-journey-732"
+        },
+        {
+          "drillId": "calculations-journey-732",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "calculations",
+          "difficulty": "hard",
+          "drillType": "Unit Economics and Customer Value",
+          "estimatedMinutes": 7,
+          "exhibits": [
+            "financial-table · Segment Economics",
+            "grouped-bar · Share of ARR vs Share of Customers"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "structures-journey-733"
+        },
+        {
+          "drillId": "structures-journey-733",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "structures",
+          "difficulty": "expert",
+          "drillType": "Conflicting Evidence Structure",
+          "estimatedMinutes": 12,
+          "exhibits": [
+            "combo · Licensed Seats vs Active Seats",
+            "sensitivity-table · SMB Strategy Options",
+            "horizontal-bar · SMB Churn Reason at Renewal"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "market-sizing-journey-734"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-12",
+      "journeyName": "Harborlight Clinics — Full on Saturday, Empty on Tuesday",
+      "company": "Harborlight Clinics",
+      "industry": "Private healthcare",
+      "domain": "Original — healthcare",
+      "businessProblem": "Capacity utilisation and demand shaping",
+      "decision": "Whether to open a fourth clinic or fill the capacity already built.",
+      "timeframe": "FY2026",
+      "provenance": "original",
+      "sourceSlot": null,
+      "rightsStatus": "Original Casemate case — no source dependency.",
+      "reviewStatus": "complete",
+      "reviewNote": "Original Casemate case. No source dependency; dataset constructed and internally reconciled.",
+      "analyticalApproach": "Capacity and supply chain",
+      "drills": [
+        {
+          "drillId": "market-sizing-journey-734",
+          "stage": 1,
+          "stageRole": "Diagnosis",
+          "skill": "market-sizing",
+          "difficulty": "hard",
+          "drillType": "Capacity-Constrained Market Opportunity",
+          "estimatedMinutes": 8,
+          "exhibits": [
+            "market-sizing-table · Catchment Market Build",
+            "vertical-bar · Installed Capacity vs Visits Delivered"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-735"
+        },
+        {
+          "drillId": "charts-journey-735",
+          "stage": 2,
+          "stageRole": "Implication",
+          "skill": "charts",
+          "difficulty": "hard",
+          "drillType": "Mix-Shift Analysis",
+          "estimatedMinutes": 6,
+          "exhibits": [
+            "combo · Room Utilisation and No-Show Rate by Day",
+            "stacked-100 · Share of Weekly Visits by Day"
+          ],
+          "rubric": "Hard 20/30/25/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "creativity-journey-736"
+        },
+        {
+          "drillId": "creativity-journey-736",
+          "stage": 3,
+          "stageRole": "Decision",
+          "skill": "creativity",
+          "difficulty": "expert",
+          "drillType": "Customer Experience Redesign",
+          "estimatedMinutes": 12,
+          "exhibits": [
+            "financial-table · Current Profit and Break-Even",
+            "grouped-bar · Demand-Shaping Levers — Impact, Cost and Net Contribution",
+            "heatmap · Patient Willingness to Move Appointment by Segment"
+          ],
+          "rubric": "Expert insight 30/25/20/15/10",
+          "modelAnswer": true,
+          "nextInJourney": "charts-journey-737"
+        }
+      ]
+    },
+    {
+      "journeyId": "jrn-13",
+      "journeyName": "VitaFlow \u2014 The 4pm Moment",
+      "company": "VitaFlow",
+      "industry": "FMCG \u2014 dairy and chilled drinks",
+      "domain": "Marketing",
+      "businessProblem": "Premium positioning and consumption-occasion choice",
+      "decision": "Which consumption moment to own, and which selling model reaches it.",
+      "timeframe": "Year 1 launch plan",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 1 \u2014 adult drinking yogurt launch and channel innovation",
+      "rightsStatus": "Structure-only reference \u2014 brand fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: demand-space map, occasion profile, channel innovation beyond modern and traditional trade.",
+      "analyticalApproach": "Marketing effectiveness",
+      "drills": [
+        { "drillId": "charts-journey-737", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Benchmark and Performance Gap", "estimatedMinutes": 6, "exhibits": ["bubble \u00b7 Demand Spaces \u2014 Size, Momentum and Crowding", "stacked-bar \u00b7 Chilled Dairy Snack Occasions by Time of Day"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-738" },
+        { "drillId": "calculations-journey-738", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Unit Economics and Customer Value", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 Pack Economics by Channel", "grouped-bar \u00b7 Reach of the Target Consumer by Channel"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "creativity-journey-739" },
+        { "drillId": "creativity-journey-739", "stage": 3, "stageRole": "Decision", "skill": "creativity", "difficulty": "expert", "drillType": "Channel or Go-to-Market Innovation", "estimatedMinutes": 11, "exhibits": ["scatter \u00b7 Selling Models \u2014 Margin Against In-Window Reach", "financial-table \u00b7 Capacity, Cost and Payback by Selling Model", "stacked-bar \u00b7 Proposed Shape of the VND 25bn Launch Budget"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-740" }
+      ]
+    },
+    {
+      "journeyId": "jrn-14",
+      "journeyName": "SweetVale \u2014 The Candy Aisle Stops Growing",
+      "company": "SweetVale",
+      "industry": "FMCG \u2014 confectionery",
+      "domain": "FMCG",
+      "businessProblem": "Portfolio concentrated in declining segments",
+      "decision": "Whether to defend the candy core or enter health and wellness snacking, and how.",
+      "timeframe": "Prior MAT to year 3",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 5 \u2014 confectionery growth strategy and health-and-wellness entry",
+      "rightsStatus": "Structure-only reference \u2014 brand fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: segment growth map, competitor share slope, portfolio treemap, brand-stretch versus new-brand decision.",
+      "analyticalApproach": "Portfolio choices",
+      "drills": [
+        { "drillId": "charts-journey-740", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Mix-Shift Analysis", "estimatedMinutes": 6, "exhibits": ["bubble \u00b7 Segments \u2014 Size, Growth and SweetVale Presence", "treemap \u00b7 SweetVale Portfolio Value by Segment"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-741" },
+        { "drillId": "calculations-journey-741", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Price\u2013Volume\u2013Mix Analysis", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 Category and SweetVale Value by Segment", "slope (multi-line) \u00b7 Value Share by Player"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-742" },
+        { "drillId": "structures-journey-742", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Structure Prioritization", "estimatedMinutes": 11, "exhibits": ["stacked-100 \u00b7 Confectionery Category Value Mix", "line \u00b7 Health and Wellness Snacking \u2014 Retail Value by Year", "sensitivity-table \u00b7 Entry Route Economics and Brand Risk"], "rubric": "Expert calculation 30/15/20/20/15", "modelAnswer": true, "nextInJourney": "charts-journey-743" }
+      ]
+    },
+    {
+      "journeyId": "jrn-15",
+      "journeyName": "CleanCo \u00d7 GreenMart \u2014 The Plan Both Sides Can Sign",
+      "company": "CleanCo",
+      "industry": "FMCG \u2014 home and fabric care",
+      "domain": "Commercial strategy",
+      "businessProblem": "Retailer mix trading the category down",
+      "decision": "Which joint business plan to take to a key retailer whose own numbers argue the other way.",
+      "timeframe": "Current year to next year",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 4 \u2014 fabric care joint business plan with a key retailer",
+      "rightsStatus": "Structure-only reference \u2014 brands fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: segment contribution table, retailer KPI comparison, liquid-versus-powder penetration gap, buyer-versus-supplier reconciliation.",
+      "analyticalApproach": "Channel strategy",
+      "drills": [
+        { "drillId": "charts-journey-743", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Mix-Shift Analysis", "estimatedMinutes": 6, "exhibits": ["stacked-100 \u00b7 Fabric-Cleaning Value Mix", "combo \u00b7 Volume Growth and Value Growth by Retailer"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-744" },
+        { "drillId": "calculations-journey-744", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Unit Economics and Customer Value", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 Retailer Shopper KPIs", "grouped-bar \u00b7 Liquid and Powder Share of Wash Loads"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-745" },
+        { "drillId": "structures-journey-745", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Conflicting Evidence Structure", "estimatedMinutes": 12, "exhibits": ["waterfall \u00b7 Sources of Next-Year Value Growth at GreenMart", "heatmap \u00b7 Value Growth by Segment and Retailer", "sensitivity-table \u00b7 Joint Business Plan Options"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-746" }
+      ]
+    },
+    {
+      "journeyId": "jrn-16",
+      "journeyName": "ActiveShield \u2014 The Benefit Space Nobody Owns",
+      "company": "ActiveShield",
+      "industry": "Beauty and personal care",
+      "domain": "Marketing",
+      "businessProblem": "Line extension into an underserved consumer segment",
+      "decision": "Which benefit space, which ingredient anchor, and how to deploy a VND 30bn launch.",
+      "timeframe": "Year 1 launch plan",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 6 \u2014 advanced-care body wash for men",
+      "rightsStatus": "Structure-only reference \u2014 brand fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: benefit-space search map, sub-benefit CAGR versus short-term growth scatter, trending-ingredient ranking, campaign framework.",
+      "analyticalApproach": "Marketing effectiveness",
+      "drills": [
+        { "drillId": "charts-journey-746", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Trend Analysis", "estimatedMinutes": 6, "exhibits": ["bubble \u00b7 Body-Wash Benefit Spaces", "stacked-area \u00b7 Ingredient Search Volume by Year"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "market-sizing-journey-747" },
+        { "drillId": "market-sizing-journey-747", "stage": 2, "stageRole": "Implication", "skill": "market-sizing", "difficulty": "hard", "drillType": "TAM, SAM, and SOM", "estimatedMinutes": 8, "exhibits": ["market-sizing-table \u00b7 Addressable Men\u2019s Advanced-Care Market", "waterfall \u00b7 From Urban Male Population to Addressable Users"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "creativity-journey-748" },
+        { "drillId": "creativity-journey-748", "stage": 3, "stageRole": "Decision", "skill": "creativity", "difficulty": "expert", "drillType": "Customer Experience Redesign", "estimatedMinutes": 11, "exhibits": ["scatter \u00b7 Advanced-Care Sub-Benefits", "financial-table \u00b7 Ingredient Candidates", "stacked-bar \u00b7 Proposed Twelve-Month Deployment"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-749" }
+      ]
+    },
+    {
+      "journeyId": "jrn-17",
+      "journeyName": "PacificBev \u2014 The Profit That Improved Without Revenue",
+      "company": "PacificBev",
+      "industry": "FMCG \u2014 beverages",
+      "domain": "Finance",
+      "businessProblem": "Profitability improving while volume declines",
+      "decision": "Which three actions to take to the board after a margin-expansion year.",
+      "timeframe": "Y1\u2013Y3",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 7 \u2014 beverage finance deep dive, version A",
+      "rightsStatus": "Structure-only reference \u2014 company fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: three-year P&L, volume down with revenue up, volume-mix-price variance, competitor benchmark. Volume \u22121% with gross revenue +1% on a favourable mix is preserved as the central puzzle.",
+      "analyticalApproach": "Profitability recovery",
+      "drills": [
+        { "drillId": "charts-journey-749", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Growth vs Profitability", "estimatedMinutes": 6, "exhibits": ["combo \u00b7 Net Revenue and Margin Trend", "financial-table \u00b7 Three-Year Profit and Loss"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-750" },
+        { "drillId": "calculations-journey-750", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Price\u2013Volume\u2013Mix Analysis", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 Volume, Mix and Realised Price by SKU Family", "grouped-bar \u00b7 Volume by SKU Family"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-751" },
+        { "drillId": "structures-journey-751", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Executive Recommendation Structure", "estimatedMinutes": 11, "exhibits": ["waterfall \u00b7 Y2 to Y3 NOPBT Bridge", "financial-table \u00b7 Y3 Competitor Benchmark", "heatmap \u00b7 Performance Indexed to Best in Class"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-752" }
+      ]
+    },
+    {
+      "journeyId": "jrn-18",
+      "journeyName": "PacificBev \u2014 The Peak and the Reversal",
+      "company": "PacificBev",
+      "industry": "FMCG \u2014 beverages",
+      "domain": "Finance",
+      "businessProblem": "Profit collapse after a record year",
+      "decision": "Which margin-recovery lever to commit to, and how much volume to risk.",
+      "timeframe": "Y4\u2013Y7",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 16 \u2014 beverage finance deep dive, version B with the year narrative reversed",
+      "rightsStatus": "Structure-only reference \u2014 company fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Deliberate mirror of jrn-17 as the source brief requires: the middle year is the peak, the mix shifts AWAY from high-margin SKUs, and the variance analysis runs in reverse (volume +12.2, mix \u221241.8, price +45.3 against jrn-17\u2019s volume \u22127.5, mix +7.8, price +7.3).",
+      "analyticalApproach": "Profitability recovery",
+      "drills": [
+        { "drillId": "charts-journey-752", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Performance Diagnosis", "estimatedMinutes": 6, "exhibits": ["combo \u00b7 Net Revenue and Margin Trend", "financial-table \u00b7 Three-Year Profit and Loss"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-753" },
+        { "drillId": "calculations-journey-753", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Profitability Bridge", "estimatedMinutes": 8, "exhibits": ["waterfall \u00b7 Y5 to Y6 NOPBT Bridge", "financial-table \u00b7 Volume, Mix and Realised Price by SKU Family"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-754" },
+        { "drillId": "structures-journey-754", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Conflicting Evidence Structure", "estimatedMinutes": 12, "exhibits": ["slope (multi-line) \u00b7 Gross Margin by SKU Family", "grouped-bar \u00b7 Y6 Margin Benchmark", "sensitivity-table \u00b7 Recovery Options for Y7"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-755" }
+      ]
+    },
+    {
+      "journeyId": "jrn-19",
+      "journeyName": "FrostyBite \u2014 The Premium Entrant",
+      "company": "FrostyBite",
+      "industry": "FMCG \u2014 frozen desserts",
+      "domain": "Commercial strategy",
+      "businessProblem": "Premium entrant disrupting a single-incumbent category",
+      "decision": "What to delist, what to reprice, and whether to launch a premium single-serve.",
+      "timeframe": "Last year to next year",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 14 \u2014 ice cream sales and profit recovery against a premium entrant",
+      "rightsStatus": "Structure-only reference \u2014 brands fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: P&L with fund-to-trade rising as a share of gross sales, share shift to the premium entrant, price and margin slope by SKU, convenience-channel SKU Pareto. The cannibalisation-versus-category-growth question is preserved and answered with a category volume index.",
+      "analyticalApproach": "Portfolio choices",
+      "drills": [
+        { "drillId": "charts-journey-755", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Performance Diagnosis", "estimatedMinutes": 6, "exhibits": ["combo \u00b7 Market Share by Quarter and Category Volume", "financial-table \u00b7 Profit and Loss"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-756" },
+        { "drillId": "calculations-journey-756", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Profitability Bridge", "estimatedMinutes": 7, "exhibits": ["waterfall \u00b7 Net Profit Bridge", "slope (multi-line) \u00b7 Gross Margin by Pack"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-757" },
+        { "drillId": "structures-journey-757", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Structure Prioritization", "estimatedMinutes": 12, "exhibits": ["pareto (combo) \u00b7 Convenience-Channel Sales by Line, Ranked", "heatmap \u00b7 Line Performance Indexed to Best in Channel", "sensitivity-table \u00b7 Range Actions and Their Economics"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-758" }
+      ]
+    },
+    {
+      "journeyId": "jrn-20",
+      "journeyName": "BakePure \u2014 Thirty Years Old and Feeling It",
+      "company": "BakePure",
+      "industry": "FMCG \u2014 packaged bakery",
+      "domain": "Marketing",
+      "businessProblem": "Brand equity decline driving volume loss",
+      "decision": "How to split VND 12bn between volume recovery and brand equity.",
+      "timeframe": "H1 this year to next twelve months",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 9 \u2014 soft cake brand rejuvenation",
+      "rightsStatus": "Structure-only reference \u2014 brand fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: three formats across four regions, declining Meaning and Differentiation against a low-cost challenger, a volume gap to recover and an equity target to hit on one fixed budget.",
+      "analyticalApproach": "Marketing effectiveness",
+      "drills": [
+        { "drillId": "charts-journey-758", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Root-Cause Analysis", "estimatedMinutes": 6, "exhibits": ["stacked-100 \u00b7 Volume Mix by Format and Region", "slope (multi-line) \u00b7 Brand Health"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-759" },
+        { "drillId": "calculations-journey-759", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Root-Cause Analysis", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 First-Half Volume Gap by Format and Region", "pareto (combo) \u00b7 Volume Gap by Cell, Ranked"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "creativity-journey-760" },
+        { "drillId": "creativity-journey-760", "stage": 3, "stageRole": "Decision", "skill": "creativity", "difficulty": "expert", "drillType": "Turnaround Levers", "estimatedMinutes": 12, "exhibits": ["grouped-bar \u00b7 Activity Efficiency \u2014 Volume and Equity per VND bn", "stacked-area \u00b7 Required Quarterly Recovery Path", "sensitivity-table \u00b7 Candidate Plans Against Both Targets"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-761" }
+      ]
+    },
+    {
+      "journeyId": "jrn-21",
+      "journeyName": "DairyPeak \u2014 Twenty to Forty",
+      "company": "DairyPeak",
+      "industry": "Dairy \u2014 out-of-home channel",
+      "domain": "Commercial strategy",
+      "businessProblem": "Channel collapse and margin erosion",
+      "decision": "Whether to rebuild the channel that closed or re-aim at venues that stayed open.",
+      "timeframe": "Y1\u2013Y4 and a four-year plan",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 10 \u2014 out-of-home dairy growth from 20% to 40% share",
+      "rightsStatus": "Structure-only reference \u2014 brand fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: four out-of-home channels with different growth rates, a volume series with a pandemic-shaped collapse, a falling gross margin, and a share ambition to size.",
+      "analyticalApproach": "Channel strategy",
+      "drills": [
+        { "drillId": "charts-journey-761", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Trend Analysis", "estimatedMinutes": 6, "exhibits": ["combo \u00b7 Volume by Route and Gross Margin", "stacked-bar \u00b7 Out-of-Home Volume by Channel"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "market-sizing-journey-762" },
+        { "drillId": "market-sizing-journey-762", "stage": 2, "stageRole": "Implication", "skill": "market-sizing", "difficulty": "hard", "drillType": "Capacity-Constrained Market Opportunity", "estimatedMinutes": 8, "exhibits": ["market-sizing-table \u00b7 From a Share Target to an Outlet Plan", "line \u00b7 Share Trajectory Under Three Plans"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-763" },
+        { "drillId": "structures-journey-763", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Executive Recommendation Structure", "estimatedMinutes": 12, "exhibits": ["waterfall \u00b7 Y3 to Y4 EBIT Bridge", "heatmap \u00b7 Volume Growth by Channel and Year", "sensitivity-table \u00b7 Four-Year Channel Strategies"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-764" }
+      ]
+    },
+    {
+      "journeyId": "jrn-22",
+      "journeyName": "PawJoy \u2014 A New Line in a Shifting Aisle",
+      "company": "PawJoy",
+      "industry": "Pet food",
+      "domain": "Commercial strategy",
+      "businessProblem": "Margin erosion as the channel mix shifts",
+      "decision": "Which new product concept to launch, and into which channels.",
+      "timeframe": "Y1\u2013Y3 and a launch plan",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 12 \u2014 pet food new product line",
+      "rightsStatus": "Structure-only reference \u2014 brand fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: three-year P&L with operating margin falling as revenue grows, channel volume shift toward online and specialty, concept evaluation scores, go-to-market channel weighting.",
+      "analyticalApproach": "Customer segmentation",
+      "drills": [
+        { "drillId": "charts-journey-764", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Growth vs Profitability", "estimatedMinutes": 6, "exhibits": ["combo \u00b7 Gross Sales and Operating Margin", "treemap \u00b7 Volume Share by Channel"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-765" },
+        { "drillId": "calculations-journey-765", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Profitability Bridge", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 Three-Year Profit and Loss", "waterfall \u00b7 Operating Margin Bridge"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "creativity-journey-766" },
+        { "drillId": "creativity-journey-766", "stage": 3, "stageRole": "Decision", "skill": "creativity", "difficulty": "expert", "drillType": "Channel or Go-to-Market Innovation", "estimatedMinutes": 12, "exhibits": ["bubble \u00b7 Concept Test \u2014 Uniqueness Against Purchase Intent", "grouped-bar \u00b7 Volume Share by Channel", "financial-table \u00b7 Channel Economics for the New Line"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-767" }
+      ]
+    },
+    {
+      "journeyId": "jrn-23",
+      "journeyName": "Summit Gear \u2014 Buying the Backpack Market",
+      "company": "Summit Gear",
+      "industry": "Outdoor equipment",
+      "domain": "Finance",
+      "businessProblem": "Acquisition decision in a maturing segment",
+      "decision": "Whether to acquire a backpack specialist at the asking price, bid lower, or walk away.",
+      "timeframe": "Y1\u2013Y6 and a three-year outlook",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 13 \u2014 outdoor equipment acquisition decision",
+      "rightsStatus": "Structure-only reference \u2014 both companies fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: acquirer with three divisions and a declining backpack line, target with military and expedition backpack lines growing fast, asking price well above the analyst valuation range, and the cannibalisation-versus-market-shift question.",
+      "analyticalApproach": "Portfolio choices",
+      "drills": [
+        { "drillId": "charts-journey-767", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Trend Analysis", "estimatedMinutes": 6, "exhibits": ["grouped-bar \u00b7 Summit Gear Revenue by Division", "line \u00b7 Ridgeline Outdoor Revenue by Division"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-768" },
+        { "drillId": "calculations-journey-768", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Investment Return and Sensitivity", "estimatedMinutes": 8, "exhibits": ["financial-table \u00b7 Ridgeline Valuation at Four Prices", "waterfall \u00b7 From Market Capitalisation to the Asking Price"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-769" },
+        { "drillId": "structures-journey-769", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Executive Recommendation Structure", "estimatedMinutes": 12, "exhibits": ["sensitivity-table \u00b7 Scenario Economics Three Years Out", "combo \u00b7 Standalone and Combined Revenue With Group Gross Margin", "scatter \u00b7 Divisional Positioning"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-770" }
+      ]
+    },
+    {
+      "journeyId": "jrn-24",
+      "journeyName": "TangyTaste \u2014 Top Three in Five Years",
+      "company": "TangyTaste",
+      "industry": "FMCG \u2014 cooking and table sauces",
+      "domain": "Commercial strategy",
+      "businessProblem": "Sub-scale brand with a share ambition",
+      "decision": "Which route to a top-three position also clears a double-digit margin condition.",
+      "timeframe": "Current year to year five",
+      "provenance": "constructed-from-source-structure",
+      "sourceSlot": "Source case 15 \u2014 soy sauce business strategy",
+      "rightsStatus": "Structure-only reference \u2014 brand fictional per the mandated mapping, all figures constructed.",
+      "reviewStatus": "source-aligned",
+      "reviewNote": "Built against the supplied source structure: number-five brand in a fish-sauce-dominated category, three product lines with one at low awareness and high quality perception, a weak northern region, and a supplier demanding a price increase for extended payment terms.",
+      "analyticalApproach": "Market entry",
+      "drills": [
+        { "drillId": "charts-journey-770", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Benchmark and Performance Gap", "estimatedMinutes": 6, "exhibits": ["heatmap \u00b7 Growth Variance to Target by Line and Region", "scatter \u00b7 Awareness Against Purchase Rate Among Those Aware"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-771" },
+        { "drillId": "calculations-journey-771", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Break-Even Analysis", "estimatedMinutes": 8, "exhibits": ["financial-table \u00b7 Income Statement and the Supplier Scenario", "waterfall \u00b7 Operating Profit Bridge"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-772" },
+        { "drillId": "structures-journey-772", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Multi-Stage Problem Structure", "estimatedMinutes": 12, "exhibits": ["treemap \u00b7 Cooking and Table Sauce Category by Brand", "slope (multi-line) \u00b7 Soy Sauce Share Today and Year Five", "sensitivity-table \u00b7 Five Routes to a Top-Three Position"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-701" }
+      ]
+    }
+  ]
+}

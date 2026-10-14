@@ -1,16 +1,16 @@
 {
   "enabled": true,
-  "provider": "stripe",
+  "provider": "payos",
   "mode": "connect",
   "stripeAccountId": "acct_1TsdTLRiFhWGE5zE",
-  "platformFeeBps": 500,
+  "platformFeeBps": 0,
   "currency": "VND",
   "businessName": "Casemate",
   "supportEmail": "benjaminnguyen.work03@gmail.com",
   "defaultTrialDays": 0,
   "defaultPriceCents": 200000,
-  "defaultInterval": "month",
   "defaultPriceId": null,
+  "defaultInterval": "month",
   "plans": [
     {
       "id": "first_month_5",

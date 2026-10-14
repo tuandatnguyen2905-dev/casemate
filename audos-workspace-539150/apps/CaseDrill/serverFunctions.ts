@@ -20,8 +20,8 @@
 // v1.1 HARDENS THE PAYWALL: the hook's generate action verifies Casemate
 // Pro server-side against platform-owned records (see the "Casemate Pro
 // server-side boundary" block inside the hook code), so direct
-// hook calls that bypass components/PaywallGate.tsx — or agent tool calls
-// that slip past the prompt boundary — no longer create drills for
+// hook calls that bypass components/PaywallGate.tsx - or agent tool calls
+// that slip past the prompt boundary - no longer create drills for
 // non-subscribers. The grade action stays ungated so an already-generated
 // drill can always be finished (graded or skipped) and nobody is left
 // mid-rep. Non-subscribers get a structured HTTP 402
@@ -57,14 +57,14 @@
 import { CASEMATE_ENTITLEMENT_SNIPPET, ACCESS_RULES_VERSION } from '../../lib/proAccess';
 
 export const MICRO_DRILL_HOOK_NAME = 'casemate-micro-drill-v1';
-export const MICRO_DRILL_HOOK_VERSION = 'micro-drill-v1.5';
+export const MICRO_DRILL_HOOK_VERSION = 'micro-drill-v1.6';
 export const MICRO_DRILL_WORKSPACE_ID = 'workspace-539150';
 
-// The Case Pool hook — used only to DERIVE the correct agent-tool endpoint
+// The Case Pool hook - used only to DERIVE the correct agent-tool endpoint
 // shape from its already-registered, known-working registry entries.
 const CASE_POOL_HOOK_NAME = 'casemate-case-drill-v4';
 
-const HOOK_DESCRIPTION = `Casemate Case Drill micro-drill engine: generates short timed sub-skill reps (structures, case math as linked multi-layer mini-cases solved step by step, market sizing, calculations, charts, creativity) personalized to the candidate's matched industry/function, and grades each rep with teaching-grade coaching: how to approach that drill type, a model answer, feedback on the candidate's own answer, and concrete next steps; generation is gated server-side to Casemate Pro subscribers or an active free-access window — launch week / founding-member month (${MICRO_DRILL_HOOK_VERSION}, ${ACCESS_RULES_VERSION})`;
+const HOOK_DESCRIPTION = `Casemate Case Drill micro-drill engine: generates short timed sub-skill reps (structures, case math as linked multi-layer mini-cases solved step by step, market sizing, calculations, charts, creativity) personalized to the candidate's matched industry/function, and grades each rep with teaching-grade coaching: how to approach that drill type, a model answer, feedback on the candidate's own answer, and concrete next steps; generation is gated server-side to Casemate Pro subscribers or an active free-access window - launch week / founding-member month (${MICRO_DRILL_HOOK_VERSION}, ${ACCESS_RULES_VERSION})`;
 
 export interface MicroSkillSpec {
   id: string;
@@ -73,7 +73,7 @@ export interface MicroSkillSpec {
   seconds: number;
 }
 
-// Client-side catalog (mirrors SKILLS inside the hook code — keep in sync).
+// Client-side catalog (mirrors SKILLS inside the hook code - keep in sync).
 export const MICRO_SKILLS: MicroSkillSpec[] = [
   { id: 'structures', label: 'Structures', hint: 'Build a MECE framework for a fresh prompt', seconds: 120 },
   { id: 'case_math', label: 'Case Math', hint: 'A linked mini-case: chained data, layered questions', seconds: 300 },
@@ -235,19 +235,19 @@ const SKILLS = {
   creativity: {
     label: 'Creativity',
     seconds: 90,
-    task: 'One brainstorm prompt asking for AT LEAST 8 distinct ideas fast (e.g. "List ways a Vietnamese supermarket chain could cut food waste"). No numbers needed; drill_data may hold one line of context. The test is volume + variety under time pressure.',
+    task: 'One brainstorm prompt asking for AT LEAST 8 distinct ideas fast (e.g. "List ways a Vietnamese supermarket chain could cut food waste"). No numbers needed; drill_data may hold one line of context. The test is volume + variety under time pressure. Do not prescribe a named framework or a fixed set of buckets; the candidate may use any clear structure that fits the question.',
     judge: 'Reward the count of genuinely DISTINCT ideas (target 8+), variety across categories (customer, operations, partners, pricing, technology...), and at least one non-obvious idea. Duplicates and rephrasings count once.',
-    model: 'model_answer = 10 strong example ideas grouped under 3-4 short category labels.',
+    model: 'model_answer must begin "ONE POSSIBLE APPROACH - other structures can work too." Then give 8-10 strong example ideas using a clear structure chosen specifically for this question (for example customer journey, time horizon, value chain, stakeholder, or another suitable organising logic), followed by one concrete recommendation and one key risk. Vary the organising logic across questions; do not default to one fixed framework or imply this is the only valid answer.',
     approach: [
       'Generate first, judge later - evaluating while brainstorming is what kills volume under a clock.',
-      'Sweep categories systematically: customers, product, pricing, operations, partners, technology - 2-3 ideas per bucket beats 8 from one.',
-      'Push past the first five obvious ideas - the non-obvious ones after them are where the credit is.',
-      'Close by flagging the 1-2 ideas you would explore first, so raw volume ends with judgment.',
+      'Choose an organising logic that fits this question - such as journey stages, stakeholders, time horizons, or the value chain - rather than forcing every prompt into the same buckets.',
+      'Use that structure to search for genuinely different angles, then push past the first five obvious ideas to find at least one non-obvious option.',
+      'Close by flagging the 1-2 ideas you would explore first and why, so raw volume ends with judgment.',
     ],
     practice: [
       'Run another Creativity rep and aim to beat your idea COUNT from this one - volume is the trainable part.',
-      'Practice the category sweep on everyday problems (how could this cafe sell more?) so the buckets become automatic.',
-      'In your next full case, use the same sweep when the prompt asks "what else could they do?".',
+      'Practice switching organising logics on everyday problems - customer journey, stakeholders, time horizons, or the value chain - and notice which one best fits each prompt.',
+      'In your next full case, choose a clear structure tailored to the exact creative question, then finish with a prioritised recommendation.',
     ],
   },
 };
@@ -413,7 +413,7 @@ if (!sessionId) {
   respond(401, { error: 'Sign in to run and save your micro-drills.' });
 } else if (action === 'generate' && !(await ensureProForGenerate())) {
   // ensureProForGenerate already responded (402 subscription_required or
-  // 503 subscription_check_unavailable) — nothing more to do here.
+  // 503 subscription_check_unavailable) - nothing more to do here.
 } else if (action === 'generate') {
   const assessment = await latestAssessment();
   const direction = asObject(assessment && assessment.result_json);
@@ -552,6 +552,9 @@ if (!sessionId) {
       targetFunction ? 'Candidate\'s matched function (flavor only, never mention it): ' + targetFunction + '.' : '',
       recentPrompts.length ? 'DO NOT reuse the topics or company situations of these recent drills:\n' + recentPrompts.join('\n') : '',
       'MODEL ANSWER: ' + skill.model + ' It must be fully correct and self-contained - the candidate studies it right after the drill.',
+      skillId === 'creativity'
+        ? 'CREATIVITY FLEXIBILITY: explicitly frame the response as one possible approach, acknowledge that multiple valid structures exist, choose an organising logic suited to THIS prompt, and keep the result structured with a concrete recommendation. Never name or enforce one framework as mandatory.'
+        : '',
       'Formatting: prompt is 1-3 short sentences (plain text). drill_data uses REAL line breaks, one "- label: value" fact per line, or an empty string when the sub-skill needs no data. model_answer uses REAL line breaks and simple UPPERCASE section labels where helpful - no markdown syntax.',
       skillId === 'charts'
         ? 'Also return exhibit_chart: {"type":"bar|line|pie","title":"string","unit":"string","data":[{"label":"string","value":123}]} with 3-5 points, plain numbers only (unit goes in the unit field). The EXACT same numbers must appear in drill_data.'
@@ -820,7 +823,7 @@ export function ensureMicroDrillServerFunction(): Promise<void> {
 // The signed-in email stored by the platform session (EmailGate / register).
 // Sent to the hook only as a VERIFICATION HINT: the hook independently proves
 // the email belongs to this session via the platform session store and checks
-// the subscription server-side — a forged value cannot unlock anything, but a
+// the subscription server-side - a forged value cannot unlock anything, but a
 // correct one saves the hook from enumerating subscribers.
 function storedSessionEmail(): string | null {
   try {

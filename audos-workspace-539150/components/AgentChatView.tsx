@@ -2585,11 +2585,10 @@ function ProgramGuidePanel({
     limit: 10,
   }) as { data: Array<{ result_json?: unknown }>; loading: boolean };
 
-  // Rubric layer (rubric-fit-v1): active ideal-candidate rubrics are shared
-  // rows — newest active version per program wins. Opening the panel also
-  // opportunistically seeds DRAFT rubrics for programs that have none yet
-  // (never touches existing rows, so founder-locked rubrics are safe).
-  const { data: rubricRows } = (window as any).useWorkspaceDB('program_fit_rubrics', {
+  // Unified program catalog (rubric-fit-v3): active ideal-candidate rubrics
+  // are read from the same canonical rows as sector, attractiveness,
+  // difficulty, tier, timelines, requirements, functions, and official URLs.
+  const { data: rubricRows } = (window as any).useWorkspaceDB('fa_company_programs', {
     orderBy: { column: 'id', direction: 'desc' },
     limit: 200,
     shared: true,

@@ -7,6 +7,92 @@ export interface CasemateCheckoutOptions {
   source?: string;
 }
 
+export interface CasematePayosOrder {
+  orderCode: string;
+  amount: number;
+  description: string;
+  qrCode: string;
+  checkoutUrl: string;
+  planId?: string;
+  planTitle?: string;
+  days?: number;
+}
+
+export interface CasematePayosStatus {
+  status: 'pending' | 'paid' | 'cancelled';
+  expiresAt?: string | null;
+}
+
+const PAYOS_HOOK_URL = '/api/workspaces/workspace-539150/hooks/casemate-payos-v1/execute';
+
+function payosPlan(planId: PricingPlanId) {
+  if (planId === PRICING.first_month_promo.id) {
+    return { amount: PRICING.first_month_promo.vnd, days: PRICING.first_month_promo.days, title: PRICING.first_month_promo.title, description: 'Casemate Promo' };
+  }
+  if (planId === PRICING.monthly.id) {
+    return { amount: PRICING.monthly.vnd, days: PRICING.monthly.days, title: PRICING.monthly.title, description: 'Casemate Monthly' };
+  }
+  if (planId === PRICING.six_month.id) {
+    return { amount: PRICING.six_month.vnd, days: PRICING.six_month.days, title: PRICING.six_month.title, description: 'Casemate 6 Months' };
+  }
+  throw new Error('Vui lòng chọn một gói Casemate Pro hiện tại.');
+}
+
+async function callCasematePayosHook<T>(sessionId: string, body: Record<string, unknown>): Promise<T> {
+  const response = await fetch(PAYOS_HOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Session-Id': sessionId },
+    credentials: 'include',
+    body: JSON.stringify(body),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.success === false) {
+    throw new Error(result.error || 'PayOS đang tạm thời gián đoạn. Vui lòng thử lại.');
+  }
+  return result as T;
+}
+
+export async function startCasematePayosPayment(sessionId: string, userEmail: string, planId: PricingPlanId, buyerName: string) {
+  const normalizedEmail = String(userEmail || '').trim().toLowerCase();
+  if (!sessionId || !normalizedEmail) throw new Error('Vui lòng đăng nhập trước khi thanh toán qua PayOS.');
+  const selectedPlan = payosPlan(planId);
+  const payment = await callCasematePayosHook<Record<string, any>>(sessionId, {
+    action: 'create',
+    planId,
+    buyerName: String(buyerName || '').trim() || normalizedEmail.split('@')[0],
+    customerEmail: normalizedEmail,
+  });
+  const qrCode = String(payment.qrCode || '');
+  const checkoutUrl = String(payment.checkoutUrl || '');
+  if (!qrCode && !checkoutUrl) throw new Error('PayOS không trả về mã QR hoặc đường dẫn thanh toán. Vui lòng thử lại.');
+  return {
+    orderCode: String(payment.orderCode || ''),
+    amount: Number(payment.amount || selectedPlan.amount),
+    description: String(payment.description || selectedPlan.description),
+    qrCode,
+    checkoutUrl,
+    planId,
+    planTitle: selectedPlan.title,
+    days: selectedPlan.days,
+  } as CasematePayosOrder;
+}
+
+async function reconcileCasematePayosPayment(sessionId: string, orderCode: string): Promise<CasematePayosStatus> {
+  const result = await callCasematePayosHook<Record<string, any>>(sessionId, { action: 'status', orderCode });
+  const status: CasematePayosStatus['status'] = result.status === 'paid'
+    ? 'paid'
+    : result.status === 'cancelled'
+      ? 'cancelled'
+      : 'pending';
+  return { status, expiresAt: result.expiresAt || null };
+}
+
+export async function checkCasematePayosPayment(sessionId: string, userEmail: string, orderCode: string) {
+  const normalizedEmail = String(userEmail || '').trim().toLowerCase();
+  if (!sessionId || !normalizedEmail) throw new Error('Vui lòng đăng nhập trước khi kiểm tra thanh toán PayOS.');
+  return reconcileCasematePayosPayment(sessionId, orderCode);
+}
+
 function paymentAppId(spaceId: string) {
   const runtimeWindow = window as Window & { __APP_ID__?: string; __SPACE_ID__?: string };
   return runtimeWindow.__APP_ID__ || runtimeWindow.__SPACE_ID__ || spaceId;
@@ -112,6 +198,16 @@ export async function confirmCasemateCheckout(sessionId: string, checkoutSession
   const data = await response.json().catch(() => ({}));
   if (!response.ok || data.success === false) throw new Error(data.error || 'Payment is still being confirmed.');
   return data;
+}
+
+export function payosReturnFromLocation() {
+  const params = new URLSearchParams(window.location.search);
+  const state = params.get('payos');
+  if (state !== 'success' && state !== 'cancel' && state !== 'cancelled') return null;
+  return {
+    state: state === 'success' ? 'success' as const : 'cancelled' as const,
+    orderCode: params.get('order_code') || params.get('orderCode') || '',
+  };
 }
 
 export function checkoutReturnFromLocation() {

@@ -6,6 +6,7 @@ export type ProgramIndustryId =
   | 'insurance'
   | 'tech'
   | 'consulting'
+  | 'advertising'
   | 'logistics'
   | 'industrial'
   | 'healthcare'
@@ -27,6 +28,7 @@ export const PROGRAM_INDUSTRIES: ProgramIndustry[] = [
   { id: 'insurance', label: 'Insurance', shortLabel: 'Insurance' },
   { id: 'tech', label: 'E-commerce & Technology', shortLabel: 'Technology' },
   { id: 'consulting', label: 'Consulting & Professional Services', shortLabel: 'Consulting' },
+  { id: 'advertising', label: 'Advertising & Marketing', shortLabel: 'Advertising & Marketing' },
   { id: 'logistics', label: 'Logistics & Supply Chain', shortLabel: 'Logistics' },
   { id: 'industrial', label: 'Industry & Manufacturing', shortLabel: 'Industry' },
   { id: 'healthcare', label: 'Healthcare & Pharmaceuticals', shortLabel: 'Healthcare' },
@@ -35,6 +37,10 @@ export const PROGRAM_INDUSTRIES: ProgramIndustry[] = [
   { id: 'other', label: 'Other', shortLabel: 'Other' },
 ];
 
+// CV/company sector mapping lookup source: WorkspaceDB table
+// `company_industry_keywords` (match `keyword` case-insensitively and use its
+// canonical `sector`). Keep these static matchers only as a fallback until the
+// fit-engine integration task wires that table into the parser.
 const COMPANY_MATCHERS: Array<[ProgramIndustryId, string[]]> = [
   ['fmcg', ['unilever', "l'oreal", 'p&g', 'nestle', 'suntory pepsico', 'carlsberg', 'ab inbev', 'mondelez', 'masan group', 'vinamilk', 'c.p group']],
   ['tobacco', ['japan tobacco international', 'jti', 'british american tobacco', 'bat']],
@@ -42,6 +48,7 @@ const COMPANY_MATCHERS: Array<[ProgramIndustryId, string[]]> = [
   ['banking', ['techcombank', 'vpbank', 'uob vietnam', 'hsbc', 'msb', 'acb', 'home credit']],
   ['insurance', ['manulife', 'prudential']],
   ['tech', ['shopee', 'seamoney', 'monee', 'tiktok', 'garena', 'vng', 'zalo', 'spx', 'nab innovation', 'pmax', 'momo']],
+  ['advertising', ['wpp media', 'le bros']],
   ['consulting', ['deloitte', 'ey', 'dksh', 'turner & townsend']],
   ['logistics', ['expeditors', 'maersk']],
   ['industrial', ['bosch', 'hitachi energy', 'schneider electric', 'techtronic industries', 'panasonic', 'knauf', 'texas instruments', 'oppo', 'avery dennison']],

@@ -21,12 +21,20 @@ import type { LucideIcon } from 'lucide-react';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import PaywallGate from '../../components/PaywallGate';
 
+interface CompanyEntry {
+  id: string;
+  name: string;
+  logoUrl: string;
+  description: string;
+}
+
 interface IndustryCategory {
   id: string;
   name: string;
   description: string;
   icon: LucideIcon;
   subcategories?: IndustryCategory[];
+  companies?: CompanyEntry[];
 }
 
 type KnowledgeKind = 'Industry' | 'Company';
@@ -60,6 +68,26 @@ const INDUSTRY_CATEGORIES: IndustryCategory[] = [
         name: 'Dairy',
         description: 'Cold-chain operations, category economics, consumer demand, and brand growth.',
         icon: Milk,
+        companies: [
+          {
+            id: 'vinamilk',
+            name: 'Vinamilk',
+            logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/4f78091b-b63b-43f2-8010-e895572d673c.png',
+            description: 'Vietnam’s leading dairy company with a broad domestic and international portfolio.',
+          },
+          {
+            id: 'frieslandcampina',
+            name: 'FrieslandCampina',
+            logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/8e89ac00-f967-4045-a16b-e87a6f94fb34.png',
+            description: 'A global dairy cooperative serving Vietnam through trusted consumer brands.',
+          },
+          {
+            id: 'th-true-milk',
+            name: 'TH true MILK',
+            logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/fc26a243-599c-4c75-89be-87f29618dcae.png',
+            description: 'A Vietnamese dairy producer known for its farm-to-table positioning.',
+          },
+        ],
       },
     ],
   },
@@ -216,11 +244,11 @@ function KnowledgeSectionBlock({
   return (
     <section aria-labelledby={`${section.kind.toLowerCase()}-knowledge-heading`}>
       <header
-        className="flex min-h-32 items-center justify-between gap-5 rounded-2xl px-5 py-6 text-white shadow-sm sm:px-8"
+        className="flex min-h-32 items-center justify-between gap-5 rounded-2xl bg-[var(--space-brand-primary-600)] px-5 py-6 text-white shadow-sm sm:px-8"
         style={{
           background: section.kind === 'Industry'
-            ? 'linear-gradient(135deg, var(--space-brand-primary-600), var(--space-brand-primary-800))'
-            : 'linear-gradient(135deg, var(--space-brand-primary-800), var(--space-neutral-900))',
+            ? 'linear-gradient(135deg, var(--space-brand-primary-600), color-mix(in srgb, var(--space-brand-primary-600) 74%, black))'
+            : 'linear-gradient(135deg, var(--space-brand-primary-600), color-mix(in srgb, var(--space-brand-primary-600) 58%, black))',
         }}
       >
         <div>
@@ -271,6 +299,109 @@ function KnowledgeSectionBlock({
         </div>
       )}
     </section>
+  );
+}
+
+function CompanyKnowledgeSection({
+  industryName,
+  companies,
+  onSelectCompany,
+}: {
+  industryName: string;
+  companies: CompanyEntry[];
+  onSelectCompany: (company: CompanyEntry) => void;
+}) {
+  return (
+    <section aria-labelledby="company-knowledge-heading">
+      <header
+        className="flex min-h-32 items-center justify-between gap-5 rounded-2xl bg-[var(--space-brand-primary-600)] px-5 py-6 text-white shadow-sm sm:px-8"
+        style={{ background: 'linear-gradient(135deg, var(--space-brand-primary-600), color-mix(in srgb, var(--space-brand-primary-600) 58%, black))' }}
+      >
+        <div>
+          <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-white">{industryName}</p>
+          <h2 id="company-knowledge-heading" className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">Company Knowledge</h2>
+          <p className="mt-1 text-sm font-semibold text-white">Choose a company before exploring its profile and competitive position.</p>
+        </div>
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white bg-white text-[var(--space-text-brand)] sm:h-16 sm:w-16" aria-hidden>
+          <Users className="h-7 w-7 sm:h-8 sm:w-8" />
+        </span>
+      </header>
+
+      <div className="mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3" data-testid="company-list">
+        {companies.map((company) => (
+          <button
+            key={company.id}
+            type="button"
+            onClick={() => onSelectCompany(company)}
+            className="group flex min-h-[210px] w-[280px] shrink-0 snap-start flex-col rounded-2xl border border-[var(--space-brand-primary-200)] bg-[var(--space-surface-card)] p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--space-brand-primary-400)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--space-brand-primary-600)]"
+            data-testid={`company-${company.id}`}
+          >
+            <span className="flex h-24 w-full items-center justify-center overflow-hidden rounded-xl border border-[var(--space-brand-primary-200)] bg-white p-3">
+              <img src={company.logoUrl} alt={`${company.name} logo`} className="h-full w-full object-contain" />
+            </span>
+            <h3 className="mt-4 text-base font-black text-[var(--space-text-primary)]">{company.name}</h3>
+            <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--space-text-muted)]">{company.description}</p>
+            <span className="mt-auto flex items-center justify-between pt-3 text-[11px] font-bold text-[var(--space-text-brand)]">
+              Open company
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CompanyDetailPage({
+  company,
+  industryName,
+  onBack,
+}: {
+  company: CompanyEntry;
+  industryName: string;
+  onBack: () => void;
+}) {
+  const [openCard, setOpenCard] = useState<OpenCard | null>(null);
+  const companySection = KNOWLEDGE_SECTIONS.find((section) => section.kind === 'Company')!;
+
+  return (
+    <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-7 sm:py-8 lg:px-10">
+      <nav className="flex flex-wrap items-center gap-2 text-xs font-bold text-[var(--space-text-muted)]" aria-label="Breadcrumb">
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-2 text-[var(--space-text-secondary)] hover:border-[var(--space-brand-primary-300)] hover:text-[var(--space-text-brand)]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to {industryName} companies
+        </button>
+        <span aria-hidden>/</span>
+        <span>{industryName}</span>
+        <span aria-hidden>/</span>
+        <span className="text-[var(--space-text-primary)]">{company.name}</span>
+      </nav>
+
+      <header className="mt-5 flex flex-col gap-4 rounded-2xl border border-[var(--space-brand-primary-200)] bg-[var(--space-surface-card)] p-5 shadow-sm sm:flex-row sm:items-center sm:p-6">
+        <span className="flex h-28 w-full shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[var(--space-brand-primary-200)] bg-white p-4 sm:w-48">
+          <img src={company.logoUrl} alt={`${company.name} logo`} className="h-full w-full object-contain" />
+        </span>
+        <div>
+          <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[var(--space-text-brand)]">{industryName} company</p>
+          <h1 className="mt-1 text-2xl font-black text-[var(--space-text-primary)] sm:text-3xl">{company.name}</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--space-text-muted)]">{company.description}</p>
+        </div>
+      </header>
+
+      <div className="mt-7">
+        <KnowledgeSectionBlock
+          section={companySection}
+          industryName={company.name}
+          openCard={openCard}
+          onOpenCard={(card) => setOpenCard({ kind: 'Company', card })}
+          onCloseCard={() => setOpenCard(null)}
+        />
+      </div>
+    </main>
   );
 }
 
@@ -359,10 +490,12 @@ function SubcategoryList({
 function CategoryDetail({
   category,
   onBack,
+  onSelectCompany,
   backLabel = 'All industries',
 }: {
   category: IndustryCategory;
   onBack: () => void;
+  onSelectCompany?: (company: CompanyEntry) => void;
   backLabel?: string;
 }) {
   const [openCard, setOpenCard] = useState<OpenCard | null>(null);
@@ -395,7 +528,14 @@ function CategoryDetail({
       </header>
 
       <div className="mt-7 space-y-10">
-        {KNOWLEDGE_SECTIONS.map((section) => (
+        {KNOWLEDGE_SECTIONS.map((section) => section.kind === 'Company' && category.companies?.length ? (
+          <CompanyKnowledgeSection
+            key={section.kind}
+            industryName={category.name}
+            companies={category.companies}
+            onSelectCompany={(company) => onSelectCompany?.(company)}
+          />
+        ) : (
           <KnowledgeSectionBlock
             key={section.kind}
             section={section}
@@ -413,8 +553,10 @@ function CategoryDetail({
 function DomainKnowledgeScreen() {
   const { trackEvent } = useSpaceRuntime();
   const openedRef = useRef(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<IndustryCategory | null>(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState<IndustryCategory | null>(null);
+  const [selectedCompany, setSelectedCompany] = useState<CompanyEntry | null>(null);
 
   useEffect(() => {
     if (openedRef.current) return;
@@ -430,22 +572,35 @@ function DomainKnowledgeScreen() {
     }
   }, [trackEvent]);
 
+  useEffect(() => {
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+  }, [selectedCategory, selectedSubcategory, selectedCompany]);
+
   const returnToIndustryList = () => {
+    setSelectedCompany(null);
     setSelectedSubcategory(null);
     setSelectedCategory(null);
   };
 
   const selectCategory = (category: IndustryCategory) => {
+    setSelectedCompany(null);
     setSelectedSubcategory(null);
     setSelectedCategory(category);
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-[var(--space-surface-page)]">
-      {selectedSubcategory ? (
+    <div ref={scrollContainerRef} className="h-full overflow-y-auto bg-[var(--space-surface-page)]">
+      {selectedCompany ? (
+        <CompanyDetailPage
+          company={selectedCompany}
+          industryName={selectedSubcategory?.name || selectedCategory?.name || 'Industry'}
+          onBack={() => setSelectedCompany(null)}
+        />
+      ) : selectedSubcategory ? (
         <CategoryDetail
           category={selectedSubcategory}
           onBack={() => setSelectedSubcategory(null)}
+          onSelectCompany={setSelectedCompany}
           backLabel={`All ${selectedCategory?.name || 'FMCG'} categories`}
         />
       ) : selectedCategory?.subcategories?.length ? (
@@ -455,7 +610,11 @@ function DomainKnowledgeScreen() {
           onBack={returnToIndustryList}
         />
       ) : selectedCategory ? (
-        <CategoryDetail category={selectedCategory} onBack={returnToIndustryList} />
+        <CategoryDetail
+          category={selectedCategory}
+          onBack={returnToIndustryList}
+          onSelectCompany={setSelectedCompany}
+        />
       ) : (
         <CategoryList onSelect={selectCategory} />
       )}

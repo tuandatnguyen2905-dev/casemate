@@ -258,11 +258,11 @@ const APP_FONT =
   '"Figtree", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 
 const PRIMARY_BUTTON =
-  'inline-flex items-center justify-center gap-2 rounded-lg bg-[#0b57d0] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0842a0] focus:outline-none focus:ring-2 focus:ring-[#c2e7ff] disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center gap-2 rounded-lg bg-[#CC0000] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#B91C1C] focus:outline-none focus:ring-2 focus:ring-[rgba(204,0,0,0.15)] disabled:cursor-not-allowed disabled:opacity-50';
 const SECONDARY_BUTTON =
-  'inline-flex items-center justify-center gap-2 rounded-lg border border-[#dadce0] bg-white px-4 py-2.5 text-sm font-medium text-[#3c4043] transition hover:bg-[#f8fafd] focus:outline-none focus:ring-2 focus:ring-[#d3e3fd] disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center gap-2 rounded-lg border border-[#dadce0] bg-white px-4 py-2.5 text-sm font-medium text-[#3c4043] transition hover:bg-[#f8fafd] focus:outline-none focus:ring-2 focus:ring-[rgba(204,0,0,0.15)] disabled:cursor-not-allowed disabled:opacity-50';
 const FIELD =
-  'w-full rounded-lg border border-[#dadce0] bg-white px-3.5 py-2.5 text-sm text-[#202124] outline-none transition placeholder:text-[#9aa0a6] hover:border-[#bdc1c6] focus:border-[#0b57d0] focus:ring-2 focus:ring-[#d3e3fd]';
+  'w-full rounded-lg border border-[#dadce0] bg-white px-3.5 py-2.5 text-sm text-[#202124] outline-none transition placeholder:text-[#9aa0a6] hover:border-[#bdc1c6] focus:border-[#CC0000] focus:ring-2 focus:ring-[rgba(204,0,0,0.15)]';
 
 function useAppFont(): void {
   useEffect(() => {
@@ -494,7 +494,7 @@ function SetupFlow({
     >
       <div className="mx-auto w-full max-w-4xl">
         <div className="mb-5 flex items-center gap-3 px-1">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0b57d0] text-white shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#CC0000] text-white shadow-sm">
             <Mail className="h-[18px] w-[18px]" />
           </div>
           <div>
@@ -517,7 +517,7 @@ function SetupFlow({
                     <li
                       key={step.number}
                       className={`flex min-w-0 items-center gap-3 rounded-lg px-2 py-2 ${
-                        active ? 'bg-[#e8f0fe]' : ''
+                        active ? 'bg-[#FFF5F5]' : ''
                       }`}
                     >
                       <span
@@ -525,7 +525,7 @@ function SetupFlow({
                           complete
                             ? 'bg-[#188038] text-white'
                             : active
-                              ? 'bg-[#0b57d0] text-white'
+                              ? 'bg-[#CC0000] text-white'
                               : 'border border-[#dadce0] bg-white text-[#80868b]'
                         }`}
                       >
@@ -533,7 +533,7 @@ function SetupFlow({
                       </span>
                       <span
                         className={`hidden truncate text-sm md:block ${
-                          active ? 'font-semibold text-[#174ea6]' : 'text-[#5f6368]'
+                          active ? 'font-semibold text-[#CC0000]' : 'text-[#5f6368]'
                         }`}
                       >
                         {step.label}
@@ -546,7 +546,7 @@ function SetupFlow({
 
             <main className="flex min-h-[420px] flex-col p-6 sm:p-8 lg:p-10">
               <div className="mb-7">
-                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#0b57d0]">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#CC0000]">
                   Step {setupStage} of 4
                 </p>
                 <h2 className="text-2xl font-semibold tracking-[-0.025em] text-[#202124]">
@@ -568,7 +568,7 @@ function SetupFlow({
               <div className="flex-1">{children}</div>
 
               <div className="mt-8 flex items-start gap-2 rounded-xl bg-[#f8fafd] px-3.5 py-3 text-xs leading-5 text-[#5f6368]">
-                <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#0b57d0]" />
+                <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#CC0000]" />
                 <p>{AGENT_HINT}</p>
               </div>
             </main>
@@ -581,7 +581,7 @@ function SetupFlow({
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center bg-[#f7f8fa]">
-        <Loader2 className="h-6 w-6 animate-spin text-[#0b57d0]" />
+        <Loader2 className="h-6 w-6 animate-spin text-[#CC0000]" />
       </div>
     );
   }
@@ -597,7 +597,7 @@ function SetupFlow({
           <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#202124]">
             Your inbox is ready
           </h3>
-          <p className="mt-1 text-sm font-medium text-[#0b57d0]">{provisioned.address}</p>
+          <p className="mt-1 text-sm font-medium text-[#CC0000]">{provisioned.address}</p>
           <p className="mt-3 max-w-lg text-sm leading-6 text-[#5f6368]">
             You can send and receive now. Mailroom checks incoming messages every day and
             prepares drafts for you to review.
@@ -664,7 +664,7 @@ function SetupFlow({
 
         <div className="space-y-2">
           <label className="text-sm font-semibold text-[#3c4043]">Email address</label>
-          <div className="flex overflow-hidden rounded-lg border border-[#dadce0] bg-white transition focus-within:border-[#0b57d0] focus-within:ring-2 focus-within:ring-[#d3e3fd]">
+          <div className="flex overflow-hidden rounded-lg border border-[#dadce0] bg-white transition focus-within:border-[#CC0000] focus-within:ring-2 focus-within:ring-[rgba(204,0,0,0.15)]">
             <input
               className="min-w-0 flex-1 border-0 bg-transparent px-3.5 py-2.5 text-sm text-[#202124] outline-none placeholder:text-[#9aa0a6]"
               value={username}
@@ -697,9 +697,9 @@ function SetupFlow({
         )}
 
         {proposal ? (
-          <div className="space-y-4 rounded-xl border border-[#aecbfa] bg-[#f8fbff] p-4">
+          <div className="space-y-4 rounded-xl border border-[rgba(204,0,0,0.15)] bg-[#FFF5F5] p-4">
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#d3e3fd] text-[#0b57d0]">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#FFF5F5] text-[#CC0000]">
                 <Wallet className="h-4 w-4" />
               </div>
               <div>
@@ -787,12 +787,12 @@ function SetupFlow({
                   className="bg-white p-3.5 text-xs"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="rounded-md bg-[#e8f0fe] px-2 py-1 font-semibold text-[#174ea6]">
+                    <span className="rounded-md bg-[#FFF5F5] px-2 py-1 font-semibold text-[#CC0000]">
                       {r.type}
                       {r.priority != null ? ` (priority ${r.priority})` : ''}
                     </span>
                     <button
-                      className="flex items-center gap-1 rounded-md px-2 py-1.5 font-medium text-[#0b57d0] transition hover:bg-[#e8f0fe]"
+                      className="flex items-center gap-1 rounded-md px-2 py-1.5 font-medium text-[#CC0000] transition hover:bg-[#FFF5F5]"
                       onClick={() => copyRecord(r)}
                     >
                       <Copy className="h-3 w-3" />
@@ -839,7 +839,7 @@ function SetupFlow({
   if (status.needsDomain) {
     return stepShell(
       <div className="rounded-xl border border-[#e0e3e7] bg-[#f8fafd] p-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#e8f0fe] text-[#0b57d0]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#FFF5F5] text-[#CC0000]">
           <Globe className="h-5 w-5" />
         </div>
         <h3 className="mt-4 text-base font-semibold text-[#202124]">Start with your domain</h3>
@@ -861,12 +861,12 @@ function SetupFlow({
         {status.domainCandidates.map((c) => (
           <li key={c.domain}>
             <button
-              className="group w-full rounded-xl border border-[#dadce0] bg-white px-4 py-3 text-left text-sm transition hover:border-[#aecbfa] hover:bg-[#f8fbff] disabled:cursor-not-allowed disabled:opacity-50"
+              className="group w-full rounded-xl border border-[#dadce0] bg-white px-4 py-3 text-left text-sm transition hover:border-[rgba(204,0,0,0.15)] hover:bg-[#FFF5F5] disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!!busy || c.mailgunInboundConflict}
               onClick={() => registerDomain(c.domain)}
             >
               <span className="flex items-center gap-2 font-semibold text-[#202124]">
-                <Globe className="h-4 w-4 text-[#80868b] transition group-hover:text-[#0b57d0]" />
+                <Globe className="h-4 w-4 text-[#80868b] transition group-hover:text-[#CC0000]" />
                 {c.domain}
               </span>
               {c.mailgunInboundConflict && (
@@ -914,7 +914,7 @@ function Avatar({ seed, size = 'md' }: { seed: string | null; size?: 'sm' | 'md'
   const cls = size === 'sm' ? 'h-6 w-6 text-xs' : 'h-8 w-8 text-sm';
   return (
     <div
-      className={`flex ${cls} shrink-0 items-center justify-center rounded-full bg-[#e8f0fe] font-semibold text-[#185abc]`}
+      className={`flex ${cls} shrink-0 items-center justify-center rounded-full bg-[#FFF5F5] font-semibold text-[#CC0000]`}
     >
       {initialOf(seed)}
     </div>
@@ -939,17 +939,17 @@ function FolderButton({
       onClick={onClick}
       className={`relative flex w-full items-center justify-center gap-3 rounded-full px-3 py-2.5 text-sm transition-colors md:justify-start ${
         active
-          ? 'bg-[#d3e3fd] font-semibold text-[#041e49]'
-          : 'text-[#3c4043] hover:bg-[#e9eef6]'
+          ? 'bg-[#FFF5F5] font-semibold text-[#111827]'
+          : 'text-[#3c4043] hover:bg-[#FFF5F5]'
       }`}
     >
-      <Icon className={`h-[18px] w-[18px] shrink-0 ${active ? 'text-[#0b57d0]' : 'text-[#5f6368]'}`} />
+      <Icon className={`h-[18px] w-[18px] shrink-0 ${active ? 'text-[#CC0000]' : 'text-[#5f6368]'}`} />
       <span className="hidden flex-1 truncate text-left md:block">{label}</span>
       {typeof count === 'number' && count > 0 && (
         <span
           className={`absolute ml-6 mt-[-18px] min-w-[18px] shrink-0 rounded-full px-1 text-center text-[10px] font-semibold leading-[18px] md:static md:ml-0 md:mt-0 md:px-1.5 md:text-[11px] md:leading-5 ${
             active
-              ? 'bg-white text-[#174ea6]'
+              ? 'bg-white text-[#CC0000]'
               : 'bg-[#e8eaed] text-[#5f6368]'
           }`}
         >
@@ -982,15 +982,15 @@ function ThreadRow({
       onClick={onOpen}
       className={`group relative flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors ${
         selected
-          ? 'bg-[#e8f0fe] ring-1 ring-inset ring-[#d3e3fd]'
+          ? 'bg-[#FFF5F5] ring-1 ring-inset ring-[rgba(204,0,0,0.15)]'
           : awaiting
-            ? 'bg-[#fbfdff] hover:bg-[#f2f6fc]'
+            ? 'bg-[#FFF5F5] hover:bg-[#FFF5F5]'
             : 'hover:bg-[#f8fafd]'
       }`}
     >
       {awaiting && (
         <span
-          className="absolute left-1 top-[18px] h-2 w-2 rounded-full bg-[#0b57d0]"
+          className="absolute left-1 top-[18px] h-2 w-2 rounded-full bg-[#CC0000]"
           title="Unread"
         />
       )}
@@ -1004,7 +1004,7 @@ function ThreadRow({
           >
             {who}
           </span>
-          <span className={`shrink-0 text-xs ${awaiting ? 'font-medium text-[#0b57d0]' : 'text-[#80868b]'}`}>
+          <span className={`shrink-0 text-xs ${awaiting ? 'font-medium text-[#CC0000]' : 'text-[#80868b]'}`}>
             {formatWhen(t.lastAt)}
           </span>
         </div>
@@ -1301,8 +1301,8 @@ export default function BusinessEmail() {
         style={{ fontFamily: APP_FONT }}
       >
         <div className="flex max-w-sm flex-col items-center rounded-2xl border border-[#e0e3e7] bg-white p-8 shadow-[0_8px_24px_rgba(60,64,67,0.06)]">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#e8f0fe]">
-            <Lock className="h-5 w-5 text-[#0b57d0]" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF5F5]">
+            <Lock className="h-5 w-5 text-[#CC0000]" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-[#202124]">Owner only</h3>
           <p className="mt-2 text-sm leading-6 text-[#5f6368]">
@@ -1317,7 +1317,7 @@ export default function BusinessEmail() {
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center bg-[#f7f8fa]">
-        <Loader2 className="h-6 w-6 animate-spin text-[#0b57d0]" />
+        <Loader2 className="h-6 w-6 animate-spin text-[#CC0000]" />
       </div>
     );
   }
@@ -1385,7 +1385,7 @@ export default function BusinessEmail() {
       {/* ── Column 1: folder rail ───────────────────────────────────── */}
       <aside className="flex w-[72px] shrink-0 flex-col gap-1 border-r border-[#e0e3e7] bg-[#f7f8fa] px-2 py-3 md:w-60 md:px-3">
         <div className="mb-4 flex items-center justify-center gap-3 px-2 md:justify-start">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0b57d0] text-white shadow-sm">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#CC0000] text-white shadow-sm">
             <Mail className="h-[18px] w-[18px]" />
           </div>
           <div className="hidden min-w-0 md:block">
@@ -1397,7 +1397,7 @@ export default function BusinessEmail() {
         </div>
 
         <button
-          className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-2xl bg-[#c2e7ff] px-3 text-sm font-semibold text-[#001d35] shadow-[0_1px_2px_rgba(60,64,67,0.15)] transition hover:bg-[#b3deff] hover:shadow-[0_2px_6px_rgba(60,64,67,0.18)] md:justify-start md:px-4"
+          className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-2xl bg-[#CC0000] px-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(60,64,67,0.15)] transition hover:bg-[#B91C1C] hover:shadow-[0_2px_6px_rgba(60,64,67,0.18)] md:justify-start md:px-4"
           onClick={() => {
             setCompose({ ...emptyCompose, inboxAddress: defaultInbox });
             setSendError(null);
@@ -1465,7 +1465,7 @@ export default function BusinessEmail() {
                 {folderTitle[folder]}
               </h2>
               {folder === 'inbox' && awaitingCount > 0 && (
-                <span className="rounded-full bg-[#e8f0fe] px-2 py-0.5 text-xs font-semibold text-[#174ea6]">
+                <span className="rounded-full bg-[#FFF5F5] px-2 py-0.5 text-xs font-semibold text-[#CC0000]">
                   {awaitingCount}
                 </span>
               )}
@@ -1480,7 +1480,7 @@ export default function BusinessEmail() {
           </div>
 
           {folder !== 'assistant' && (
-            <label className="flex items-center gap-2 rounded-xl bg-[#f1f3f4] px-3 py-2.5 transition focus-within:bg-white focus-within:ring-2 focus-within:ring-[#d3e3fd]">
+            <label className="flex items-center gap-2 rounded-xl bg-[#f1f3f4] px-3 py-2.5 transition focus-within:bg-white focus-within:ring-2 focus-within:ring-[rgba(204,0,0,0.15)]">
               <Search className="h-4 w-4 shrink-0 text-[#5f6368]" />
               <input
                 className="min-w-0 flex-1 border-0 bg-transparent text-sm text-[#202124] outline-none placeholder:text-[#80868b]"
@@ -1560,7 +1560,7 @@ export default function BusinessEmail() {
                       onClick={() => openDraft(d.id)}
                       className={`flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors ${
                         selected
-                          ? 'bg-[#e8f0fe] ring-1 ring-inset ring-[#d3e3fd]'
+                          ? 'bg-[#FFF5F5] ring-1 ring-inset ring-[rgba(204,0,0,0.15)]'
                           : 'hover:bg-[#f8fafd]'
                       }`}
                     >
@@ -1590,13 +1590,13 @@ export default function BusinessEmail() {
         {/* Assistant panel */}
         {folder === 'assistant' && (
           <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3">
-            <div className="rounded-2xl bg-[#e8f0fe] p-4">
+            <div className="rounded-2xl bg-[#FFF5F5] p-4">
               <div className="mb-3 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#0b57d0] shadow-sm">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#CC0000] shadow-sm">
                   <Sparkles className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#041e49]">Mailroom assistant</p>
+                  <p className="text-sm font-semibold text-[#111827]">Mailroom assistant</p>
                   <p className="text-[11px] text-[#5f6368]">
                     {concierge?.lastProcessedAt
                       ? `Last checked ${formatWhen(concierge.lastProcessedAt)}`
@@ -1628,10 +1628,10 @@ export default function BusinessEmail() {
                 <p className="mt-0.5 text-[11px] text-[#80868b]">Need reply</p>
               </div>
               <button
-                className="rounded-xl border border-[#e0e3e7] bg-white p-3 text-left transition hover:border-[#aecbfa] hover:bg-[#f8fbff]"
+                className="rounded-xl border border-[#e0e3e7] bg-white p-3 text-left transition hover:border-[rgba(204,0,0,0.15)] hover:bg-[#FFF5F5]"
                 onClick={() => openFolder('drafts')}
               >
-                <p className="text-lg font-semibold text-[#0b57d0]">{drafts.length}</p>
+                <p className="text-lg font-semibold text-[#CC0000]">{drafts.length}</p>
                 <p className="mt-0.5 text-[11px] text-[#80868b]">Drafts</p>
               </button>
               <div className="rounded-xl border border-[#e0e3e7] bg-white p-3">
@@ -1657,7 +1657,7 @@ export default function BusinessEmail() {
                     }}
                   />
                   <button
-                    className="flex shrink-0 items-center justify-center rounded-lg bg-[#0b57d0] px-3 text-white transition hover:bg-[#0842a0]"
+                    className="flex shrink-0 items-center justify-center rounded-lg bg-[#CC0000] px-3 text-white transition hover:bg-[#B91C1C]"
                     onClick={askAgent}
                     title="Ask Mailroom"
                   >
@@ -1771,7 +1771,7 @@ export default function BusinessEmail() {
             <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
               {threadLoading ? (
                 <div className="flex justify-center py-8">
-                  <Loader2 className="h-5 w-5 animate-spin text-[#0b57d0]" />
+                  <Loader2 className="h-5 w-5 animate-spin text-[#CC0000]" />
                 </div>
               ) : (
                 <div className="mx-auto max-w-3xl space-y-4">
@@ -1780,7 +1780,7 @@ export default function BusinessEmail() {
                       key={m.id}
                       className={`rounded-xl border p-4 text-sm shadow-[0_1px_2px_rgba(60,64,67,0.04)] sm:p-5 ${
                         m.direction === 'outbound'
-                          ? 'border-[#d3e3fd] bg-[#f8fbff]'
+                          ? 'border-[rgba(204,0,0,0.15)] bg-[#FFF5F5]'
                           : 'border-[#e0e3e7] bg-white'
                       }`}
                     >
@@ -1816,7 +1816,7 @@ export default function BusinessEmail() {
               )}
             </div>
             <div className="border-t border-[#e0e3e7] bg-white/90 p-3 backdrop-blur sm:p-4">
-              <div className="mx-auto max-w-3xl rounded-xl border border-[#dadce0] bg-white p-3 shadow-[0_2px_8px_rgba(60,64,67,0.08)] focus-within:border-[#aecbfa] focus-within:ring-2 focus-within:ring-[#e8f0fe]">
+              <div className="mx-auto max-w-3xl rounded-xl border border-[#dadce0] bg-white p-3 shadow-[0_2px_8px_rgba(60,64,67,0.08)] focus-within:border-[rgba(204,0,0,0.15)] focus-within:ring-2 focus-within:ring-[rgba(204,0,0,0.15)]">
                 {replyTo && (
                   <p className="mb-2 text-xs font-medium text-[#5f6368]">
                     Reply to {displayName(replyTo)}
@@ -1831,7 +1831,7 @@ export default function BusinessEmail() {
                 />
                 <div className="mt-2 flex justify-end">
                   <button
-                    className={`flex shrink-0 items-center gap-2 rounded-full bg-[#0b57d0] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#0842a0] ${
+                    className={`flex shrink-0 items-center gap-2 rounded-full bg-[#CC0000] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#B91C1C] ${
                       replySending || !replyBody.trim() ? 'cursor-not-allowed opacity-40' : ''
                     }`}
                     disabled={replySending || !replyBody.trim()}
@@ -1899,7 +1899,7 @@ export default function BusinessEmail() {
                       />
                       <div className="flex justify-end border-t border-[#e0e3e7] px-4 py-3">
                         <button
-                          className={`flex items-center gap-2 rounded-full bg-[#0b57d0] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0842a0] ${
+                          className={`flex items-center gap-2 rounded-full bg-[#CC0000] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#B91C1C] ${
                             draftBusy ? 'cursor-not-allowed opacity-40' : ''
                           }`}
                           disabled={!!draftBusy}
@@ -1985,7 +1985,7 @@ export default function BusinessEmail() {
                   Cancel
                 </button>
                 <button
-                  className={`flex items-center gap-2 rounded-full bg-[#0b57d0] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0842a0] ${
+                  className={`flex items-center gap-2 rounded-full bg-[#CC0000] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#B91C1C] ${
                     sendState || !compose.to || !compose.subject || !compose.bodyPlain
                       ? 'cursor-not-allowed opacity-40'
                       : ''

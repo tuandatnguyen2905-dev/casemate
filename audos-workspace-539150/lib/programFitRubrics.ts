@@ -11,12 +11,10 @@
 // scores are stable across runs, comparable across candidates, and fully
 // evidence-backed. The LLM never invents criteria per session.
 //
-// STORAGE: WorkspaceDB table `program_fit_rubrics` — one row per program per
-// rubric VERSION; the NEWEST active row per program_id wins. Rows seeded from
-// this module are founder-supplied and locked (verified=true, source='founder').
-// A verified row must NEVER be overwritten: to change one, insert a new row
-// with version+1 (same founder-moat mechanism as industry_brief_overrides and
-// culture_company_profiles).
+// STORAGE: the unified WorkspaceDB table `programs` — one row per
+// program, combining catalog ranking fields with the structured rubric,
+// timeline, requirements, functions, and official links. The table is
+// server-managed; browser code reads it but never seeds or mutates it.
 //
 // FALLBACK GUARANTEE (no regression): a program with no active rubric row
 // keeps the current free-form matching path — the rubric layer only ADDS
@@ -63,7 +61,7 @@ import rubricPart19a from '../data/program-fit-rubrics-19a.json';
 import rubricPart19b from '../data/program-fit-rubrics-19b.json';
 import { classifyProgramCompany, type ProgramIndustryId } from './programIndustries';
 
-export const RUBRIC_TABLE = 'program_fit_rubrics';
+export const RUBRIC_TABLE = 'programs';
 
 export type RubricLevelId = 'chua_dat' | 'dat' | 'noi_bat';
 
@@ -249,10 +247,10 @@ export function parseRubricRow(row: any): ProgramFitRubricRow | null {
   return {
     row_id: Number(row.id) || 0,
     program_id: programId,
-    program_name: String(row.program_name || (draft ? draft.program_name : programId)),
-    company: draft ? draft.company : String(row.program_name || '').split(' — ')[0] || programId,
-    program: draft ? draft.program : String(row.program_name || programId),
-    industry: (row.industry || (draft ? draft.industry : classifyProgramCompany(String(row.program_name || '').split(' — ')[0] || programId))) as ProgramIndustryId,
+    program_name: String(row.rubric_program_name || (row.company && row.program_name ? `${row.company} — ${row.program_name}` : '') || (draft ? draft.program_name : programId)),
+    company: draft ? draft.company : String(row.company || row.rubric_program_name || '').split(' — ')[0] || programId,
+    program: draft ? draft.program : String(row.program_name || row.rubric_program_name || programId),
+    industry: (row.rubric_industry || (draft ? draft.industry : classifyProgramCompany(String(row.company || row.rubric_program_name || '').split(' — ')[0] || programId))) as ProgramIndustryId,
     criteria,
     ideal_profile_text: String(row.ideal_profile_text || ''),
     example_admit_profile: row.example_admit_profile ? String(row.example_admit_profile) : null,
@@ -293,13 +291,11 @@ export function findActiveRubricForProgram(rows: any[], company: string, program
 }
 
 /* ----------------------------------------------------------------------------
- * Runtime seeding — founder workbook rubrics for programs with no row yet.
+ * Runtime coverage check.
  *
- * Runs opportunistically from the space UI (ProgramGuidePanel / direction
- * card). Inserts ONLY missing program_ids with verified=true — it can never
- * touch an existing row, so a founder-locked rubric is never overwritten.
- * Duplicate seeds from a rare concurrent first-visit race are harmless: the
- * newest-active-wins selection collapses them deterministically.
+ * The unified catalog is server-managed. This client helper now verifies that
+ * every bundled founder rubric has a matching program_id; it performs no
+ * browser-side inserts or updates.
  * --------------------------------------------------------------------------*/
 
 function rowsOf(value: any): any[] {
@@ -330,45 +326,8 @@ async function seedMissingDrafts(): Promise<boolean> {
   const db = typeof window !== 'undefined' ? (window as any).__workspaceDb : null;
   if (!db?.from) return false;
   const res = await db.from(RUBRIC_TABLE, { shared: true }).limit(500).get();
-  const existingRows = rowsOf(res);
-  const existing = new Set(existingRows.map((row: any) => String(row.program_id || '')));
-  const missing = PROGRAM_FIT_RUBRIC_DRAFTS.filter((draft) => !existing.has(draft.program_id));
-  let allOk = true;
-  for (const draft of missing) {
-    try {
-      await db.from(RUBRIC_TABLE).insert({
-        program_id: draft.program_id,
-        program_name: draft.program_name,
-        industry: draft.industry,
-        criteria_json: draft.criteria,
-        ideal_profile_text: draft.ideal_profile_text,
-        example_admit_profile: null,
-        verified: true,
-        active: true,
-        version: draft.version,
-        source: 'founder',
-      });
-    } catch (e) {
-      // Insert can fail for unauthenticated sessions or a concurrent seeder —
-      // seedAttempt resets on failure so a later authenticated visit retries.
-      allOk = false;
-    }
-  }
-
-  // Additive taxonomy migration for rows that predate the industry column.
-  // Verified rubric content is untouched; only the new classification field is set.
-  for (const row of existingRows.filter((item: any) => !item.industry)) {
-    const draft = findDraftRubric(String(row.program_id || ''));
-    const company = draft?.company || String(row.program_name || '').split(' — ')[0];
-    try {
-      await db.from(RUBRIC_TABLE, { shared: true }).update(Number(row.id), {
-        industry: draft?.industry || classifyProgramCompany(company),
-      });
-    } catch (e) {
-      allOk = false;
-    }
-  }
-  return allOk;
+  const existing = new Set(rowsOf(res).map((row: any) => String(row.program_id || '')));
+  return PROGRAM_FIT_RUBRIC_DRAFTS.every((draft) => existing.has(draft.program_id));
 }
 
 /* ----------------------------------------------------------------------------

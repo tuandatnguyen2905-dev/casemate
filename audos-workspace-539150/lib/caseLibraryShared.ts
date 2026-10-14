@@ -2,7 +2,7 @@
  * caseLibraryShared.ts — shared types and formatting utilities for Casemate's
  * two prebuilt question libraries:
  *   • lib/caseMathLibrary.ts  → 100 case-math questions (Case Drill)
- *   • lib/casePoolLibrary.ts  → 100 full cases (Case Pool)
+ *   • lib/casePoolLibrary.ts  → 114 full cases (100 core + 14 shared Case Journeys)
  *
  * WHY THE CONTENT IS BUILT IN CODE INSTEAD OF LIVING IN JSON FILES:
  * the space compiler cannot import JSON files at runtime (see the note in
@@ -10,15 +10,15 @@
  * builder function (the same parameters always produce the same question, and
  * every number in a solution is COMPUTED, never hand-typed), while
  * data/case-math-library.json / data/case-pool-library.json are MANIFESTS:
- * the full list of 100 questions with distribution, templates, and exhibit
- * kinds for readers and future jobs to cross-check. When editing a library,
+ * they record distributions, templates, eligibility, and exhibit kinds for
+ * readers and future jobs to cross-check. When editing a library,
  * update both JSON files too.
  *
  * There is no AI call anywhere on this path: drawing a question is a
  * synchronous, instant operation.
  */
 
-export type CaseDifficulty = 'easy' | 'medium' | 'hard';
+export type CaseDifficulty = 'easy' | 'medium' | 'hard' | 'expert';
 
 export interface ExhibitTable {
   type: 'table';
@@ -50,9 +50,10 @@ export const DIFFICULTY_LABELS: Record<CaseDifficulty, string> = {
   easy: 'Easy',
   medium: 'Medium',
   hard: 'Hard',
+  expert: 'Expert',
 };
 
-export const DIFFICULTY_ORDER: CaseDifficulty[] = ['easy', 'medium', 'hard'];
+export const DIFFICULTY_ORDER: CaseDifficulty[] = ['easy', 'medium', 'hard', 'expert'];
 
 /* --------------------------------------------------------------------------
  * Vietnamese-style number formatting: dots for thousands, comma for decimals.
