@@ -15,11 +15,11 @@ export interface CurriculumGlossaryIndexEntry {
 
 /** The standard 27-lesson Domain Knowledge blueprint shared by the curricula built on it. */
 export const STANDARD_LESSON_BLUEPRINT: ReadonlyArray<{ key: string; module: string; title: string; aliases?: string[] }> = [
-  { key: '1.1', module: 'How the Industry Works', title: 'Industry Definition & Scope' },
-  { key: '1.2', module: 'How the Industry Works', title: 'Industry History & Development' },
-  { key: '1.3', module: 'How the Industry Works', title: 'Global Market Overview' },
-  { key: '1.4', module: 'How the Industry Works', title: 'Vietnam Market Overview' },
-  { key: '1.5', module: 'How the Industry Works', title: 'Industry Drivers & External Factors' },
+  { key: '1.1', module: 'How the Industry Works', title: 'Industry Definition & Scope', aliases: ['What the Industry Includes'] },
+  { key: '1.2', module: 'How the Industry Works', title: 'Industry History & Development', aliases: ['How the Industry Evolved'] },
+  { key: '1.3', module: 'How the Industry Works', title: 'Global Market Overview', aliases: ['How the Global Market Is Structured'] },
+  { key: '1.4', module: 'How the Industry Works', title: 'Vietnam Market Overview', aliases: ['How the Vietnam Market Works'] },
+  { key: '1.5', module: 'How the Industry Works', title: 'Industry Drivers & External Factors', aliases: ['What Drives Industry Change'] },
   { key: '2.1', module: 'How Value Moves Through the Industry', title: 'Value Chain Overview' },
   { key: '2.2', module: 'How Value Moves Through the Industry', title: 'Upstream Activities' },
   { key: '2.3', module: 'How Value Moves Through the Industry', title: 'Midstream Activities' },
@@ -78,6 +78,14 @@ export const GLOSSARY_INDEX: ReadonlyArray<CurriculumGlossaryIndexEntry> = [
     industryIds: ['banking-fintech'],
     lessonKeys: ALL_BLUEPRINT_KEYS.filter((key) => key !== '4.5'),
     load: () => import('./data/paymentsFintechGlossary').then((mod) => mod.PAYMENTS_FINTECH_GLOSSARY),
+  },
+  {
+    curriculumId: 'fmcg-tobacco',
+    industry: 'FMCG',
+    subIndustry: 'Tobacco & Next-Generation Products',
+    industryIds: ['fmcg-tobacco'],
+    lessonKeys: ['1.1', '1.2', '1.3', '1.4', '1.5', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6'],
+    load: () => import('./data/tobaccoGlossary').then((mod) => mod.FMCG_TOBACCO_GLOSSARY),
   },
 ];
 
