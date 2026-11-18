@@ -72,7 +72,7 @@ export const FINANCE_SHARED_TERMS: GlossaryTermDef[] = [
     sourceIds: ['fin-cb-key-terms', 'fin-fatf'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'fin.npl', term: 'Non-performing loan', acronym: 'NPL', fullForm: 'Non-Performing Loan', aliases: ['non-performing loans', 'NPLs'], category: 'essential-concepts',
+    id: 'fin.npl', term: 'Non-performing loan', acronym: 'NPL', fullForm: 'Non-Performing Loan', aliases: ['non-performing loans', 'NPLs', 'nợ xấu'], category: 'essential-concepts',
     definitionEn: 'A loan that is unlikely to be repaid in full and on time. In Vietnam, NPLs are loans classified in debt Groups 3, 4 and 5 under SBV debt-classification rules.',
     definitionVi: 'Nợ xấu (NPL): khoản vay có nguy cơ không được hoàn trả đầy đủ, đúng hạn. Tại Việt Nam, nợ xấu là các khoản nợ thuộc nhóm 3, 4 và 5 theo quy định phân loại nợ của NHNN.',
     businessContextEn: 'Rising NPLs force lenders to set aside more provisions, which reduces profit and, eventually, capital.',
@@ -121,7 +121,7 @@ export const FINANCE_SHARED_TERMS: GlossaryTermDef[] = [
     sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'fin.nim', term: 'Net interest margin', acronym: 'NIM', fullForm: 'Net Interest Margin', category: 'financial-metrics',
+    id: 'fin.nim', term: 'Net interest margin', acronym: 'NIM', fullForm: 'Net Interest Margin', aliases: ['biên lãi ròng'], category: 'financial-metrics',
     definitionEn: 'Net interest income divided by average interest-earning assets—the spread a lender earns on its balance sheet, usually shown as a percentage.',
     definitionVi: 'Biên lãi thuần (NIM): thu nhập lãi thuần chia cho tài sản sinh lãi bình quân – mức chênh lệch lãi mà tổ chức cho vay thu được trên bảng cân đối, thường tính theo %.',
     businessContextEn: 'NIM is the headline profitability gauge for lenders; cheaper funding or higher-yield lending pushes it up.',
@@ -129,7 +129,7 @@ export const FINANCE_SHARED_TERMS: GlossaryTermDef[] = [
     sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'fin.nii', term: 'Net interest income', acronym: 'NII', fullForm: 'Net Interest Income', category: 'financial-metrics',
+    id: 'fin.nii', term: 'Net interest income', acronym: 'NII', fullForm: 'Net Interest Income', aliases: ['thu nhập lãi thuần'], category: 'financial-metrics',
     definitionEn: 'Interest income earned minus interest expense paid over a period; the main revenue line of most lenders.',
     definitionVi: 'Thu nhập lãi thuần (NII): thu nhập từ lãi trừ chi phí trả lãi trong kỳ; là nguồn doanh thu chính của phần lớn tổ chức cho vay.',
     businessContextEn: 'NII grows with loan volume and margin, so analysts split its growth into “more lending” versus “better spread”.',
@@ -137,7 +137,7 @@ export const FINANCE_SHARED_TERMS: GlossaryTermDef[] = [
     sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'fin.cost-of-funds', term: 'Cost of funds', aliases: ['funding cost', 'funding costs'], category: 'financial-metrics',
+    id: 'fin.cost-of-funds', term: 'Cost of funds', aliases: ['funding cost', 'funding costs', 'chi phí vốn'], category: 'financial-metrics',
     definitionEn: 'The weighted-average interest rate a lender pays across all its funding—deposits, interbank borrowing and issued bonds.',
     definitionVi: 'Chi phí vốn huy động: lãi suất bình quân gia quyền mà tổ chức cho vay phải trả trên toàn bộ nguồn vốn – tiền gửi, vay liên ngân hàng và trái phiếu phát hành.',
     businessContextEn: 'A lower cost of funds is a durable advantage: it widens margin without taking more credit risk.',
@@ -145,7 +145,7 @@ export const FINANCE_SHARED_TERMS: GlossaryTermDef[] = [
     sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'fin.liquidity', term: 'Liquidity', category: 'essential-concepts',
+    id: 'fin.liquidity', term: 'Liquidity', aliases: ['rủi ro thanh khoản'], category: 'essential-concepts',
     definitionEn: 'The ability to meet cash obligations—withdrawals, maturing debt, payments—when they fall due, without unacceptable loss.',
     definitionVi: 'Thanh khoản: khả năng đáp ứng các nghĩa vụ chi trả – rút tiền, nợ đến hạn, thanh toán – đúng hạn mà không chịu tổn thất quá mức.',
     businessContextEn: 'A profitable lender can still fail if it runs out of liquidity, which is why regulators set liquidity ratios.',
