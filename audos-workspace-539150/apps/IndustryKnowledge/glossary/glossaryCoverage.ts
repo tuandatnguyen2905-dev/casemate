@@ -203,7 +203,7 @@ export function glossaryCoverage(
     const mappedKeys = new Set<string>();
     entry.lessons.forEach((lesson) => {
       lessonsInspected += 1;
-      const ref = resolveGlossaryRef(lesson.identity);
+      const ref = resolveGlossaryRef(lesson.identity, index);
       if (!ref || !data) return;
       const lessonDef = data.lessons.find((item) => item.key === ref.lessonKey);
       if (!lessonDef) return;

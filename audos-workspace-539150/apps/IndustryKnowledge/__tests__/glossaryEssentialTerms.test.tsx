@@ -145,6 +145,15 @@ export async function runGlossaryEssentialTerms() {
     ok(!hasLessonGlossary('not-an-identity'), 'malformed identity resolved a glossary');
   });
 
+  await check('GL-15b', 'a curriculum title map resolves its own titles without leaking into other curricula', () => {
+    const retail = { ...GLOSSARY_INDEX[0], curriculumId: 'retail-test', industryIds: ['retail-test'], lessonKeys: ['2.2', '2.5'], lessonTitleKeys: { 'Sourcing & Supplier Partnerships': '2.2' } };
+    const index = [retail];
+    ok(resolveGlossaryRef('retail-test::How Value Moves Through the Industry::2.2 Sourcing & Supplier Partnerships', index)?.lessonKey === '2.2', 'curriculum title not resolved');
+    ok(!resolveGlossaryRef('retail-test::How Value Moves Through the Industry::Upstream Activities', index), 'blueprint title resolved to a key the curriculum gives another lesson');
+    ok(resolveGlossaryRef('retail-test::How Value Moves Through the Industry::Inputs, Outputs & Value Creation', index)?.lessonKey === '2.5', 'blueprint title stopped resolving');
+    ok(!resolveGlossaryRef('banking-commercial::How Value Moves Through the Industry::Sourcing & Supplier Partnerships'), 'a curriculum title map leaked into another curriculum');
+  });
+
   // Matching safety ------------------------------------------------------------------------
   await check('GL-06a', 'inline matching is whole-word, case-safe for acronyms and once per block', () => {
     const matchers = buildMatchers([

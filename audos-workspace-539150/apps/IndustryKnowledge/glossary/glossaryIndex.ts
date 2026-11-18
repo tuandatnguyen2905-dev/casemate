@@ -10,6 +10,12 @@ export interface CurriculumGlossaryIndexEntry {
   industryIds: string[];
   /** Blueprint keys of lessons with authored glossary content. Checked against the data by the coverage test. */
   lessonKeys: string[];
+  /**
+   * Lesson titles this curriculum uses at a blueprint position with a different meaning, so they are not
+   * blueprint aliases: title → key, e.g. { 'Sourcing & Supplier Partnerships': '2.2' }. Matched like blueprint
+   * titles; the blueprint title of a remapped key no longer resolves for this curriculum.
+   */
+  lessonTitleKeys?: Record<string, string>;
   load: () => Promise<CurriculumGlossaryData>;
 }
 
@@ -87,6 +93,22 @@ export const GLOSSARY_INDEX: ReadonlyArray<CurriculumGlossaryIndexEntry> = [
     lessonKeys: ALL_BLUEPRINT_KEYS,
     load: () => import('./data/tobaccoGlossary').then((mod) => mod.FMCG_TOBACCO_GLOSSARY),
   },
+  {
+    curriculumId: 'fmcg-beauty',
+    industry: 'FMCG',
+    subIndustry: 'Beauty & Personal Care',
+    industryIds: ['fmcg-beauty'],
+    lessonKeys: ALL_BLUEPRINT_KEYS,
+    load: () => import('./data/beautyGlossary').then((mod) => mod.FMCG_BEAUTY_GLOSSARY),
+  },
+  {
+    curriculumId: 'fmcg-household',
+    industry: 'FMCG',
+    subIndustry: 'Household & Personal Care',
+    industryIds: ['fmcg-household'],
+    lessonKeys: ALL_BLUEPRINT_KEYS,
+    load: () => import('./data/householdGlossary').then((mod) => mod.FMCG_HOUSEHOLD_GLOSSARY),
+  },
 ];
 
 /** Case, numbering and punctuation-insensitive lesson title key: "2.2 Upstream Activities" → "upstream activities". */
@@ -117,13 +139,22 @@ export interface GlossaryRef {
   lessonKey: string;
 }
 
+function lessonKeyFor(entry: CurriculumGlossaryIndexEntry, lessonTitle: string): string | undefined {
+  const title = normalizeLessonTitle(lessonTitle);
+  const own = Object.entries(entry.lessonTitleKeys ?? {});
+  const match = own.find(([candidate]) => normalizeLessonTitle(candidate) === title);
+  if (match) return match[1];
+  const key = BLUEPRINT_BY_TITLE.get(title);
+  return key && !own.some(([, ownKey]) => ownKey === key) ? key : undefined;
+}
+
 /** Which curriculum glossary and lesson an identity belongs to; null when the lesson has no glossary. */
-export function resolveGlossaryRef(identity: string | null | undefined): GlossaryRef | null {
+export function resolveGlossaryRef(identity: string | null | undefined, index: ReadonlyArray<CurriculumGlossaryIndexEntry> = GLOSSARY_INDEX): GlossaryRef | null {
   const parsed = parseLessonIdentity(identity);
   if (!parsed) return null;
-  const entry = GLOSSARY_INDEX.find((item) => item.industryIds.includes(parsed.industryId));
+  const entry = index.find((item) => item.industryIds.includes(parsed.industryId));
   if (!entry) return null;
-  const lessonKey = BLUEPRINT_BY_TITLE.get(normalizeLessonTitle(parsed.lessonTitle));
+  const lessonKey = lessonKeyFor(entry, parsed.lessonTitle);
   if (!lessonKey || !entry.lessonKeys.includes(lessonKey)) return null;
   return { entry, lessonKey };
 }
