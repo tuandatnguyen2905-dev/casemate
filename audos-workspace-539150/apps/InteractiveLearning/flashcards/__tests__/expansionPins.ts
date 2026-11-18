@@ -33,5 +33,19 @@ export const EXPANSION_CARD_IDS: Record<string, string[]> = {
   ...LOGISTICS_EXPRESS_CARD_IDS,
 };
 
-/** Removed or superseded cards (2026-11-08 integrity pass). Their review history is left untouched and the IDs are never reused. */
-export const RETIRED_CARD_IDS: string[] = ['cff-credit-risk', 'cb24-digital-journey-measures', 'cb42-market-position-test-steps'];
+/** Removed or superseded cards (2026-11-08 integrity pass; 2026-11-18 AUD-11 chapter rewrite). Their review history is left untouched and the IDs are never reused. */
+export const RETIRED_CARD_IDS: string[] = [
+  'cff-credit-risk', 'cb24-digital-journey-measures', 'cb42-market-position-test-steps',
+  // Audit & Assurance: the chapter each card was grounded in was rewritten (AUD-11), so its excerpt is no longer displayed.
+  'pa32-fixed-fee-uneconomic', 'pa33-leverage-matches-complexity', 'pa33-automation-and-judgment',
+  'pa35-specialization-and-diversification', 'pa35-different-sector-capabilities', 'pa36-international-code-not-override',
+  'pa42-quality-standards-emphasis', 'pa42-reputation-sustained-by-evidence', 'pa42-assess-firm-beyond-prestige',
+  'pa44-parallel-deadlines', 'pa44-compete-only-where-fit',
+  'pa51-future-capability-mix', 'pa51-professional-skepticism-meaning', 'pa52-cyber-assurance-limits',
+  'pa53-isa-600-strengthens', 'pa53-align-local-and-group', 'pa54-verify-before-promising-sustainability',
+  // Healthcare Products Module 3: same reason.
+  'hp32-scale-lowers-cost-only-when', 'hp32-who-gmp-connected-controls', 'hp32-evaluate-contract-manufacturer',
+  'hp33-distribution-access-and-intelligence', 'hp33-sell-through-versus-shipments', 'hp33-distributor-contracts-define',
+  'hp35-net-sales-reconciled-with-costs',
+  'hp36-defensible-advantage', 'hp36-barriers-differ-by-category', 'hp36-select-model-after-testing',
+];
