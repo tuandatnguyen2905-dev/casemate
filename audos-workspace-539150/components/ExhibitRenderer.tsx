@@ -4,6 +4,7 @@ import { Maximize2, X } from 'lucide-react';
 import type { ExhibitKind, ExhibitSeries, LibraryExhibit } from '../lib/skillQuestionLibrary';
 import { dedupeColumnUnits, headerWithUnit } from '../lib/exhibitTableUnits';
 import { clarifyUnitText, clarifyUnitsDeep } from '../lib/unitLabels';
+import { exhibitNumberList, shareRepeatedExhibitNotes } from '../lib/learnerContentPresentation';
 
 const DEFAULT_PALETTE = [
   'var(--space-brand-primary-700)',
@@ -1463,9 +1464,15 @@ function ExhibitCard({ source, index, onLogEvent, onExpand, displayMode = 'stand
   </section></ChartDimsContext.Provider></SpaciousChartLayoutContext.Provider>;
 }
 
-export default function ExhibitRenderer({ exhibits: sourceExhibits, onLogEvent, displayMode = 'standard', compact = false }: ExhibitRendererProps) {
+/** `guide` holds case sentences about reading these exhibits (what they show, units, caveats); it is shown beside them, not in the case context. */
+export default function ExhibitRenderer({ exhibits: sourceExhibits, onLogEvent, displayMode = 'standard', compact = false, guide = [] }: ExhibitRendererProps & { guide?: string[] }) {
   const exhibits = useMemo(() => sourceExhibits.map((exhibit) => clarifyUnitsDeep(exhibit)), [sourceExhibits]);
   const warnings = useMemo(() => detectDuplicateExhibits(exhibits), [exhibits]);
+  const { exhibits: cardExhibits, shared: sharedNotes } = useMemo(() => shareRepeatedExhibitNotes(exhibits), [exhibits]);
+  const guideLines = useMemo(() => guide.map((line) => clarifyUnitText(String(line || '').trim())).filter(Boolean), [guide]);
+  useEffect(() => {
+    if (warnings.length) console.warn('[Exhibits] possible duplicate exhibits (content audit, not shown to learners):', warnings);
+  }, [warnings]);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const expanded = expandedIndex == null ? null : exhibits[expandedIndex];
   useEffect(() => {
@@ -1477,7 +1484,7 @@ export default function ExhibitRenderer({ exhibits: sourceExhibits, onLogEvent, 
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [expandedIndex]);
   return <div className="space-y-4" data-testid="shared-exhibit-renderer">
-    {warnings.map((warning, index) => <div key={`${warning.firstId}-${warning.secondId}-${index}`} className="rounded-xl border border-[var(--space-semantic-warning)] bg-[color-mix(in_srgb,var(--space-semantic-warning)_10%,transparent)] px-4 py-3 text-sm text-[var(--space-text-secondary)]" role="alert"><span className="font-bold text-[var(--space-text-primary)]">Potential duplicate exhibit detected</span> - overlapping metrics: {warning.metrics.length ? warning.metrics.join(', ') : 'same categories and values'} ({warning.firstId} / {warning.secondId}).</div>)}
+    {guideLines.length ? <div className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-4 py-3" data-testid="exhibit-reading-guide"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">{exhibits.length > 1 ? 'Reading the exhibits' : 'Reading the exhibit'}</p><ul className="mt-1 space-y-1">{guideLines.map((line) => <li key={line} className="text-xs leading-5 text-[var(--space-text-secondary)]">{line}</li>)}</ul></div> : null}
     <div
       className={`grid w-full gap-4 ${
         exhibits.length === 1
@@ -1488,12 +1495,13 @@ export default function ExhibitRenderer({ exhibits: sourceExhibits, onLogEvent, 
       }`}
       data-exhibit-layout={exhibits.length === 1 ? 'one-column' : exhibits.length === 2 ? 'two-column' : 'three-column'}
     >
-      {exhibits.map((exhibit, index) => (
+      {cardExhibits.map((exhibit, index) => (
         <div key={exhibit.id || `${exhibit.title}-${index}`} className="min-w-0 w-full">
           <ExhibitCard source={exhibit} index={index} onLogEvent={onLogEvent} onExpand={() => setExpandedIndex(index)} displayMode={displayMode} compact={compact && exhibits.length === 1} />
         </div>
       ))}
     </div>
+    {sharedNotes.length ? <div className="space-y-1" data-testid="exhibit-shared-notes">{sharedNotes.map((note) => <p key={`${note.label}-${note.text}`} className="text-[11px] leading-5 text-[var(--space-text-muted)]">{note.label} ({exhibitNumberList(note.exhibitNumbers)}): {note.text}</p>)}</div> : null}
     {expanded ? <div className="fixed inset-0 z-[100] overflow-y-auto bg-[color-mix(in_srgb,var(--space-neutral-950)_72%,transparent)] p-3 sm:p-8" role="dialog" aria-modal="true" aria-label={`Expanded ${expanded.title}`}><div className="w-full"><div className="mb-3 flex justify-end"><button type="button" onClick={() => setExpandedIndex(null)} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[var(--space-surface-card)] px-4 text-sm font-bold text-[var(--space-text-primary)]"><X className="h-4 w-4" /> Close</button></div><ExhibitCard source={expanded} index={expandedIndex || 0} onLogEvent={onLogEvent} displayMode="advanced" /></div></div> : null}
   </div>;
 }

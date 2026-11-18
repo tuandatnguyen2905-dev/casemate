@@ -37,6 +37,7 @@ import StructuresWorkspace from '../apps/CaseDrill/StructuresWorkspace';
 import CaseResultView from './CaseResultView';
 import { MARKET_SIZING_REVEAL_NOTICE, getMarketSizingBankCase } from '../lib/marketSizingBank';
 import { formatNumbersInText } from '../lib/numberDisplay';
+import { presentLibraryQuestion } from '../lib/learnerContentPresentation';
 import { formatCanonicalNumber, gradeNumericQuantity, numericUnitSpec, toleranceRuleText } from '../lib/numericUnits';
 import { clarifyUnitLabel, clarifyUnitText, sameUnitText } from '../lib/unitLabels';
 import CalculationCaseExperience from './CalculationCaseExperience';
@@ -1037,6 +1038,7 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     const isMarketSizing = active.skill === 'market-sizing';
     const capitaliseLineStarts = (value: string) => capitaliseWithNumbers(value, isMarketSizing);
     const activeExhibits = active.exhibits?.length ? active.exhibits : active.exhibit ? [active.exhibit] : [];
+    const presented = presentLibraryQuestion({ businessContext: active.businessContext, instruction: active.instruction, question: active.question }, { hasExhibits: activeExhibits.length > 0 });
     const isNumericMode = active.answerMode === 'number' || active.answerMode === 'percentage' || active.answerMode === 'currency';
     const answerUnitLabel = clarifyUnitLabel(active.answerUnit);
     const scaleHint = equivalentScaleHint(answerUnitLabel);
@@ -1097,15 +1099,18 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
       <section className={compactSingleChart ? 'rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 shadow-sm sm:p-4' : 'mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm sm:p-5'}>
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Case Context</p>
         <h2 className={compactSingleChart ? 'mt-1 break-words text-lg font-bold leading-6 text-[var(--space-text-primary)]' : 'mt-1.5 break-words text-xl font-bold leading-7 text-[var(--space-text-primary)] sm:text-2xl'}>{capitaliseLineStarts(active.title)}</h2>
-        {active.businessContext ? <p className={`${compactSingleChart ? 'mt-1.5 p-2.5' : 'mt-2 p-3'} rounded-xl bg-[var(--space-surface-muted)] text-sm leading-6 text-[var(--space-text-secondary)]`}>{capitaliseLineStarts(active.businessContext)}</p> : null}
+        {presented.context ? <p className={`${compactSingleChart ? 'mt-1.5 p-2.5' : 'mt-2 p-3'} rounded-xl bg-[var(--space-surface-muted)] text-sm leading-6 text-[var(--space-text-secondary)]`} data-testid="question-library-case-context">{capitaliseLineStarts(presented.context)}</p> : null}
+        {presented.keyTerms.length ? <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="question-library-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {presented.keyTerms.map(capitaliseLineStarts).join(' ')}</p> : null}
+        {presented.skillLabels.length ? <p className="mt-2 text-[11px] font-medium text-[var(--space-text-muted)]" data-testid="question-library-skill-label">Skill focus: {presented.skillLabels.join('; ')}</p> : null}
       </section>
     );
-    const exhibitNode = activeExhibits.length ? <div className={compactSingleChart ? undefined : 'mt-4'}><ExhibitRenderer exhibits={activeExhibits} compact={compactSingleChart} /></div> : null;
+    const exhibitNode = activeExhibits.length ? <div className={compactSingleChart ? undefined : 'mt-4'}><ExhibitRenderer exhibits={activeExhibits} compact={compactSingleChart} guide={presented.exhibitGuide.map(capitaliseLineStarts)} /></div> : null;
     const questionSection = (
       <section className={compactSingleChart ? 'rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 shadow-sm sm:p-4' : 'mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm sm:p-5'}>
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Question</p>
-        {active.instruction ? <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{capitaliseLineStarts(active.instruction)}</p> : null}
-        <p className="mt-2 whitespace-pre-wrap text-base leading-7 text-[var(--space-text-secondary)]">{capitaliseLineStarts(active.question)}</p>
+        {presented.instruction ? <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{capitaliseLineStarts(presented.instruction)}</p> : null}
+        <p className="mt-2 whitespace-pre-wrap text-base leading-7 text-[var(--space-text-secondary)]" data-testid="question-library-task">{capitaliseLineStarts(presented.task)}</p>
+        {[...presented.guidance, ...presented.answerFormat.map((line) => `Answer format: ${line}`)].map((line) => <p key={line} className="mt-2 text-xs leading-5 text-[var(--space-text-muted)]">{capitaliseLineStarts(line)}</p>)}
       </section>
     );
 
@@ -1157,7 +1162,7 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
 
             {isMarketSizing ? (
               <div className="mt-4">
-                <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setValidationError(''); trackSolving('answer_typed'); }} answerUnit={active.answerUnit} disabled={grading} rootText={active.question} />
+                <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setValidationError(''); trackSolving('answer_typed'); }} answerUnit={active.answerUnit} disabled={grading} rootText={presented.rootQuestion} />
               </div>
             ) : (active.answerMode === 'choice' || active.answerMode === 'multiple-choice') && active.skill !== 'calculations' ? (
               <div className="mt-3 grid gap-2.5">

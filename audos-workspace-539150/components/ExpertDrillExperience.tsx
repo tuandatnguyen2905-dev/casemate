@@ -13,6 +13,7 @@ import type { HonestScoreResult } from '../lib/caseScoringRubrics';
 import { buildFeedbackPriorities } from '../lib/feedbackPresentation';
 import { clarifyUnitText, clarifyUnitsDeep } from '../lib/unitLabels';
 import { openCasePoolCase, sourceFullCase } from './SolveFullCaseCta';
+import { presentLibraryQuestion } from '../lib/learnerContentPresentation';
 import {
   buildReasoningFeedback,
   chooseNextAction,
@@ -126,6 +127,9 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
   const exhibits = question.exhibits || [];
   const shown = useMemo(() => clarifyUnitsDeep(question), [question]);
   const shownExhibits = shown.exhibits || [];
+  // The four answer fields below already ask for observation, insight, implication and next step, so the generic answer-format prompt is not repeated.
+  const presented = useMemo(() => presentLibraryQuestion({ businessContext: shown.businessContext, instruction: shown.instruction, question: shown.question }, { hasExhibits: shownExhibits.length > 0 }), [shown, shownExhibits.length]);
+  const objective = presented.context && shown.clientObjective && presented.context.includes(String(shown.clientObjective).trim()) ? '' : shown.clientObjective;
   const isHard = question.difficulty === 'hard';
   const displayLevel = displayDifficultyOf(question);
   const levelLabel = displayLevel === 'easy' ? 'Easy' : displayLevel === 'medium' ? 'Medium' : displayLevel === 'hard' ? 'Hard' : 'Expert';
@@ -305,22 +309,26 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
         <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5">
           <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">{shown.industry} · {shown.businessProblem}</p>
           <h1 className="mt-2 break-words text-xl font-extrabold leading-7 text-[var(--space-text-primary)] sm:text-2xl">{shown.title}</h1>
-          <p className="mt-3 text-sm leading-6 text-[var(--space-text-secondary)]">{shown.businessContext}</p>
-          <div className="mt-4 rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-4">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-brand)]">Client objective</p>
-            <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{shown.clientObjective}</p>
-          </div>
+          {presented.context ? <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]" data-testid="expert-case-context">{presented.context}</p> : null}
+          {presented.keyTerms.length ? <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="expert-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {presented.keyTerms.join(' ')}</p> : null}
+          {objective ? (
+            <div className="mt-4 rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-brand)]">Client objective</p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{objective}</p>
+            </div>
+          ) : null}
+          {shown.primarySkill || presented.skillLabels.length ? <p className="mt-3 text-[11px] font-medium text-[var(--space-text-muted)]" data-testid="expert-skill-label">Skill focus: {[shown.primarySkill, ...presented.skillLabels].filter(Boolean).join('; ')}</p> : null}
         </section>
 
         <div className="mt-4">
-          <ExhibitRenderer exhibits={shownExhibits} displayMode="advanced" />
+          <ExhibitRenderer exhibits={shownExhibits} displayMode="advanced" guide={presented.exhibitGuide} />
         </div>
 
         <section className="mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 sm:p-7">
           <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Question</p>
-          <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{shown.instruction}</p>
-          <p className="mt-2 text-base font-bold leading-7 text-[var(--space-text-primary)]">{shown.question}</p>
-          <p className="mt-3 text-xs text-[var(--space-text-muted)]"><span className="font-bold">Primary consulting skill:</span> {shown.primarySkill}</p>
+          {presented.instruction ? <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{presented.instruction}</p> : null}
+          <p className="mt-2 whitespace-pre-wrap text-base font-bold leading-7 text-[var(--space-text-primary)]" data-testid="expert-task">{presented.task}</p>
+          {presented.guidance.map((line) => <p key={line} className="mt-2 text-xs leading-5 text-[var(--space-text-muted)]">{line}</p>)}
         </section>
 
         <div className="mt-4 space-y-4">

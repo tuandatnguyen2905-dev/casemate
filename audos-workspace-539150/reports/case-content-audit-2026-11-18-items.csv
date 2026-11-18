@@ -1,0 +1,1540 @@
+# fixes: C1 exhibit-reading notes beside exhibit; C2 key terms; C3 skill label separated; C4 task guidance moved; C5 situation moved from task to context; T1 concise tree root; T2 answer-format prompt not a 2nd question; T3 Case Pool issue-tree view shows case/exhibits/task once; T4 repeated constraint removed; E1 repeated exhibit notes shown once; H1 branch hints after submission; H2 internal warning hidden; P1 practice chart values not printed twice; P2 practice givens repeating the prompt hidden. editorial: NS no situation; ND no decision; DL decision not linked to exhibit; DE exhibit repeats another; ST exhibits share a title. Counts are repeated sentences (7+ words) on the rendered pre-submission screen.
+app,skill,id,title,repeated_sentences_before,repeated_sentences_after,fixes,editorial
+Case Drill,charts,charts-journey-701,Arctis - Reading a Decline Inside a Growing Cate,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-704,"Velta - Revenue Up, Gross Profit Down",1,0,C3 C5 E1,
+Case Drill,charts,charts-journey-706,Velta - Setting the FY2027 Channel Plan,1,0,C3 E1,
+Case Drill,charts,charts-journey-707,"Solara - Awareness Rose, Purchase Fell",1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-711,Verdant Foods - Which Inventory Is the Problem,2,0,C2 C3 E1,
+Case Drill,charts,charts-journey-713,Anvil Components - Finding the Constraint,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-717,Kaya Foods - Who Already Owns This Market,2,0,C1 C3 E1,
+Case Drill,charts,charts-journey-719,Orbita - Where the Base Is Moving,1,0,C3 E1,
+Case Drill,charts,charts-journey-722,Lotus Court - Revenue per Store Is the Wrong Mea,1,0,C3 E1,
+Case Drill,charts,charts-journey-726,Tutorloop - Free Trial or Paid Trial,1,0,C3 E1,
+Case Drill,charts,charts-journey-728,Swiftline - Where the Service Gap Lives,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-731,Corvex Cloud - What the 18% Growth Is Hiding,1,0,C3 C5 E1,
+Case Drill,charts,charts-journey-735,Harborlight Clinics - The Week Inside the Averag,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-737,VitaFlow - Which Moment Is Actually Unowned,1,0,C1 C2 C3 E1,
+Case Drill,charts,charts-journey-740,SweetVale - Leading the Part That Stopped Growin,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-743,"CleanCo - Growing Units, Losing Value",1,0,C1 C2 C3 E1,
+Case Drill,charts,charts-journey-746,ActiveShield - Which Skin Benefit to Own,1,0,C1 C2 C3 E1,
+Case Drill,charts,charts-journey-749,"PacificBev - Flat Revenue, Better Profit",1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-752,PacificBev - The Year After the Peak,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-755,FrostyBite - Losing Share Without Losing Volume,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-758,BakePure - Known but No Longer Wanted,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-761,DairyPeak - The Channel That Grew and Then Close,1,0,C1 C3 E1,
+Case Drill,charts,charts-journey-764,"PawJoy - Revenue Up, Profit Down",1,0,C1 C3 C5 E1,
+Case Drill,charts,charts-journey-767,Summit Gear - The Division That Peaked,1,0,C1 C2 C3 E1,
+Case Drill,charts,charts-journey-770,TangyTaste - Awareness or Conversion,1,0,C1 C2 C3 E1,
+Case Drill,charts,charts-legacy-novabrew-401,NovaBrew - Growth Quality and Margin Risk,1,0,C2 C3 E1,
+Case Drill,charts,charts-hard-insight-401,Lantern Retail - Online Growth Quality,1,0,C3 E1,
+Case Drill,charts,E-CH-001,Outpatient Care Quarterly Visits Trend,0,0,C1,DL
+Case Drill,charts,E-CH-002,Recycled Packaging Gross Profit By Line,0,0,C1,DL
+Case Drill,charts,E-CH-003,Inland Freight Channel Share Shift,0,0,C1,DL
+Case Drill,charts,E-CH-004,Frozen Meals Contribution Bridge,0,0,C1,DL
+Case Drill,charts,E-CH-005,Rooftop Energy Demand And Contribution,0,0,C1,DL
+Case Drill,charts,E-CH-006,Specialty Beverages Region-Month Score Heatmap,0,0,C1,DL
+Case Drill,charts,E-CH-007,Telehealth Site Target Shortfall,0,0,C1,DL
+Case Drill,charts,E-CH-008,Textiles Regional Share Slope,0,0,C1,DL
+Case Drill,charts,E-CH-009,Electric Buses Monthly Demand Swing,0,0,C1,DL
+Case Drill,charts,E-CH-010,Digital Payments Application Funnel,0,0,C1,DL
+Case Drill,charts,E-CH-011,Online Education Segment Concentration,0,0,C1,DL
+Case Drill,charts,E-CH-012,Container Terminals Volume And Order Value,0,0,C1,DL
+Case Drill,charts,E-CH-013,Fresh Produce Quarterly Units Trend,0,0,C1,DL
+Case Drill,charts,E-CH-014,Generic Medicines Gross Profit By Line,0,0,C1,DL
+Case Drill,charts,E-CH-015,Hospitality Channel Share Shift,0,0,C1,DL
+Case Drill,charts,E-CH-016,Mobile Connectivity Contribution Bridge,0,0,C1,DL
+Case Drill,charts,E-CH-017,Industrial Metals Demand And Contribution,0,0,C1,DL
+Case Drill,charts,E-CH-018,Skincare Retail Region-Month Score Heatmap,0,0,C1,DL
+Case Drill,charts,E-CH-019,Last-Mile Delivery Site Target Shortfall,0,0,C1,DL
+Case Drill,charts,E-CH-020,Quick-Service Dining Regional Share Slope,0,0,C1,DL
+Case Drill,charts,E-CH-021,Rental Housing Monthly Demand Swing,0,0,C1,DL
+Case Drill,charts,E-CH-022,Municipal Utilities Application Funnel,0,0,C1,DL
+Case Drill,charts,E-CH-023,SME Lending Segment Concentration,0,0,C1,DL
+Case Drill,charts,E-CH-024,Chilled Dairy Volume And Order Value,0,0,C1,DL
+Case Drill,charts,E-CH-025,Seafood Exports Quarterly Shipments Trend,0,0,C1,DL
+Case Drill,charts,E-CH-026,Power Tools Gross Profit By Line,0,0,C1,DL
+Case Drill,charts,E-CH-044,Battery Storage Regional Share Slope,0,0,C1,DL
+Case Drill,charts,E-CH-045,Industrial Chemicals Monthly Demand Swing,0,0,C1,DL
+Case Drill,charts,E-CH-046,Fitness Clubs Application Funnel,0,0,C1,DL
+Case Drill,charts,E-CH-047,Online Travel Segment Concentration,0,0,C1,DL
+Case Drill,charts,E-CH-048,Grocery E-Commerce Volume And Order Value,0,0,C1,DL
+Case Drill,charts,E-CH-049,Medical Labs Quarterly Visits Trend,0,0,C1,DL
+Case Drill,charts,E-CH-050,Aquaculture Gross Profit By Line,0,0,C1,DL
+Case Drill,charts,E-CH-051,Packaged Snacks Channel Share Shift,0,0,C1,DL
+Case Drill,charts,E-CH-052,Passenger Rail Contribution Bridge,0,0,C1,DL
+Case Drill,charts,E-CH-053,Elder Care Demand And Contribution,0,0,C1,DL
+Case Drill,charts,E-CH-054,Critical Minerals Region-Month Score Heatmap,0,0,C1,DL
+Case Drill,charts,E-CH-055,Apparel Retail Site Target Shortfall,0,0,C1,DL
+Case Drill,charts,E-CH-056,Paper Packaging Regional Share Slope,0,0,C1,DL
+Case Drill,charts,E-CH-057,Cybersecurity Monthly Demand Swing,0,0,C1,DL
+Case Drill,charts,E-CH-058,Fleet Leasing Application Funnel,0,0,C1,DL
+Case Drill,charts,E-CH-059,Artisan Bakery Segment Concentration,0,0,C1,DL
+Case Drill,charts,E-CH-060,Warehouse Automation Volume And Order Value,0,0,C1,DL
+Case Drill,charts,E-CH-061,Ready-To-Drink Tea Quarterly Units Trend,0,0,C1,DL
+Case Drill,charts,E-CH-062,Children's Apparel Gross Profit By Line,0,0,C1,DL
+Case Drill,charts,E-CH-063,Island Transport Channel Share Shift,0,0,C1,DL
+Case Drill,charts,E-CH-064,Solar Retail Contribution Bridge,0,0,C1,DL
+Case Drill,charts,E-CH-065,Cloud Infrastructure Demand And Contribution,0,0,C1,DL
+Case Drill,charts,E-CH-066,Dental Care Region-Month Score Heatmap,0,0,C1,DL
+Case Drill,charts,E-CH-067,Plant-Based Food Site Target Shortfall,0,0,C1,DL
+Case Drill,charts,E-CH-068,Fiber Broadband Regional Share Slope,0,0,C1,DL
+Case Drill,charts,charts-carecircle-retention-route-v1,CareCircle retention evidence,0,0,,
+Case Drill,charts,charts-001,Retail Channels Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-002,Retail Channels Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-003,Retail Channels Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-004,Retail Channels Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-005,Product Segments Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-006,Product Segments Four-Year Trend,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-007,Product Segments Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-008,Product Segments Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-009,Customer Cohorts Performance Comparison,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-010,Customer Cohorts Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-011,Customer Cohorts Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-012,Customer Cohorts Profitability Table,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-013,Vietnamese Regions Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-014,Vietnamese Regions Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-015,Vietnamese Regions Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-016,Vietnamese Regions Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-017,Store Formats Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-018,Store Formats Four-Year Trend,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-019,Store Formats Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-020,Store Formats Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-021,Digital Products Performance Comparison,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-022,Digital Products Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-023,Digital Products Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-024,Digital Products Profitability Table,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-025,Delivery Routes Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-026,Delivery Routes Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-027,Delivery Routes Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-028,Delivery Routes Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-029,Hotel Markets Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-030,Hotel Markets Four-Year Trend,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-031,Hotel Markets Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-032,Hotel Markets Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-033,Banking Products Performance Comparison,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-034,Banking Products Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-035,Banking Products Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-036,Banking Products Profitability Table,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-037,Clinic Services Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-038,Clinic Services Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-039,Clinic Services Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-040,Clinic Services Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-041,Mobility Modes Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-042,Mobility Modes Four-Year Trend,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-043,Mobility Modes Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-044,Mobility Modes Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-045,Software Plans Performance Comparison,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-046,Software Plans Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-047,Software Plans Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-048,Software Plans Profitability Table,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-049,Food Categories Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-050,Food Categories Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-051,Food Categories Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-052,Food Categories Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-053,Telecom Packages Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-054,Telecom Packages Four-Year Trend,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-055,Telecom Packages Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-056,Telecom Packages Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-057,Pharmacy Categories Performance Comparison,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-058,Pharmacy Categories Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-059,Pharmacy Categories Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-060,Pharmacy Categories Profitability Table,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-061,Payment Methods Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-062,Payment Methods Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-063,Payment Methods Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-064,Payment Methods Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-065,Grocery Missions Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-066,Grocery Missions Four-Year Trend,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-067,Grocery Missions Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-068,Grocery Missions Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-069,Building Materials Performance Comparison,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-070,Building Materials Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-071,Building Materials Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-072,Building Materials Profitability Table,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-073,Airline Routes Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-074,Airline Routes Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-075,Airline Routes Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-076,Airline Routes Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-077,Packaging Materials Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-078,Packaging Materials Four-Year Trend,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-079,Packaging Materials Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-080,Packaging Materials Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-081,Sales Territories Performance Comparison,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-082,Sales Territories Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-083,Sales Territories Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-084,Sales Territories Profitability Table,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-085,Factory Lines Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-086,Factory Lines Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-087,Factory Lines Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-088,Factory Lines Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-089,Restaurant Dayparts Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-090,Restaurant Dayparts Four-Year Trend,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-091,Restaurant Dayparts Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-092,Restaurant Dayparts Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-093,Education Courses Performance Comparison,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-094,Education Courses Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-095,Education Courses Mix Analysis,0,0,C1,NS
+Case Drill,charts,charts-096,Education Courses Profitability Table,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-097,Energy Sources Performance Comparison,0,0,C1,NS
+Case Drill,charts,charts-098,Energy Sources Four-Year Trend,0,0,C1,NS
+Case Drill,charts,charts-099,Energy Sources Mix Analysis,0,0,C1 C3 T2,NS
+Case Drill,charts,charts-100,Energy Sources Profitability Table,0,0,C1,NS
+Case Drill,charts,charts-101,An Phú Distribution - Regional Profit Gap,0,0,C3 T2,
+Case Drill,charts,charts-102,LumiCare - Channel Growth Quality,0,0,C3 T2,
+Case Drill,charts,charts-103,Bếp Việt Foods - Product Contribution Mix,0,0,C1 C3 T2,
+Case Drill,charts,charts-104,Mây Cloud - Customer Mix Migration,0,0,C1 C3 T2,
+Case Drill,charts,charts-105,GoShip Express - Peak Capacity Plan,1,0,C2 C3 T2 E1,
+Case Drill,charts,charts-106,Sông Xanh Energy - Portfolio Transition,0,0,C1 C3 T2,
+Case Drill,charts,charts-107,Nắng Foods - Growth and Margin Expansion,0,0,C3 T2,
+Case Drill,charts,charts-108,Viễn Đông Mobile - Scale and Retention,0,0,C3 T2,
+Case Drill,charts,charts-109,Đại Nam Manufacturing - Profit Bridge,1,0,C3 T2 E1,
+Case Drill,charts,charts-110,Mộc Café - Marketing Saturation,0,0,C3 T2,
+Case Drill,charts,charts-111,Horizon Health - Market Prioritisation,1,0,C1 C3 T2 E1,
+Case Drill,charts,charts-112,FastLane Logistics - Delay Distribution,0,0,C3 T2,
+Case Drill,charts,charts-113,Tâm Việt Bank - Margin Heatmap,0,0,C1 C3 T2,
+Case Drill,charts,charts-114,VietHouse Consumer - Portfolio Concentration,0,0,C3 T2,
+Case Drill,charts,charts-115,Aster Electronics - Pricing Under Uncertainty,1,0,C3 T2 E1,
+Case Drill,charts,charts-legacy-lotushome-201,LotusHome - Growth Without Profitable Economics,1,0,C3 E1 H2,
+Case Drill,charts,charts-expert-201,NoriMart - Growth Without Value Creation,1,0,C3 E1,
+Case Drill,charts,charts-expert-300,Northern Atlas Retail - Performance Diagnosis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-301,Central Atlas Retail - Performance Diagnosis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-302,Southern Atlas Retail - Performance Diagnosis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-303,Mekong Atlas Retail - Performance Diagnosis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-304,Coastal Atlas Retail - Performance Diagnosis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-305,Northern Beacon Foods - Growth vs Profitability,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-306,Central Beacon Foods - Growth vs Profitability,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-307,Southern Beacon Foods - Growth vs Profitability,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-308,Mekong Beacon Foods - Growth vs Profitability,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-309,Coastal Beacon Foods - Growth vs Profitability,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-310,Northern Cedar Finance - Mix-Shift Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-311,Central Cedar Finance - Mix-Shift Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-312,Southern Cedar Finance - Mix-Shift Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-313,Mekong Cedar Finance - Mix-Shift Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-314,Coastal Cedar Finance - Mix-Shift Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-315,Northern Delta Logistics - Root-Cause Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-316,Central Delta Logistics - Root-Cause Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-317,Southern Delta Logistics - Root-Cause Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-318,Mekong Delta Logistics - Root-Cause Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-319,Coastal Delta Logistics - Root-Cause Analysis,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-320,Northern Elm Health - Benchmark and Performance ,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-321,Central Elm Health - Benchmark and Performance G,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-322,Southern Elm Health - Benchmark and Performance ,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-323,Mekong Elm Health - Benchmark and Performance Ga,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-324,Coastal Elm Health - Benchmark and Performance G,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-325,Northern Fjord Energy - Scenario and Decision An,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-326,Central Fjord Energy - Scenario and Decision Ana,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-327,Southern Fjord Energy - Scenario and Decision An,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-328,Mekong Fjord Energy - Scenario and Decision Anal,1,0,C1 C3 E1,
+Case Drill,charts,charts-expert-329,Coastal Fjord Energy - Scenario and Decision Ana,1,0,C1 C3 E1,
+Case Drill,structures,structures-journey-703,Arctis - Freezers or Promotion - Where the Next ,2,0,T1 E1 H1,
+Case Drill,structures,structures-journey-712,Verdant Foods - Growth or Cash Before the Covena,2,0,C2 T1 E1 H1,
+Case Drill,structures,structures-journey-715,"Anvil Components - Recover, Install, or Both",2,0,C2 E1 H1,
+Case Drill,structures,structures-journey-718,"Kaya Foods - Distributor, Joint Venture, or Own ",2,0,C2 T1 E1 H1,
+Case Drill,structures,structures-journey-724,Lotus Court - The Lease Renewal Decision,2,0,T1 E1 H1,
+Case Drill,structures,structures-journey-730,Swiftline - Lockers or Execution,2,0,E1 H1,
+Case Drill,structures,structures-journey-733,"Corvex Cloud - Keep SMB, Fix It, or Leave It",2,0,C2 T1 E1 H1,
+Case Drill,structures,structures-journey-742,"SweetVale - New Brand, Stretch, or Neither Yet",3,0,C2 T1 E1 H1,
+Case Drill,structures,structures-journey-745,CleanCo × GreenMart - The Plan Both Sides Can Si,2,0,C2 T1 E1 H1,
+Case Drill,structures,structures-journey-751,PacificBev - Where the Benchmark Says to Act,2,0,T1 E1 H1,
+Case Drill,structures,structures-journey-754,PacificBev - Recovering a Margin Without Losing ,2,0,C2 T1 E1 H1,
+Case Drill,structures,structures-journey-757,FrostyBite - Which Packs Earn the Freezer,2,0,T1 E1 H1,
+Case Drill,structures,structures-journey-763,DairyPeak - Rebuild the Channel or Re-Aim It,2,0,C2 T1 E1 H1,
+Case Drill,structures,structures-journey-769,"Summit Gear - Acquire, Bid Lower, or Walk",2,0,C2 T1 E1 H1,
+Case Drill,structures,structures-journey-772,TangyTaste - The Route to Top Three,2,0,C2 T1 E1 H1,
+Case Drill,structures,structures-hard-insight-401,MetroParcel - Late-Delivery Diagnosis,2,0,T1 E1 H1,
+Case Drill,structures,structures-easy-001,Atlas Pharmacies Profitability Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-002,Birch Transit Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-003,Cedar Agro Market Entry Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-004,Dockside Foods Acquisition Due Diligence Structu,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-005,Evergreen Tutors Growth Strategy Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-006,Flora Diagnostics Retention Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-007,Granite Works Capacity Issue Tree,2,0,C2 C4 C5 T1,
+Case Drill,structures,structures-easy-008,Horizon Credit Portfolio Decision Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-009,Ivory Hotels Profitability Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-010,JetParcel Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-011,Koru Foods Market Entry Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-012,Lantern Mobility Acquisition Due Diligence Struc,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-013,Mira Labs Growth Strategy Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-014,Nova Aquaculture Retention Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-015,Olive Kitchen Capacity Issue Tree,2,0,C2 C4 C5 T1,
+Case Drill,structures,structures-easy-016,Pavo Materials Portfolio Decision Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-017,Qube Retail Profitability Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-018,Ridge Logistics Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-019,Saffron Health Market Entry Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-020,Tidal Renewables Acquisition Due Diligence Struc,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-021,Umber Fashion Growth Strategy Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-022,VenturePay Retention Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-023,Woven Textiles Capacity Issue Tree,2,0,C2 C4 C5 T1,
+Case Drill,structures,structures-easy-024,Xylem Water Portfolio Decision Structure,2,0,C2 C4 C5 T1,
+Case Drill,structures,structures-easy-025,Yara Travel Profitability Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-026,Zinc Marine Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-027,Aster Foods Market Entry Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-028,Boreal Batteries Acquisition Due Diligence Struc,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-029,Clover Education Growth Strategy Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-030,Diamond Care Retention Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-031,Ember Steel Capacity Issue Tree,2,0,C2 C4 C5 T1,
+Case Drill,structures,structures-easy-032,Fenix Telecom Portfolio Decision Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-033,Galen MedTech Profitability Structure,2,0,C4 C5 T1,
+Case Drill,structures,structures-easy-034,Helix Ports Issue Tree,2,0,C4 C5 T1,
+Case Drill,structures,structures-swiftcare-growth-route-v1,SwiftCare constrained-growth issue tree,2,0,T1,
+Case Drill,structures,structures-001,Lotus Mart Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-002,Lotus Mart Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-003,Lotus Mart Growth Strategy Structure,6,1,C2 C3 T1 T2 E1,ST
+Case Drill,structures,structures-004,Lotus Mart Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-005,Lotus Mart Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-006,Mekong Mobile Profit Decline Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-007,Mekong Mobile Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-008,Mekong Mobile Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-009,Mekong Mobile Operations Bottleneck Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-010,Mekong Mobile Acquisition Due Diligence Structur,1,0,C2 C5 T1,
+Case Drill,structures,structures-011,Saigon Sip Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-012,Saigon Sip Market Entry Structure,5,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-013,Saigon Sip Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-014,Saigon Sip Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-015,Saigon Sip Acquisition Due Diligence Structure,5,1,C2 T1 T2 E1,ST
+Case Drill,structures,structures-016,Northstar Bank Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-017,Northstar Bank Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-018,Northstar Bank Growth Strategy Structure,6,1,C2 C3 T1 T2 E1,ST
+Case Drill,structures,structures-019,Northstar Bank Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-020,Northstar Bank Acquisition Due Diligence Structu,1,0,C2 C5 T1,
+Case Drill,structures,structures-021,Harbor Health Profit Decline Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-022,Harbor Health Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-023,Harbor Health Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-024,Harbor Health Operations Bottleneck Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-025,Harbor Health Acquisition Due Diligence Structur,1,0,C2 C5 T1,
+Case Drill,structures,structures-026,GreenRide Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-027,GreenRide Market Entry Structure,5,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-028,GreenRide Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-029,GreenRide Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-030,GreenRide Acquisition Due Diligence Structure,5,1,C2 T1 T2 E1,ST
+Case Drill,structures,structures-031,CloudDesk Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-032,CloudDesk Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-033,CloudDesk Growth Strategy Structure,6,1,C2 C3 T1 T2 E1,ST
+Case Drill,structures,structures-034,CloudDesk Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-035,CloudDesk Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-036,SwiftShip Profit Decline Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-037,SwiftShip Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-038,SwiftShip Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-039,SwiftShip Operations Bottleneck Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-040,SwiftShip Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-041,BrightHome Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-042,BrightHome Market Entry Structure,5,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-043,BrightHome Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-044,BrightHome Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-045,BrightHome Acquisition Due Diligence Structure,5,1,C2 T1 T2 E1,ST
+Case Drill,structures,structures-046,Urban Bowl Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-047,Urban Bowl Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-048,Urban Bowl Growth Strategy Structure,6,1,C2 C3 T1 T2 E1,ST
+Case Drill,structures,structures-049,Urban Bowl Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-050,Urban Bowl Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-051,LearnLoop Profit Decline Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-052,LearnLoop Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-053,LearnLoop Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-054,LearnLoop Operations Bottleneck Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-055,LearnLoop Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-056,VietHarvest Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-057,VietHarvest Market Entry Structure,5,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-058,VietHarvest Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-059,VietHarvest Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-060,VietHarvest Acquisition Due Diligence Structure,5,1,C2 T1 T2 E1,ST
+Case Drill,structures,structures-061,NovaTel Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-062,NovaTel Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-063,NovaTel Growth Strategy Structure,6,1,C2 C3 T1 T2 E1,ST
+Case Drill,structures,structures-064,NovaTel Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-065,NovaTel Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-066,Sunrise Hotels Profit Decline Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-067,Sunrise Hotels Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-068,Sunrise Hotels Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-069,Sunrise Hotels Operations Bottleneck Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-070,Sunrise Hotels Acquisition Due Diligence Structu,1,0,C2 C5 T1,
+Case Drill,structures,structures-071,CarePlus Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-072,CarePlus Market Entry Structure,5,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-073,CarePlus Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-074,CarePlus Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-075,CarePlus Acquisition Due Diligence Structure,5,1,C2 T1 T2 E1,ST
+Case Drill,structures,structures-076,OceanPay Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-077,OceanPay Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-078,OceanPay Growth Strategy Structure,6,1,C2 C3 T1 T2 E1,ST
+Case Drill,structures,structures-079,OceanPay Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-080,OceanPay Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-081,FreshCart Profit Decline Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-082,FreshCart Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-083,FreshCart Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-084,FreshCart Operations Bottleneck Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-085,FreshCart Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-086,BuildRight Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-087,BuildRight Market Entry Structure,5,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-088,BuildRight Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-089,BuildRight Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-090,BuildRight Acquisition Due Diligence Structure,5,1,C2 T1 T2 E1,ST
+Case Drill,structures,structures-091,AeroAsia Profit Decline Structure,2,0,C5 T1,
+Case Drill,structures,structures-092,AeroAsia Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-093,AeroAsia Growth Strategy Structure,6,1,C2 C3 T1 T2 E1,ST
+Case Drill,structures,structures-094,AeroAsia Operations Bottleneck Structure,2,0,C5 T1,
+Case Drill,structures,structures-095,AeroAsia Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-096,EcoPack Profit Decline Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-097,EcoPack Market Entry Structure,1,0,C5 T1,
+Case Drill,structures,structures-098,EcoPack Growth Strategy Structure,2,0,C2 C5 T1,
+Case Drill,structures,structures-099,EcoPack Operations Bottleneck Structure,6,1,C3 T1 T2 E1,ST
+Case Drill,structures,structures-100,EcoPack Acquisition Due Diligence Structure,1,0,C2 C5 T1,
+Case Drill,structures,structures-expert-201,Verda Charge - Reconciling Conflicting Entry Sig,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-330,Northern Grove Mobility - Evidence-Based Issue T,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-331,Central Grove Mobility - Evidence-Based Issue Tr,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-332,Southern Grove Mobility - Evidence-Based Issue T,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-333,Mekong Grove Mobility - Evidence-Based Issue Tre,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-334,Coastal Grove Mobility - Evidence-Based Issue Tr,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-335,Northern Harbor Cloud - Structure Prioritization,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-336,Central Harbor Cloud - Structure Prioritization,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-337,Southern Harbor Cloud - Structure Prioritization,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-338,Mekong Harbor Cloud - Structure Prioritization,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-339,Coastal Harbor Cloud - Structure Prioritization,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-340,Northern Indigo Pharma - Hypothesis Refinement,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-341,Central Indigo Pharma - Hypothesis Refinement,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-342,Southern Indigo Pharma - Hypothesis Refinement,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-343,Mekong Indigo Pharma - Hypothesis Refinement,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-344,Coastal Indigo Pharma - Hypothesis Refinement,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-345,Northern Juniper Aviation - Multi-Stage Problem ,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-346,Central Juniper Aviation - Multi-Stage Problem S,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-347,Southern Juniper Aviation - Multi-Stage Problem ,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-348,Mekong Juniper Aviation - Multi-Stage Problem St,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-349,Coastal Juniper Aviation - Multi-Stage Problem S,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-350,Northern Kite Education - Conflicting Evidence S,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-351,Central Kite Education - Conflicting Evidence St,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-352,Southern Kite Education - Conflicting Evidence S,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-353,Mekong Kite Education - Conflicting Evidence Str,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-354,Coastal Kite Education - Conflicting Evidence St,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-355,Northern Lumen Hotels - Executive Recommendation,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-356,Central Lumen Hotels - Executive Recommendation ,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-357,Southern Lumen Hotels - Executive Recommendation,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-358,Mekong Lumen Hotels - Executive Recommendation S,2,0,C1 T1 E1 H1,
+Case Drill,structures,structures-expert-359,Coastal Lumen Hotels - Executive Recommendation ,2,0,C1 T1 E1 H1,
+Case Drill,calculations,CM-CALC-H01,Kiva price increase,0,0,C3,
+Case Drill,calculations,CM-CALC-E01,Nami premium line launch,0,0,C3,
+Case Drill,calculations,CM-CALC-H02,Mela limited discount,0,0,C3,
+Case Drill,calculations,CM-CALC-E02,Treo coupon incrementality,0,0,C3,
+Case Drill,calculations,CM-CALC-H03,Nexo paid acquisition funnel,0,0,C3,
+Case Drill,calculations,CM-CALC-E03,Nexo budget reallocation,0,0,C3,
+Case Drill,calculations,CM-CALC-H04,MateLab three-month cohort,0,0,C3,
+Case Drill,calculations,CM-CALC-E04,MateLab price and retention,0,0,C3,
+Case Drill,calculations,CM-CALC-H05,Treo channel shift,0,0,C3,
+Case Drill,calculations,CM-CALC-E05,Vela distribution redesign,0,0,C3,
+Case Drill,calculations,CM-CALC-H06,Orin factory product mix,0,0,C3,
+Case Drill,calculations,CM-CALC-E06,Orin dual-bottleneck factory,0,0,C3,
+Case Drill,calculations,CM-CALC-H07,Luma returns reduction,0,0,C3,
+Case Drill,calculations,CM-CALC-E07,Pavo seasonal stock option,0,0,C3,
+Case Drill,calculations,CM-CALC-H08,Aster imported appliance margin,0,0,C3,
+Case Drill,calculations,CM-CALC-E08,Aster supplier comparison,0,0,C3,
+Case Drill,calculations,CM-CALC-H09,Pavo rework decision,0,0,C3,
+Case Drill,calculations,CM-CALC-E09,Pavo finishing bottleneck,0,0,C3,
+Case Drill,calculations,CM-CALC-H10,Vela buyer vouchers,0,0,C3,
+Case Drill,calculations,CM-CALC-E10,Vela shipping subsidy,0,0,C3,
+Case Drill,calculations,CM-CALC-H11,Sora store payback,0,0,C2 C3,
+Case Drill,calculations,CM-CALC-E11,Sora three-year investment,0,0,C3,
+Case Drill,calculations,CM-CALC-H12,Rami market-entry risk,0,0,C3,
+Case Drill,calculations,CM-CALC-E12,Rami pilot before rollout,0,0,C3,
+Case Drill,calculations,calculations-001,Lotus Mart Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-002,Lotus Mart Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-004,Lotus Mart Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-005,Lotus Mart Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-007,Mekong Mobile Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-008,Mekong Mobile Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-010,Mekong Mobile Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-011,Saigon Sip Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-013,Saigon Sip Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-014,Saigon Sip Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-016,Northstar Bank Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-017,Northstar Bank Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-019,Northstar Bank Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-020,Northstar Bank Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-022,Harbor Health Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-023,Harbor Health Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-025,Harbor Health Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-026,GreenRide Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-028,GreenRide Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-029,GreenRide Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-031,CloudDesk Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-032,CloudDesk Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-034,CloudDesk Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-035,CloudDesk Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-037,SwiftShip Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-038,SwiftShip Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-040,SwiftShip Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-041,BrightHome Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-043,BrightHome Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-044,BrightHome Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-046,Urban Bowl Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-047,Urban Bowl Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-049,Urban Bowl Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-050,Urban Bowl Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-052,LearnLoop Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-053,LearnLoop Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-055,LearnLoop Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-056,VietHarvest Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-058,VietHarvest Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-059,VietHarvest Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-061,NovaTel Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-062,NovaTel Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-064,NovaTel Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-065,NovaTel Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-067,Sunrise Hotels Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-068,Sunrise Hotels Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-070,Sunrise Hotels Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-071,CarePlus Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-073,CarePlus Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-074,CarePlus Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-076,OceanPay Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-077,OceanPay Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-079,OceanPay Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-080,OceanPay Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-082,FreshCart Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-083,FreshCart Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-085,FreshCart Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-086,BuildRight Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-088,BuildRight Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-089,BuildRight Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-091,AeroAsia Revenue Growth,0,0,C5,
+Case Drill,calculations,calculations-092,AeroAsia Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-094,AeroAsia Price–Volume Impact,0,0,,NS
+Case Drill,calculations,calculations-095,AeroAsia Cost-Savings Opportunity,0,0,C5,
+Case Drill,calculations,calculations-097,EcoPack Operating Profit,0,0,C5,ND
+Case Drill,calculations,calculations-098,EcoPack Breakeven Volume,0,0,C5,
+Case Drill,calculations,calculations-100,EcoPack Cost-Savings Opportunity,0,0,C5,
+Case Drill,creativity,CM-CRE-PD01,PD01 · Moc commuter breakfast,0,0,,
+Case Drill,creativity,CM-CRE-PD02,PD02 · Luma compact cleaner refill,0,0,,
+Case Drill,creativity,CM-CRE-PD03,PD03 · Nexo night-shift snack,0,0,,
+Case Drill,creativity,CM-CRE-PD04,PD04 · Aster first-apartment pan,0,0,,
+Case Drill,creativity,CM-CRE-PD05,PD05 · Pico small study lamp,0,0,,
+Case Drill,creativity,CM-CRE-PD06,PD06 · Rova apartment parcel handoff,0,0,,
+Case Drill,creativity,CM-CRE-PD07,PD07 · Hapi bike rain cover,0,0,,
+Case Drill,creativity,CM-CRE-PD08,PD08 · Folio interview prep cards,0,0,,
+Case Drill,creativity,CM-CRE-PD09,PD09 · Clipster neater shared desks,0,0,,
+Case Drill,creativity,CM-CRE-PD10,PD10 · Lensa low-data interview practice,0,0,,
+Case Drill,creativity,CM-CRE-BI01,BI01 · Treo pocket bag,0,0,,
+Case Drill,creativity,CM-CRE-BI02,BI02 · Oro bottle on the move,0,0,,
+Case Drill,creativity,CM-CRE-BI03,BI03 · Mela cold-mix coffee,0,0,,
+Case Drill,creativity,CM-CRE-BI04,BI04 · MateLab ten-minute practice,0,0,,
+Case Drill,creativity,CM-CRE-BI05,BI05 · Nola folding lunch box,0,0,,
+Case Drill,creativity,CM-CRE-BI06,BI06 · Velo wet umbrella sleeve,0,0,,
+Case Drill,creativity,CM-CRE-BI07,BI07 · Hilo quick expense entry,0,0,,
+Case Drill,creativity,CM-CRE-BI08,BI08 · Casemate see your next gap,0,0,,
+Case Drill,creativity,CM-CRE-BI09,BI09 · Fora battery level in sight,0,0,,
+Case Drill,creativity,CM-CRE-BI10,BI10 · Kite wipe-and-reuse note cards,0,0,,
+Case Drill,creativity,CM-CRE-IM01,IM01 · Mela university tea launch,0,0,,
+Case Drill,creativity,CM-CRE-IM02,IM02 · Vera first fitness plan,0,0,,
+Case Drill,creativity,CM-CRE-IM03,IM03 · Aster induction pan demos,0,0,,
+Case Drill,creativity,CM-CRE-IM04,IM04 · Orin cafe inventory SaaS,0,0,,
+Case Drill,creativity,CM-CRE-IM05,IM05 · Riva campus resale week,0,0,,
+Case Drill,creativity,CM-CRE-IM06,IM06 · Pico lamp retail launch,0,0,,
+Case Drill,creativity,CM-CRE-IM07,IM07 · Orin cafe stock alerts,0,0,,
+Case Drill,creativity,CM-CRE-IM08,IM08 · Casemate Target Fit launch,0,0,,
+Case Drill,creativity,CM-CRE-IM09,IM09 · Vita first weekly study plan,0,0,,
+Case Drill,creativity,CM-CRE-IM10,IM10 · Boro breakfast preorders,0,0,,
+Case Drill,creativity,CM-CRE-AR01,AR01 · MateLab fix one mistake,0,0,,
+Case Drill,creativity,CM-CRE-AR02,AR02 · Nami second grocery order,0,0,,
+Case Drill,creativity,CM-CRE-AR03,AR03 · Casemate knowledge to practice,0,0,,
+Case Drill,creativity,CM-CRE-AR04,AR04 · Tally recurring-expense setup,0,0,,
+Case Drill,creativity,CM-CRE-AR05,AR05 · Lexi second language lesson,0,0,,
+Case Drill,creativity,CM-CRE-AR06,AR06 · Washly second laundry pickup,0,0,,
+Case Drill,creativity,CM-CRE-AR07,AR07 · Casemate review one aptitude error,0,0,,
+Case Drill,creativity,CM-CRE-AR08,AR08 · Cove return to a local event,0,0,,
+Case Drill,creativity,CM-CRE-AR09,AR09 · Arc start lesson two,0,0,,
+Case Drill,creativity,CM-CRE-AR10,AR10 · Taro second plant check-in,0,0,,
+Case Drill,market-sizing,market-sizing-cycle3-a01,A01 · Detergent Refills,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-cycle3-a02,A02 · University Tea Trials,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-a03,A03 · Cafe Inventory Subscriptions,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-a04,A04 · Air-Purifier Filter Replacements,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-a05,A05 · Paid MT Preparation,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-a06,A06 · Online Pet-Food Channel,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-cycle3-a07,A07 · Battery-Swap Service,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-cycle3-a08,A08 · Restaurant Delivery Packaging,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-cycle3-a09,A09 · Online OTC Pharmacy Orders,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-a10,A10 · Factory Safety-Glove Replacements,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-a11,A11 · Rooftop Inverter Replacements,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-cycle3-a12,A12 · Cinema Pre-Roll Inventory,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-cycle3-b01,B01 · Toilet Fixtures in Vietnam,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b02,B02 · Umbrellas in Hanoi,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b03,B03 · Cafe Inventory Software in Vietnam,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b04,B04 · Public E-Motorbike Charging in HCMC,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b05,B05 · Office Meal-Prep Delivery in HCMC,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b06,B06 · Warehouse Automation Purchases,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b07,B07 · Phone-Screen Repair in HCMC,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b08,B08 · Event Water-Refill Kiosks,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b09,B09 · E-Motorbike Battery Replacements,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b10,B10 · Paid IELTS Coaching in Hanoi,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b11,B11 · Rooftop Solar Cleaning Services,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-cycle3-b12,B12 · Reusable-Cup Services at Office Parks,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-bank-c01,C01 · Bicycle tune-ups in Ho Chi Minh City,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-c02,C02 · Water-filter cartridges in Hanoi,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-c03,C03 · Home air-conditioner cleaning in Vietnam,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-c04,C04 · Paid dog boarding in Ho Chi Minh City,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-c05,C05 · Scheduling software for small gyms,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-c06,C06 · Cleaning rooftop solar panels at factories,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-c07,C07 · Reusable containers for office food delive,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-bank-c08,C08 · Home EV charger installations for condo re,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-bank-d01,D01 · Cold-storage cabinets for pharmacies,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-d02,D02 · Rented hotel linen in Vietnam,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-d03,D03 · Dental 3D printing for clear-aligner plans,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-bank-d04,D04 · Airport luggage wrapping,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-d05,D05 · Factory water-leak detection contracts,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-d06,D06 · Post-discharge remote monitoring,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-d07,D07 · Aquaculture water-sensor subscriptions,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-d08,D08 · Depot chargers for electric delivery vans,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-e01,E01 · Offshore wind blade inspections by drone,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-e02,E02 · Cryogenic storage for research samples,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-e03,E03 · Ground-station passes for satellites,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-e04,E04 · Outsourced surgical-tray sterilization,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-e05,E05 · Transformer oil diagnostic testing,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-e06,E06 · Subsea cable inspection and fault response,1,0,C3 T1,ND
+Case Drill,market-sizing,market-sizing-bank-e07,E07 · Captured CO2 mineralization services,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-bank-e08,E08 · Immersion-cooling retrofits at data center,1,0,C3 T1,
+Case Drill,market-sizing,market-sizing-hard-insight-401,FreshFleet - Capacity-Constrained Market Entry,1,0,C2 C3 T1,
+Case Drill,market-sizing,market-sizing-001,Vietnam Takeaway Coffee Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-002,Ho Chi Minh City Takeaway Coffee Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-004,Southeast Asia Takeaway Coffee Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-005,Global Urban Markets Takeaway Coffee Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-007,Ho Chi Minh City Bubble Tea Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-008,Hanoi Bubble Tea Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-010,Global Urban Markets Bubble Tea Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-011,Vietnam Meal Delivery Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-013,Hanoi Meal Delivery Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-014,Southeast Asia Meal Delivery Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-016,Vietnam Electric Scooters Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-017,Ho Chi Minh City Electric Scooters Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-019,Southeast Asia Electric Scooters Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-020,Global Urban Markets Electric Scooters Market Si,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-022,Ho Chi Minh City Online Tutoring Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-023,Hanoi Online Tutoring Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-025,Global Urban Markets Online Tutoring Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-026,Vietnam Air Purifiers Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-028,Hanoi Air Purifiers Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-029,Southeast Asia Air Purifiers Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-031,Vietnam Pet Food Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-032,Ho Chi Minh City Pet Food Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-034,Southeast Asia Pet Food Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-035,Global Urban Markets Pet Food Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-037,Ho Chi Minh City Fitness Memberships Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-038,Hanoi Fitness Memberships Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-040,Global Urban Markets Fitness Memberships Market ,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-041,Vietnam Streaming Subscriptions Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-043,Hanoi Streaming Subscriptions Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-044,Southeast Asia Streaming Subscriptions Market Si,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-046,Vietnam Private Health Checks Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-047,Ho Chi Minh City Private Health Checks Market Si,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-049,Southeast Asia Private Health Checks Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-050,Global Urban Markets Private Health Checks Marke,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-052,Ho Chi Minh City Solar Rooftops Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-053,Hanoi Solar Rooftops Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-055,Global Urban Markets Solar Rooftops Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-056,Vietnam Cloud Software Seats Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-058,Hanoi Cloud Software Seats Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-059,Southeast Asia Cloud Software Seats Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-061,Vietnam Domestic Flights Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-062,Ho Chi Minh City Domestic Flights Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-064,Southeast Asia Domestic Flights Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-065,Global Urban Markets Domestic Flights Market Siz,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-067,Ho Chi Minh City Premium Skincare Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-068,Hanoi Premium Skincare Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-070,Global Urban Markets Premium Skincare Market Siz,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-071,Vietnam Digital Wallet Payments Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-073,Hanoi Digital Wallet Payments Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-074,Southeast Asia Digital Wallet Payments Market Si,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-076,Vietnam Coworking Desks Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-077,Ho Chi Minh City Coworking Desks Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-079,Southeast Asia Coworking Desks Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-080,Global Urban Markets Coworking Desks Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-082,Ho Chi Minh City Home Insurance Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-083,Hanoi Home Insurance Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-085,Global Urban Markets Home Insurance Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-086,Vietnam Robot Vacuums Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-088,Hanoi Robot Vacuums Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-089,Southeast Asia Robot Vacuums Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-091,Vietnam Language Learning Apps Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-092,Ho Chi Minh City Language Learning Apps Market S,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-094,Southeast Asia Language Learning Apps Market Siz,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-095,Global Urban Markets Language Learning Apps Mark,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-097,Ho Chi Minh City Sustainable Packaging Market Si,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-098,Hanoi Sustainable Packaging Market Size,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-100,Global Urban Markets Sustainable Packaging Marke,3,0,T1,NS
+Case Drill,market-sizing,market-sizing-expert-201,"EcoCool - TAM, SAM, and Capacity-Constrained SOM",2,0,C3 T1,
+Case Pool,market-sizing,case-cm-ms-a01,A01 · Detergent Refills,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-a02,A02 · University Tea Trials,0,0,,
+Case Pool,market-sizing,case-cm-ms-a03,A03 · Cafe Inventory Subscriptions,0,0,,
+Case Pool,market-sizing,case-cm-ms-a04,A04 · Air-Purifier Filter Replacements,0,0,,
+Case Pool,market-sizing,case-cm-ms-a05,A05 · Paid MT Preparation,0,0,,
+Case Pool,market-sizing,case-cm-ms-a06,A06 · Online Pet-Food Channel,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-a07,A07 · Battery-Swap Service,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-a08,A08 · Restaurant Delivery Packaging,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-a09,A09 · Online OTC Pharmacy Orders,0,0,,
+Case Pool,market-sizing,case-cm-ms-a10,A10 · Factory Safety-Glove Replacements,0,0,,
+Case Pool,market-sizing,case-cm-ms-a11,A11 · Rooftop Inverter Replacements,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-a12,A12 · Cinema Pre-Roll Inventory,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-b01,B01 · Toilet Fixtures in Vietnam,0,0,,
+Case Pool,market-sizing,case-cm-ms-b02,B02 · Umbrellas in Hanoi,0,0,,
+Case Pool,market-sizing,case-cm-ms-b03,B03 · Cafe Inventory Software in Vietnam,0,0,,
+Case Pool,market-sizing,case-cm-ms-b04,B04 · Public E-Motorbike Charging in HCMC,0,0,,
+Case Pool,market-sizing,case-cm-ms-b05,B05 · Office Meal-Prep Delivery in HCMC,0,0,,
+Case Pool,market-sizing,case-cm-ms-b06,B06 · Warehouse Automation Purchases,0,0,,
+Case Pool,market-sizing,case-cm-ms-b07,B07 · Phone-Screen Repair in HCMC,0,0,,
+Case Pool,market-sizing,case-cm-ms-b08,B08 · Event Water-Refill Kiosks,0,0,,
+Case Pool,market-sizing,case-cm-ms-b09,B09 · E-Motorbike Battery Replacements,0,0,,
+Case Pool,market-sizing,case-cm-ms-b10,B10 · Paid IELTS Coaching in Hanoi,0,0,,
+Case Pool,market-sizing,case-cm-ms-b11,B11 · Rooftop Solar Cleaning Services,0,0,,
+Case Pool,market-sizing,case-cm-ms-b12,B12 · Reusable-Cup Services at Office Parks,0,0,,
+Case Pool,market-sizing,case-cm-ms-c01,C01 · Bicycle tune-ups in Ho Chi Minh City,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-c02,C02 · Water-filter cartridges in Hanoi,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-c03,C03 · Home air-conditioner cleaning in Vietnam,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-c04,C04 · Paid dog boarding in Ho Chi Minh City,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-c05,C05 · Scheduling software for small gyms,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-c06,C06 · Cleaning rooftop solar panels at factories,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-c07,C07 · Reusable containers for office food delive,0,0,,
+Case Pool,market-sizing,case-cm-ms-c08,C08 · Home EV charger installations for condo re,0,0,,
+Case Pool,market-sizing,case-cm-ms-d01,D01 · Cold-storage cabinets for pharmacies,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-d02,D02 · Rented hotel linen in Vietnam,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-d03,D03 · Dental 3D printing for clear-aligner plans,0,0,,
+Case Pool,market-sizing,case-cm-ms-d04,D04 · Airport luggage wrapping,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-d05,D05 · Factory water-leak detection contracts,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-d06,D06 · Post-discharge remote monitoring,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-d07,D07 · Aquaculture water-sensor subscriptions,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-d08,D08 · Depot chargers for electric delivery vans,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-e01,E01 · Offshore wind blade inspections by drone,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-e02,E02 · Cryogenic storage for research samples,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-e03,E03 · Ground-station passes for satellites,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-e04,E04 · Outsourced surgical-tray sterilization,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-e05,E05 · Transformer oil diagnostic testing,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-e06,E06 · Subsea cable inspection and fault response,0,0,,ND
+Case Pool,market-sizing,case-cm-ms-e07,E07 · Captured CO2 mineralization services,0,0,,
+Case Pool,market-sizing,case-cm-ms-e08,E08 · Immersion-cooling retrofits at data center,0,0,,
+Case Pool,creativity,case-cm-cre-pd01,PD01 · Moc commuter breakfast,0,0,,
+Case Pool,creativity,case-cm-cre-pd02,PD02 · Luma compact cleaner refill,0,0,,
+Case Pool,creativity,case-cm-cre-pd03,PD03 · Nexo night-shift snack,0,0,,
+Case Pool,creativity,case-cm-cre-pd04,PD04 · Aster first-apartment pan,0,0,,
+Case Pool,creativity,case-cm-cre-pd05,PD05 · Pico small study lamp,0,0,,
+Case Pool,creativity,case-cm-cre-pd06,PD06 · Rova apartment parcel handoff,0,0,,
+Case Pool,creativity,case-cm-cre-pd07,PD07 · Hapi bike rain cover,0,0,,
+Case Pool,creativity,case-cm-cre-pd08,PD08 · Folio interview prep cards,0,0,,
+Case Pool,creativity,case-cm-cre-pd09,PD09 · Clipster neater shared desks,0,0,,
+Case Pool,creativity,case-cm-cre-pd10,PD10 · Lensa low-data interview practice,0,0,,
+Case Pool,creativity,case-cm-cre-bi01,BI01 · Treo pocket bag,0,0,,
+Case Pool,creativity,case-cm-cre-bi02,BI02 · Oro bottle on the move,0,0,,
+Case Pool,creativity,case-cm-cre-bi03,BI03 · Mela cold-mix coffee,0,0,,
+Case Pool,creativity,case-cm-cre-bi04,BI04 · MateLab ten-minute practice,0,0,,
+Case Pool,creativity,case-cm-cre-bi05,BI05 · Nola folding lunch box,0,0,,
+Case Pool,creativity,case-cm-cre-bi06,BI06 · Velo wet umbrella sleeve,0,0,,
+Case Pool,creativity,case-cm-cre-bi07,BI07 · Hilo quick expense entry,0,0,,
+Case Pool,creativity,case-cm-cre-bi08,BI08 · Casemate see your next gap,0,0,,
+Case Pool,creativity,case-cm-cre-bi09,BI09 · Fora battery level in sight,0,0,,
+Case Pool,creativity,case-cm-cre-bi10,BI10 · Kite wipe-and-reuse note cards,0,0,,
+Case Pool,creativity,case-cm-cre-im01,IM01 · Mela university tea launch,0,0,,
+Case Pool,creativity,case-cm-cre-im02,IM02 · Vera first fitness plan,0,0,,
+Case Pool,creativity,case-cm-cre-im03,IM03 · Aster induction pan demos,0,0,,
+Case Pool,creativity,case-cm-cre-im04,IM04 · Orin cafe inventory SaaS,0,0,,
+Case Pool,creativity,case-cm-cre-im05,IM05 · Riva campus resale week,0,0,,
+Case Pool,creativity,case-cm-cre-im06,IM06 · Pico lamp retail launch,0,0,,
+Case Pool,creativity,case-cm-cre-im07,IM07 · Orin cafe stock alerts,0,0,,
+Case Pool,creativity,case-cm-cre-im08,IM08 · Casemate Target Fit launch,0,0,,
+Case Pool,creativity,case-cm-cre-im09,IM09 · Vita first weekly study plan,0,0,,
+Case Pool,creativity,case-cm-cre-im10,IM10 · Boro breakfast preorders,0,0,,
+Case Pool,creativity,case-cm-cre-ar01,AR01 · MateLab fix one mistake,0,0,,
+Case Pool,creativity,case-cm-cre-ar02,AR02 · Nami second grocery order,0,0,,
+Case Pool,creativity,case-cm-cre-ar03,AR03 · Casemate knowledge to practice,0,0,,
+Case Pool,creativity,case-cm-cre-ar04,AR04 · Tally recurring-expense setup,0,0,,
+Case Pool,creativity,case-cm-cre-ar05,AR05 · Lexi second language lesson,0,0,,
+Case Pool,creativity,case-cm-cre-ar06,AR06 · Washly second laundry pickup,0,0,,
+Case Pool,creativity,case-cm-cre-ar07,AR07 · Casemate review one aptitude error,0,0,,
+Case Pool,creativity,case-cm-cre-ar08,AR08 · Cove return to a local event,0,0,,
+Case Pool,creativity,case-cm-cre-ar09,AR09 · Arc start lesson two,0,0,,
+Case Pool,creativity,case-cm-cre-ar10,AR10 · Taro second plant check-in,0,0,,
+Case Pool,calculations,case-cm-calc-h01,Kiva price increase,0,0,,
+Case Pool,calculations,case-cm-calc-e01,Nami premium line launch,0,0,,
+Case Pool,calculations,case-cm-calc-h02,Mela limited discount,0,0,,
+Case Pool,calculations,case-cm-calc-e02,Treo coupon incrementality,0,0,,
+Case Pool,calculations,case-cm-calc-h03,Nexo paid acquisition funnel,0,0,,
+Case Pool,calculations,case-cm-calc-e03,Nexo budget reallocation,0,0,,
+Case Pool,calculations,case-cm-calc-h04,MateLab three-month cohort,0,0,,
+Case Pool,calculations,case-cm-calc-e04,MateLab price and retention,0,0,,
+Case Pool,calculations,case-cm-calc-h05,Treo channel shift,0,0,,
+Case Pool,calculations,case-cm-calc-e05,Vela distribution redesign,0,0,,
+Case Pool,calculations,case-cm-calc-h06,Orin factory product mix,0,0,,
+Case Pool,calculations,case-cm-calc-e06,Orin dual-bottleneck factory,0,0,,
+Case Pool,calculations,case-cm-calc-h07,Luma returns reduction,0,0,,
+Case Pool,calculations,case-cm-calc-e07,Pavo seasonal stock option,0,0,,
+Case Pool,calculations,case-cm-calc-h08,Aster imported appliance margin,0,0,,
+Case Pool,calculations,case-cm-calc-e08,Aster supplier comparison,0,0,,
+Case Pool,calculations,case-cm-calc-h09,Pavo rework decision,0,0,,
+Case Pool,calculations,case-cm-calc-e09,Pavo finishing bottleneck,0,0,,
+Case Pool,calculations,case-cm-calc-h10,Vela buyer vouchers,0,0,,
+Case Pool,calculations,case-cm-calc-e10,Vela shipping subsidy,0,0,,
+Case Pool,calculations,case-cm-calc-h11,Sora store payback,0,0,,
+Case Pool,calculations,case-cm-calc-e11,Sora three-year investment,0,0,,
+Case Pool,calculations,case-cm-calc-h12,Rami market-entry risk,0,0,,
+Case Pool,calculations,case-cm-calc-e12,Rami pilot before rollout,0,0,,
+Case Pool,charts,case-e-ch-001,Outpatient Care Quarterly Visits Trend,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-002,Recycled Packaging Gross Profit By Line,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-003,Inland Freight Channel Share Shift,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-004,Frozen Meals Contribution Bridge,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-005,Rooftop Energy Demand And Contribution,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-006,Specialty Beverages Region-Month Score Heatmap,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-007,Telehealth Site Target Shortfall,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-008,Textiles Regional Share Slope,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-009,Electric Buses Monthly Demand Swing,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-010,Digital Payments Application Funnel,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-011,Online Education Segment Concentration,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-012,Container Terminals Volume And Order Value,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-013,Fresh Produce Quarterly Units Trend,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-014,Generic Medicines Gross Profit By Line,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-015,Hospitality Channel Share Shift,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-016,Mobile Connectivity Contribution Bridge,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-017,Industrial Metals Demand And Contribution,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-018,Skincare Retail Region-Month Score Heatmap,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-019,Last-Mile Delivery Site Target Shortfall,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-020,Quick-Service Dining Regional Share Slope,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-021,Rental Housing Monthly Demand Swing,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-022,Municipal Utilities Application Funnel,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-023,SME Lending Segment Concentration,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-024,Chilled Dairy Volume And Order Value,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-025,Seafood Exports Quarterly Shipments Trend,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-026,Power Tools Gross Profit By Line,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-044,Battery Storage Regional Share Slope,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-045,Industrial Chemicals Monthly Demand Swing,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-046,Fitness Clubs Application Funnel,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-047,Online Travel Segment Concentration,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-048,Grocery E-Commerce Volume And Order Value,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-049,Medical Labs Quarterly Visits Trend,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-050,Aquaculture Gross Profit By Line,0,0,C1,DL
+Case Pool,charts,case-e-ch-051,Packaged Snacks Channel Share Shift,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-052,Passenger Rail Contribution Bridge,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-053,Elder Care Demand And Contribution,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-054,Critical Minerals Region-Month Score Heatmap,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-055,Apparel Retail Site Target Shortfall,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-056,Paper Packaging Regional Share Slope,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-057,Cybersecurity Monthly Demand Swing,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-058,Fleet Leasing Application Funnel,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-059,Artisan Bakery Segment Concentration,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-060,Warehouse Automation Volume And Order Value,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-061,Ready-To-Drink Tea Quarterly Units Trend,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-062,Children's Apparel Gross Profit By Line,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-063,Island Transport Channel Share Shift,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-064,Solar Retail Contribution Bridge,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-065,Cloud Infrastructure Demand And Contribution,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-066,Dental Care Region-Month Score Heatmap,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-067,Plant-Based Food Site Target Shortfall,0,0,C1 T4,DL
+Case Pool,charts,case-e-ch-068,Fiber Broadband Regional Share Slope,0,0,C1 T4,DL
+Case Pool,structures,case-structures-easy-001,Atlas Pharmacies Profitability Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-002,Birch Transit Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-003,Cedar Agro Market Entry Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-004,Dockside Foods Acquisition Due Diligence Structu,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-005,Evergreen Tutors Growth Strategy Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-006,Flora Diagnostics Retention Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-007,Granite Works Capacity Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-008,Horizon Credit Portfolio Decision Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-009,Ivory Hotels Profitability Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-010,JetParcel Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-011,Koru Foods Market Entry Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-012,Lantern Mobility Acquisition Due Diligence Struc,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-013,Mira Labs Growth Strategy Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-014,Nova Aquaculture Retention Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-015,Olive Kitchen Capacity Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-016,Pavo Materials Portfolio Decision Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-017,Qube Retail Profitability Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-018,Ridge Logistics Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-019,Saffron Health Market Entry Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-020,Tidal Renewables Acquisition Due Diligence Struc,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-021,Umber Fashion Growth Strategy Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-022,VenturePay Retention Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-023,Woven Textiles Capacity Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-024,Xylem Water Portfolio Decision Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-025,Yara Travel Profitability Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-026,Zinc Marine Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-027,Aster Foods Market Entry Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-028,Boreal Batteries Acquisition Due Diligence Struc,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-029,Clover Education Growth Strategy Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-030,Diamond Care Retention Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-031,Ember Steel Capacity Issue Tree,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-032,Fenix Telecom Portfolio Decision Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-033,Galen MedTech Profitability Structure,2,0,C4 C5 T3,
+Case Pool,structures,case-structures-easy-034,Helix Ports Issue Tree,2,0,C4 C5 T3,
+Case Pool,market-sizing+charts+creativity,case-jrn-12,"Harborlight Clinics - Full on Saturday, Empty on",1,0,E1,
+Case Pool,charts+market-sizing+creativity,case-jrn-16,ActiveShield - The Benefit Space Nobody Owns,3,2,C2 E1,
+Case Pool,charts+market-sizing+structures,case-jrn-21,DairyPeak - Twenty to Forty,18,0,C2 T3 E1,
+Case Pool,calculations+charts+structures,case-001,Revenue up but profit down - Masan Consumer,5,0,T3,
+Case Pool,calculations+charts+structures,case-002,Which segment actually earns - Vinamilk,11,0,T3,DE
+Case Pool,calculations+charts+structures,case-003,Channel mix and profit - Nestlé Việt Nam,10,0,T3,DE
+Case Pool,calculations+charts+structures,case-004,Unit economics of one outlet - Suntory PepsiCo V,8,0,C1 T3,
+Case Pool,calculations+charts+structures,case-006,Revenue up but profit down - TH True Milk,4,0,T3,
+Case Pool,calculations+charts+structures,case-007,Which segment actually earns - Techcombank,12,0,T3,DE
+Case Pool,calculations+charts+structures,case-009,Unit economics of one transaction point - MB Ban,7,0,C1 T3,
+Case Pool,calculations+charts+structures,case-010,An input-cost shock - ACB,7,0,T3,
+Case Pool,calculations+charts+structures,case-012,Which segment actually earns - WinMart+,11,0,T3,DE
+Case Pool,calculations+charts+structures,case-013,Channel mix and profit - Bách Hóa Xanh,10,0,T3,DE
+Case Pool,calculations+charts+structures,case-015,An input-cost shock - Tiki,6,0,T3,
+Case Pool,calculations+charts+structures,case-016,Revenue up but profit down - MoMo,4,0,T3,
+Case Pool,calculations+charts+structures,case-018,Channel mix and profit - Grab Việt Nam,9,0,T3,DE
+Case Pool,calculations+charts+structures,case-019,Unit economics of one facility - Nhà thuốc Long ,6,0,C1 T3,
+Case Pool,calculations+charts+structures,case-021,Revenue up but profit down - Viettel Post,4,0,T3,
+Case Pool,calculations+charts+structures,case-022,Which segment actually earns - Giao Hàng Nhanh,11,0,T3,DE
+Case Pool,calculations+charts+structures,case-024,Unit economics of one sales floor - Nam Long Gro,6,0,C1 T3,
+Case Pool,calculations+charts+structures,case-025,An input-cost shock - Khang Điền,6,0,T3,
+Case Pool,structures+market-sizing+creativity,case-026,Should we expand into Indonesia - Sabeco,6,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-027,Which new customer segment to go after - Nutifoo,12,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-028,The shift to the online channel - Trung Nguyên L,7,0,C1 T3,DE
+Case Pool,structures+market-sizing+creativity,case-029,Pricing a new product launch - Mondelez Kinh Đô,9,0,T3,
+Case Pool,structures+market-sizing+creativity,case-030,Expanding into provincial markets - Vinasoy,5,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-031,Should we expand into Indonesia - Unilever Việt ,6,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-032,Which new customer segment to go after - TPBank,11,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-033,The shift to the online channel - Home Credit Vi,9,0,C1 T3,DE
+Case Pool,structures+market-sizing+creativity,case-034,Pricing a new product launch - VIB,8,0,T3,
+Case Pool,structures+market-sizing+creativity,case-035,Expanding into provincial markets - SSI,5,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-036,Should we expand into Philippines - FPT Shop,7,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-037,Which new customer segment to go after - Co.opma,10,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-038,The shift to the online channel - PNJ,8,0,C1 T3,DE
+Case Pool,structures+market-sizing+creativity,case-039,Pricing a new product launch - Coolmate,9,0,T3,
+Case Pool,structures+market-sizing+creativity,case-040,Expanding into provincial markets - KiotViet,4,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-041,Should we expand into Malaysia - Base.vn,5,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-042,Which new customer segment to go after - VNPay,12,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-043,The shift to the online channel - Dược Hậu Giang,7,0,C1 T3,DE
+Case Pool,structures+market-sizing+creativity,case-044,Pricing a new product launch - Pharmacity,8,0,T3,
+Case Pool,structures+market-sizing+creativity,case-045,Expanding into provincial markets - Bệnh viện Tâ,5,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-046,Should we expand into Thailand - Gemadept,5,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-047,Which new customer segment to go after - Ninja V,10,0,T3,DE
+Case Pool,structures+market-sizing+creativity,case-048,The shift to the online channel - Ecopark,9,0,C1 T3,DE
+Case Pool,structures+market-sizing+creativity,case-049,Pricing a new product launch - Đất Xanh Group,8,0,T3,
+Case Pool,structures+market-sizing+creativity,case-050,Expanding into provincial markets - Deloitte Việ,4,0,T3,DE
+Case Pool,calculations+charts+structures,case-051,A capacity bottleneck in the production line - M,10,0,T3,DE
+Case Pool,calculations+charts+structures,case-052,Optimising the distribution network - Vinamilk,8,0,C1 T3,
+Case Pool,calculations+charts+structures,case-054,Productivity gaps across branches - Suntory Peps,10,0,T3,DE
+Case Pool,calculations+charts+structures,case-055,A capacity bottleneck in the application-process,9,0,T3,DE
+Case Pool,calculations+charts+structures,case-057,Service quality sliding as volume grows - Techco,6,0,C1 T3,DE
+Case Pool,calculations+charts+structures,case-058,Productivity gaps across branches - Highlands Co,9,0,T3,DE
+Case Pool,calculations+charts+structures,case-060,Optimising the distribution network - AEON Việt ,9,0,C1 T3,
+Case Pool,calculations+charts+structures,case-061,Service quality sliding as volume grows - be Gro,5,0,C1 T3,DE
+Case Pool,calculations+charts+structures,case-063,A capacity bottleneck in the examination and sam,9,0,T3,DE
+Case Pool,calculations+charts+structures,case-064,Optimising the facility network - Diag,8,0,C1 T3,
+Case Pool,calculations+charts+structures,case-066,Productivity gaps across branches - ITL Corp,9,0,T3,DE
+Case Pool,calculations+charts+structures,case-067,A capacity bottleneck in the sorting line - Viet,9,0,T3,DE
+Case Pool,calculations+charts+structures,case-069,Service quality sliding as volume grows - Phú Mỹ,5,0,C1 T3,DE
+Case Pool,calculations+charts+structures,case-070,Productivity gaps across branches - EY Việt Nam,9,0,T3,DE
+Case Pool,structures+charts+creativity,case-071,Responding to a low-cost entrant - Acecook Việt ,6,0,T3,DE
+Case Pool,structures+charts+creativity,case-072,Rebalancing the business portfolio - TH True Mil,7,0,C1 T3,DE
+Case Pool,structures+charts+creativity,case-073,Prioritising digital transformation - Sabeco,10,0,T3,
+Case Pool,structures+charts+creativity,case-074,Responding to a low-cost entrant - VPBank,6,0,T3,DE
+Case Pool,structures+charts+creativity,case-075,Rebalancing the business portfolio - MB Bank,7,0,C1 T3,DE
+Case Pool,structures+charts+creativity,case-076,Prioritising digital transformation - Central Re,12,0,T3,
+Case Pool,structures+charts+creativity,case-077,Responding to a low-cost entrant - WinMart+,6,0,T3,DE
+Case Pool,structures+charts+creativity,case-078,Rebalancing the business portfolio - Tiki,7,0,C1 T3,DE
+Case Pool,structures+charts+creativity,case-079,Prioritising digital transformation - MoMo,12,0,T3,
+Case Pool,structures+charts+creativity,case-080,Responding to a low-cost entrant - VNG,5,0,T3,DE
+Case Pool,structures+charts+creativity,case-081,Rebalancing the business portfolio - Nhà thuốc L,7,0,C1 T3,DE
+Case Pool,structures+charts+creativity,case-082,Prioritising digital transformation - Giao Hàng ,12,0,T3,
+Case Pool,structures+charts+creativity,case-083,Responding to a low-cost entrant - Nam Long Grou,5,0,T3,DE
+Case Pool,structures+charts+creativity,case-084,Rebalancing the business portfolio - KPMG Việt N,7,0,C1 T3,DE
+Case Pool,structures+charts+creativity,case-085,Prioritising digital transformation - PwC Việt N,12,0,T3,
+Case Pool,calculations+structures+charts,case-086,Valuing an acquisition - Nutifood,6,0,T3,
+Case Pool,calculations+structures+charts,case-088,Valuing an acquisition - TPBank,5,0,T3,
+Case Pool,calculations+structures+charts,case-089,Realising post-merger synergies - Bách Hóa Xanh,11,0,T3,DE
+Case Pool,calculations+structures+charts,case-091,Realising post-merger synergies - Coolmate,10,0,T3,DE
+Case Pool,calculations+structures+charts,case-092,Valuing an acquisition - Bệnh viện Vinmec,6,0,T3,
+Case Pool,calculations+structures+charts,case-094,Valuing an acquisition - Khang Điền,5,0,T3,
+Case Pool,calculations+structures+charts,case-095,Realising post-merger synergies - FPT Digital,10,0,T3,DE
+Case Pool,calculations+structures,case-096,Repricing and demand elasticity - Thế Giới Di Độ,8,0,T3,DE
+Case Pool,calculations+structures,case-097,Restructuring the staffing model - FPT Shop,9,0,C1 T3,DE
+Case Pool,calculations+structures,case-099,Restructuring the staffing model - Deloitte Việt,9,0,C1 T3,DE
+Case Drill practice bank,case_math,MDQ-1,,-,-,,
+Case Drill practice bank,case_math,MDQ-2,,-,-,,
+Case Drill practice bank,case_math,MDQ-3,,-,-,,
+Case Drill practice bank,case_math,MDQ-4,,-,-,,
+Case Drill practice bank,case_math,MDQ-5,,-,-,,
+Case Drill practice bank,case_math,MDQ-6,,-,-,,
+Case Drill practice bank,case_math,MDQ-7,,-,-,,
+Case Drill practice bank,case_math,MDQ-8,,-,-,,
+Case Drill practice bank,case_math,MDQ-9,,-,-,,
+Case Drill practice bank,case_math,MDQ-10,,-,-,,
+Case Drill practice bank,case_math,MDQ-11,,-,-,,
+Case Drill practice bank,case_math,MDQ-12,,-,-,,
+Case Drill practice bank,case_math,MDQ-13,,-,-,,
+Case Drill practice bank,case_math,MDQ-14,,-,-,,
+Case Drill practice bank,case_math,MDQ-15,,-,-,,
+Case Drill practice bank,case_math,MDQ-16,,-,-,,
+Case Drill practice bank,case_math,MDQ-17,,-,-,,
+Case Drill practice bank,case_math,MDQ-18,,-,-,,
+Case Drill practice bank,case_math,MDQ-19,,-,-,,
+Case Drill practice bank,case_math,MDQ-20,,-,-,,
+Case Drill practice bank,case_math,MDQ-21,,-,-,,
+Case Drill practice bank,case_math,MDQ-22,,-,-,,
+Case Drill practice bank,case_math,MDQ-23,,-,-,,
+Case Drill practice bank,case_math,MDQ-24,,-,-,,
+Case Drill practice bank,case_math,MDQ-25,,-,-,,
+Case Drill practice bank,case_math,MDQ-26,,-,-,,
+Case Drill practice bank,case_math,MDQ-27,,-,-,,
+Case Drill practice bank,case_math,MDQ-28,,-,-,,
+Case Drill practice bank,case_math,MDQ-29,,-,-,,
+Case Drill practice bank,case_math,MDQ-30,,-,-,,
+Case Drill practice bank,case_math,MDQ-31,,-,-,,
+Case Drill practice bank,case_math,MDQ-32,,-,-,,
+Case Drill practice bank,case_math,MDQ-33,,-,-,,
+Case Drill practice bank,case_math,MDQ-34,,-,-,,
+Case Drill practice bank,case_math,MDQ-35,,-,-,,
+Case Drill practice bank,case_math,MDQ-36,,-,-,,
+Case Drill practice bank,case_math,MDQ-37,,-,-,,
+Case Drill practice bank,case_math,MDQ-38,,-,-,,
+Case Drill practice bank,case_math,MDQ-39,,-,-,,
+Case Drill practice bank,case_math,MDQ-40,,-,-,,
+Case Drill practice bank,case_math,MDQ-41,,-,-,,
+Case Drill practice bank,case_math,MDQ-42,,-,-,,
+Case Drill practice bank,case_math,MDQ-43,,-,-,,
+Case Drill practice bank,case_math,MDQ-44,,-,-,,
+Case Drill practice bank,case_math,MDQ-45,,-,-,,
+Case Drill practice bank,case_math,MDQ-46,,-,-,,
+Case Drill practice bank,case_math,MDQ-47,,-,-,,
+Case Drill practice bank,case_math,MDQ-48,,-,-,,
+Case Drill practice bank,case_math,MDQ-49,,-,-,,
+Case Drill practice bank,case_math,MDQ-50,,-,-,,
+Case Drill practice bank,case_math,MDQ-51,,-,-,,
+Case Drill practice bank,case_math,MDQ-52,,-,-,,
+Case Drill practice bank,case_math,MDQ-53,,-,-,,
+Case Drill practice bank,case_math,MDQ-54,,-,-,,
+Case Drill practice bank,case_math,MDQ-55,,-,-,,
+Case Drill practice bank,case_math,MDQ-56,,-,-,,
+Case Drill practice bank,case_math,MDQ-57,,-,-,,
+Case Drill practice bank,case_math,MDQ-58,,-,-,,
+Case Drill practice bank,case_math,MDQ-59,,-,-,,
+Case Drill practice bank,case_math,MDQ-60,,-,-,,
+Case Drill practice bank,case_math,MDQ-61,,-,-,,
+Case Drill practice bank,case_math,MDQ-62,,-,-,,
+Case Drill practice bank,case_math,MDQ-63,,-,-,,
+Case Drill practice bank,case_math,MDQ-64,,-,-,,
+Case Drill practice bank,case_math,MDQ-65,,-,-,,
+Case Drill practice bank,case_math,MDQ-66,,-,-,,
+Case Drill practice bank,case_math,MDQ-67,,-,-,,
+Case Drill practice bank,case_math,MDQ-68,,-,-,,
+Case Drill practice bank,case_math,MDQ-69,,-,-,,
+Case Drill practice bank,case_math,MDQ-70,,-,-,,
+Case Drill practice bank,case_math,MDQ-71,,-,-,,
+Case Drill practice bank,case_math,MDQ-72,,-,-,,
+Case Drill practice bank,case_math,MDQ-73,,-,-,,
+Case Drill practice bank,case_math,MDQ-74,,-,-,,
+Case Drill practice bank,case_math,MDQ-75,,-,-,,
+Case Drill practice bank,case_math,MDQ-76,,-,-,,
+Case Drill practice bank,case_math,MDQ-77,,-,-,,
+Case Drill practice bank,case_math,MDQ-78,,-,-,,
+Case Drill practice bank,case_math,MDQ-79,,-,-,,
+Case Drill practice bank,case_math,MDQ-80,,-,-,,
+Case Drill practice bank,case_math,MDQ-81,,-,-,,
+Case Drill practice bank,case_math,MDQ-82,,-,-,,
+Case Drill practice bank,case_math,MDQ-83,,-,-,,
+Case Drill practice bank,case_math,MDQ-84,,-,-,,
+Case Drill practice bank,case_math,MDQ-85,,-,-,,
+Case Drill practice bank,case_math,MDQ-86,,-,-,,
+Case Drill practice bank,case_math,MDQ-87,,-,-,,
+Case Drill practice bank,case_math,MDQ-88,,-,-,,
+Case Drill practice bank,case_math,MDQ-89,,-,-,,
+Case Drill practice bank,case_math,MDQ-90,,-,-,,
+Case Drill practice bank,case_math,MDQ-91,,-,-,,
+Case Drill practice bank,case_math,MDQ-92,,-,-,,
+Case Drill practice bank,case_math,MDQ-93,,-,-,,
+Case Drill practice bank,case_math,MDQ-94,,-,-,,
+Case Drill practice bank,case_math,MDQ-95,,-,-,,
+Case Drill practice bank,case_math,MDQ-96,,-,-,,
+Case Drill practice bank,case_math,MDQ-97,,-,-,,
+Case Drill practice bank,case_math,MDQ-98,,-,-,,
+Case Drill practice bank,case_math,MDQ-99,,-,-,,
+Case Drill practice bank,case_math,MDQ-100,,-,-,,
+Case Drill practice bank,charts,MDQ-101,,-,-,P1,
+Case Drill practice bank,charts,MDQ-102,,-,-,P1,
+Case Drill practice bank,charts,MDQ-103,,-,-,P1,
+Case Drill practice bank,charts,MDQ-104,,-,-,P1,
+Case Drill practice bank,charts,MDQ-105,,-,-,P1,
+Case Drill practice bank,charts,MDQ-106,,-,-,P1,
+Case Drill practice bank,charts,MDQ-107,,-,-,P1,
+Case Drill practice bank,charts,MDQ-108,,-,-,P1,
+Case Drill practice bank,charts,MDQ-109,,-,-,P1,
+Case Drill practice bank,charts,MDQ-110,,-,-,P1,
+Case Drill practice bank,charts,MDQ-111,,-,-,P1,
+Case Drill practice bank,charts,MDQ-112,,-,-,P1,
+Case Drill practice bank,charts,MDQ-113,,-,-,P1,
+Case Drill practice bank,charts,MDQ-114,,-,-,P1,
+Case Drill practice bank,charts,MDQ-115,,-,-,P1,
+Case Drill practice bank,charts,MDQ-116,,-,-,P1,
+Case Drill practice bank,charts,MDQ-117,,-,-,P1,
+Case Drill practice bank,charts,MDQ-118,,-,-,P1,
+Case Drill practice bank,charts,MDQ-119,,-,-,P1,
+Case Drill practice bank,charts,MDQ-120,,-,-,P1,
+Case Drill practice bank,charts,MDQ-121,,-,-,P1,
+Case Drill practice bank,charts,MDQ-122,,-,-,P1,
+Case Drill practice bank,charts,MDQ-123,,-,-,P1,
+Case Drill practice bank,charts,MDQ-124,,-,-,P1,
+Case Drill practice bank,charts,MDQ-125,,-,-,P1,
+Case Drill practice bank,charts,MDQ-126,,-,-,P1,
+Case Drill practice bank,charts,MDQ-127,,-,-,P1,
+Case Drill practice bank,charts,MDQ-128,,-,-,P1,
+Case Drill practice bank,charts,MDQ-129,,-,-,P1,
+Case Drill practice bank,charts,MDQ-130,,-,-,P1,
+Case Drill practice bank,charts,MDQ-131,,-,-,P1,
+Case Drill practice bank,charts,MDQ-132,,-,-,P1,
+Case Drill practice bank,charts,MDQ-133,,-,-,P1,
+Case Drill practice bank,charts,MDQ-134,,-,-,P1,
+Case Drill practice bank,charts,MDQ-135,,-,-,P1,
+Case Drill practice bank,charts,MDQ-136,,-,-,P1,
+Case Drill practice bank,charts,MDQ-137,,-,-,P1,
+Case Drill practice bank,charts,MDQ-138,,-,-,P1,
+Case Drill practice bank,charts,MDQ-139,,-,-,P1,
+Case Drill practice bank,charts,MDQ-140,,-,-,P1,
+Case Drill practice bank,charts,MDQ-141,,-,-,P1,
+Case Drill practice bank,charts,MDQ-142,,-,-,P1,
+Case Drill practice bank,charts,MDQ-143,,-,-,P1,
+Case Drill practice bank,charts,MDQ-144,,-,-,P1,
+Case Drill practice bank,charts,MDQ-145,,-,-,P1,
+Case Drill practice bank,charts,MDQ-146,,-,-,P1,
+Case Drill practice bank,charts,MDQ-147,,-,-,P1,
+Case Drill practice bank,charts,MDQ-148,,-,-,P1,
+Case Drill practice bank,charts,MDQ-149,,-,-,P1,
+Case Drill practice bank,charts,MDQ-150,,-,-,P1,
+Case Drill practice bank,charts,MDQ-151,,-,-,P1,
+Case Drill practice bank,charts,MDQ-152,,-,-,P1,
+Case Drill practice bank,charts,MDQ-153,,-,-,P1,
+Case Drill practice bank,charts,MDQ-154,,-,-,P1,
+Case Drill practice bank,charts,MDQ-155,,-,-,P1,
+Case Drill practice bank,charts,MDQ-156,,-,-,P1,
+Case Drill practice bank,charts,MDQ-157,,-,-,P1,
+Case Drill practice bank,charts,MDQ-158,,-,-,P1,
+Case Drill practice bank,charts,MDQ-159,,-,-,P1,
+Case Drill practice bank,charts,MDQ-160,,-,-,P1,
+Case Drill practice bank,charts,MDQ-161,,-,-,P1,
+Case Drill practice bank,charts,MDQ-162,,-,-,P1,
+Case Drill practice bank,charts,MDQ-163,,-,-,P1,
+Case Drill practice bank,charts,MDQ-164,,-,-,P1,
+Case Drill practice bank,charts,MDQ-165,,-,-,P1,
+Case Drill practice bank,charts,MDQ-166,,-,-,P1,
+Case Drill practice bank,charts,MDQ-167,,-,-,P1,
+Case Drill practice bank,charts,MDQ-168,,-,-,P1,
+Case Drill practice bank,charts,MDQ-169,,-,-,P1,
+Case Drill practice bank,charts,MDQ-170,,-,-,P1,
+Case Drill practice bank,charts,MDQ-171,,-,-,P1,
+Case Drill practice bank,charts,MDQ-172,,-,-,P1,
+Case Drill practice bank,charts,MDQ-173,,-,-,P1,
+Case Drill practice bank,charts,MDQ-174,,-,-,P1,
+Case Drill practice bank,charts,MDQ-175,,-,-,P1,
+Case Drill practice bank,charts,MDQ-176,,-,-,P1,
+Case Drill practice bank,charts,MDQ-177,,-,-,P1,
+Case Drill practice bank,charts,MDQ-178,,-,-,P1,
+Case Drill practice bank,charts,MDQ-179,,-,-,P1,
+Case Drill practice bank,charts,MDQ-180,,-,-,P1,
+Case Drill practice bank,charts,MDQ-181,,-,-,,
+Case Drill practice bank,charts,MDQ-182,,-,-,,
+Case Drill practice bank,charts,MDQ-183,,-,-,,
+Case Drill practice bank,charts,MDQ-184,,-,-,,
+Case Drill practice bank,charts,MDQ-185,,-,-,,
+Case Drill practice bank,charts,MDQ-186,,-,-,,
+Case Drill practice bank,charts,MDQ-187,,-,-,,
+Case Drill practice bank,charts,MDQ-188,,-,-,,
+Case Drill practice bank,charts,MDQ-189,,-,-,,
+Case Drill practice bank,charts,MDQ-190,,-,-,,
+Case Drill practice bank,charts,MDQ-191,,-,-,,
+Case Drill practice bank,charts,MDQ-192,,-,-,,
+Case Drill practice bank,charts,MDQ-193,,-,-,,
+Case Drill practice bank,charts,MDQ-194,,-,-,,
+Case Drill practice bank,charts,MDQ-195,,-,-,,
+Case Drill practice bank,charts,MDQ-196,,-,-,,
+Case Drill practice bank,charts,MDQ-197,,-,-,,
+Case Drill practice bank,charts,MDQ-198,,-,-,,
+Case Drill practice bank,charts,MDQ-199,,-,-,,
+Case Drill practice bank,charts,MDQ-200,,-,-,,
+Case Drill practice bank,structures,MDQ-201,,-,-,,
+Case Drill practice bank,structures,MDQ-202,,-,-,,
+Case Drill practice bank,structures,MDQ-203,,-,-,,
+Case Drill practice bank,structures,MDQ-204,,-,-,,
+Case Drill practice bank,structures,MDQ-205,,-,-,,
+Case Drill practice bank,structures,MDQ-206,,-,-,,
+Case Drill practice bank,structures,MDQ-207,,-,-,,
+Case Drill practice bank,structures,MDQ-208,,-,-,,
+Case Drill practice bank,structures,MDQ-209,,-,-,,
+Case Drill practice bank,structures,MDQ-210,,-,-,,
+Case Drill practice bank,structures,MDQ-211,,-,-,,
+Case Drill practice bank,structures,MDQ-212,,-,-,,
+Case Drill practice bank,structures,MDQ-213,,-,-,,
+Case Drill practice bank,structures,MDQ-214,,-,-,,
+Case Drill practice bank,structures,MDQ-215,,-,-,,
+Case Drill practice bank,structures,MDQ-216,,-,-,,
+Case Drill practice bank,structures,MDQ-217,,-,-,,
+Case Drill practice bank,structures,MDQ-218,,-,-,,
+Case Drill practice bank,structures,MDQ-219,,-,-,,
+Case Drill practice bank,structures,MDQ-220,,-,-,,
+Case Drill practice bank,structures,MDQ-221,,-,-,,
+Case Drill practice bank,structures,MDQ-222,,-,-,,
+Case Drill practice bank,structures,MDQ-223,,-,-,,
+Case Drill practice bank,structures,MDQ-224,,-,-,,
+Case Drill practice bank,structures,MDQ-225,,-,-,,
+Case Drill practice bank,structures,MDQ-226,,-,-,,
+Case Drill practice bank,structures,MDQ-227,,-,-,,
+Case Drill practice bank,structures,MDQ-228,,-,-,,
+Case Drill practice bank,structures,MDQ-229,,-,-,,
+Case Drill practice bank,structures,MDQ-230,,-,-,,
+Case Drill practice bank,structures,MDQ-231,,-,-,,
+Case Drill practice bank,structures,MDQ-232,,-,-,,
+Case Drill practice bank,structures,MDQ-233,,-,-,,
+Case Drill practice bank,structures,MDQ-234,,-,-,,
+Case Drill practice bank,structures,MDQ-235,,-,-,,
+Case Drill practice bank,structures,MDQ-236,,-,-,,
+Case Drill practice bank,structures,MDQ-237,,-,-,,
+Case Drill practice bank,structures,MDQ-238,,-,-,,
+Case Drill practice bank,structures,MDQ-239,,-,-,,
+Case Drill practice bank,structures,MDQ-240,,-,-,,
+Case Drill practice bank,structures,MDQ-241,,-,-,,
+Case Drill practice bank,structures,MDQ-242,,-,-,,
+Case Drill practice bank,structures,MDQ-243,,-,-,,
+Case Drill practice bank,structures,MDQ-244,,-,-,,
+Case Drill practice bank,structures,MDQ-245,,-,-,,
+Case Drill practice bank,structures,MDQ-246,,-,-,,
+Case Drill practice bank,structures,MDQ-247,,-,-,,
+Case Drill practice bank,structures,MDQ-248,,-,-,,
+Case Drill practice bank,structures,MDQ-249,,-,-,,
+Case Drill practice bank,structures,MDQ-250,,-,-,,
+Case Drill practice bank,structures,MDQ-251,,-,-,,
+Case Drill practice bank,structures,MDQ-252,,-,-,,
+Case Drill practice bank,structures,MDQ-253,,-,-,,
+Case Drill practice bank,structures,MDQ-254,,-,-,,
+Case Drill practice bank,structures,MDQ-255,,-,-,,
+Case Drill practice bank,structures,MDQ-256,,-,-,,
+Case Drill practice bank,structures,MDQ-257,,-,-,,
+Case Drill practice bank,structures,MDQ-258,,-,-,,
+Case Drill practice bank,structures,MDQ-259,,-,-,,
+Case Drill practice bank,structures,MDQ-260,,-,-,,
+Case Drill practice bank,structures,MDQ-261,,-,-,,
+Case Drill practice bank,structures,MDQ-262,,-,-,,
+Case Drill practice bank,structures,MDQ-263,,-,-,,
+Case Drill practice bank,structures,MDQ-264,,-,-,,
+Case Drill practice bank,structures,MDQ-265,,-,-,,
+Case Drill practice bank,structures,MDQ-266,,-,-,,
+Case Drill practice bank,structures,MDQ-267,,-,-,,
+Case Drill practice bank,structures,MDQ-268,,-,-,,
+Case Drill practice bank,structures,MDQ-269,,-,-,,
+Case Drill practice bank,structures,MDQ-270,,-,-,,
+Case Drill practice bank,structures,MDQ-271,,-,-,,
+Case Drill practice bank,structures,MDQ-272,,-,-,,
+Case Drill practice bank,structures,MDQ-273,,-,-,,
+Case Drill practice bank,structures,MDQ-274,,-,-,,
+Case Drill practice bank,structures,MDQ-275,,-,-,,
+Case Drill practice bank,structures,MDQ-276,,-,-,,
+Case Drill practice bank,structures,MDQ-277,,-,-,,
+Case Drill practice bank,structures,MDQ-278,,-,-,,
+Case Drill practice bank,structures,MDQ-279,,-,-,,
+Case Drill practice bank,structures,MDQ-280,,-,-,,
+Case Drill practice bank,structures,MDQ-281,,-,-,,
+Case Drill practice bank,structures,MDQ-282,,-,-,,
+Case Drill practice bank,structures,MDQ-283,,-,-,,
+Case Drill practice bank,structures,MDQ-284,,-,-,,
+Case Drill practice bank,structures,MDQ-285,,-,-,,
+Case Drill practice bank,structures,MDQ-286,,-,-,,
+Case Drill practice bank,structures,MDQ-287,,-,-,,
+Case Drill practice bank,structures,MDQ-288,,-,-,,
+Case Drill practice bank,structures,MDQ-289,,-,-,,
+Case Drill practice bank,structures,MDQ-290,,-,-,,
+Case Drill practice bank,structures,MDQ-291,,-,-,,
+Case Drill practice bank,structures,MDQ-292,,-,-,,
+Case Drill practice bank,structures,MDQ-293,,-,-,,
+Case Drill practice bank,structures,MDQ-294,,-,-,,
+Case Drill practice bank,structures,MDQ-295,,-,-,,
+Case Drill practice bank,structures,MDQ-296,,-,-,,
+Case Drill practice bank,structures,MDQ-297,,-,-,,
+Case Drill practice bank,structures,MDQ-298,,-,-,,
+Case Drill practice bank,structures,MDQ-299,,-,-,,
+Case Drill practice bank,structures,MDQ-300,,-,-,,
+Case Drill practice bank,calculations,MDQ-301,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-302,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-303,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-304,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-305,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-306,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-307,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-308,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-309,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-310,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-311,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-312,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-313,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-314,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-315,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-316,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-317,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-318,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-319,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-320,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-321,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-322,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-323,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-324,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-325,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-326,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-327,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-328,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-329,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-330,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-331,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-332,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-333,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-334,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-335,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-336,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-337,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-338,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-339,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-340,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-341,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-342,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-343,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-344,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-345,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-346,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-347,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-348,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-349,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-350,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-351,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-352,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-353,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-354,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-355,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-356,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-357,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-358,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-359,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-360,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-361,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-362,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-363,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-364,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-365,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-366,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-367,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-368,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-369,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-370,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-371,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-372,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-373,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-374,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-375,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-376,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-377,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-378,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-379,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-380,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-381,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-382,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-383,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-384,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-385,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-386,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-387,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-388,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-389,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-390,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-391,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-392,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-393,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-394,,-,-,P2,
+Case Drill practice bank,calculations,MDQ-395,,-,-,P2,
+Case Drill practice bank,creativity,MDQ-396,,-,-,,
+Case Drill practice bank,calculations,MDQ-397,,-,-,P2,
+Case Drill practice bank,creativity,MDQ-398,,-,-,,
+Case Drill practice bank,calculations,MDQ-399,,-,-,P2,
+Case Drill practice bank,creativity,MDQ-400,,-,-,,
+Case Drill practice bank,calculations,MDQ-401,,-,-,P2,
+Case Drill practice bank,creativity,MDQ-402,,-,-,,
+Case Drill practice bank,calculations,MDQ-403,,-,-,P2,
+Case Drill practice bank,creativity,MDQ-404,,-,-,,
+Case Drill practice bank,calculations,MDQ-405,,-,-,P2,
+Case Drill practice bank,creativity,MDQ-406,,-,-,,
+Case Drill practice bank,creativity,MDQ-407,,-,-,,
+Case Drill practice bank,creativity,MDQ-408,,-,-,,
+Case Drill practice bank,creativity,MDQ-409,,-,-,,
+Case Drill practice bank,creativity,MDQ-410,,-,-,,
+Case Drill practice bank,creativity,MDQ-411,,-,-,,
+Case Drill practice bank,creativity,MDQ-412,,-,-,,
+Case Drill practice bank,creativity,MDQ-413,,-,-,,
+Case Drill practice bank,creativity,MDQ-414,,-,-,,
+Case Drill practice bank,creativity,MDQ-415,,-,-,,
+Case Drill practice bank,creativity,MDQ-416,,-,-,,
+Case Drill practice bank,creativity,MDQ-417,,-,-,,
+Case Drill practice bank,creativity,MDQ-418,,-,-,,
+Case Drill practice bank,creativity,MDQ-419,,-,-,,
+Case Drill practice bank,creativity,MDQ-420,,-,-,,
+Case Drill practice bank,creativity,MDQ-421,,-,-,,
+Case Drill practice bank,creativity,MDQ-422,,-,-,,
+Case Drill practice bank,creativity,MDQ-423,,-,-,,
+Case Drill practice bank,creativity,MDQ-424,,-,-,,
+Case Drill practice bank,creativity,MDQ-425,,-,-,,
+Case Drill practice bank,creativity,MDQ-426,,-,-,,
+Case Drill practice bank,creativity,MDQ-427,,-,-,,
+Case Drill practice bank,creativity,MDQ-428,,-,-,,
+Case Drill practice bank,creativity,MDQ-429,,-,-,,
+Case Drill practice bank,creativity,MDQ-430,,-,-,,
+Case Drill practice bank,creativity,MDQ-431,,-,-,,
+Case Drill practice bank,creativity,MDQ-432,,-,-,,
+Case Drill practice bank,creativity,MDQ-433,,-,-,,
+Case Drill practice bank,creativity,MDQ-434,,-,-,,
+Case Drill practice bank,creativity,MDQ-435,,-,-,,
+Case Drill practice bank,creativity,MDQ-436,,-,-,,
+Case Drill practice bank,creativity,MDQ-437,,-,-,,
+Case Drill practice bank,creativity,MDQ-438,,-,-,,
+Case Drill practice bank,creativity,MDQ-439,,-,-,,
+Case Drill practice bank,creativity,MDQ-440,,-,-,,
+Case Drill practice bank,creativity,MDQ-441,,-,-,,
+Case Drill practice bank,creativity,MDQ-442,,-,-,,
+Case Drill practice bank,creativity,MDQ-443,,-,-,,
+Case Drill practice bank,creativity,MDQ-444,,-,-,,
+Case Drill practice bank,creativity,MDQ-445,,-,-,,
+Case Drill practice bank,creativity,MDQ-446,,-,-,,
+Case Drill practice bank,creativity,MDQ-447,,-,-,,
+Case Drill practice bank,creativity,MDQ-448,,-,-,,
+Case Drill practice bank,creativity,MDQ-449,,-,-,,
+Case Drill practice bank,creativity,MDQ-450,,-,-,,
+Case Drill practice bank,creativity,MDQ-451,,-,-,,
+Case Drill practice bank,creativity,MDQ-452,,-,-,,
+Case Drill practice bank,creativity,MDQ-453,,-,-,,
+Case Drill practice bank,creativity,MDQ-454,,-,-,,
+Case Drill practice bank,creativity,MDQ-455,,-,-,,
+Case Drill practice bank,creativity,MDQ-456,,-,-,,
+Case Drill practice bank,creativity,MDQ-457,,-,-,,
+Case Drill practice bank,creativity,MDQ-458,,-,-,,
+Case Drill practice bank,creativity,MDQ-459,,-,-,,
+Case Drill practice bank,creativity,MDQ-460,,-,-,,
+Case Drill practice bank,creativity,MDQ-461,,-,-,,
+Case Drill practice bank,creativity,MDQ-462,,-,-,,
+Case Drill practice bank,creativity,MDQ-463,,-,-,,
+Case Drill practice bank,creativity,MDQ-464,,-,-,,
+Case Drill practice bank,creativity,MDQ-465,,-,-,,
+Case Drill practice bank,creativity,MDQ-466,,-,-,,
+Case Drill practice bank,creativity,MDQ-467,,-,-,,
+Case Drill practice bank,creativity,MDQ-468,,-,-,,
+Case Drill practice bank,creativity,MDQ-469,,-,-,,
+Case Drill practice bank,creativity,MDQ-470,,-,-,,
+Case Drill practice bank,creativity,MDQ-471,,-,-,,
+Case Drill practice bank,creativity,MDQ-472,,-,-,,
+Case Drill practice bank,creativity,MDQ-473,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-474,,-,-,,
+Case Drill practice bank,creativity,MDQ-475,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-476,,-,-,,
+Case Drill practice bank,creativity,MDQ-477,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-478,,-,-,,
+Case Drill practice bank,creativity,MDQ-479,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-480,,-,-,,
+Case Drill practice bank,creativity,MDQ-481,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-482,,-,-,,
+Case Drill practice bank,creativity,MDQ-483,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-484,,-,-,,
+Case Drill practice bank,creativity,MDQ-485,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-486,,-,-,,
+Case Drill practice bank,creativity,MDQ-487,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-488,,-,-,,
+Case Drill practice bank,creativity,MDQ-489,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-490,,-,-,,
+Case Drill practice bank,creativity,MDQ-491,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-492,,-,-,,
+Case Drill practice bank,creativity,MDQ-493,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-494,,-,-,,
+Case Drill practice bank,creativity,MDQ-495,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-496,,-,-,,
+Case Drill practice bank,creativity,MDQ-497,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-498,,-,-,,
+Case Drill practice bank,creativity,MDQ-499,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-500,,-,-,,
+Case Drill practice bank,creativity,MDQ-501,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-502,,-,-,,
+Case Drill practice bank,creativity,MDQ-503,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-504,,-,-,,
+Case Drill practice bank,creativity,MDQ-505,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-506,,-,-,,
+Case Drill practice bank,creativity,MDQ-507,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-508,,-,-,,
+Case Drill practice bank,creativity,MDQ-509,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-510,,-,-,,
+Case Drill practice bank,creativity,MDQ-511,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-512,,-,-,,
+Case Drill practice bank,creativity,MDQ-513,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-514,,-,-,,
+Case Drill practice bank,creativity,MDQ-515,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-516,,-,-,,
+Case Drill practice bank,creativity,MDQ-517,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-518,,-,-,,
+Case Drill practice bank,creativity,MDQ-519,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-520,,-,-,,
+Case Drill practice bank,creativity,MDQ-521,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-522,,-,-,,
+Case Drill practice bank,creativity,MDQ-523,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-524,,-,-,,
+Case Drill practice bank,creativity,MDQ-525,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-526,,-,-,,
+Case Drill practice bank,creativity,MDQ-527,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-528,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-529,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-530,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-531,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-532,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-533,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-534,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-535,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-536,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-537,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-538,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-539,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-540,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-541,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-542,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-543,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-544,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-545,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-546,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-547,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-548,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-549,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-550,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-551,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-552,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-553,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-554,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-555,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-556,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-557,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-558,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-559,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-560,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-561,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-562,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-563,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-564,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-565,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-566,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-567,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-568,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-569,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-570,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-571,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-572,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-573,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-574,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-575,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-576,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-577,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-578,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-579,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-580,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-581,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-582,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-583,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-584,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-585,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-586,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-587,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-588,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-589,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-590,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-591,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-592,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-593,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-594,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-595,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-596,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-597,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-598,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-600,,-,-,,
+Case Drill practice bank,market_sizing,MDQ-602,,-,-,,

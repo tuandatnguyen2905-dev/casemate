@@ -61,6 +61,7 @@ import MarketSizingAnswerBuilder, {
   type MarketSizingAnswerDraft,
 } from '../../components/MarketSizingAnswerBuilder';
 import { formatNumbersInText } from '../../lib/numberDisplay';
+import { restatesExhibitData } from '../../lib/learnerContentPresentation';
 import { clarifyUnitLabel, clarifyUnitText, clarifyUnitsDeep } from '../../lib/unitLabels';
 import {
   createCalculationAnswerPayload,
@@ -184,6 +185,16 @@ function generatedCalculationAnswer(drillData?: string, prompt = '', rawMeta?: J
     };
   });
   return createCalculationAnswerPayload(specs, specs.length);
+}
+
+/** Givens lines whose every figure is already written in the prompt itself. */
+function givensRepeatPrompt(lines: string, prompt: string): boolean {
+  const rows = String(lines || '').split('\n').map((line) => line.replace(/^\s*[-•*]\s*/, '').trim()).filter(Boolean);
+  const text = String(prompt || '').replace(/,/g, '');
+  return rows.length > 0 && rows.every((row) => {
+    const numbers = row.replace(/,/g, '').match(/\d+(?:\.\d+)?/g) || [];
+    return numbers.length > 0 && numbers.every((value) => new RegExp(`(^|[^\\d.])${value.replace('.', '\\.')}(?![\\d])`).test(text));
+  });
 }
 
 function displayCalculationSpecs<T extends CalculationFinalAnswerSpec>(specs: T[]): T[] {
@@ -1234,6 +1245,10 @@ function CaseDrillInner() {
         analyticalPurpose: 'Interpret the exhibit and use its values to answer the drill prompt.',
       }
     : null;
+  // Chart drills store their plotted values as text too, and short calculation prompts already state their givens.
+  const showDrillData = Boolean(drill?.drill_data)
+    && !(activeChart && restatesExhibitData(String(drill?.drill_data || ''), activeChart.data))
+    && !givensRepeatPrompt(String(drill?.drill_data || ''), String(drill?.prompt || ''));
   const timerFraction = drill ? secondsLeft / Math.max(drill.time_limit_seconds, 1) : 0;
   const displayedResultScore = result && drill
     ? (drill.skill === 'market_sizing' && result.scoring ? deriveOverallScore(result.scoring.criteria) : result.score)
@@ -1483,17 +1498,17 @@ function CaseDrillInner() {
                 <CaseMathBriefView brief={activeCase} />
               ) : (
                 <>
-                  {drill.drill_data ? (
+                  {showDrillData ? (
                     <pre className="whitespace-pre-wrap rounded-xl bg-[var(--space-surface-muted)] p-3 font-[inherit] text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="drill-data">
                       {nfDrill(capitaliseLineStarts(drill.drill_data))}
                     </pre>
                   ) : null}
                   {activeExhibit ? (
-                    <div className={drill.drill_data ? 'mt-3' : ''}>
+                    <div className={showDrillData ? 'mt-3' : ''}>
                       <ExhibitRenderer exhibits={[activeExhibit]} />
                     </div>
                   ) : null}
-                  <div className={`${drill.drill_data || activeExhibit ? 'mt-3 border-t border-[var(--space-border-default)] pt-3' : ''}`}>
+                  <div className={`${showDrillData || activeExhibit ? 'mt-3 border-t border-[var(--space-border-default)] pt-3' : ''}`}>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Question</p>
                     <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-primary)]" data-testid="drill-prompt">
                       {nfDrill(capitaliseLineStarts(drill.prompt))}

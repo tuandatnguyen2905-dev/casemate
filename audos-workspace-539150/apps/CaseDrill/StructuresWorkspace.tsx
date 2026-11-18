@@ -49,6 +49,7 @@ import {
   structureGradingBrief,
 } from '../../lib/structureFrameworkGuides';
 import { structuresEasySuggestedTree } from '../../lib/structuresEasyBank';
+import { presentLibraryQuestion, type PresentedQuestion } from '../../lib/learnerContentPresentation';
 import CaseResultView from '../../components/CaseResultView';
 import { openCasePoolCase, sourceFullCase } from '../../components/SolveFullCaseCta';
 import { buildReasoningFeedback, chooseNextAction, emptyWorkedAnswer, resultOutcome, retryAction, type ResultOutcome, type WorkedAnswerModel } from '../../lib/caseResultModel';
@@ -230,9 +231,17 @@ function normalizeStoredDraft(value: any, item: LibraryQuestion): TreeDraft {
   return { nodes: normalizeOrders(nodes), crossLinks };
 }
 
+function presentStructureQuestion(item: LibraryQuestion): PresentedQuestion {
+  return presentLibraryQuestion(
+    { businessContext: item.businessContext, instruction: item.instruction, question: item.question, authoredRoot: structuresEasySuggestedTree(item.id)?.root.text },
+    { hasExhibits: questionExhibits(item).length > 0 },
+  );
+}
+
+/** A new tree starts from a concise root question, never from the whole prompt; the brief above shows the full task. */
 function emptyDraft(item: LibraryQuestion): TreeDraft {
   return {
-    nodes: [{ id: `root-${item.id}`, parentId: null, text: item.question, order: 0 }],
+    nodes: [{ id: `root-${item.id}`, parentId: null, text: presentStructureQuestion(item).rootQuestion || item.question, order: 0 }],
     crossLinks: [],
   };
 }
@@ -610,7 +619,7 @@ function VersionCard({ submission, label }: { submission: Submission; label: str
   );
 }
 
-export default function StructuresWorkspace({ initialCaseId, caseOverride, suggestedTreeOverride = null, onSubmitted, onBackToLibrary, hideEvidenceColumn = false, onCaseSelected, onGraded, onGradeError }: { initialCaseId?: string; caseOverride?: LibraryQuestion; suggestedTreeOverride?: SuggestedStructureTree | null; onSubmitted?: () => void; onBackToLibrary?: () => void; hideEvidenceColumn?: boolean; onCaseSelected?: (item: LibraryQuestion) => void; onGraded?: (caseId: string, scoring?: HonestScoreResult) => void; onGradeError?: (error: unknown) => void }) {
+export default function StructuresWorkspace({ initialCaseId, caseOverride, suggestedTreeOverride = null, briefOverride = null, onSubmitted, onBackToLibrary, hideEvidenceColumn = false, onCaseSelected, onGraded, onGradeError }: { initialCaseId?: string; caseOverride?: LibraryQuestion; suggestedTreeOverride?: SuggestedStructureTree | null; /** Host-case brief shown instead of the drill's own, so an embedded workspace is the only place the case and task appear. */ briefOverride?: Pick<PresentedQuestion, 'context' | 'keyTerms' | 'exhibitGuide' | 'guidance' | 'task'> & { instruction?: string; exhibits?: LibraryExhibit[] } | null; onSubmitted?: () => void; onBackToLibrary?: () => void; hideEvidenceColumn?: boolean; onCaseSelected?: (item: LibraryQuestion) => void; onGraded?: (caseId: string, scoring?: HonestScoreResult) => void; onGradeError?: (error: unknown) => void }) {
   const { sessionId } = useSpaceRuntime();
   const availableCases = useMemo(() => caseOverride
     ? [caseOverride, ...BASE_STRUCTURE_QUESTIONS.filter((item) => item.id !== caseOverride.id)]
@@ -646,8 +655,15 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
   const revealFeedbackRef = useRef(false);
 
   const activeCase = useMemo(() => availableCases.find((item) => item.id === selectedId) || availableCases[0], [availableCases, selectedId]);
-  const shownExhibits = useMemo(() => clarifyUnitsDeep(questionExhibits(activeCase)), [activeCase]);
-  const formatRootText = (text: string) => (text === activeCase.question ? clarifyUnitText(text) : text);
+  const hostExhibits = caseOverride && activeCase?.id === caseOverride.id && briefOverride?.exhibits?.length ? briefOverride.exhibits : null;
+  const shownExhibits = useMemo(() => clarifyUnitsDeep(hostExhibits || questionExhibits(activeCase)), [activeCase, hostExhibits]);
+  // "Use in your issue tree" notes name the branches the model tree expects, so they appear only once a tree has been submitted.
+  const exhibitsBeforeSubmission = useMemo(() => shownExhibits.map(({ structureRole: _branchHint, ...exhibit }) => exhibit), [shownExhibits]);
+  const embedded = Boolean(caseOverride && activeCase?.id === caseOverride.id);
+  const presentedCase = useMemo(() => presentStructureQuestion(activeCase), [activeCase]);
+  const brief = embedded && briefOverride ? { ...presentedCase, instruction: '', ...briefOverride } : presentedCase;
+  // Trees saved before concise roots started from the whole prompt; they display the concise root and keep their stored text.
+  const formatRootText = (text: string) => (text === activeCase.question ? clarifyUnitText(presentedCase.rootQuestion || text) : text);
   // Only authored content may be shown as the strong example tree: the host case's published
   // issue tree, a mapped framework guide, or an authored Easy tree. Never the archetype template.
   const treeOverride = caseOverride && suggestedTreeOverride && activeCase?.id === caseOverride.id ? suggestedTreeOverride : null;
@@ -962,7 +978,7 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
               <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{activeCase.drillType || 'Issue Tree'}</span>
               <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{DIFFICULTY_LABELS[displayDifficultyOf(activeCase)]}</span>
             </div>
-            <h2 className="mt-2 text-lg font-bold leading-7 text-[var(--space-text-primary)]">{clarifyUnitText(activeCase.title)}</h2>
+            {embedded ? null : <h2 className="mt-2 text-lg font-bold leading-7 text-[var(--space-text-primary)]">{clarifyUnitText(activeCase.title)}</h2>}
             <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">Read → Build → Submit → Feedback → Revise → Compare versions</p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -987,10 +1003,12 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
         </button>
         {briefOpen ? (
           <div className="border-t border-[var(--space-border-default)] p-4 pt-3">
-            <p className="text-sm leading-6 text-[var(--space-text-secondary)]">{clarifyUnitText(activeCase.businessContext || activeCase.instruction || 'Use the case prompt and any supplied exhibits to build a clear, testable issue tree.')}</p>
+            <p className="whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]" data-testid="structures-case-context">{clarifyUnitText(brief.context || 'Use the case prompt and any supplied exhibits to build a clear, testable issue tree.')}</p>
+            {brief.keyTerms.length ? <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="structures-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {clarifyUnitText(brief.keyTerms.join(' '))}</p> : null}
             <div className="mt-3 rounded-xl border-l-4 border-[var(--space-brand-primary)] bg-[var(--space-surface-accent-soft)] p-3">
               <p className="text-[9px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Central question</p>
-              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{clarifyUnitText(activeCase.question)}</p>
+              <p className="mt-1 whitespace-pre-wrap text-sm font-semibold leading-6 text-[var(--space-text-primary)]" data-testid="structures-central-question">{clarifyUnitText(brief.task || activeCase.question)}</p>
+              {[brief.instruction, ...brief.guidance].filter(Boolean).map((line) => <p key={line} className="mt-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(String(line))}</p>)}
             </div>
           </div>
         ) : null}
@@ -998,7 +1016,7 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
 
       {shownExhibits.length ? (
         <div className="mt-3" data-testid="structures-exhibits">
-          <ExhibitRenderer exhibits={shownExhibits} />
+          <ExhibitRenderer exhibits={submissions.length ? shownExhibits : exhibitsBeforeSubmission} guide={brief.exhibitGuide} />
         </div>
       ) : (
         <p className="mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3 text-xs leading-5 text-[var(--space-text-muted)]">This drill has no exhibit. Build the tree from the case prompt.</p>
