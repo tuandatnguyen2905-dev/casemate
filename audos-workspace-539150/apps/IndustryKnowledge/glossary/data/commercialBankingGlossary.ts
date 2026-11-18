@@ -1,6 +1,8 @@
 // Commercial Banking Essential Terms. Definitions follow the curriculum's sourced chapter Key Terms
 // (commercialBankingM0x bundles) and the curriculum source registry; source URLs are copied from it.
 // Lesson 5.4 is held for review (Verification Required — Do Not Publish) and gets no glossary.
+// Vietnamese aliases are the preferred forms of localization/viTerminology.ts (lower-case, NFC, two or more
+// words) so inline lookup also works in Vietnamese reading mode.
 import type { CurriculumGlossaryData, GlossarySource, GlossaryTermDef } from '../glossaryTypes';
 import { collectSources, sharedTerms } from './financeSharedTerms';
 
@@ -36,7 +38,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m01-s08'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.financial-intermediation', term: 'Financial intermediation', aliases: ['intermediation'], category: 'essential-concepts',
+    id: 'cb.financial-intermediation', term: 'Financial intermediation', aliases: ['intermediation', 'trung gian tài chính'], category: 'essential-concepts',
     definitionEn: 'Pooling funds from savers and allocating them to borrowers while managing maturity, liquidity and credit risk.',
     definitionVi: 'Trung gian tài chính: huy động vốn từ người tiết kiệm và phân bổ cho người đi vay, đồng thời quản lý rủi ro kỳ hạn, thanh khoản và tín dụng.',
     businessContextEn: 'Intermediation is the core of the bank business model: the bank earns the spread for taking risks savers do not want to hold directly.',
@@ -52,7 +54,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m01-s08'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.maturity-transformation', term: 'Maturity transformation', category: 'essential-concepts',
+    id: 'cb.maturity-transformation', term: 'Maturity transformation', aliases: ['chuyển hóa kỳ hạn'], category: 'essential-concepts',
     definitionEn: 'Funding longer-term assets, such as multi-year loans, with shorter-term liabilities, such as deposits.',
     definitionVi: 'Chuyển hóa kỳ hạn: dùng nguồn vốn ngắn hạn (như tiền gửi) để tài trợ tài sản dài hạn (như khoản vay nhiều năm).',
     businessContextEn: 'It creates value for the economy but also makes banks fragile if depositors withdraw at once.',
@@ -60,7 +62,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m01-s02'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.liquidity-transformation', term: 'Liquidity transformation', category: 'essential-concepts',
+    id: 'cb.liquidity-transformation', term: 'Liquidity transformation', aliases: ['chuyển hóa thanh khoản'], category: 'essential-concepts',
     definitionEn: 'Offering customers funding they can withdraw at any time while holding assets, such as loans, that cannot be turned into cash immediately.',
     definitionVi: 'Chuyển hóa thanh khoản: cho phép khách hàng rút tiền bất cứ lúc nào trong khi ngân hàng nắm giữ tài sản (như khoản vay) không thể chuyển thành tiền mặt ngay.',
     businessContextEn: 'This mismatch is why banks hold liquid buffers and why loss of confidence can trigger a bank run.',
@@ -68,7 +70,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m01-s03'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.capital-adequacy', term: 'Capital adequacy', category: 'regulatory',
+    id: 'cb.capital-adequacy', term: 'Capital adequacy', aliases: ['an toàn vốn'], category: 'regulatory',
     definitionEn: 'Holding enough loss-absorbing regulatory capital relative to risk-weighted assets.',
     definitionVi: 'An toàn vốn: duy trì đủ vốn tự có (vốn hấp thụ tổn thất theo quy định) so với tài sản có rủi ro.',
     businessContextEn: 'Capital caps how much risk a bank can take; growing the loan book needs capital to grow with it.',
@@ -76,7 +78,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m01-s02'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.systemic-risk', term: 'Systemic risk', category: 'essential-concepts',
+    id: 'cb.systemic-risk', term: 'Systemic risk', aliases: ['rủi ro hệ thống'], category: 'essential-concepts',
     definitionEn: 'The risk that distress at one institution spreads and disrupts the wider financial system or economy.',
     definitionVi: 'Rủi ro hệ thống: nguy cơ khó khăn tại một tổ chức lan rộng, gây xáo trộn toàn bộ hệ thống tài chính hoặc nền kinh tế.',
     businessContextEn: 'Systemic risk is the reason banks face stricter rules than most other businesses.',
@@ -126,7 +128,7 @@ const CB_TERMS: GlossaryTermDef[] = [
 
   // Products & services -----------------------------------------------------------------
   {
-    id: 'cb.current-account', term: 'Current account', aliases: ['current accounts'], category: 'products-services',
+    id: 'cb.current-account', term: 'Current account', aliases: ['current accounts', 'tài khoản thanh toán'], category: 'products-services',
     definitionEn: 'A transaction deposit account designed for frequent payments and withdrawals, usually paying little or no interest.',
     definitionVi: 'Tài khoản thanh toán: tài khoản tiền gửi dùng cho giao dịch, thanh toán và rút tiền thường xuyên, thường trả lãi rất thấp hoặc không trả lãi.',
     businessContextEn: 'Current-account balances are the cheapest funding a bank can get, which is why banks compete hard for them.',
@@ -134,7 +136,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.casa', term: 'CASA', fullForm: 'Current Account and Savings Account deposits', aliases: ['CASA deposits'], category: 'acronyms',
+    id: 'cb.casa', term: 'CASA', fullForm: 'Current Account and Savings Account deposits', aliases: ['CASA deposits', 'tiền gửi không kỳ hạn'], category: 'acronyms',
     definitionEn: 'Current-account and savings-account deposits—the low-cost, everyday balances customers keep with a bank.',
     definitionVi: 'CASA: tiền gửi không kỳ hạn (tài khoản thanh toán và tiết kiệm không kỳ hạn) – các số dư chi phí thấp mà khách hàng duy trì hằng ngày tại ngân hàng.',
     businessContextEn: 'A strong CASA base lowers the cost of funds and supports a higher NIM; it usually comes from being the customer’s primary bank.',
@@ -152,7 +154,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.cash-management', term: 'Cash management', category: 'products-services',
+    id: 'cb.cash-management', term: 'Cash management', aliases: ['quản lý dòng tiền'], category: 'products-services',
     definitionEn: 'Services that help a business collect, hold, forecast and pay cash.',
     definitionVi: 'Quản lý dòng tiền: dịch vụ giúp doanh nghiệp thu tiền, giữ tiền, dự báo và chi trả.',
     businessContextEn: 'Cash management brings fee income and sticky corporate deposits at the same time.',
@@ -168,7 +170,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.sme-banking', term: 'SME banking', fullForm: 'Small and Medium-sized Enterprise banking', aliases: ['SME', 'SMEs'], category: 'business-models',
+    id: 'cb.sme-banking', term: 'SME banking', fullForm: 'Small and Medium-sized Enterprise banking', aliases: ['SME', 'SMEs', 'doanh nghiệp nhỏ và vừa'], category: 'business-models',
     definitionEn: 'Banking for small and medium-sized enterprises, blending standard products with relationship judgement because business and owner finances are closely linked.',
     definitionVi: 'Ngân hàng cho doanh nghiệp vừa và nhỏ (SME): phục vụ doanh nghiệp vừa và nhỏ, kết hợp sản phẩm chuẩn hóa với đánh giá dựa trên quan hệ vì tài chính doanh nghiệp và chủ doanh nghiệp thường gắn liền.',
     businessContextEn: 'SMEs offer higher margins than large corporates but are harder to underwrite because their data is thinner.',
@@ -184,7 +186,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.relationship-manager', term: 'Relationship manager', acronym: 'RM', fullForm: 'Relationship Manager', aliases: ['relationship managers'], category: 'business-processes',
+    id: 'cb.relationship-manager', term: 'Relationship manager', acronym: 'RM', fullForm: 'Relationship Manager', aliases: ['relationship managers', 'chuyên viên quan hệ khách hàng'], category: 'business-processes',
     definitionEn: 'The bank employee who coordinates a client relationship across products and internal specialists.',
     definitionVi: 'Chuyên viên quan hệ khách hàng (RM): nhân viên ngân hàng phụ trách điều phối toàn bộ quan hệ với khách hàng, kết nối các sản phẩm và bộ phận chuyên môn.',
     businessContextEn: 'RMs are a common MT rotation; their job is cross-sell and risk judgement, not just sales.',
@@ -243,7 +245,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.non-interest-income', term: 'Non-interest income', aliases: ['non-interest income', 'fee-based income'], category: 'financial-metrics',
+    id: 'cb.non-interest-income', term: 'Non-interest income', aliases: ['non-interest income', 'fee-based income', 'thu nhập ngoài lãi'], category: 'financial-metrics',
     definitionEn: 'Income outside net interest income: net fees and commissions, foreign-exchange, trading and other income.',
     definitionVi: 'Thu nhập ngoài lãi: các khoản thu ngoài thu nhập lãi thuần như phí và hoa hồng thuần, kinh doanh ngoại hối, kinh doanh chứng khoán và thu nhập khác.',
     businessContextEn: 'A higher non-interest share makes earnings less dependent on interest-rate cycles and credit growth limits.',
@@ -251,7 +253,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.net-fee-income', term: 'Net fee and commission income', aliases: ['fee income', 'net fee income', 'fee and commission income'], category: 'financial-metrics',
+    id: 'cb.net-fee-income', term: 'Net fee and commission income', aliases: ['fee income', 'net fee income', 'fee and commission income', 'thu nhập phí'], category: 'financial-metrics',
     definitionEn: 'Fee and commission income—payments, cards, bancassurance, advisory—after deducting related fee and commission expense.',
     definitionVi: 'Thu nhập thuần từ phí và hoa hồng: thu từ phí và hoa hồng (thanh toán, thẻ, bảo hiểm qua ngân hàng, tư vấn) sau khi trừ chi phí phí và hoa hồng liên quan.',
     businessContextEn: 'Fee income does not consume much capital, so it lifts ROE when it grows.',
@@ -309,7 +311,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     reviewNote: 'Sprint 04F: still unverified. No source defining operating expenses for banks (including whether provisions are excluded) was fetched; the SBV financial-statement format that would settle this was not reachable.',
   },
   {
-    id: 'cb.npl-ratio', term: 'NPL ratio', fullForm: 'Non-performing loan ratio', aliases: ['non-performing loan ratio'], category: 'financial-metrics',
+    id: 'cb.npl-ratio', term: 'NPL ratio', fullForm: 'Non-performing loan ratio', aliases: ['non-performing loan ratio', 'tỷ lệ nợ xấu'], category: 'financial-metrics',
     definitionEn: 'Non-performing loans divided by gross loans.',
     definitionVi: 'Tỷ lệ nợ xấu: dư nợ xấu chia cho tổng dư nợ cho vay (trước dự phòng).',
     businessContextEn: 'The NPL ratio is the headline asset-quality metric, but it can be flattered by write-offs or fast loan growth.',
@@ -317,7 +319,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m02-s19'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.car', term: 'Capital adequacy ratio', acronym: 'CAR', fullForm: 'Capital Adequacy Ratio', category: 'financial-metrics',
+    id: 'cb.car', term: 'Capital adequacy ratio', acronym: 'CAR', fullForm: 'Capital Adequacy Ratio', aliases: ['hệ số an toàn vốn'], category: 'financial-metrics',
     definitionEn: 'Regulatory capital divided by risk-weighted assets.',
     definitionVi: 'Tỷ lệ an toàn vốn (CAR): vốn tự có theo quy định chia cho tổng tài sản có rủi ro.',
     businessContextEn: 'Regulators set a minimum CAR; the curriculum’s SBV-based sources cite 8% for Vietnamese banks. Thin headroom above the minimum limits growth.',
@@ -333,7 +335,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: ['cb-m01-s02'], basis: 'official', verificationStatus: 'verified',
   },
   {
-    id: 'cb.rwa', term: 'Risk-weighted assets', acronym: 'RWA', fullForm: 'Risk-Weighted Assets', aliases: ['risk weighted assets'], category: 'regulatory',
+    id: 'cb.rwa', term: 'Risk-weighted assets', acronym: 'RWA', fullForm: 'Risk-Weighted Assets', aliases: ['risk weighted assets', 'tài sản có rủi ro'], category: 'regulatory',
     definitionEn: 'A bank’s exposures adjusted by regulatory risk weights—riskier assets count more—used as the denominator of capital ratios.',
     definitionVi: 'Tài sản có rủi ro (RWA): các khoản mục tài sản được điều chỉnh theo hệ số rủi ro quy định – tài sản càng rủi ro càng được tính nhiều – dùng làm mẫu số khi tính tỷ lệ an toàn vốn.',
     businessContextEn: 'Two banks with equal assets can need very different capital if their RWA differ.',
@@ -366,7 +368,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m01-s03'], basis: 'official', verificationStatus: 'verified',
   },
   {
-    id: 'cb.casa-ratio', term: 'CASA ratio', category: 'financial-metrics',
+    id: 'cb.casa-ratio', term: 'CASA ratio', aliases: ['tỷ lệ casa'], category: 'financial-metrics',
     definitionEn: 'Current and savings account balances divided by total customer deposits.',
     definitionVi: 'Tỷ lệ CASA: số dư tiền gửi không kỳ hạn (thanh toán và tiết kiệm không kỳ hạn) chia cho tổng tiền gửi khách hàng.',
     businessContextEn: 'Banks with a higher CASA ratio usually enjoy a lower cost of funds and a wider NIM.',
@@ -450,7 +452,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.div', term: 'Deposit Insurance of Vietnam', acronym: 'DIV', fullForm: 'Deposit Insurance of Vietnam', category: 'institutions',
+    id: 'cb.div', term: 'Deposit Insurance of Vietnam', acronym: 'DIV', fullForm: 'Deposit Insurance of Vietnam', aliases: ['bảo hiểm tiền gửi việt nam'], category: 'institutions',
     definitionEn: 'Vietnam’s state deposit insurer. It pays insured depositors up to a legal limit if a participating credit institution cannot pay them.',
     definitionVi: 'Bảo hiểm tiền gửi Việt Nam (DIV): tổ chức bảo hiểm tiền gửi của Nhà nước, chi trả cho người gửi tiền được bảo hiểm trong hạn mức luật định khi tổ chức tham gia bảo hiểm mất khả năng chi trả.',
     businessContextEn: 'The insured limit protects ordinary savers but not large balances—so big depositors still judge bank strength.',
@@ -458,7 +460,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m01-s13'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.state-owned-bank', term: 'State-controlled bank', aliases: ['state-owned bank', 'state-owned banks', 'state-owned commercial bank', 'state-owned commercial banks', 'state-controlled banks', 'SOCB', 'SOCBs'], category: 'institutions',
+    id: 'cb.state-owned-bank', term: 'State-controlled bank', aliases: ['state-owned bank', 'state-owned banks', 'state-owned commercial bank', 'state-owned commercial banks', 'state-controlled banks', 'SOCB', 'SOCBs', 'ngân hàng có vốn nhà nước chi phối', 'ngân hàng thương mại nhà nước'], category: 'institutions',
     definitionEn: 'A commercial bank in which the state holds controlling ownership or influence, such as Vietcombank, BIDV, VietinBank and Agribank.',
     definitionVi: 'Ngân hàng thương mại có vốn Nhà nước chi phối: ngân hàng mà Nhà nước nắm quyền sở hữu hoặc chi phối, ví dụ Vietcombank, BIDV, VietinBank và Agribank.',
     businessContextEn: 'State banks tend to have scale, trust and cheap deposits, with policy roles alongside commercial goals.',
@@ -466,7 +468,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT, 'cb-m01-s08'], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.joint-stock-bank', term: 'Joint-stock commercial bank', aliases: ['joint-stock bank', 'joint-stock banks', 'joint-stock commercial banks', 'private joint-stock bank'], category: 'institutions',
+    id: 'cb.joint-stock-bank', term: 'Joint-stock commercial bank', aliases: ['joint-stock bank', 'joint-stock banks', 'joint-stock commercial banks', 'private joint-stock bank', 'ngân hàng thương mại cổ phần'], category: 'institutions',
     definitionEn: 'A commercial bank organised as a shareholding company. State-controlled banks are legally joint-stock too, but in Vietnamese market commentary “joint-stock banks” usually means privately controlled ones such as Techcombank, MB or VPBank.',
     definitionVi: 'Ngân hàng thương mại cổ phần (TMCP): ngân hàng tổ chức dưới hình thức công ty cổ phần. Các ngân hàng có vốn Nhà nước chi phối cũng là công ty cổ phần về mặt pháp lý, nhưng khi bình luận thị trường, “ngân hàng TMCP” thường chỉ các ngân hàng tư nhân như Techcombank, MB hay VPBank.',
     businessContextEn: 'Private joint-stock banks often compete through digital, retail and ecosystem strategies.',
@@ -532,7 +534,7 @@ const CB_TERMS: GlossaryTermDef[] = [
 
   // Regulatory --------------------------------------------------------------------------
   {
-    id: 'cb.credit-growth-quota', term: 'Credit growth quota', aliases: ['credit room', 'credit growth limit', 'credit growth quotas', 'credit quota', 'credit growth target', 'administered credit growth'], category: 'regulatory',
+    id: 'cb.credit-growth-quota', term: 'Credit growth quota', aliases: ['credit room', 'credit growth limit', 'credit growth quotas', 'credit quota', 'credit growth target', 'administered credit growth', 'room tín dụng'], category: 'regulatory',
     definitionEn: 'An SBV-administered limit on how fast an individual bank may grow its credit in a year.',
     definitionVi: 'Hạn mức tăng trưởng tín dụng (room tín dụng): giới hạn do NHNN phân bổ về tốc độ tăng trưởng tín dụng tối đa của từng ngân hàng trong năm.',
     businessContextEn: 'Because credit growth is capped, Vietnamese banks compete on margin, fees and capital efficiency rather than volume alone.',
@@ -556,7 +558,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.prudential-regulation', term: 'Prudential regulation', aliases: ['prudential supervision', 'prudential ratios', 'prudential rules'], category: 'regulatory',
+    id: 'cb.prudential-regulation', term: 'Prudential regulation', aliases: ['prudential supervision', 'prudential ratios', 'prudential rules', 'quy định an toàn', 'giám sát an toàn'], category: 'regulatory',
     definitionEn: 'Rules and supervision designed to keep financial institutions safe and limit systemic risk—capital, liquidity, concentration and governance requirements.',
     definitionVi: 'Quy định an toàn (an toàn vĩ mô và vi mô): các quy định và hoạt động giám sát nhằm giữ an toàn cho tổ chức tài chính và hạn chế rủi ro hệ thống – về vốn, thanh khoản, mức độ tập trung và quản trị.',
     businessContextEn: 'Prudential limits decide how much a bank can lend, to whom, and with what funding.',
@@ -612,7 +614,7 @@ const CB_TERMS: GlossaryTermDef[] = [
     sourceIds: [KT], basis: 'curriculum', verificationStatus: 'verified',
   },
   {
-    id: 'cb.deposit-insurance', term: 'Deposit insurance', category: 'regulatory',
+    id: 'cb.deposit-insurance', term: 'Deposit insurance', aliases: ['bảo hiểm tiền gửi'], category: 'regulatory',
     definitionEn: 'A capped scheme protecting eligible deposits if a participating institution cannot pay depositors.',
     definitionVi: 'Bảo hiểm tiền gửi: cơ chế bảo vệ tiền gửi đủ điều kiện trong hạn mức nhất định khi tổ chức tham gia bảo hiểm mất khả năng chi trả.',
     businessContextEn: 'It supports confidence in the system and reduces the risk of panic withdrawals.',
