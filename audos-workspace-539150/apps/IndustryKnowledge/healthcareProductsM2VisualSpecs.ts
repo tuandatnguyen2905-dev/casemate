@@ -1,0 +1,296 @@
+import type { HealthcareProductsChapterVisual } from './healthcareProductsVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Healthcare Products & Nutrition Module 02, keyed by visualKind. */
+export const HEALTHCARE_PRODUCTS_M2_VISUALS: Record<string, HealthcareProductsChapterVisual> = {
+  'healthcare-products-m2-1': {
+    heading: 'From health need to monitored use: the product value chain',
+    intro: 'The value chain converts knowledge and materials into quality-assured products that reach appropriate users with accurate information. It starts from a health need and continues after the sale through monitoring.',
+    spec: {
+      layout: 'flow', title: '01 How Does the Healthcare Products and Nutrition Value Chain Work?', kicker: '',
+      steps: [
+        { label: 'Health need', detail: 'Define the user and the need served' },
+        { label: 'Research and evidence', detail: 'Knowledge that supports the product' },
+        { label: 'Formulation', detail: 'Turn ingredients into a usable product' },
+        { label: 'Quality-assured production', detail: 'Manufacture, test and release' },
+        { label: 'Distribution', detail: 'Reach appropriate users with accurate information' },
+        { label: 'Use and monitoring', detail: 'Complaints, safety and outcomes tracked', kind: 'outcome' },
+      ],
+      loop: 'Monitoring findings feed back into evidence, formulation and corrective action.',
+      note: 'Regulators add authorization, inspection, laboratory testing, market surveillance, clinical-trial oversight and pharmacovigilance for medical products.',
+      takeaway: 'Value is created through coordination across science, manufacturing, regulation, access and responsible use — not branding or production alone.',
+    },
+  },
+  'healthcare-products-m2-2': {
+    heading: 'Who answers for each part of the product lifecycle',
+    intro: 'Every lifecycle activity needs an accountable owner, from research through quality to post-market monitoring. Regulators oversee the same stages through their own functions.',
+    spec: {
+      layout: 'table', title: '02 Who Is Responsible Across the Product Lifecycle?', kicker: '',
+      headers: ['Lifecycle area', 'Owner must answer for', 'Regulatory function'],
+      rows: [
+        { label: 'Research', a: 'Classification and evidence', b: 'Clinical-trial oversight' },
+        { label: 'Sourcing', a: 'Supplier qualification', b: 'Inspection' },
+        { label: 'Quality', a: 'Batch release', b: 'Laboratory testing' },
+        { label: 'Market entry', a: 'Registration or declaration', b: 'Authorization' },
+        { label: 'Post-market monitoring', a: 'Complaints and corrective action', b: 'Market surveillance, pharmacovigilance' },
+      ],
+      note: 'Post-market monitoring collects and evaluates quality, complaint, safety and use information after commercialization.',
+      takeaway: 'Value comes from coordinated responsibility across science, manufacturing, regulation, access and responsible use — not branding or production alone.',
+    },
+  },
+  'healthcare-products-m2-3': {
+    heading: 'How product, evidence, information and money move around the product owner',
+    intro: 'Ingredients flow in from suppliers, products flow out to users, and money flows back. Regulatory access depends on evidence and information flowing to regulators.',
+    spec: {
+      layout: 'ecosystem', title: '03 How Do Product, Evidence, Information and Money Flow?', kicker: '',
+      center: { label: 'Accountable product owner', detail: 'Coordinates evidence, quality and access' },
+      actors: [
+        { label: 'Ingredient suppliers', relation: 'Supply qualified materials; are paid', flows: ['product', 'money'] },
+        { label: 'Manufacturers', relation: 'Produce and release batches', flows: ['product', 'service'] },
+        { label: 'Regulators', relation: 'Receive evidence; grant access; inspect', flows: ['information', 'oversight'] },
+        { label: 'Distribution channels', relation: 'Move product to users; return revenue', flows: ['product', 'money'] },
+        { label: 'Users', relation: 'Pay; report complaints and safety issues', flows: ['money', 'information'] },
+      ],
+      note: 'Regulatory access can involve authorization, inspection, laboratory testing and market surveillance, depending on the category.',
+      takeaway: 'Value is created through coordination across science, manufacturing, regulation, access and responsible use — not branding or production alone.',
+    },
+  },
+  'healthcare-products-m2-4': {
+    heading: 'Research moves from scientific rationale to product-specific evidence',
+    intro: 'Upstream research combines literature and laboratory work, ingredient selection, safety assessment and clinical or nutritional evidence. Evidence must eventually concern the finished product, not just its ingredients.',
+    spec: {
+      layout: 'flow', title: '04 How Are Health Needs, Ingredients and Formulations Researched?', kicker: '',
+      steps: [
+        { label: 'Scientific rationale', detail: 'Literature and laboratory research on the need' },
+        { label: 'Ingredient selection', detail: 'Safety, bioavailability and purity considered' },
+        { label: 'Safety assessment', detail: 'Contaminants, allergens and safe amounts' },
+        { label: 'Formulation', detail: 'Ingredients combined into a candidate product' },
+        { label: 'Product-specific evidence', detail: 'For the finished formulation, population and dose', kind: 'outcome' },
+      ],
+      note: 'Codex says vitamin and mineral source selection should consider safety, bioavailability and purity under applicable standards.',
+      takeaway: 'Low-cost inputs are not economical when weak provenance, variability or evidence creates testing, disruption, quality or trust risk.',
+    },
+  },
+  'healthcare-products-m2-5': {
+    heading: 'A cheap supplier is only qualified if its evidence holds up',
+    intro: 'Suppliers are qualified against a defined specification and audit evidence. Weak provenance or variability turns a low price into testing, disruption and trust risk.',
+    spec: {
+      layout: 'decision', title: '05 How Are Ingredient Suppliers Qualified and Materials Controlled?', kicker: '',
+      root: { label: 'Candidate ingredient supplier', detail: 'Identity, purity, potency, contaminants, allergens' },
+      question: 'Do certificates, audit evidence and traceability meet the specification?',
+      branches: [
+        { condition: 'Meets specification', outcome: 'Qualify and monitor changes', detail: 'Require change notification', tone: 'positive' },
+        { condition: 'Evidence incomplete', outcome: 'Request evidence before approval', detail: 'Certificates or audit gaps', tone: 'caution' },
+        { condition: 'Weak provenance or variability', outcome: 'Do not qualify', detail: 'Low price would create supply risk', tone: 'negative' },
+      ],
+      note: 'Decree 15/2018 covers certificates, import inspection and traceability for relevant food categories; requirements depend on the category.',
+      takeaway: 'Low-cost inputs are not economical when weak provenance, variability or evidence creates testing, disruption, quality or trust risk.',
+    },
+  },
+  'healthcare-products-m2-7': {
+    heading: 'Quality is built in at each manufacturing step',
+    intro: 'Manufacturing transforms ingredients into stable, usable products under category-appropriate documentation, testing and release systems. Quality is designed in, not only tested at the end.',
+    spec: {
+      layout: 'flow', title: '07 How Are Products Formulated and Manufactured?', kicker: '',
+      steps: [
+        { label: 'Formulation', detail: 'Stable, usable composition' },
+        { label: 'Pilot development', detail: 'Small-scale trial of the process' },
+        { label: 'Process validation', detail: 'Proves the process is consistent' },
+        { label: 'Manufacturing', detail: 'In-house or contract manufacturing', owner: 'Manufacturer or contract partner' },
+        { label: 'Laboratory testing', detail: 'Checks against specifications' },
+        { label: 'Packaging', detail: 'Protects product and carries the label' },
+        { label: 'Shelf life and traceability', detail: 'Stable to expiry; batches traceable', kind: 'outcome' },
+      ],
+      note: 'Do not apply one manufacturing standard to medicines, supplements, conventional foods and medical nutrition; WHO GMP guidance (10th Edition, 2024) covers medical products.',
+      takeaway: 'Quality must be designed into formulation, process, packaging and controls rather than tested only at the end.',
+    },
+  },
+  'healthcare-products-m2-8': {
+    heading: 'How a finished batch is released, investigated or rejected',
+    intro: 'Quality systems prevent and detect contamination, mix-ups, variability and documentation failures. Each batch is released only when records and tests meet approved specifications.',
+    spec: {
+      layout: 'decision', title: '08 How Do Quality Systems, Testing and Batch Release Work?', kicker: '',
+      root: { label: 'Completed batch', detail: 'Batch record, hygiene and process control documented' },
+      question: 'Do laboratory tests and records meet the approved specification and release criteria?',
+      branches: [
+        { condition: 'Conforms', outcome: 'Release the batch', detail: 'Consistency shown, not benefit for every user', tone: 'positive' },
+        { condition: 'Deviation found', outcome: 'Investigate first', detail: 'Corrective action before any decision', tone: 'caution' },
+        { condition: 'Fails specification', outcome: 'Do not release', detail: 'Batch stays out of distribution', tone: 'negative' },
+      ],
+      note: 'Apply category-specific manufacturing and testing requirements rather than one universal standard.',
+      takeaway: 'Manufacturing quality supports consistency and safety but does not itself demonstrate clinical effectiveness.',
+    },
+  },
+  'healthcare-products-m2-9': {
+    heading: 'Early regulatory strategy versus a late classification change',
+    intro: 'Category, documentation, labels and lifecycle compliance are decided at the start of development. A late classification or claim change can force a new dossier, relabeling or withdrawal.',
+    spec: {
+      layout: 'compare', title: '09 How Are Packaging, Labeling and Traceability Controlled?', kicker: '',
+      leftTitle: 'Category confirmed early', rightTitle: 'Category or claim changed late',
+      rows: [
+        { label: 'Dossier', a: 'Built once for the confirmed category', b: 'Rebuilt with new evidence' },
+        { label: 'Formulation', a: 'Fixed against category rules', b: 'Reformulation may be needed' },
+        { label: 'Labeling', a: 'Label matches category from launch', b: 'Packaging must be relabeled' },
+        { label: 'Change monitoring', a: 'Changes assessed before rollout', b: 'Changes discovered after launch' },
+        { label: 'Market status', a: 'Lifecycle compliance maintained', b: 'Risk of withdrawal' },
+      ],
+      note: 'FDA guidance shows one jurisdiction’s split between supplement structure/function claims and disease claims; in Vietnam, use current Vietnamese rules for registration, labeling, import and post-market duties.',
+      takeaway: 'Regulatory strategy belongs at the start of development because late classification or claim changes can force new evidence, reformulation, relabeling or withdrawal.',
+    },
+  },
+  'healthcare-products-m2-10': {
+    heading: 'Imported products reach users through routes matched to their risk',
+    intro: 'An importer brings the product through market access, then it reaches users through institutions, pharmacies or consumer channels. Professional education and instructions follow it on every route.',
+    spec: {
+      layout: 'pathway', title: '10 How Do Products Reach Applicable Market-Access Processes?', kicker: '',
+      trunk: [
+        { label: 'Importer', detail: 'Brings the product into the market' },
+        { label: 'Market access', detail: 'Regulatory, evidence and channel conditions met' },
+      ],
+      optionsLabel: 'Routes to users — chosen by product risk, not steps',
+      options: [
+        { label: 'Healthcare institution', detail: 'Professional use or dispensing' },
+        { label: 'Pharmacy', detail: 'Dispensing or sale with advice' },
+        { label: 'Consumer channels', detail: 'Retail or digital sale with instructions' },
+      ],
+      afterLabel: 'On every route',
+      after: [
+        { label: 'Professional education', detail: 'Appropriate use explained' },
+        { label: 'Complaints and replenishment', detail: 'Handled and traced' },
+      ],
+      note: 'WHO traceability guidance explains how supply visibility supports recalls, inventory integrity and earlier response, without fully preventing falsified products by itself.',
+      takeaway: 'The widest channel is not always the safest or most effective; channel capability should match product risk, storage, information and use context.',
+    },
+  },
+  'healthcare-products-m2-11': {
+    heading: 'What each channel adds and what it must protect',
+    intro: 'Distributors, pharmacies, specialty retail and e-commerce each add a different capability. Each must also protect product integrity, information and consumer support in its own way.',
+    spec: {
+      layout: 'table', title: '11 How Do Distribution, Pharmacy, Retail and E-Commerce Channels Work?', kicker: '',
+      headers: ['Channel', 'What it adds', 'Must protect'],
+      rows: [
+        { label: 'Distributor', a: 'Inventory, logistics, replenishment', b: 'Storage and traceability' },
+        { label: 'Pharmacy', a: 'Dispensing or sale with advice', b: 'Professional scope' },
+        { label: 'Specialty retail', a: 'Sale with consumer support', b: 'Authorized sellers, authentication' },
+        { label: 'E-commerce', a: 'Wide digital reach', b: 'Accurate listings and privacy' },
+      ],
+      note: 'Escalation routes for problems are needed across physical and digital channels.',
+      takeaway: 'The widest channel is not always the safest or most effective; channel capability should match product risk, storage, information and use context.',
+    },
+  },
+  'healthcare-products-m2-12': {
+    heading: 'How a complaint or safety signal travels back to a recall',
+    intro: 'Pharmacies and e-commerce sellers are where consumer information is given and complaints arrive. Traceability lets a safety signal lead to a targeted recall or corrective action.',
+    spec: {
+      layout: 'flow', title: '12 How Are Consumer Information, Complaints, Safety Signals and Recalls Managed?', kicker: '',
+      steps: [
+        { label: 'Consumer information', detail: 'Instructions and accurate listings', owner: 'Pharmacy or e-commerce seller' },
+        { label: 'Complaint received', detail: 'Reported at point of sale or online' },
+        { label: 'Assess the signal', detail: 'Detect, assess and understand the problem', kind: 'decision' },
+        { label: 'Trace the batch', detail: 'Supply visibility locates affected stock' },
+        { label: 'Recall or correct', detail: 'Remove stock or take corrective action', kind: 'outcome' },
+      ],
+      loop: 'Lessons update consumer information and prevent repeat problems.',
+      note: 'Not every food or supplement follows the same reporting system as medicines; privacy duties apply to consumer data under Law 91/2025/QH15.',
+      takeaway: 'The widest channel is not always the safest; channel capability should match product risk, storage, information and use context.',
+    },
+  },
+  'healthcare-products-m2-13': {
+    heading: 'Three resource groups behind a responsible product',
+    intro: 'Responsible products need scientific knowledge, regulatory expertise and the means to give users access. Reliable supply and accurate information support appropriate use.',
+    spec: {
+      layout: 'taxonomy', title: '13 What Resources Are Required to Create Responsible Products?', kicker: '',
+      root: 'Resources for a responsible product', rootDetail: 'Needed together, not in sequence',
+      groups: [
+        { label: 'Scientific knowledge', detail: 'Evidence that supports appropriate use', items: ['Research', 'Formulation'] },
+        { label: 'Regulatory expertise', detail: 'Right category and documentation', items: ['Classification', 'Compliance'] },
+        { label: 'Access', detail: 'Product reaches suitable users', items: ['Reliable supply', 'Accurate information'] },
+      ],
+      note: 'Inconsistent quality, shortages, unsuitable claims or poor adherence destroy value even when resources exist.',
+      takeaway: 'Strong models align evidence, product quality, appropriate access and commercial sustainability; optimizing one while neglecting others weakens value.',
+    },
+  },
+  'healthcare-products-m2-14': {
+    heading: 'Where value-destroying risks arise and what to measure',
+    intro: 'Cost, quality, safety and supply risks are generated at specific points in the chain. Track them with measures alongside revenue and margin.',
+    spec: {
+      layout: 'table', title: '14 Where Are Product Cost, Quality, Safety and Supply Risks Generated?', kicker: '',
+      headers: ['Where it arises', 'Risk', 'Measure to watch'],
+      rows: [
+        { label: 'Qualified ingredients', a: 'Inconsistent quality', b: 'Quality performance, complaint rate' },
+        { label: 'Distribution infrastructure', a: 'Shortages', b: 'Stock availability' },
+        { label: 'Product information', a: 'Unsuitable claims', b: 'Appropriate use' },
+        { label: 'Health outcome', a: 'Poor adherence', b: 'Relevant outcomes, repeat purchase' },
+      ],
+      note: 'Measure these alongside revenue and margin, not instead of them.',
+      takeaway: 'Strong models align evidence, quality, appropriate access and commercial sustainability; neglecting one weakens value.',
+    },
+  },
+  'healthcare-products-m2-15': {
+    heading: 'Durable value needs evidence, consistency, access and trust together',
+    intro: 'Manufacturing capacity and product quality create consistency, which supports access and trust. Value weakens if any driver is optimized while others are neglected.',
+    spec: {
+      layout: 'driverTree', title: '15 How Do Evidence, Access, Consistency and Trust Create Value?', kicker: '',
+      root: { label: 'Durable product value', detail: 'For users and the business' },
+      drivers: [
+        { label: 'Evidence', detail: 'Supports appropriate use' },
+        { label: 'Consistency', detail: 'Every batch performs the same', children: [{ label: 'Manufacturing capacity' }, { label: 'Product quality' }] },
+        { label: 'Access', detail: 'Reliable supply reaches users', children: [{ label: 'Stock availability' }] },
+        { label: 'Trust', detail: 'Accurate information and few complaints', children: [{ label: 'Complaint rate' }, { label: 'Repeat purchase' }] },
+        { label: 'Commercial sustainability', detail: 'Revenue and margin' },
+      ],
+      note: 'Reliable supply and accurate information support appropriate use; inconsistent quality or shortages destroy value.',
+      takeaway: 'Strong models align evidence, product quality, appropriate access and commercial sustainability; optimizing one while neglecting others weakens value.',
+    },
+  },
+  'healthcare-products-m2-16': {
+    heading: 'A global network the product owner must still control',
+    intro: 'International research, ingredients, technology and manufacturing combine with local registration, packaging and distribution. The product owner retains control over integrity, evidence and differentiation.',
+    spec: {
+      layout: 'ecosystem', title: '16 How Do Global Ingredient and Manufacturing Networks Operate?', kicker: '',
+      center: { label: 'Product owner', detail: 'Strategic control of integrity, evidence, differentiation' },
+      actors: [
+        { label: 'International research', relation: 'Evidence and know-how', flows: ['information'] },
+        { label: 'Global ingredient sources', relation: 'Qualified, traceable inputs', flows: ['product', 'money'] },
+        { label: 'Manufacturing partners', relation: 'Technology and production', flows: ['product', 'service'] },
+        { label: 'Local regulators', relation: 'Registration and compliance', flows: ['oversight'] },
+        { label: 'Local distributors', relation: 'Language, packaging, distribution', flows: ['product', 'money'] },
+        { label: 'Local professionals and customers', relation: 'Practice and needs that drive adaptation', flows: ['information'] },
+      ],
+      note: 'Traceability and qualified partners matter whether ingredients and products cross borders or are manufactured locally.',
+      takeaway: 'The optimal value chain combines specialized global capability with locally compliant execution and retains control over product integrity, evidence and differentiation.',
+    },
+  },
+  'healthcare-products-m2-17': {
+    heading: 'Local manufacturing and imports judged on the same tests',
+    intro: 'In Vietnam, local production is not automatically lower-cost or higher-quality, and imports are not automatically superior. Compare validated capability, total cost, resilience and compliance, and govern partners either way.',
+    spec: {
+      layout: 'compare', title: '17 How Does Vietnam’s Healthcare Product Value Chain Work?', kicker: '',
+      leftTitle: 'Local manufacturing', rightTitle: 'Imports',
+      rows: [
+        { label: 'Assumption to avoid', a: 'Automatically lower-cost or higher-quality', b: 'Automatically superior' },
+        { label: 'Validated capability', a: 'Validate the local plant', b: 'Validate the foreign maker and importer' },
+        { label: 'Total cost', a: 'Full cost, not just production', b: 'Full cost incl. import and logistics' },
+        { label: 'Resilience', a: 'Local supply continuity', b: 'Cross-border supply risk' },
+        { label: 'Partner governance', a: 'Qualified local partners', b: 'Qualified importers and distributors' },
+      ],
+      note: 'Traceability and qualified partners matter in both cases; local registration, language and packaging apply to both.',
+      takeaway: 'Combine specialized global capability with locally compliant execution, and retain control over product integrity, evidence and differentiation.',
+    },
+  },
+  'healthcare-products-m2-18': {
+    heading: 'Global evidence and technology become local supply only after local requirements',
+    intro: 'International research and technology can transfer into local production, but local registration, language and packaging rules still apply. Qualified, traceable partners make the resulting supply resilient.',
+    spec: {
+      layout: 'flow', title: '18 How Do Global Evidence and Local Regulatory Requirements Interact?', kicker: '',
+      steps: [
+        { label: 'Global evidence and technology', detail: 'International research and manufacturing know-how' },
+        { label: 'Technology transfer', detail: 'To a local or partner manufacturer' },
+        { label: 'Local requirements', detail: 'Registration, language and packaging' },
+        { label: 'Qualified, traceable partners', detail: 'Validated capability and compliance' },
+        { label: 'Resilient local supply', detail: 'Integrity and evidence retained', kind: 'outcome' },
+      ],
+      note: 'Imports are not automatically superior and local production is not automatically lower-cost; compare validated capability, total cost, resilience and compliance.',
+      takeaway: 'The optimal value chain combines specialized global capability with locally compliant execution and retains control over product integrity, evidence and differentiation.',
+    },
+  },
+};

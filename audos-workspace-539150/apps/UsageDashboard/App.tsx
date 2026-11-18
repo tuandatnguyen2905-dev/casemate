@@ -12,6 +12,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
+  ArrowUpDown,
   Award,
   BarChart3,
   CalendarDays,
@@ -22,6 +23,7 @@ import {
   Radar,
   RefreshCw,
   Repeat,
+  Search,
   Sparkles,
   Trophy,
   Users,
@@ -82,6 +84,29 @@ interface PerformanceRow {
   completed_at: string | null;
   created_at: string;
 }
+
+interface FitUserRow {
+  id: number;
+  identity_key: string;
+  email: string | null;
+  email_missing: boolean;
+  session_id: string | null;
+  name: string | null;
+  school: string | null;
+  graduation_year: string | null;
+  flow: 'discovery' | 'validation' | 'unknown';
+  chosen_program: string | null;
+  chosen_industry: string | null;
+  chosen_function: string | null;
+  top1_program: string | null;
+  top1_match_pct: number | string | null;
+  steps_completed: number | null;
+  has_cv: boolean;
+  first_seen_at: string | null;
+  last_activity_at: string | null;
+}
+
+type FitSortKey = 'email' | 'flow' | 'chosen_program' | 'top1_match_pct' | 'steps_completed' | 'last_activity_at';
 
 const APP_LABELS: Record<string, string> = {
   fit: 'Fit Assessment',
@@ -570,8 +595,220 @@ function CompanyIntelControls() {
   );
 }
 
+function storedSessionEmail(spaceId: string): string {
+  try {
+    const stored = localStorage.getItem(`space_session_${spaceId}`);
+    const parsed = stored ? JSON.parse(stored) : null;
+    return typeof parsed?.email === 'string' ? parsed.email.trim().toLowerCase() : '';
+  } catch {
+    return '';
+  }
+}
+
+function FitUsersSection() {
+  const { spaceId, sessionId } = useSpaceRuntime();
+  const [rows, setRows] = useState<FitUserRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
+  const [flowFilter, setFlowFilter] = useState<'all' | FitUserRow['flow']>('all');
+  const [sortKey, setSortKey] = useState<FitSortKey>('last_activity_at');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  const load = useCallback(async (refresh = false) => {
+    if (!sessionId) {
+      setError('A verified founder session is required to load customer emails.');
+      setLoading(false);
+      return;
+    }
+    refresh ? setRefreshing(true) : setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('/api/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/hooks/casemate-fit-user-summary-v1/execute', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Session-Id': sessionId,
+        },
+        body: JSON.stringify({
+          action: refresh ? 'refresh' : 'list',
+          sessionId,
+          customerEmail: storedSessionEmail(spaceId) || undefined,
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.success !== true || !Array.isArray(data.rows)) {
+        throw new Error(data.error || `Fit user summary failed (${response.status})`);
+      }
+      setRows(data.rows as FitUserRow[]);
+    } catch (loadError) {
+      setError(loadError instanceof Error ? loadError.message : 'Could not load Fit Assessment users.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [sessionId, spaceId]);
+
+  useEffect(() => {
+    void load(false);
+  }, [load]);
+
+  const stats = useMemo(() => {
+    const total = rows.length;
+    const discovery = rows.filter((row) => row.flow === 'discovery').length;
+    const validation = rows.filter((row) => row.flow === 'validation').length;
+    const unknown = rows.filter((row) => row.flow === 'unknown').length;
+    const chosen = rows.filter((row) => !!row.chosen_program).length;
+    return { total, discovery, validation, unknown, chosen };
+  }, [rows]);
+
+  const programRanking = useMemo(() => {
+    const counts = new Map<string, { program: string; count: number; discovery: number; validation: number; unknown: number }>();
+    rows.forEach((row) => {
+      const program = String(row.chosen_program || '').trim();
+      if (!program) return;
+      const current = counts.get(program) || { program, count: 0, discovery: 0, validation: 0, unknown: 0 };
+      current.count += 1;
+      current[row.flow] += 1;
+      counts.set(program, current);
+    });
+    return Array.from(counts.values()).sort((a, b) => b.count - a.count || a.program.localeCompare(b.program)).slice(0, 12);
+  }, [rows]);
+
+  const visibleRows = useMemo(() => {
+    const needle = search.trim().toLowerCase();
+    const filtered = rows.filter((row) => {
+      if (flowFilter !== 'all' && row.flow !== flowFilter) return false;
+      if (!needle) return true;
+      return [row.email, row.session_id, row.name, row.school, row.chosen_program, row.top1_program]
+        .some((value) => String(value || '').toLowerCase().includes(needle));
+    });
+    return filtered.sort((a, b) => {
+      let compared = 0;
+      if (sortKey === 'top1_match_pct' || sortKey === 'steps_completed') {
+        compared = Number(a[sortKey] ?? -1) - Number(b[sortKey] ?? -1);
+      } else if (sortKey === 'last_activity_at') {
+        compared = (Date.parse(String(a[sortKey] || '')) || 0) - (Date.parse(String(b[sortKey] || '')) || 0);
+      } else {
+        compared = String(a[sortKey] || '').toLowerCase().localeCompare(String(b[sortKey] || '').toLowerCase());
+      }
+      return sortDirection === 'asc' ? compared : -compared;
+    });
+  }, [rows, flowFilter, search, sortDirection, sortKey]);
+
+  const toggleSort = (key: FitSortKey) => {
+    if (sortKey === key) setSortDirection((direction) => direction === 'asc' ? 'desc' : 'asc');
+    else {
+      setSortKey(key);
+      setSortDirection(key === 'email' || key === 'flow' || key === 'chosen_program' ? 'asc' : 'desc');
+    }
+  };
+
+  const percentOfTotal = (count: number) => stats.total ? `${Math.round((count / stats.total) * 100)}%` : '0%';
+  const sortableHeader = (label: string, key: FitSortKey, align = 'left') => (
+    <button type="button" onClick={() => toggleSort(key)} className={`inline-flex items-center gap-1 font-semibold ${align === 'right' ? 'justify-end' : ''}`}>
+      {label}<ArrowUpDown className="h-3 w-3" />
+    </button>
+  );
+
+  return (
+    <div className="min-h-full bg-[var(--space-surface-page)] p-4 sm:p-6 lg:px-8 xl:px-12" data-testid="fit-users-tab">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-lg font-bold text-[var(--space-text-primary)]">Fit Assessment users</h1>
+          <p className="mt-1 text-xs text-[var(--space-text-muted)]">
+            One row per verified email; session fallback is flagged. Exploration is reported as Discovery. Emails are returned only after founder verification.
+          </p>
+        </div>
+        <button type="button" onClick={() => void load(true)} disabled={refreshing || loading} className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-1.5 text-xs font-medium text-[var(--space-text-secondary)] hover:bg-[var(--space-surface-muted)] disabled:opacity-50">
+          {refreshing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+          {refreshing ? 'Rebuilding…' : 'Refresh summary'}
+        </button>
+      </div>
+
+      {error && <p className="mt-4 rounded-xl border border-[var(--space-semantic-danger)] bg-[var(--space-surface-card)] px-4 py-3 text-sm text-[var(--space-semantic-danger)]">{error}</p>}
+      {loading ? (
+        <p className="mt-6 flex items-center gap-2 text-sm text-[var(--space-text-muted)]"><Loader2 className="h-4 w-4 animate-spin" /> Loading Fit users…</p>
+      ) : (
+        <div className="mt-4 space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <StatCard icon={Users} label="Total users" value={String(stats.total)} sub="Verified email or session fallback" />
+            <StatCard icon={Sparkles} label="Discovery" value={percentOfTotal(stats.discovery)} sub={`${stats.discovery} users`} />
+            <StatCard icon={Radar} label="Validation" value={percentOfTotal(stats.validation)} sub={`${stats.validation} users`} />
+            <StatCard icon={AlertTriangle} label="Unknown flow" value={percentOfTotal(stats.unknown)} sub={`${stats.unknown} users`} />
+            <StatCard icon={Trophy} label="Chosen program" value={String(stats.chosen)} sub={percentOfTotal(stats.chosen) + ' of users'} />
+          </div>
+
+          <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5" data-testid="fit-program-ranking">
+            <h2 className="text-sm font-semibold text-[var(--space-text-primary)]">Most chosen programs</h2>
+            <p className="mt-1 text-[11px] text-[var(--space-text-muted)]">Validation uses target company + program; Discovery uses the target_program MCQ answer.</p>
+            {programRanking.length === 0 ? (
+              <p className="mt-3 text-xs text-[var(--space-text-muted)]">No program choices recorded.</p>
+            ) : (
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full min-w-[42rem] text-left text-xs">
+                  <thead><tr className="text-[10px] uppercase tracking-wide text-[var(--space-text-muted)]"><th className="py-1.5 pr-3 font-semibold">Program</th><th className="py-1.5 pr-3 text-right font-semibold">Total</th><th className="py-1.5 pr-3 text-right font-semibold">Discovery</th><th className="py-1.5 pr-3 text-right font-semibold">Validation</th><th className="py-1.5 text-right font-semibold">Unknown</th></tr></thead>
+                  <tbody className="divide-y divide-[var(--space-border-default)]">
+                    {programRanking.map((item) => <tr key={item.program}><td className="py-2 pr-3 font-medium text-[var(--space-text-primary)]">{item.program}</td><td className="py-2 pr-3 text-right font-bold tabular-nums text-[var(--space-text-primary)]">{item.count}</td><td className="py-2 pr-3 text-right tabular-nums text-[var(--space-text-secondary)]">{item.discovery}</td><td className="py-2 pr-3 text-right tabular-nums text-[var(--space-text-secondary)]">{item.validation}</td><td className="py-2 text-right tabular-nums text-[var(--space-text-secondary)]">{item.unknown}</td></tr>)}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+
+          <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div><h2 className="text-sm font-semibold text-[var(--space-text-primary)]">Flat user summary</h2><p className="mt-1 text-[11px] text-[var(--space-text-muted)]">Showing {visibleRows.length} of {rows.length} users</p></div>
+              <div className="flex flex-wrap gap-2">
+                <label className="relative"><Search className="pointer-events-none absolute left-2.5 top-2.5 h-3.5 w-3.5 text-[var(--space-text-muted)]" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search email, name, school…" className="w-64 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-page-alt)] py-2 pl-8 pr-3 text-xs text-[var(--space-text-primary)] outline-none focus:border-[var(--space-brand-primary)]" /></label>
+                <select value={flowFilter} onChange={(event) => setFlowFilter(event.target.value as typeof flowFilter)} className="rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-page-alt)] px-3 py-2 text-xs text-[var(--space-text-primary)]"><option value="all">All flows</option><option value="discovery">Discovery</option><option value="validation">Validation</option><option value="unknown">Unknown</option></select>
+              </div>
+            </div>
+            <div className="mt-3 max-h-[36rem] overflow-auto">
+              <table className="w-full min-w-[88rem] text-left text-xs">
+                <thead className="sticky top-0 bg-[var(--space-surface-card)]"><tr className="text-[10px] uppercase tracking-wide text-[var(--space-text-muted)]"><th className="py-2 pr-3">{sortableHeader('Email', 'email')}</th><th className="py-2 pr-3 font-semibold">CV profile</th><th className="py-2 pr-3">{sortableHeader('Flow', 'flow')}</th><th className="py-2 pr-3">{sortableHeader('Chosen program', 'chosen_program')}</th><th className="py-2 pr-3 font-semibold">Industry / function</th><th className="py-2 pr-3 text-right">{sortableHeader('Top match', 'top1_match_pct', 'right')}</th><th className="py-2 pr-3 text-right">{sortableHeader('Progress', 'steps_completed', 'right')}</th><th className="py-2 text-right">{sortableHeader('Last activity', 'last_activity_at', 'right')}</th></tr></thead>
+                <tbody className="divide-y divide-[var(--space-border-default)]">
+                  {visibleRows.map((row) => (
+                    <tr key={row.identity_key}>
+                      <td className="max-w-[18rem] py-2.5 pr-3"><span className="block truncate font-medium text-[var(--space-text-primary)]" title={row.email || row.session_id || ''}>{row.email || `No email · ${row.session_id || 'unknown session'}`}</span>{row.email_missing && <span className="mt-1 inline-block rounded-full bg-[color-mix(in_srgb,var(--space-semantic-warning)_12%,transparent)] px-2 py-0.5 text-[9px] font-bold text-[var(--space-semantic-warning)]">SESSION FALLBACK</span>}</td>
+                      <td className="max-w-[18rem] py-2.5 pr-3"><span className="block truncate font-medium text-[var(--space-text-primary)]">{row.name || '—'}</span><span className="block truncate text-[10px] text-[var(--space-text-muted)]">{[row.school, row.graduation_year].filter(Boolean).join(' · ') || (row.has_cv ? 'CV available' : 'No CV')}</span></td>
+                      <td className="py-2.5 pr-3"><span className="rounded-full bg-[var(--space-surface-accent-soft)] px-2 py-0.5 text-[10px] font-bold capitalize text-[var(--space-text-brand)]">{row.flow}</span></td>
+                      <td className="max-w-[22rem] py-2.5 pr-3 text-[var(--space-text-secondary)]">{row.chosen_program || '—'}</td>
+                      <td className="max-w-[18rem] py-2.5 pr-3"><span className="block truncate text-[var(--space-text-secondary)]">{row.chosen_industry || '—'}</span><span className="block truncate text-[10px] text-[var(--space-text-muted)]">{row.chosen_function || 'No function selected'}</span></td>
+                      <td className="max-w-[18rem] py-2.5 pr-3 text-right"><span className="block truncate text-[var(--space-text-secondary)]" title={row.top1_program || ''}>{row.top1_program || '—'}</span><span className="text-[10px] font-bold text-[var(--space-text-primary)]">{row.top1_match_pct == null ? '—' : `${Math.round(Number(row.top1_match_pct))}%`}</span></td>
+                      <td className="py-2.5 pr-3 text-right tabular-nums text-[var(--space-text-secondary)]">{row.steps_completed == null ? '—' : row.steps_completed}</td>
+                      <td className="whitespace-nowrap py-2.5 text-right tabular-nums text-[var(--space-text-secondary)]">{formatGmt7(row.last_activity_at)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {visibleRows.length === 0 && <p className="py-8 text-center text-sm text-[var(--space-text-muted)]">No users match these filters.</p>}
+            </div>
+          </section>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function UsageDashboard() {
-  return <div className="flex h-full min-h-0 flex-col"><CompanyIntelControls /><div className="min-h-0 flex-1"><UsageDashboardContent /></div></div>;
+  const { mode, userRole, spaceId } = useSpaceRuntime();
+  const isFounder = mode === 'entrepreneur' || userRole === 'founder' || isFounderEmailSession(spaceId);
+  const [tab, setTab] = useState<'usage' | 'fit-users'>('usage');
+  if (!isFounder) return <UsageDashboardContent />;
+  return (
+    <div className="flex h-full min-h-0 flex-col bg-[var(--space-surface-page)]">
+      <div className="flex gap-1 border-b border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-4 pt-3 sm:px-6 lg:px-8">
+        <button type="button" onClick={() => setTab('usage')} className={`rounded-t-xl px-4 py-2 text-sm font-semibold ${tab === 'usage' ? 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]' : 'text-[var(--space-text-muted)] hover:text-[var(--space-text-primary)]'}`}>Usage</button>
+        <button type="button" onClick={() => setTab('fit-users')} className={`rounded-t-xl px-4 py-2 text-sm font-semibold ${tab === 'fit-users' ? 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]' : 'text-[var(--space-text-muted)] hover:text-[var(--space-text-primary)]'}`} data-testid="fit-users-tab-button">Fit Users</button>
+      </div>
+      <div className="min-h-0 flex-1 overflow-auto">
+        {tab === 'usage' ? <><CompanyIntelControls /><UsageDashboardContent /></> : <FitUsersSection />}
+      </div>
+    </div>
+  );
 }
 
 function UsageDashboardContent() {

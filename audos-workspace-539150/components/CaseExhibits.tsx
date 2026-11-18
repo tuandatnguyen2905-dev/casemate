@@ -25,9 +25,11 @@
  * at any zoom, and add zero library bytes to the customer bundle.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { BarChart3, Gauge, Maximize2, Table2, TrendingUp, X } from 'lucide-react';
 import type { CaseExhibit, ExhibitChart, ExhibitMetric, ExhibitTable } from '../lib/caseLibraryShared';
+import { dedupeColumnUnits } from '../lib/exhibitTableUnits';
+import { clarifyUnitLabel, clarifyUnitText, clarifyUnitsDeep } from '../lib/unitLabels';
 
 const SLICE_COLORS = [
   'var(--space-brand-primary-600)',
@@ -40,16 +42,16 @@ const SLICE_COLORS = [
 
 /** Readable floor for every number and label drawn inside a chart (CSS px). */
 const FS = 14;
+/** Average advance of one 14px chart glyph; label layout is sized with it before anything is drawn. */
+const CHAR = 8.2;
+const ROTATION = (35 * Math.PI) / 180;
 const PLOT_HEIGHT = 360;
 const PIE_HEIGHT = 420;
 
-/** Vietnamese-style number formatting: dots for thousands, comma for decimals. */
+/** Display-only numeric formatting; stored chart values are never changed. */
 function fmt(value: number): string {
   if (!Number.isFinite(value)) return '-';
-  const rounded = Math.round(value);
-  if (Math.abs(value - rounded) < 1e-9) return rounded.toLocaleString('de-DE');
-  const [whole, frac] = value.toFixed(1).split('.');
-  return Number(whole).toLocaleString('de-DE') + ',' + frac;
+  return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
 
 function shorten(value: string, max: number): string {
@@ -140,7 +142,9 @@ function ExhibitFrame({
  * Data table (compact)
  * ----------------------------------------------------------------------- */
 
-function TableExhibit({ exhibit, index }: { exhibit: ExhibitTable; index?: number }) {
+function TableExhibit({ exhibit: sourceExhibit, index }: { exhibit: ExhibitTable; index?: number }) {
+  // A unit that every cell in a column repeats is stated once, in the header.
+  const exhibit: ExhibitTable = { ...sourceExhibit, ...dedupeColumnUnits(sourceExhibit.columns, sourceExhibit.rows) };
   // Columns that are all numbers get right-aligned headers and cells - easier to scan down.
   const numericColumns = exhibit.columns.map((_, columnIndex) =>
     columnIndex > 0 && exhibit.rows.every((row) => isNumericCell(row[columnIndex])),
@@ -266,21 +270,23 @@ function inferChartType(exhibit: ExhibitChart, values: number[]): CaseChartKind 
 
 function CategoryText({ labels, width, slot, rotate, baseY }: { labels: string[]; width: number; slot: number; rotate: boolean; baseY: number }) {
   const padX = 10;
-  const maxChars = Math.max(5, Math.floor(slot / 7.4));
+  const maxChars = Math.max(3, Math.floor((slot - 6) / CHAR));
   return (
     <g>
       {labels.map((rawLabel, index) => {
         const x = padX + (index + 0.5) * slot;
         if (rotate) {
+          // Rotated text runs down and left from its anchor, so it is shortened to stay inside the chart.
+          const room = Math.min((x - 12) / Math.cos(ROTATION), 70 / Math.sin(ROTATION));
           return (
             <text key={`${rawLabel}-${index}`} transform={`rotate(-35 ${x} ${baseY})`} x={x} y={baseY} textAnchor="end" fontSize={FS} fill="var(--space-text-muted)">
               <title>{rawLabel}</title>
-              {shorten(rawLabel, 15)}
+              {shorten(rawLabel, Math.max(4, Math.min(15, Math.floor(room / CHAR))))}
             </text>
           );
         }
         const wrapped = wrapWords(rawLabel, maxChars);
-        const lines = (wrapped.length > 3 ? [wrapped[0], wrapped[1], `${wrapped[2]}…`] : wrapped).map((line) => shorten(line, maxChars + 2));
+        const lines = (wrapped.length > 3 ? [wrapped[0], wrapped[1], `${wrapped[2]}…`] : wrapped).map((line) => shorten(line, maxChars));
         return (
           <text key={`${rawLabel}-${index}`} x={Math.min(Math.max(x, 0), width)} y={baseY} textAnchor="middle" fontSize={FS} fill="var(--space-text-muted)">
             <title>{rawLabel}</title>
@@ -301,8 +307,10 @@ function ColumnChartExhibit({ labels, values, unit, width }: { labels: string[];
   const slot = (width - padX * 2) / Math.max(values.length, 1);
   const rotate = slot < 54;
   const padBottom = rotate ? 88 : 66;
-  const min = Math.min(0, ...values);
+  const lowest = Math.min(0, ...values);
   const max = Math.max(0, ...values);
+  // Negative bars keep room below them for their value label, clear of the category names.
+  const min = lowest < 0 ? lowest - (max - lowest) * 0.14 : lowest;
   const span = max - min || 1;
   const plotHeight = height - padTop - padBottom;
   const barWidth = Math.min(72, Math.max(14, slot * 0.6));
@@ -329,7 +337,7 @@ function ColumnChartExhibit({ labels, values, unit, width }: { labels: string[];
         return (
           <g key={`${labels[index]}-${index}`}>
             <rect x={center - barWidth / 2} y={y} width={barWidth} height={barHeight} rx="4" fill={value < 0 ? 'var(--space-semantic-danger)' : 'var(--space-brand-primary-600)'}>
-              <title>{`${labels[index]}: ${fmt(value)}${unit ? ` ${unit}` : ''}`}</title>
+              <title>{clarifyUnitText(`${labels[index]}: ${fmt(value)}${unit ? ` ${unit}` : ''}`)}</title>
             </rect>
             {slot >= 34 ? (
               <text
@@ -365,7 +373,7 @@ function BarChartExhibit({ labels, values, unit }: { labels: string[]; values: n
         const value = values[i];
         const width = Math.max(3, (Math.abs(value) / max) * 100);
         return (
-          <li key={`${label}-${i}`} title={`${label}: ${fmt(value)}${unit ? ` ${unit}` : ''}`}>
+          <li key={`${label}-${i}`} title={clarifyUnitText(`${label}: ${fmt(value)}${unit ? ` ${unit}` : ''}`)}>
             <div className="flex items-baseline justify-between gap-3 text-[14px] leading-5">
               <span className="min-w-0 break-words text-[var(--space-text-secondary)]">{label}</span>
               <span className="shrink-0 font-bold tabular-nums text-[var(--space-text-primary)]">
@@ -427,7 +435,7 @@ function LineChartExhibit({ labels, values, unit, width }: { labels: string[]; v
       {values.map((value, index) => (
         <g key={index}>
           <circle cx={xFor(index)} cy={yFor(value)} r="5" fill="var(--space-brand-primary-700)" stroke="var(--space-surface-card)" strokeWidth="1.5">
-            <title>{`${labels[index]}: ${fmt(value)}${unit ? ` ${unit}` : ''}`}</title>
+            <title>{clarifyUnitText(`${labels[index]}: ${fmt(value)}${unit ? ` ${unit}` : ''}`)}</title>
           </circle>
           {labelEvery > 0 && index % labelEvery === 0 ? (
             <text
@@ -494,7 +502,7 @@ function PieChartExhibit({ labels, values, unit, width }: { labels: string[]; va
       >
         {slices.map((slice) => (
           <path key={slice.index} d={slice.path} fill={SLICE_COLORS[slice.index % SLICE_COLORS.length]} stroke="var(--space-surface-card)" strokeWidth="2">
-            <title>{`${labels[slice.index]}: ${fmt(values[slice.index])} · ${Math.round(slice.fraction * 100)}%`}</title>
+            <title>{`${labels[slice.index]}: ${fmt(values[slice.index])} · ${Number((slice.fraction * 100).toFixed(1))}%`}</title>
           </path>
         ))}
         {slices.filter((slice) => slice.fraction >= 0.06).map((slice) => (
@@ -507,7 +515,7 @@ function PieChartExhibit({ labels, values, unit, width }: { labels: string[]; va
             fontWeight="800"
             fill={slice.index % SLICE_COLORS.length === 1 || slice.index % SLICE_COLORS.length === 3 ? 'var(--space-neutral-900)' : '#ffffff'}
           >
-            {Math.round(slice.fraction * 100)}%
+            {Number((slice.fraction * 100).toFixed(1))}%
           </text>
         ))}
       </svg>
@@ -519,10 +527,10 @@ function PieChartExhibit({ labels, values, unit, width }: { labels: string[]; va
               style={{ backgroundColor: SLICE_COLORS[index % SLICE_COLORS.length] }}
               aria-hidden="true"
             />
-            <span className="min-w-0 flex-1 break-words text-[var(--space-text-secondary)] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [display:-webkit-box] overflow-hidden">{label}</span>
+            <span className="min-w-0 flex-1 break-words text-[var(--space-text-secondary)]">{label}</span>
             <span className="shrink-0 font-bold tabular-nums text-[var(--space-text-primary)]">{fmt(values[index])}</span>
-            <span className="w-10 shrink-0 text-right tabular-nums text-[var(--space-text-muted)]">
-              {Math.round((Math.max(0, values[index]) / total) * 100)}%
+            <span className="w-14 shrink-0 text-right tabular-nums text-[var(--space-text-muted)]">
+              {Number(((Math.max(0, values[index]) / total) * 100).toFixed(1))}%
             </span>
           </li>
         ))}
@@ -537,30 +545,35 @@ function PieChartExhibit({ labels, values, unit, width }: { labels: string[]; va
  */
 export function CaseChartVisual({
   kind,
-  labels,
+  labels: sourceLabels,
   values,
-  unit,
+  unit: sourceUnit,
 }: {
   kind: CaseChartKind;
   labels: string[];
   values: number[];
   unit?: string;
 }) {
+  const labels = useMemo(() => clarifyUnitsDeep(sourceLabels), [sourceLabels]);
+  const unit = clarifyUnitLabel(sourceUnit) || undefined;
   const { ref, width } = useBoxWidth();
   const ready = width >= 120;
+  const minWidth = kind === 'column' || kind === 'line' ? labels.length * 88 + 20 : 0;
   return (
-    <div ref={ref} className="w-full" data-testid="case-chart-visual">
-      {kind === 'bar' ? (
-        <BarChartExhibit labels={labels} values={values} unit={unit} />
-      ) : !ready ? (
-        <div style={{ height: kind === 'pie' ? PIE_HEIGHT : PLOT_HEIGHT }} />
-      ) : kind === 'line' ? (
-        <LineChartExhibit labels={labels} values={values} unit={unit} width={width} />
-      ) : kind === 'pie' ? (
-        <PieChartExhibit labels={labels} values={values} unit={unit} width={width} />
-      ) : (
-        <ColumnChartExhibit labels={labels} values={values} unit={unit} width={width} />
-      )}
+    <div className="w-full overflow-x-auto" data-testid="case-chart-visual" aria-label={minWidth ? 'Scrollable chart area' : undefined}>
+      <div ref={ref} style={{ minWidth: minWidth || undefined }}>
+        {kind === 'bar' ? (
+          <BarChartExhibit labels={labels} values={values} unit={unit} />
+        ) : !ready ? (
+          <div style={{ height: kind === 'pie' ? PIE_HEIGHT : PLOT_HEIGHT }} />
+        ) : kind === 'line' ? (
+          <LineChartExhibit labels={labels} values={values} unit={unit} width={width} />
+        ) : kind === 'pie' ? (
+          <PieChartExhibit labels={labels} values={values} unit={unit} width={width} />
+        ) : (
+          <ColumnChartExhibit labels={labels} values={values} unit={unit} width={width} />
+        )}
+      </div>
     </div>
   );
 }
@@ -587,11 +600,21 @@ function ChartExhibit({ exhibit, index }: { exhibit: ExhibitChart; index?: numbe
   const icon = chartType === 'line' ? 'line' : chartType === 'pie' ? 'pie' : 'bar';
   const note = exhibit.unit && chartType !== 'bar' ? `Unit: ${exhibit.unit}` : undefined;
   const chartBody = <CaseChartVisual kind={chartType} labels={labels} values={values} unit={exhibit.unit} />;
+  // Always shown: every plotted category and value as selectable text, so no number depends on reading the chart.
+  const valueList = (
+    <div className="mt-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-2.5" data-testid="case-exhibit-values">
+      <p className="text-xs font-bold text-[var(--space-text-primary)]">Every category and value</p>
+      <ul className="mt-2 grid gap-1 sm:grid-cols-2">
+        {labels.map((label, valueIndex) => <li key={`${label}-${valueIndex}`} className="flex items-start justify-between gap-3 text-xs leading-5"><span className="min-w-0 break-words text-[var(--space-text-secondary)]">{label}</span><span className="shrink-0 font-bold tabular-nums text-[var(--space-text-primary)]">{clarifyUnitText(`${fmt(values[valueIndex])}${exhibit.unit ? (exhibit.unit.trim() === '%' ? '%' : ` ${exhibit.unit}`) : ''}`)}</span></li>)}
+      </ul>
+    </div>
+  );
 
   return (
     <>
       <ExhibitFrame index={index} title={exhibit.title} icon={icon} note={note} onExpand={() => setExpanded(true)}>
         {chartBody}
+        {valueList}
       </ExhibitFrame>
       {expanded ? (
         <div className="fixed inset-0 z-[100] overflow-y-auto bg-[color-mix(in_srgb,var(--space-neutral-950)_72%,transparent)] p-3 sm:p-8" role="dialog" aria-modal="true" aria-label={`Expanded ${exhibit.title}`}>
@@ -600,7 +623,7 @@ function ChartExhibit({ exhibit, index }: { exhibit: ExhibitChart; index?: numbe
               <button type="button" onClick={() => setExpanded(false)} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[var(--space-surface-card)] px-4 text-sm font-bold text-[var(--space-text-primary)]"><X className="h-4 w-4" /> Close</button>
             </div>
             <ExhibitFrame index={index} title={exhibit.title} icon={icon} note={note}>
-              <div className="w-full">{chartBody}</div>
+              <div className="w-full">{chartBody}{valueList}</div>
             </ExhibitFrame>
           </div>
         </div>
@@ -638,7 +661,8 @@ function MetricExhibit({ exhibit, index }: { exhibit: ExhibitMetric; index?: num
  * Public API
  * ----------------------------------------------------------------------- */
 
-export function CaseExhibitCard({ exhibit, index }: { exhibit: CaseExhibit; index?: number }) {
+export function CaseExhibitCard({ exhibit: sourceExhibit, index }: { exhibit: CaseExhibit; index?: number }) {
+  const exhibit = useMemo(() => clarifyUnitsDeep(sourceExhibit), [sourceExhibit]);
   if (!exhibit) return null;
   if (exhibit.type === 'table') return <TableExhibit exhibit={exhibit} index={index} />;
   if (exhibit.type === 'chart_data') return <ChartExhibit exhibit={exhibit} index={index} />;

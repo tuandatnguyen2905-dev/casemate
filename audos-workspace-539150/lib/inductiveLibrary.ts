@@ -31,7 +31,7 @@ import {
   type InductiveTest,
 } from './inductive';
 
-export const INDUCTIVE_TEST_COUNT = 30;
+export const INDUCTIVE_TEST_COUNT = 34;
 export const INDUCTIVE_QUESTIONS_PER_TEST = 30;
 export const INDUCTIVE_TIME_LIMIT_SECONDS = 1500; // 25 minutes, as the real round runs.
 
@@ -91,7 +91,12 @@ function generateTest(testNumber: number, archetypes: string[]): InductiveTest {
       const rest = order.filter((a) => a !== archetype);
       const qid = `${id}-q${pad2(q)}`;
       const seededId = attempt === 0 ? qid : `${qid}x${attempt}`;
-      const candidate = buildInductiveQuestion(seededId, archetype, rest);
+      let candidate: InductiveExpandedQuestion;
+      try {
+        candidate = buildInductiveQuestion(seededId, archetype, rest);
+      } catch (error) {
+        continue;
+      }
       candidate.id = qid;
       const sig = signature(candidate);
       if (!taken.has(sig)) {
@@ -101,6 +106,7 @@ function generateTest(testNumber: number, archetypes: string[]): InductiveTest {
       }
       if (attempt === order.length - 1) chosen = candidate; // give up de-duping, still valid
     }
+    if (!chosen) chosen = questions[questions.length - 1];
     questions.push(chosen as InductiveExpandedQuestion);
   }
 

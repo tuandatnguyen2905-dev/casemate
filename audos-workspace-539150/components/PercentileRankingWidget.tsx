@@ -16,7 +16,6 @@
 
 import { useEffect, useState } from 'react';
 import { BarChart3, Loader2, TrendingUp, Zap } from 'lucide-react';
-import ReadinessScoreCard from './ReadinessScoreCard';
 import { useSpaceRuntime } from '../SpaceRuntimeContext';
 import { submitPerformanceRecord, MIN_RANKING_RECORDS } from '../lib/performanceRankings';
 import type { RankingApp, RankingResult } from '../lib/performanceRankings';
@@ -142,15 +141,6 @@ export default function PercentileRankingWidget({
             ? `You’re the first to set a benchmark! Your score and speed are saved; percentiles appear once at least ${MIN_RANKING_RECORDS} results are in.`
             : `Not enough data yet — your result is saved (${result?.totalRecords ?? 0} of ${MIN_RANKING_RECORDS} so far); rankings unlock at ${MIN_RANKING_RECORDS} results.`}
         </p>
-      )}
-
-      {/* Cross-app Program Readiness Score — rendered once the submission has
-          settled, so the fresh session is already counted in the aggregate. */}
-      {status !== 'loading' && (
-        <ReadinessScoreCard
-          variant="compact"
-          className="mt-3 border-t border-[var(--space-border-default)] pt-3"
-        />
       )}
     </div>
   );

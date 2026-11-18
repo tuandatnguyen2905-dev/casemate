@@ -1,0 +1,32 @@
+{
+  "id": "/",
+  "name": "Casemate",
+  "short_name": "Casemate",
+  "description": "Mobile study sessions for Domain Knowledge and Aptitude Test practice.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#CC0000",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/asfzhhej/image/fetch/w_192,h_192,c_pad,b_transparent,f_png/https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/89b30a22-1b16-4449-972a-5d8c6b459198.svg",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://res.cloudinary.com/asfzhhej/image/fetch/w_512,h_512,c_pad,b_transparent,f_png/https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/89b30a22-1b16-4449-972a-5d8c6b459198.svg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://res.cloudinary.com/asfzhhej/image/fetch/w_512,h_512,c_pad,b_transparent,f_png/https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/89b30a22-1b16-4449-972a-5d8c6b459198.svg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

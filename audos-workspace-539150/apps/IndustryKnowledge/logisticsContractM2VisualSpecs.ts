@@ -1,0 +1,312 @@
+import type { LogisticsContractChapterVisual } from './logisticsContractVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Contract Logistics & Warehousing Module 02, keyed by visualKind. */
+export const LOGISTICS_CONTRACT_M2_VISUALS: Record<string, LogisticsContractChapterVisual> = {
+  'logistics-contract-m2-1': {
+    heading: 'The operating chain runs from customer planning to review, linked by systems',
+    intro: 'The contract logistics value chain runs from customer requirements and suppliers through receiving, storage, orders, transport, returns and review.',
+    spec: {
+      layout: 'flow', title: 'How Does the Contract Logistics Value Chain Work?', kicker: '',
+      steps: [
+        { label: 'Customer planning', detail: 'Requirements and supplier inputs set the plan', owner: 'Client and 3PL' },
+        { label: 'Receiving', detail: 'Supplier goods enter the warehouse', owner: '3PL' },
+        { label: 'Storage', detail: 'Inventory kept in controlled locations', owner: '3PL' },
+        { label: 'Order execution', detail: 'Warehouse turns orders into shipments', owner: '3PL' },
+        { label: 'Transport', detail: 'Orders move to the end customer', owner: 'Transporters' },
+        { label: 'Returns and review', detail: 'Goods come back; performance is reviewed', kind: 'outcome', owner: 'Client and 3PL' },
+      ],
+      loop: 'Systems integration links every handoff so plans, stock and orders stay aligned.',
+      note: 'Accurate picking cannot rescue late inbound supply or poor outbound carrier coordination.',
+      takeaway: 'Value depends on coordinated planning, inventory, fulfillment and distribution — not an efficient warehouse in isolation.',
+    },
+  },
+  'logistics-contract-m2-2': {
+    heading: 'Six parties share one managed operation, each with a distinct role',
+    intro: 'A managed operation depends on coordinated inbound supply, distribution and performance management. Clarify roles among client, 3PL, landlord, transporters, technology and packaging partners.',
+    spec: {
+      layout: 'ecosystem', title: 'Who Participates in a Managed Logistics Operation?', kicker: '',
+      center: { label: '3PL', detail: 'Runs the operation and manages performance' },
+      actors: [
+        { label: 'Client', relation: 'Sets requirements and pays for the service', flows: ['money', 'information'] },
+        { label: 'Suppliers', relation: 'Deliver inbound goods to coordinated schedules', flows: ['product'] },
+        { label: 'Landlord', relation: 'Provides the facility', flows: ['service', 'money'] },
+        { label: 'Transporters', relation: 'Carry outbound distribution', flows: ['product', 'service'] },
+        { label: 'Technology partners', relation: 'Supply systems and data links', flows: ['information'] },
+        { label: 'Packaging partners', relation: 'Provide packaging materials', flows: ['product'] },
+      ],
+      note: 'Accurate picking cannot rescue late inbound supply or poor outbound carrier coordination.',
+      takeaway: 'Value depends on coordinated planning, inventory, fulfillment and distribution — not an efficient warehouse in isolation.',
+    },
+  },
+  'logistics-contract-m2-3': {
+    heading: 'Each flow — inventory, orders, information, money — carries its own value lever',
+    intro: 'Contract logistics creates value by reducing customer infrastructure and management burden while improving records, labor, space, fulfillment and responsiveness.',
+    spec: {
+      layout: 'table', title: 'How Do Inventory, Orders, Information and Money Flow?', kicker: '',
+      headers: ['Flow', 'Value dimension', 'What improves'],
+      rows: [
+        { label: 'Inventory', a: 'Inventory accuracy', b: 'Physical stock matches records' },
+        { label: 'Orders', a: 'Reliability', b: 'Fulfillment and responsiveness' },
+        { label: 'Information', a: 'Visibility', b: 'Customer sees stock and order status' },
+        { label: 'Money', a: 'Cost optimization', b: 'Less customer infrastructure burden' },
+        { label: 'Capacity', a: 'Scalability', b: 'Labor and space follow volume' },
+        { label: 'Workflows', a: 'Process improvement', b: 'Ongoing gains in labor and space use' },
+      ],
+      note: 'Higher storage density can destroy value if congestion slows picking and raises errors.',
+      takeaway: 'The strongest value proposition improves total logistics performance rather than one isolated cost.',
+    },
+  },
+  'logistics-contract-m2-4': {
+    heading: 'Product, volume, order and exception profiles — not averages — size the operation',
+    intro: 'The operating profile translates customer products, inventory, inbound flows, order patterns, peaks, service windows, returns and compliance needs into facility, labor, systems and pricing requirements.',
+    spec: {
+      layout: 'driverTree', title: 'How Are Customer Requirements and Operating Profiles Defined?', kicker: '',
+      root: { label: 'Capacity and cost-to-serve', detail: 'Facility, labor, systems and pricing needs' },
+      drivers: [
+        { label: 'Product', detail: 'What is handled', children: [{ label: 'SKU profile' }, { label: 'Product control' }] },
+        { label: 'Volume', detail: 'How much and how variable', children: [{ label: 'Inventory volume' }, { label: 'Peak ratio' }] },
+        { label: 'Orders', detail: 'How work arrives', children: [{ label: 'Order lines' }, { label: 'Service window' }] },
+        { label: 'Exceptions', detail: 'Work outside the standard flow', children: [{ label: 'Returns' }] },
+      ],
+      note: 'Two customers with equal annual units can need different layouts and labor when one ships pallets and the other processes many small e-commerce orders.',
+      takeaway: 'Average volume is insufficient: variability, product handling, order complexity, cut-offs and exceptions determine capacity and cost-to-serve.',
+    },
+  },
+  'logistics-contract-m2-5': {
+    heading: 'Contract design moves from demand and peaks to pricing and risk before award',
+    intro: 'Contract design covers products, inventory, orders, service, capacity, labor, systems, pricing, implementation, liability and change procedures. Document assumptions, data quality, responsibilities and adjustment mechanisms before award.',
+    spec: {
+      layout: 'flow', title: 'How Are Facilities, Capacity and Contracts Designed?', kicker: '',
+      steps: [
+        { label: 'Demand and peaks', detail: 'Size for peaks, not only average volume' },
+        { label: 'Capacity design', detail: 'Facility, labor and systems to match' },
+        { label: 'Commercial model', detail: 'Pricing with low-volume protection' },
+        { label: 'Risk allocation', detail: 'Liability and change procedures agreed' },
+        { label: 'Award', detail: 'Assumptions and responsibilities documented', kind: 'outcome' },
+      ],
+      note: 'Pricing average volume without peak labor or low-volume protection creates predictable margin disputes.',
+      takeaway: 'Contract assumptions determine operational and economic viability.',
+    },
+  },
+  'logistics-contract-m2-6': {
+    heading: 'Inbound stock becomes available only after six controlled steps',
+    intro: 'Inbound covers supplier schedules, docks, documentation, unloading, quantity and condition checks, labels, system receipt and storage location.',
+    spec: {
+      layout: 'flow', title: 'How Are Inbound Appointments, Receiving and Put-Away Managed?', kicker: '',
+      steps: [
+        { label: 'Appointments', detail: 'Supplier delivery windows and docks booked' },
+        { label: 'Advance notices', detail: 'ASN tells the site what is coming' },
+        { label: 'Receiving', detail: 'Unloading and documentation' },
+        { label: 'Inspection', detail: 'Quantity and condition checks' },
+        { label: 'Identification', detail: 'Labels and system receipt' },
+        { label: 'Put-away and exceptions', detail: 'Stock to location; discrepancies resolved', kind: 'outcome' },
+      ],
+      note: 'Unexpected arrivals create congestion and errors if labor and locations are not prepared. Standardize ASNs, labels, delivery windows and discrepancy ownership.',
+      takeaway: 'Inbound accuracy determines when stock becomes reliably available.',
+    },
+  },
+  'logistics-contract-m2-7': {
+    heading: 'Four storage measures that are often confused',
+    intro: 'Storage control aligns physical stock with WMS records through identification, locations, scans, replenishment, counts and exception correction.',
+    spec: {
+      layout: 'table', title: 'How Are Storage, Inventory and Replenishment Controlled?', kicker: '',
+      headers: ['Measure', 'What it tells you', 'Do not confuse with'],
+      rows: [
+        { label: 'Storage capacity', a: 'Pallet positions available', b: 'Occupied capacity' },
+        { label: 'Occupied capacity', a: 'Positions actually in use', b: 'Inventory accuracy' },
+        { label: 'Warehouse utilization', a: 'Used share of defined capacity', b: 'Labor productivity' },
+        { label: 'Inventory accuracy', a: 'Physical stock matches WMS records', b: 'Inventory turnover' },
+      ],
+      note: 'A site can be 90% occupied yet have weak inventory accuracy. Define count method, tolerance, eligible inventory, period, quarantine and root-cause ownership before comparing sites.',
+      takeaway: 'Storage capacity is not occupied capacity; warehouse utilization is not labor productivity; inventory accuracy is not inventory turnover.',
+    },
+  },
+  'logistics-contract-m2-8': {
+    heading: 'Released orders follow one of several picking methods before verification',
+    intro: 'Bulk, B2B, retail or parcel orders are translated into tasks, checks, shipping units and carrier handoff. Batch and zone picking suit some profiles; specialized orders prioritize traceability and care.',
+    spec: {
+      layout: 'pathway', title: 'How Do Order Management, Picking and Packing Work?', kicker: '',
+      trunk: [
+        { label: 'Order release', detail: 'Bulk, B2B, retail or parcel orders become tasks' },
+      ],
+      optionsLabel: 'Picking methods — choose by profile, not in sequence',
+      options: [
+        { label: 'Batch picking', detail: 'Suits some order profiles' },
+        { label: 'Zone picking', detail: 'Suits some order profiles' },
+        { label: 'Specialized orders', detail: 'Prioritize traceability and care' },
+      ],
+      afterLabel: 'Then',
+      after: [
+        { label: 'Verification', detail: 'Checks before shipping units leave', kind: 'outcome' },
+      ],
+      note: 'Choose methods from SKU, order, peak, cut-off and carrier requirements.',
+      takeaway: 'Fulfillment makes warehouse efficiency visible through accuracy and timeliness.',
+    },
+  },
+  'logistics-contract-m2-9': {
+    heading: 'The WMS coordinates stock, labor and the dock around each order',
+    intro: 'Orders become tasks, checks, shipping units and carrier handoff. Allocation, packing and labels, and staging and dispatch must be coordinated for accuracy and timeliness.',
+    spec: {
+      layout: 'ecosystem', title: 'How Are WMS, Labor and Warehouse Resources Coordinated?', kicker: '',
+      center: { label: 'WMS', detail: 'Coordinates inventory records and warehouse tasks' },
+      actors: [
+        { label: 'Inventory', relation: 'Allocated to released orders', flows: ['information', 'product'] },
+        { label: 'Warehouse labor', relation: 'Receives pick and pack tasks', flows: ['information', 'service'] },
+        { label: 'Packing and labels', relation: 'Creates shipping units and labels', flows: ['product', 'information'] },
+        { label: 'Staging and dispatch', relation: 'Holds units for the carrier cut-off', flows: ['product'] },
+        { label: 'Carriers', relation: 'Collect at handoff', flows: ['product', 'service'] },
+      ],
+      note: 'Choose methods from SKU, order, peak, cut-off and carrier requirements.',
+      takeaway: 'Fulfillment makes warehouse efficiency visible through accuracy and timeliness.',
+    },
+  },
+  'logistics-contract-m2-10': {
+    heading: 'Delivery is managed from transport planning through proof of delivery and review',
+    intro: 'Downstream work covers route, vehicle, consolidation, dispatch, carrier collection, delivery milestones and issue response.',
+    spec: {
+      layout: 'flow', title: 'How Are Dispatch, Transport Handoffs and Delivery Visibility Managed?', kicker: '',
+      steps: [
+        { label: 'Transport planning', detail: 'Route, vehicle and consolidation' },
+        { label: 'Carrier coordination', detail: 'Loading and carrier collection' },
+        { label: 'Tracking', detail: 'Delivery milestones visible' },
+        { label: 'Proof of delivery', detail: 'Confirms the order arrived' },
+        { label: 'Exceptions', detail: 'Issue response when a milestone slips', kind: 'decision' },
+        { label: 'Performance review', detail: 'Results fed back to planning', kind: 'outcome' },
+      ],
+      note: 'A correct order still fails if loading or carrier pickup misses the delivery window. Connect WMS dispatch to transport status and customer communication.',
+      takeaway: 'Warehouse and transport outcomes are interdependent.',
+    },
+  },
+  'logistics-contract-m2-11': {
+    heading: 'Each authorized return is classified to resale, repair, recycling or disposal',
+    intro: 'Goods return from customers or channels for inspection, resale, repair, refurbishment, recycling or disposal.',
+    spec: {
+      layout: 'decision', title: 'How Do Returns and Reverse Logistics Work?', kicker: '',
+      root: { label: 'Authorized return', detail: 'Goods back from a customer or channel' },
+      question: 'How is the item classified after condition and completeness checks?',
+      branches: [
+        { condition: 'Complete and sellable', outcome: 'Resale', tone: 'positive' },
+        { condition: 'Repairable', outcome: 'Repair or refurbishment', detail: 'Value recovered through rework', tone: 'caution' },
+        { condition: 'Not repairable', outcome: 'Recycling or disposal', tone: 'negative' },
+      ],
+      note: 'Returned stock must not become available before condition and completeness checks.',
+      takeaway: 'Returns preserve value only with clear disposition rules and accurate status.',
+    },
+  },
+  'logistics-contract-m2-12': {
+    heading: 'Returned stock is inspected and coded before it is restocked or reported',
+    intro: 'Returned stock must not become available before condition and completeness checks. Use separate locations, system codes, evidence and turnaround targets.',
+    spec: {
+      layout: 'flow', title: 'How Are Customer Service and SLA Exceptions Resolved?', kicker: '',
+      steps: [
+        { label: 'Return received', detail: 'Placed in a separate location' },
+        { label: 'Inspection', detail: 'Condition and completeness checks' },
+        { label: 'Status coding', detail: 'System code and evidence recorded', kind: 'decision' },
+        { label: 'Restock', detail: 'Available only after checks pass' },
+        { label: 'Reporting', detail: 'Turnaround against targets', kind: 'outcome' },
+      ],
+      note: 'Accurate return status protects both the customer’s availability and the SLA record.',
+      takeaway: 'Returns preserve value only with clear disposition rules and accurate status.',
+    },
+  },
+  'logistics-contract-m2-13': {
+    heading: 'Physical and digital inputs are converted into controlled inventory and fulfilled orders',
+    intro: 'Racking, handling, utilities, people, WMS, orders and procedures are converted into controlled inventory, fulfilled orders and visibility.',
+    spec: {
+      layout: 'taxonomy', title: 'What Resources Are Required to Run Contract Logistics?', kicker: '',
+      root: 'Resources and results of an operation', rootDetail: 'Inputs and outputs — measured together, not in isolation',
+      groups: [
+        { label: 'Facilities and equipment', detail: 'Input', items: ['Racking', 'Handling', 'Utilities'] },
+        { label: 'Labor', detail: 'Input', items: ['People'] },
+        { label: 'Systems', detail: 'Input', items: ['WMS', 'Procedures'] },
+        { label: 'Inventory and orders', detail: 'Input from the customer' },
+        { label: 'Operational output', detail: 'Result', items: ['Controlled inventory', 'Fulfilled orders'] },
+        { label: 'Service outcome', detail: 'Result', items: ['Visibility', 'Timeliness'] },
+      ],
+      note: 'Throughput gains that reduce accuracy or safety do not create sustainable value.',
+      takeaway: 'Space and headcount alone do not improve performance when workflows and data are unreliable.',
+    },
+  },
+  'logistics-contract-m2-14': {
+    heading: 'Profit is revenue per activity minus resources consumed and capacity committed',
+    intro: 'Costs come from fixed and variable facility, labor, technology, packaging, management, rework, claims and working-capital cost.',
+    spec: {
+      layout: 'driverTree', title: 'Where Are Operating Costs, Risks and Service Failures Generated?', kicker: '',
+      root: { label: 'Contract profitability', detail: 'Per activity and per customer' },
+      formula: 'Revenue per activity − actual resource consumption − capacity commitments',
+      drivers: [
+        { label: 'Pricing', detail: 'Revenue per activity', children: [{ label: 'Minimums' }, { label: 'Volume bands' }, { label: 'Indexation' }] },
+        { label: 'Rent and utilities', detail: 'Fixed facility commitments', op: '−' },
+        { label: 'Equipment and systems', detail: 'Technology cost', op: '−' },
+        { label: 'Rework and claims', detail: 'Where service failures add cost', op: '−' },
+      ],
+      note: 'Use activity and customer cost-to-serve with minimums, bands and indexation.',
+      takeaway: 'Profitability is revenue per activity minus actual resource consumption and capacity commitments.',
+    },
+  },
+  'logistics-contract-m2-15': {
+    heading: 'Throughput lowers unit cost only until congestion and overtime take over',
+    intro: 'High throughput can improve unit cost until congestion and overtime rise disproportionately.',
+    spec: {
+      layout: 'compare', title: 'How Do 3PLs Create Commercial Value for Customers?', kicker: '',
+      leftTitle: 'Throughput that creates value', rightTitle: 'Throughput past the tipping point',
+      rows: [
+        { label: 'Labor', a: 'Planned hours absorb volume', b: 'Overtime rises disproportionately' },
+        { label: 'Productivity', a: 'Unit cost improves', b: 'Congestion slows work' },
+        { label: 'Exception cost', a: 'Rework and claims stay low', b: 'Errors, rework and claims grow' },
+      ],
+      note: 'Use activity and customer cost-to-serve with minimums, bands and indexation.',
+      takeaway: 'Profitability is revenue per activity minus actual resource consumption and capacity commitments.',
+    },
+  },
+  'logistics-contract-m2-16': {
+    heading: 'Global networks standardize governance but adapt operations market by market',
+    intro: 'Global providers share technology, account management and facility networks, adapted to labor, infrastructure, rules and customers.',
+    spec: {
+      layout: 'compare', title: 'How Do Global Contract Logistics Networks Operate?', kicker: '',
+      leftTitle: 'Standardized across the network', rightTitle: 'Adapted locally',
+      rows: [
+        { label: 'SLA', a: 'Consistent definitions', b: 'Delivered with local layouts and staffing' },
+        { label: 'Accounts', a: 'Multicountry account management', b: 'Local customer needs' },
+        { label: 'Processes', a: 'Standard processes and shared technology', b: 'Fit to local labor, infrastructure and rules' },
+        { label: 'Network', a: 'Regional distribution and network optimization', b: 'Cross-border coordination with local partners' },
+      ],
+      note: 'A common SLA needs consistent definitions but may require different layouts and staffing by market.',
+      takeaway: 'Global scale creates value when standardized governance supports local operating fit.',
+    },
+  },
+  'logistics-contract-m2-17': {
+    heading: 'Vietnam’s chain links industrial parks and ports to retail and online channels',
+    intro: 'Domestic and international providers connect factories, ports, warehouses, transport, retailers and online channels.',
+    spec: {
+      layout: 'flow', title: "How Does Vietnam's Contract Logistics Value Chain Work?", kicker: '',
+      steps: [
+        { label: 'Factories', detail: 'Production in industrial parks' },
+        { label: 'Ports', detail: 'Import and export links' },
+        { label: 'Warehouses', detail: 'Inventory and fulfillment' },
+        { label: 'Transport', detail: 'Retail distribution' },
+        { label: 'Retailers and online channels', detail: 'End demand served', kind: 'outcome' },
+      ],
+      loop: 'ERP–WMS–TMS system integration can reduce handoffs only when master data and responsibilities align.',
+      note: 'Build digital connectivity, skilled operations, reliable infrastructure and measurable commercial value.',
+      takeaway: 'The opportunity is coordinated solutions rather than disconnected storage and transport tasks.',
+    },
+  },
+  'logistics-contract-m2-18': {
+    heading: 'Competitiveness rests on infrastructure links, digital readiness and local-global partnerships',
+    intro: 'Build digital connectivity, skilled operations, reliable infrastructure and measurable commercial value.',
+    spec: {
+      layout: 'driverTree', title: 'How Do Local Infrastructure and Operating Capabilities Affect Competitiveness?', kicker: '',
+      root: { label: 'Competitive coordinated solution', detail: 'Beyond disconnected storage and transport' },
+      drivers: [
+        { label: 'Reliable infrastructure', detail: 'Port and inland links' },
+        { label: 'Digital connectivity', detail: 'Serving e-commerce and online channels' },
+        { label: 'Skilled operations', detail: 'People who run the integrated flow' },
+        { label: 'Local-global partnerships', detail: 'Domestic and international providers combined' },
+        { label: 'Measurable commercial value', detail: 'Results the customer can see' },
+      ],
+      note: 'ERP–WMS–TMS integration can reduce handoffs only when master data and responsibilities align.',
+      takeaway: 'The opportunity is coordinated solutions rather than disconnected storage and transport tasks.',
+    },
+  },
+};

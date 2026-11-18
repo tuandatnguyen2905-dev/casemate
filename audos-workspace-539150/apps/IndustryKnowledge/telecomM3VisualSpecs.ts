@@ -1,0 +1,323 @@
+import type { VisualSpec } from './fashionVisualKit';
+
+export interface TelecomChapterVisual { heading: string; intro: string; spec: VisualSpec }
+
+/** Chapter-specific Learning Visuals for Telecommunications & Connectivity Module 03, keyed by visualKind. */
+export const TELECOM_M3_VISUALS: Record<string, TelecomChapterVisual> = {
+  'telecom-m3-1': {
+    heading: 'Three operator types and what each one controls and sells',
+    intro: 'Mobile, fixed and converged operators control different networks, but all of them carry high infrastructure and spectrum costs that favor recurring demand and long customer relationships.',
+    spec: {
+      layout: 'table', title: 'Telecommunications Operator Business Models', kicker: '',
+      headers: ['Operator type', 'What it controls', 'How it earns'],
+      rows: [
+        { label: 'MNO', a: 'A licensed mobile network and its radio capability', b: 'Prepaid, postpaid, usage and roaming' },
+        { label: 'Fixed broadband provider', a: 'Fiber, cable or other fixed access', b: 'Recurring household and business subscriptions' },
+        { label: 'Converged operator', a: 'Mobile, broadband, television and digital services', b: 'Bundles under one account, e.g. fiber plus several mobile lines' },
+        { label: 'Infrastructure sharing', a: 'Selected shared or partner assets', b: 'Lowers duplication so scale and utilization improve' },
+      ],
+      note: 'Subscription and usage-based models apply across all operator types. Track network quality, scale, ARPU, churn, capital intensity, utilization and retained margin together.',
+      takeaway: 'Capital-intensive operators need scale, utilization, recurring revenue, retention, and disciplined investment.',
+    },
+  },
+  'telecom-m3-2': {
+    heading: 'Asset and capacity models that sell to many operators, not to retail subscribers',
+    intro: 'Tower, fiber, wholesale, MVNO, neutral-host and NaaS businesses earn from leases, access fees, capacity or managed connectivity. Their returns depend on tenancy, contracts and customer concentration.',
+    spec: {
+      layout: 'taxonomy', title: 'Infrastructure, Wholesale, and Network-as-a-Service Models', kicker: '',
+      root: 'Infrastructure and wholesale models', rootDetail: 'Separate models; one firm may run more than one',
+      groups: [
+        { label: 'Passive asset owners', detail: 'Earn leases or access fees', items: ['Tower companies', 'Fiber and duct providers'] },
+        { label: 'Neutral-host infrastructure', detail: 'Shared indoor coverage for several operators at a venue' },
+        { label: 'Wholesale carriers', detail: 'Sell bandwidth, transmission and interconnection' },
+        { label: 'MVNO', detail: 'Branded provider that buys wholesale access instead of running a full radio network' },
+        { label: 'Network-as-a-Service', detail: 'Lets an enterprise configure and monitor managed connectivity' },
+      ],
+      note: 'Assess utilization, contract durability, concentration, service quality, capital structure and replacement alternatives.',
+      takeaway: 'Infrastructure and wholesale firms monetize assets and capacity across multiple customers rather than only retail subscribers.',
+    },
+  },
+  'telecom-m3-3': {
+    heading: 'Enterprise offers layer managed services on top of access',
+    intro: 'Providers combine access with managed WAN, private wireless, cloud links, security and IoT. Each extra layer raises contract value but also raises the delivery and SLA burden.',
+    spec: {
+      layout: 'pathway', title: 'Enterprise Connectivity and Integrated Digital Service Models', kicker: '',
+      trunk: [
+        { label: 'Business access', detail: 'Connectivity to sites, data centers and cloud' },
+      ],
+      optionsLabel: 'Service layers combined per customer; these are not sequential steps',
+      options: [
+        { label: 'Managed enterprise networks', detail: 'Managed WAN and observability' },
+        { label: 'Private wireless networks', detail: 'Dedicated on-site wireless, e.g. a factory' },
+        { label: 'Cloud connectivity', detail: 'Cloud and data-center links' },
+        { label: 'Managed cybersecurity', detail: 'Security run as a service' },
+        { label: 'IoT connectivity services', detail: 'Asset monitoring and connected devices' },
+        { label: 'Industry-specific solutions', detail: 'Manufacturing, logistics, finance, healthcare, government, retail' },
+      ],
+      afterLabel: 'What the provider must deliver',
+      after: [
+        { label: 'Integration and 24/7 support', detail: 'Architecture, delivery governance and SLA performance', kind: 'outcome' },
+      ],
+      note: 'Build vertical knowledge and delivery capability before promising complex outcomes, and partner where capabilities are complementary.',
+      takeaway: 'Integrated enterprise connectivity competes on business outcomes and managed service rather than bandwidth price alone.',
+    },
+  },
+  'telecom-m3-4': {
+    heading: 'The consumer service menu that providers package for households',
+    intro: 'Consumers buy mobile, home broadband, FWA, roaming, bundles and add-ons. Usage, devices, household size and location differ, so no single package serves every customer economically.',
+    spec: {
+      layout: 'taxonomy', title: 'Consumer Telecommunications Services', kicker: '',
+      root: 'Consumer telecommunications services', rootDetail: 'Service types, mixed differently for each household',
+      groups: [
+        { label: 'Mobile voice and data', items: ['Prepaid', 'Postpaid'] },
+        { label: 'Home access', items: ['Fixed broadband (fiber)', 'Fixed wireless access'] },
+        { label: 'Roaming and international', detail: 'For travel and cross-border communication' },
+        { label: 'Household bundles', detail: 'e.g. fiber plus multiple mobile lines' },
+        { label: 'Value-added services', items: ['Security', 'Parental controls', 'Cloud services'] },
+      ],
+      note: 'A family may choose fiber plus several mobile lines and parental controls, while a mobile-first user values prepaid flexibility and nationwide coverage. Transparent plans reduce complaints and churn.',
+      takeaway: 'Consumer telecom is a volume market where quality, affordability, convenience, and package design drive acquisition and retention.',
+    },
+  },
+  'telecom-m3-5': {
+    heading: 'How enterprise and wholesale buyers differ from mass subscribers',
+    intro: 'Businesses and providers buy dedicated access, capacity, interconnection and managed networks with formal performance commitments. They need integration, redundancy and contractual accountability that mass subscriptions do not provide.',
+    spec: {
+      layout: 'compare', title: 'Enterprise, Wholesale, and Specialized Connectivity Services', kicker: '',
+      leftTitle: 'Mass consumer subscription', rightTitle: 'Enterprise, wholesale or specialized service',
+      rows: [
+        { label: 'What is bought', a: 'A standard package', b: 'Dedicated access, leased lines, capacity, interconnection, private networks' },
+        { label: 'Requirements', a: 'Standard coverage and support', b: 'Integration, reliability, redundancy, security and technical support' },
+        { label: 'Accountability', a: 'General service terms', b: 'Formal performance commitments in an SLA' },
+        { label: 'Pricing basis', a: 'Package and bandwidth', b: 'Design, capacity, risk, support and lifecycle obligations' },
+        { label: 'Example', a: 'A home or mobile plan', b: 'A bank with redundant access, managed WAN and security monitoring across branches' },
+      ],
+      note: 'Vietnamese operators can serve domestic enterprises, FDI manufacturers, institutions and ISPs with dedicated and managed services.',
+      takeaway: 'Enterprise and wholesale services monetize capacity through customized, higher-complexity offers with stronger delivery requirements.',
+    },
+  },
+  'telecom-m3-6': {
+    heading: 'What decides the right technology and investment level for a place',
+    intro: 'Mobile, fiber, FWA, satellite and private networks differ in cost and performance. Density, terrain, income, latency and demand decide which one fits and how much to invest.',
+    spec: {
+      layout: 'driverTree', title: 'Segmentation by Technology, Geography, and Service Performance', kicker: '',
+      root: { label: 'Suitable solution and investment level', detail: 'For a specific customer, application and place' },
+      drivers: [
+        { label: 'Geography', detail: 'Density, terrain and existing infrastructure', children: [{ label: 'Dense cities' }, { label: 'Rural communities' }, { label: 'Islands and remote sites' }] },
+        { label: 'Performance need', detail: 'Latency, availability, security and support', children: [{ label: 'Consumer' }, { label: 'Industry' }, { label: 'Public services' }] },
+        { label: 'Usage and demand', detail: 'Real demand justifies the coverage tier' },
+        { label: 'Affordability', detail: 'Income and willingness to pay; public support where needed' },
+        { label: 'Technology option', detail: 'Different cost and performance', children: [{ label: 'Mobile' }, { label: 'Fiber' }, { label: 'FWA' }, { label: 'Satellite' }, { label: 'Private networks' }] },
+      ],
+      note: 'Dense urban buildings may justify fiber and indoor mobile systems, while remote sites may need wireless or satellite options and public support.',
+      takeaway: 'Effective segmentation matches technology capability and economics to a specific customer, application, and place.',
+    },
+  },
+  'telecom-m3-7': {
+    heading: 'Consumer segments defined by behavior and need, with a fitting proposition for each',
+    intro: 'Needs vary with income, devices, household size, work, study, travel and data use. Some people want low-cost basic access, while others need multi-device broadband or convenient roaming.',
+    spec: {
+      layout: 'table', title: 'Individual Consumers and Households', kicker: '',
+      headers: ['Segment', 'What they prioritize', 'Fitting proposition'],
+      rows: [
+        { label: 'Price-sensitive consumers', a: 'Low-cost basic access', b: 'Flexible prepaid with clear pricing' },
+        { label: 'Data-intensive users', a: 'Heavy data use, low-latency gaming', b: 'Higher-performance data and fiber tiers' },
+        { label: 'Connected households', a: 'Multi-device broadband', b: 'Household fiber propositions' },
+        { label: 'Mobile-first consumers', a: 'Dependable calls and mobile data', b: 'Mobile and device propositions' },
+        { label: 'Professionals and students', a: 'Remote work, study, stable home broadband', b: 'Affordable student and household offers' },
+        { label: 'Frequent travelers', a: 'Convenient roaming', b: 'Roaming offers with eSIM activation' },
+      ],
+      note: 'Segment on behavior and need, not demographics alone. Measure satisfaction, usage, affordability and retention.',
+      takeaway: 'Consumer choice balances affordability, performance, convenience, and perceived package value.',
+    },
+  },
+  'telecom-m3-8': {
+    heading: 'Business and public-sector buyer types, from SMEs to critical services',
+    intro: 'Customer needs range from SMEs that want accessible broadband and support to public and critical services that need security and continuity. The cost of an interruption varies widely between them.',
+    spec: {
+      layout: 'taxonomy', title: 'Business, Enterprise, and Public-Sector Customers', kicker: '',
+      root: 'Business and public-sector customers', rootDetail: 'Design service levels around business impact',
+      groups: [
+        { label: 'SMEs', detail: 'Accessible broadband and support' },
+        { label: 'Large enterprises', detail: 'Scalable managed networks across distributed sites' },
+        { label: 'Industrial customers', detail: 'Operational connectivity, e.g. factories and logistics' },
+        { label: 'Cloud-dependent businesses', detail: 'Connectivity that matches their application architecture' },
+        { label: 'Government institutions', detail: 'Security, compliance and digital government' },
+        { label: 'Critical-service organizations', items: ['Redundant routes', 'Priority response', 'Secure access', 'Formal availability commitments'] },
+      ],
+      note: 'A hospital or emergency organization can require redundant routes, priority response, secure access, monitoring and formal availability commitments.',
+      takeaway: 'Business buyers judge reliability, security, support, continuity, integration, and operational impact alongside price and speed.',
+    },
+  },
+  'telecom-m3-9': {
+    heading: 'What tips a customer toward staying or switching',
+    intro: 'Customers compare price, coverage, reliability, support, bundles and switching effort. Good service and switching friction keep them, while outages, surprise charges or a materially better offer can trigger churn.',
+    spec: {
+      layout: 'decision', title: 'Customer Decision Criteria and Purchasing Behavior', kicker: '',
+      root: { label: 'Customer reviews their service', detail: 'Price, allowances, speed, coverage, support, contract, alternatives' },
+      question: 'Does the current service still deliver consistent value?',
+      branches: [
+        { condition: 'Satisfactory service, some switching friction', outcome: 'Customer stays', detail: 'Bundles and loyalty reinforce retention', tone: 'positive' },
+        { condition: 'Outages, poor support or surprise charges', outcome: 'Churn risk: fix the root cause', detail: 'Use telemetry, complaints and churn analytics', tone: 'caution' },
+        { condition: 'Materially better offer elsewhere', outcome: 'Customer switches', detail: 'Number portability lowers the switching effort', tone: 'negative' },
+      ],
+      note: 'An enterprise may accept a higher price for redundancy and rapid response, while a consumer may switch for better local coverage and a simpler plan. Blanket discounts cut margin without building loyalty.',
+      takeaway: 'Retention requires consistent value; acquisition requires knowing which decision criteria matter to each segment.',
+    },
+  },
+  'telecom-m3-10': {
+    heading: 'Why recurring revenue only becomes profit when four drivers align',
+    intro: 'Mobile, broadband, roaming and usage generate recurring revenue. Whether that revenue turns into profit depends on retention, acquisition and support cost, and network investment.',
+    spec: {
+      layout: 'driverTree', title: 'Core Connectivity Revenue and Subscription Economics', kicker: '',
+      root: { label: 'Profit from recurring connectivity revenue', detail: 'Stable only when pricing, retention and network economics align' },
+      drivers: [
+        { label: 'Revenue', detail: 'Subscriber growth, plan migration and service mix', children: [{ label: 'Mobile subscriptions' }, { label: 'Fixed broadband' }, { label: 'Usage-based revenue' }, { label: 'ARPU' }] },
+        { label: 'Retention', detail: 'Churn reduction protects customer lifetime value', children: [{ label: 'Churn' }, { label: 'Customer lifetime value' }] },
+        { label: 'Cost to acquire and serve', detail: 'Acquisition cost, subsidies and support cost' },
+        { label: 'Network investment', detail: 'Capex needed to carry the demand' },
+      ],
+      note: 'Higher ARPU can still destroy value if it requires expensive subsidies or service cost, or if it causes avoidable churn.',
+      takeaway: 'Recurring revenue is stable only when pricing, retention, and network economics remain aligned.',
+    },
+  },
+  'telecom-m3-11': {
+    heading: 'Non-retail revenue streams and the risk behind each one',
+    intro: 'Firms monetize towers, fiber, capacity, managed networks, security, cloud access and private wireless. Long contracts improve visibility, but utilization, pricing, concentration and delivery cost decide revenue quality.',
+    spec: {
+      layout: 'table', title: 'Wholesale, Infrastructure, and Enterprise Service Revenue', kicker: '',
+      headers: ['Revenue stream', 'What is monetized', 'What decides its quality'],
+      rows: [
+        { label: 'Infrastructure leasing', a: 'Towers, fiber routes and ducts', b: 'Utilization and customer concentration' },
+        { label: 'Wholesale connectivity', a: 'Capacity and interconnection', b: 'Pricing and utilization' },
+        { label: 'Enterprise managed services', a: 'Managed networks, integration and support', b: 'Delivery cost and SLA cost' },
+        { label: 'Cybersecurity and cloud', a: 'Security and cloud access', b: 'Service commitments' },
+        { label: 'Private-network services', a: 'Private wireless for enterprise sites', b: 'Delivery cost and contract margin' },
+        { label: 'Long-term service contracts', a: 'Multi-year revenue visibility', b: 'Renewal and working capital' },
+      ],
+      note: 'A fiber provider can lease routes to several customers, while an operator grows one enterprise account across sites, cloud, security and managed services.',
+      takeaway: 'Wholesale, infrastructure, and enterprise offers diversify revenue when capability and contract risks are managed.',
+    },
+  },
+  'telecom-m3-12': {
+    heading: 'CAPEX and OPEX side by side: what each covers and how it affects returns',
+    intro: 'CAPEX funds spectrum, sites, radio, fiber and core, while OPEX pays for energy, maintenance, people, leases and care. Rollouts consume cash before full revenue arrives.',
+    spec: {
+      layout: 'compare', title: 'Capital Expenditure, Operating Costs, and Profitability', kicker: '',
+      leftTitle: 'CAPEX: long-lived assets and rights', rightTitle: 'OPEX: running and supporting services',
+      rows: [
+        { label: 'Main items', a: 'Spectrum, sites, radio, fiber, transmission, core', b: 'Energy, maintenance, people, leases, software' },
+        { label: 'Also includes', a: 'Modernization and facilities', b: 'Customer care, compliance and sales' },
+        { label: 'Timing', a: 'Spent before full revenue arrives', b: 'Recurs every period' },
+        { label: 'Main risk', a: 'Underinvestment hurts quality; overinvestment strands capacity', b: 'Cost per subscriber erodes margin' },
+        { label: 'Levers', a: 'Phased capital, sharing, demand evidence', b: 'Automation and energy management' },
+      ],
+      note: 'Sharing passive infrastructure reduces duplication, but operators still need clear control, service responsibility, security and commercial terms. Judge cash flow, margin, return on capital and resilience together.',
+      takeaway: 'Profitability requires long-term capital discipline because returns depend on utilization and recurring demand over extended asset lives.',
+    },
+  },
+  'telecom-m3-13': {
+    heading: 'One consumer journey that crosses web, partner, app and store',
+    intro: 'Stores, dealers, websites, apps and device partners each support a different part of the journey. Some customers prefer self-service, while others need device help, verification or local support.',
+    spec: {
+      layout: 'flow', title: 'Consumer Distribution and Retail Channels', kicker: '',
+      steps: [
+        { label: 'Compare plans', detail: 'Discovery and plan choice', owner: 'Website or e-commerce' },
+        { label: 'Buy a device', detail: 'Device sale and payment', owner: 'Device or retail partner' },
+        { label: 'Activate an eSIM', detail: 'Identity check and activation', owner: 'Mobile application' },
+        { label: 'Get support', detail: 'Advice, verification or problem solving', kind: 'outcome', owner: 'Company store or dealer' },
+      ],
+      loop: 'Optimize conversion, cost, activation quality, complaints, fraud and retention by channel.',
+      note: 'Channels are parallel options a customer mixes; this is one example journey. A hybrid digital and physical network suits Vietnam’s geographic, income and device diversity.',
+      takeaway: 'Consumer distribution should balance reach, convenience, acquisition cost, and consistent service across physical and digital journeys.',
+    },
+  },
+  'telecom-m3-14': {
+    heading: 'How a consultative enterprise deal moves from opportunity to renewal',
+    intro: 'Account managers, architects, bid teams, partners and delivery teams work together on complex opportunities. Several decision-makers assess architecture, security, total cost and vendor credibility.',
+    spec: {
+      layout: 'flow', title: 'Enterprise Sales and Business Development Channels', kicker: '',
+      steps: [
+        { label: 'Qualify the opportunity', detail: 'Sector-focused account team', owner: 'Account manager' },
+        { label: 'Survey and design', detail: 'Site surveys and private-network design', owner: 'Solution architects' },
+        { label: 'Build the bid', detail: 'Cybersecurity, integration and service levels', owner: 'Bid team and partners' },
+        { label: 'Procurement evaluation', detail: 'Technical and financial review', kind: 'decision', owner: 'Customer decision-makers' },
+        { label: 'Implement', detail: 'Implementation governance', owner: 'Technical delivery' },
+        { label: 'Expand and renew', detail: 'Account development', kind: 'outcome', owner: 'Account manager' },
+      ],
+      loop: 'Reward qualified pipeline, solution fit, implementation success, expansion and renewal, not contract signature alone.',
+      note: 'Example: a manufacturing tender. Vietnamese providers can pair account teams with cloud, security, equipment and systems-integration partners.',
+      takeaway: 'Enterprise sales is consultative and depends on translating connectivity into measurable business value.',
+    },
+  },
+  'telecom-m3-15': {
+    heading: 'Direct digital channels versus partner channels: control against reach',
+    intro: 'Direct digital channels give the operator control, while partners extend reach through device, software or platform bundles. Partner channels add commission, revenue sharing and governance needs.',
+    spec: {
+      layout: 'compare', title: 'Digital Sales, Partnerships, and Channel Economics', kicker: '',
+      leftTitle: 'Direct digital channels', rightTitle: 'Partnership distribution',
+      rows: [
+        { label: 'Main advantage', a: 'Control of the customer journey', b: 'Extended reach at the partner’s point of sale' },
+        { label: 'Typical journey', a: 'Digital onboarding: identity, activation, payment', b: 'Connectivity bundled at device checkout' },
+        { label: 'Main cost', a: 'Platform cost', b: 'Commission and revenue sharing' },
+        { label: 'Needs', a: 'Self-service and app-based management', b: 'Governance, data permissions, consistent support' },
+        { label: 'Key risk', a: 'Fallout during onboarding', b: 'Unclear customer ownership and service accountability' },
+      ],
+      note: 'Compare commission, platform cost, conversion, fallout, servicing, churn, margin and customer experience across channels.',
+      takeaway: 'Channel performance depends on lifetime value and service quality—not gross acquisition volume.',
+    },
+  },
+  'telecom-m3-16': {
+    heading: 'Seven specialist participants that together deliver one service',
+    intro: 'Operators deliver service, vendors supply systems, infrastructure firms own assets, integrators deploy, customers create demand and financiers fund infrastructure. No single participant controls everything end-to-end delivery needs.',
+    spec: {
+      layout: 'ecosystem', title: 'Core Industry Participants and Their Roles', kicker: '',
+      center: { label: 'End-to-end connectivity service', detail: 'e.g. an enterprise private network' },
+      actors: [
+        { label: 'Telecommunications operators', relation: 'Deliver the service', flows: ['service'] },
+        { label: 'Equipment manufacturers', relation: 'Supply network systems', flows: ['product'] },
+        { label: 'Infrastructure providers', relation: 'Own sites and other assets', flows: ['product', 'service'] },
+        { label: 'Technology and software firms', relation: 'Enable management and security', flows: ['information'] },
+        { label: 'Contractors and integrators', relation: 'Deploy the solution', flows: ['service'] },
+        { label: 'Enterprise and consumer customers', relation: 'Create demand and pay', flows: ['money'] },
+        { label: 'Investors and financiers', relation: 'Fund long-lived infrastructure', flows: ['money', 'risk'] },
+      ],
+      note: 'Clarify responsibilities, interfaces, service levels, data, security and economics across participants.',
+      takeaway: 'Specialization and interdependence make interoperability, partnership, and coordination essential to reliable service.',
+    },
+  },
+  'telecom-m3-17': {
+    heading: 'Public bodies a provider must satisfy before a new mobile service can launch',
+    intro: 'Regulators manage spectrum, licensing, competition, consumer rights, security and inclusion. Standards bodies write the specifications that let networks and devices interoperate.',
+    spec: {
+      layout: 'ecosystem', title: 'Government, Regulators, and Industry Standards Organizations', kicker: '',
+      center: { label: 'Provider launching a new mobile service', detail: 'Needs spectrum, licensing and standards-compatible equipment' },
+      actors: [
+        { label: 'Spectrum regulators', relation: 'Authorize domestic spectrum use', flows: ['oversight'] },
+        { label: 'Ministries and agencies', relation: 'Set licensing and infrastructure policy', flows: ['oversight'] },
+        { label: 'Competition authorities', relation: 'Oversee competition and interconnection', flows: ['oversight'] },
+        { label: 'Standards organizations', relation: 'Publish interoperable specifications (e.g. 3GPP, ITU)', flows: ['information'] },
+        { label: 'Security and data authorities', relation: 'Set cybersecurity and data-protection rules', flows: ['oversight', 'risk'] },
+        { label: 'Universal-service programs', relation: 'Support inclusion where markets fall short', flows: ['money'] },
+      ],
+      note: 'Rules and standards shape architecture, investment, competition, compliance and launch timing, so monitor them early.',
+      takeaway: 'Regulation and standards define how networks access spectrum, interconnect, compete, protect users, and evolve.',
+    },
+  },
+  'telecom-m3-18': {
+    heading: 'When a partnership adds capability and when it hands over control',
+    intro: 'Operators partner with cloud, data-center, security, satellite, content and industry firms because building everything internally is slow and expensive. The same partners can gain bargaining power over platforms, data or customers.',
+    spec: {
+      layout: 'decision', title: 'Strategic Partnerships, Ecosystem Integration, and Emerging Competition', kicker: '',
+      root: { label: 'Capability the operator lacks', detail: 'Cloud, data center, security, satellite, content or platform' },
+      question: 'Can roles, data rights, revenue and exit options be defined before scaling?',
+      branches: [
+        { condition: 'Complementary capability, clear terms', outcome: 'Partner and govern jointly', detail: 'e.g. operator access plus cloud on-ramps and managed security', tone: 'positive' },
+        { condition: 'Partner controls platform, data or customer', outcome: 'Partner with safeguards', detail: 'Keep local integration, security and customer ownership', tone: 'caution' },
+        { condition: 'Roles and accountability unclear', outcome: 'Do not scale yet', detail: 'Dependency and service gaps outweigh the gain', tone: 'negative' },
+      ],
+      note: 'Adjacent providers increasingly compete for enterprise spending and customer relationships, so a partner can also be a rival.',
+      takeaway: 'Ecosystem partnerships expand capability but can shift bargaining power and customer value toward partners controlling platforms, data, or specialist technology.',
+    },
+  },
+};

@@ -1,0 +1,221 @@
+import type { MfgMachineryChapterVisual } from './mfgMachineryM1VisualSpecs';
+
+/** Chapter-specific Learning Visuals for Machinery & Power Tools Module 03, keyed by visualKind. */
+export const MFG_MACHINERY_M3_VISUALS: Record<string, MfgMachineryChapterVisual> = {
+  'mfg-machinery-m3-1': {
+    heading: 'Product-sales models differ in how much is customized and who owns design and brand',
+    intro: 'Companies sell standardized tools, configurable machinery or customer-specific systems, under their own or another brand, and each model allocates design, manufacturing, inventory and customer control differently.',
+    spec: {
+      layout: 'table', title: 'Equipment Manufacturing and Product-Based Sales', kicker: '',
+      headers: ['Product-sales model', 'What the customer gets', 'Where the effort concentrates'],
+      rows: [
+        { label: 'Standard product sales', a: 'Standardized tools from a range', b: 'Platform breadth, scale, brand and distribution' },
+        { label: 'Configure-to-order', a: 'A standard platform adapted through defined options', b: 'Configuring controls and tooling on the platform' },
+        { label: 'Engineer-to-order', a: 'A system designed for its specific application', b: 'Long consultative cycles and engineering' },
+        { label: 'Private label', a: 'A product sold under another brand', b: 'Design and customer control shared with the brand owner' },
+        { label: 'Portfolio management', a: 'Consumer, professional and premium ranges', b: 'Sharing components across the ranges' },
+      ],
+      note: 'Vietnamese firms can combine fabrication and machining with imported technology, private-label work, integration, local adaptation and service.',
+      takeaway: 'Product sales remain core, but application fit, technology, quality, scale, channels and service protect manufacturers from price-only competition.',
+    },
+  },
+  'mfg-machinery-m3-2': {
+    heading: 'Each access or service model eases a customer burden by moving a risk onto the provider',
+    intro: 'Providers sell maintenance, rental, leasing, usage, availability or output contracts and fleet management alongside or instead of ownership. Customers reduce upfront capital and downtime risk; providers gain only if asset, service and contract economics work.',
+    spec: {
+      layout: 'table', title: 'Service-Based, Rental, and Equipment-as-a-Service Models', kicker: '',
+      headers: ['Model', 'What the customer gains', 'Risk the provider takes on'],
+      rows: [
+        { label: 'Service contracts', a: 'Maintenance, repair, parts and support', b: 'Field labor, parts and downtime' },
+        { label: 'Equipment rental', a: 'A specialized tool for one project', b: 'Utilization, damage and fraud' },
+        { label: 'Leasing/financing', a: 'Lower upfront capital', b: 'Residual value and financing' },
+        { label: 'Usage-based service', a: 'Billing by operating hours', b: 'Utilization and maintenance' },
+        { label: 'Performance contracts', a: 'Availability or output commitments', b: 'Performance and contract liability' },
+        { label: 'Fleet management', a: 'A managed tool fleet', b: 'Deployment and data' },
+      ],
+      note: 'In Vietnam, rental, leasing and service contracts can support SMEs and project demand where finance and intermittent use constrain ownership.',
+      takeaway: 'Access and service models add recurring value but shift utilization, maintenance, residual-value and performance risk toward the provider.',
+    },
+  },
+  'mfg-machinery-m3-3': {
+    heading: 'The same category splits by duty, power source and customer, not just by what the tool does',
+    intro: 'Products differ by function, power source, precision, capacity, duty cycle, application, customer and configuration. Industrial machinery divides standardized versus customized systems; tools divide by user and by corded, cordless or pneumatic operation.',
+    spec: {
+      layout: 'taxonomy', title: 'Product Categories and Technical Segmentation', kicker: '',
+      root: 'Machinery and power tools', rootDetail: 'Segment technically and commercially; the axes combine rather than follow in sequence',
+      groups: [
+        { label: 'Industrial machinery', detail: 'Standardized versus customized systems', items: ['Machine tools', 'Industrial/process machinery'] },
+        { label: 'Tools by task', items: ['Cutting/grinding tools', 'Drilling/fastening tools', 'Specialized tools'] },
+        { label: 'Tools by power source', items: ['Corded', 'Cordless (battery platform)', 'Pneumatic'] },
+        { label: 'Tools by user duty', items: ['Consumer', 'Professional', 'Industrial'] },
+      ],
+      note: 'A torque-controlled fastening system for traceable assembly differs from a household drill, even though both fasten screws.',
+      takeaway: 'Segmentation is technical and commercial; the same tool category serves distinct duties, customers and price points.',
+    },
+  },
+  'mfg-machinery-m3-4': {
+    heading: 'Six kinds of complement turn a machine or tool into a working system',
+    intro: 'Recurring consumables and compatible platforms create repeat purchase, and industrial customers need complete working systems rather than isolated machines.',
+    spec: {
+      layout: 'taxonomy', title: 'Services, Accessories, and Integrated Solutions', kicker: '',
+      root: 'Complements around the core product', rootDetail: 'Each adds lifetime value only if it improves productivity, compatibility or uptime',
+      groups: [
+        { label: 'Accessories/consumables', detail: 'Repeat purchase', items: ['Bits and blades', 'Abrasives', 'Inserts'] },
+        { label: 'Battery/charging systems', detail: 'Compatible cordless platform', items: ['Battery packs', 'Chargers'] },
+        { label: 'Software/controls', items: ['Controls', 'Software', 'Diagnostics'] },
+        { label: 'Integration/commissioning', detail: 'A complete machine project', items: ['Line integration', 'Robot and safety', 'Installation'] },
+        { label: 'Training/support', items: ['Operator training', 'Maintenance', 'Repair'] },
+        { label: 'Modernization/upgrades', items: ['Retrofits', 'Modernization'] },
+      ],
+      note: 'In Vietnam, local integration, operator training, parts, repairs and modernization can differentiate imported hardware and create domestic value.',
+      takeaway: 'Complementary products and services increase lifetime value when they improve productivity, compatibility, uptime or operating simplicity.',
+    },
+  },
+  'mfg-machinery-m3-5': {
+    heading: 'Business customers weigh price against the operational outcome their work depends on',
+    intro: 'Engineers, production, maintenance, procurement and finance evaluate capacity, precision, integration, duty, warranty, parts, service, supplier risk and ROI, and each customer type stresses different needs.',
+    spec: {
+      layout: 'table', title: 'Industrial, Commercial, and Professional Customers', kicker: '',
+      headers: ['Customer', 'What they value', 'What they evaluate'],
+      rows: [
+        { label: 'Manufacturers', a: 'Throughput and quality', b: 'Capacity, precision and integration' },
+        { label: 'Automotive/electronics', a: 'Controlled, traceable assembly', b: 'Torque, traceability, uptime and support' },
+        { label: 'Construction contractors', a: 'Mobility and durability', b: 'Duty and warranty' },
+        { label: 'Maintenance teams', a: 'Versatility and availability', b: 'Parts and service' },
+        { label: 'Energy/infrastructure', a: 'Specialized safety', b: 'Safety and service support' },
+        { label: 'Engineering/procurement', a: 'Low supplier risk', b: 'ROI and total ownership cost' },
+      ],
+      note: 'Suppliers respond with application engineering, proof, demos, TCO, service-level design, training and account governance. In Vietnam, FDI and domestic factories, contractors and industrial parks qualify suppliers differently.',
+      takeaway: 'Business customers select equipment for operational outcomes, with price evaluated alongside productivity, reliability, safety and total ownership cost.',
+    },
+  },
+  'mfg-machinery-m3-6': {
+    heading: 'How often a tool is used, and for what duty, decides between renting, basic purchase and a fleet',
+    intro: 'Household frequency may favor buying or renting basic tools, while tradespeople depend on daily output and service but have constrained capital.',
+    spec: {
+      layout: 'decision', title: 'Household, DIY, and Small-Business Customers', kicker: '',
+      root: { label: 'A tool need', detail: 'Homeowner, hobbyist, tradesperson or small workshop' },
+      question: 'Is this occasional use or professional duty that earns money?',
+      branches: [
+        { condition: 'Occasional household job', outcome: 'Rent, or buy a basic tool', detail: 'A homeowner rents a demolition hammer', tone: 'positive' },
+        { condition: 'Daily paid work', outcome: 'Invest in a compatible cordless fleet', detail: 'Output and fast service matter most', tone: 'positive' },
+        { condition: 'Paid work, constrained capital', outcome: 'Finance or rental-supported access', detail: 'Small firms and workshops', tone: 'caution' },
+      ],
+      note: 'Hardware stores, dealers, marketplaces, reviews and staff recommendations shape choice in Vietnam, alongside counterfeit, warranty and service concerns.',
+      takeaway: 'This heterogeneous segment needs clear separation between occasional-use affordability and professional-duty productivity.',
+    },
+  },
+  'mfg-machinery-m3-7': {
+    heading: 'An installed machine earns revenue long after the sale, through five other streams',
+    intro: 'Installed assets create recurring needs and customer data. An equipment OEM earns from the machine, commissioning, maintenance agreements, spare parts, remote diagnostics and modernization.',
+    spec: {
+      layout: 'driverTree', title: 'Revenue Streams and Profitability Drivers', kicker: '',
+      root: { label: 'Revenue around the installed base', detail: 'Each stream must be valuable and economically executable' },
+      drivers: [
+        { label: 'Equipment sales', children: [{ label: 'Machines and tools' }, { label: 'Batteries' }] },
+        { label: 'Accessories/consumables', children: [{ label: 'Tooling' }, { label: 'Spare parts' }] },
+        { label: 'Aftermarket services', detail: 'Needs parts, people and direct access', children: [{ label: 'Maintenance agreements' }, { label: 'Repair' }, { label: 'Training' }] },
+        { label: 'Project/engineering revenue', children: [{ label: 'Installation' }, { label: 'Integration and commissioning' }, { label: 'Modernization' }] },
+        { label: 'Rental/leasing', children: [{ label: 'Rental' }, { label: 'Finance' }] },
+        { label: 'Digital/subscription revenue', children: [{ label: 'Monitoring' }, { label: 'Remote diagnostics' }, { label: 'Software' }] },
+      ],
+      note: 'A BCG benchmark of roughly 100 large industrial machinery companies found service-prioritizing firms generated one-third or more of income from aftermarket services: a benchmark observation, not a universal industry share.',
+      takeaway: 'Diversification reduces dependence on new-equipment cycles only when each service is valuable and economically executable.',
+    },
+  },
+  'mfg-machinery-m3-8': {
+    heading: 'Lifecycle cost builds up from six cost pools, well beyond the procurement price',
+    intro: 'Custom engineering, product variety, project timing and spare-parts commitments tie up capital, and low-quality savings can create failure and reputation loss.',
+    spec: {
+      layout: 'driverTree', title: 'Cost Structure and Financial Risks', kicker: '',
+      root: { label: 'Lifecycle cost and margin risk', detail: 'Driven by product complexity, not procurement cost alone' },
+      drivers: [
+        { label: 'Materials/components', children: [{ label: 'Metals, motors, bearings' }, { label: 'Batteries and electronics' }] },
+        { label: 'Manufacturing', children: [{ label: 'Labor and energy' }, { label: 'Depreciation and tooling' }] },
+        { label: 'R&D/technology', children: [{ label: 'Software' }, { label: 'Tests' }, { label: 'Design changes' }] },
+        { label: 'Commercial costs', children: [{ label: 'Sales and demos' }, { label: 'Channels' }] },
+        { label: 'Logistics/working capital', detail: 'Imports add FX and lead-time exposure', children: [{ label: 'Freight' }, { label: 'Stock and slow variants' }] },
+        { label: 'Warranty/service', children: [{ label: 'Field service' }, { label: 'Warranty and returns' }] },
+      ],
+      note: 'A machine project can exceed budget through design changes and commissioning; a tool range can lose margin through too many slow-moving variants.',
+      takeaway: 'Financial performance depends on lifecycle cost and product complexity—not procurement cost alone.',
+    },
+  },
+  'mfg-machinery-m3-9': {
+    heading: 'Technical complexity and support needs decide which channel should carry a product',
+    intro: 'Complex machinery uses consultative direct sales, tenders, engineering partners and integrators; standardized tools use dealers, distribution, retail and rental.',
+    spec: {
+      layout: 'decision', title: 'Direct Sales, Dealers, and Industrial Distribution', kicker: '',
+      root: { label: 'Product going to market', detail: 'Machinery system or standardized tool' },
+      question: 'How complex is the offer, and how much local stock and support does the buyer need?',
+      branches: [
+        { condition: 'Complex, engineered machinery', outcome: 'Direct industrial sales', detail: 'Controls specifications and relationships' },
+        { condition: 'Machine plus robot, controls, software', outcome: 'System integrators', detail: 'Combine components into one system' },
+        { condition: 'Professional tools needing service', outcome: 'Authorized dealers and distributors', detail: 'Stock, batteries, parts and repair intake' },
+        { condition: 'Everyday standardized tools', outcome: 'Retail stores' },
+        { condition: 'Intermittent or project use', outcome: 'Rental companies' },
+      ],
+      note: 'In Vietnam, importers and regional dealers are critical for customs, product access, demonstration, project support, genuine products and warranty.',
+      takeaway: 'Channel structure should match technical complexity, buyer process, local inventory and support requirements.',
+    },
+  },
+  'mfg-machinery-m3-10': {
+    heading: 'Digital research is shared, then standard items buy online while machinery moves to consultation',
+    intro: 'Industrial buyers use catalogues, configurators, documents, portals and digital content before purchase. Standard items suit e-commerce, while machinery requires site, compatibility, integration and commissioning work.',
+    spec: {
+      layout: 'pathway', title: 'E-Commerce, Omnichannel, and Digital Customer Acquisition', kicker: '',
+      trunk: [
+        { label: 'Digital catalogues', detail: 'Configurators, documents and portals' },
+        { label: 'Digital leads', detail: 'Qualified and recorded in CRM' },
+      ],
+      optionsLabel: 'Where the buyer goes next depends on the product',
+      options: [
+        { label: 'E-commerce sales', detail: 'Tools, batteries, consumables and parts' },
+        { label: 'Online reorder', detail: 'Genuine consumables from installed-equipment records' },
+        { label: 'Engineering consultation', detail: 'Machinery needing site and integration work' },
+      ],
+      afterLabel: 'Then, for every route',
+      after: [
+        { label: 'Omnichannel fulfillment', detail: 'Genuine product and delivery' },
+        { label: 'Online service support', detail: 'Warranty, compatible accessories and repair', kind: 'outcome' },
+      ],
+      note: 'In Vietnam, marketplaces and brand channels expand reach, but authenticity, warranty, compatible accessories, delivery and repair remain differentiators.',
+      takeaway: 'Digital channels work best when they connect accurate information and transactions with genuine products, fulfillment, application expertise and service.',
+    },
+  },
+  'mfg-machinery-m3-11': {
+    heading: 'Seven specialized participants each supply one part of the equipment a customer runs',
+    intro: 'Materials and component firms supply inputs, OEMs design and make products, technology partners provide controls, sensors, batteries and software, channels sell, integrators deliver systems, and service and rental support use.',
+    spec: {
+      layout: 'ecosystem', title: 'Core Industry Participants and Their Roles', kicker: '',
+      center: { label: 'Customer operation', detail: 'Equipment in productive use' },
+      actors: [
+        { label: 'Material/component suppliers', relation: 'Supply inputs to OEMs', flows: ['product'] },
+        { label: 'OEM/contract manufacturing', relation: 'Design and make products', flows: ['product'] },
+        { label: 'Technology providers', relation: 'Controls, sensors, batteries, software', flows: ['product', 'information'] },
+        { label: 'Channels', relation: 'Sell, stock and advise', flows: ['product', 'money'] },
+        { label: 'Integrators', relation: 'Deliver working systems', flows: ['service'] },
+        { label: 'Service/rental', relation: 'Support use and access', flows: ['service', 'money'] },
+        { label: 'Standards/testing', relation: 'Safety and market access', flows: ['oversight'] },
+      ],
+      note: 'A robot cell needs a robot maker, integrator, controls, gripper, vision, safety, installer, trainer and maintenance provider, so responsibilities and interfaces must be mapped.',
+      takeaway: 'No participant controls all value; performance depends on coordinated specialized capabilities and clear accountability.',
+    },
+  },
+  'mfg-machinery-m3-12': {
+    heading: 'A Vietnamese supplier climbs from metal fabrication to direct OEM supply by proving capability',
+    intro: 'Manufacturing investment expands capacity and installed assets, but suppliers need precision, consistency, technology, quality systems and documentation to qualify.',
+    spec: {
+      layout: 'flow', title: "Vietnam's Industry Ecosystem and Development Opportunities", kicker: '',
+      steps: [
+        { label: 'Metal fabrication', detail: 'Fabricated and machined parts', owner: 'Domestic mechanical firm' },
+        { label: 'Precision assemblies', detail: 'Molds, fixtures and electrical assemblies' },
+        { label: 'Integration', detail: 'Automation and service around equipment' },
+        { label: 'Qualification', detail: 'Verified process capability and documentation', kind: 'decision', owner: 'OEM customer' },
+        { label: 'Direct OEM supply', detail: 'Higher-value manufacturing', kind: 'outcome' },
+      ],
+      note: 'NSO reports US$21.01B total registered FDI into processing/manufacturing in 2025, 54.7% of total registered FDI: broad registered investment, not machinery sales.',
+      takeaway: 'Vietnam’s opportunity extends from equipment sales to components, integration, maintenance, engineering and higher-value manufacturing.',
+    },
+  },
+};

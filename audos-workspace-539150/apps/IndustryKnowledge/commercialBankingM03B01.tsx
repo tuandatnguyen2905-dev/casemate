@@ -1,0 +1,262 @@
+import { bankingChapter, bankingQuiz, registerVisual } from './commercialBankingCore';
+import type { BankingLessonBundle, BankingVisualRegistry } from './commercialBankingCore';
+import { CB_CASES, CB_CASE_SOURCES } from './commercialBankingCases';
+
+export const CB_M03_B01_VISUALS: BankingVisualRegistry = {};
+const v = (kind: `cb-m3-${string}`, spec: Parameters<typeof registerVisual>[2]) => registerVisual(CB_M03_B01_VISUALS, kind, spec);
+const s = (value: string | undefined, label: string, subtitle: string, description: string) => ({ value, label, subtitle, description });
+const t = (term: string, definition: string) => ({ term, definition });
+
+const L31 = '3.1 Industry Business Models';
+const deck31 = [
+  bankingChapter({
+    title: 'The two engines of bank revenue', chapterTitle: 'CHAPTER 1 OF 3', readingTime: '9 min',
+    objective: 'Explain how intermediation, interest income and non-interest income combine to create bank revenue.',
+    mateIntro: 'A bank can grow its loan book and still disappoint investors. Before judging growth, separate the spread engine from the service-and-fee engine—and then ask what risks each engine consumes.',
+    keyInsight: 'Banks earn through balance-sheet intermediation and services, but revenue becomes profit only after funding, operating, credit and capital costs.',
+    what: 'Intermediation means funding assets—especially loans—with liabilities such as customer deposits. Interest income from assets minus interest expense on funding creates net interest income (NII). Payments, cards, cash management, trade services, FX, wealth distribution and bancassurance commissions create non-interest income.',
+    how: 'The spread engine prices credit and maturity risk into earning assets. The fee engine charges for transactions, advice, access or distribution. Deposits are funding liabilities, not revenue; loan principal is an asset, not income. Only the interest and fee flows enter revenue.',
+    why: 'A spread-led bank is more exposed to funding costs, lending growth and credit cycles. A larger recurring fee base can diversify revenue and often consumes less incremental balance-sheet capital, but fees still require customers, infrastructure, controls and sometimes partners.',
+    global: 'JPMorgan Chase reported 2024 net revenue of US$177.6 billion, of which net interest income was US$92.6 billion and noninterest revenue US$85.0 billion, about 48% (company filing). The noninterest line includes a US$7.9 billion net gain related to Visa shares that the firm calls a significant item, so one year’s mix is not a stable fee share.',
+    vietnam: 'Vietnam’s major banks combine deposit-funded lending with payment, trade, FX and distribution services. The research supports their scale, but not a precise system-wide split between spread and fee revenue.',
+    visualKind: v('cb-m3-31-01-revenue-engines', { layout: 'compare', title: 'Two revenue engines, one profit test', kicker: 'Follow the economic flow—not the balance-sheet size', leftTitle: 'Credit / spread engine', rightTitle: 'Service / fee engine', rows: [
+      { label: 'Customer value', a: 'Liquidity transformed into credit over time', b: 'Transactions, access, advice and distribution' },
+      { label: 'Revenue', a: 'Interest income less interest expense = NII', b: 'Net fees, FX, trading and other income' },
+      { label: 'Main constraints', a: 'Funding, underwriting, provisions and capital', b: 'Adoption, service cost, conduct and partner economics' },
+      { label: 'Scalability', a: 'Growth usually expands assets and RWA', b: 'Digital volume may scale with less balance-sheet use' },
+    ], takeaway: 'First identify the revenue engine; then trace the costs and risks needed to sustain it.' }),
+    visualHeading: 'Business-model revenue comparison', visualIntro: 'The diagram separates two complementary engines without pretending either is costless or risk-free.', imageAlt: 'Comparison of credit-based and fee-based bank revenue engines.',
+    statTiles: [s('US$6.303tn', 'ICBC assets', '2024 ranking', 'Approximate asset scale; this is not revenue or profit.'), s('196% of GDP', 'Vietnam bank assets', 'End-Sep 2024', 'A system-depth indicator from a snippet-verified World Bank note.'), s(undefined, 'NII', 'Interest income − interest expense', 'The core spread-led income measure.')],
+    statsNote: 'Scale facts are period- and scope-specific. They do not validate a claimed fee mix or profit quality.',
+    keyTerms: [t('Intermediation', 'Transforming funding liabilities into earning assets while managing maturity, liquidity and credit risk.'), t('Net interest income (NII)', 'Interest income earned minus interest expense paid.'), t('Non-interest income', 'Net fees, FX, trading and other income outside net interest income.')],
+    recap: ['Deposits fund assets; they are not revenue.', 'NII and non-interest income are different engines.', 'Every engine must be tested after costs, risk and capital.'], chapterRecap: 'Banks combine spread and service engines; neither loan balances nor deposits should be mistaken for income.', deepDiveTitle: 'From revenue to economic value',
+    deepDive: ['A useful case-interview sequence is: identify the model, map the revenue lines, map the resources consumed, then stress the model. A loan-led strategy may add NII while also raising funding cost, expected losses and risk-weighted assets. A fee-led strategy may be more capital-light, yet unstable if fees are one-off or partner-dependent.', 'Do not call a bank “fee-led” from one headline commission. Compare recurring net fee and commission income—not gross customer charges—and separate it from FX, trading and subsidiary income.'],
+    evidence: 'The credit-versus-fee framework incorporates research_addenda_v2. Sources support scale and institutional context, not a quantified claim that most Vietnamese banks have a particular fee share.', sourceIds: ['cb-m03-s01', 'cb-m03-s05', 'cb-m03-s10'],
+    extraSources: [CB_CASE_SOURCES.jpm10kSegments, CB_CASE_SOURCES.jpmEarningsQ424],
+    restriction: 'The system-wide statement “most Vietnamese banks remain spread-led” requires comparable financial-statement income-mix evidence before publication.'
+  }),
+  bankingChapter({
+    title: 'Retail, corporate, universal—and beyond', chapterTitle: 'CHAPTER 2 OF 3', readingTime: '8 min',
+    objective: 'Distinguish major bank models by customer, product breadth, distribution and risk profile.',
+    mateIntro: 'Two banks can hold the same amount of assets yet need completely different capabilities: one processes millions of retail transactions; another underwrites a few complex corporate relationships.',
+    keyInsight: 'A bank model is defined by whom it serves, what it offers, how it distributes and which risks it retains—not by size alone.',
+    what: 'Retail banks serve households at scale; corporate banks serve businesses with credit, cash management, trade and FX; universal banks combine multiple segments and product families. SME, specialist and digital-first models refine those archetypes.',
+    how: 'Retail relies on standardized underwriting, dense or digital distribution and granular deposits. Corporate banking relies on relationship managers, tailored limits and cross-product expertise. Specialists focus on a product or segment; digital-first players aim to lower acquisition and service cost.',
+    why: 'Each model creates a different funding franchise, cost base, revenue mix and concentration risk. Universal breadth can diversify earnings but increases operational and governance complexity.',
+    global: 'Nubank (Nu Holdings) shows a digital-first model: it reported 114.2 million customers across Brazil, Mexico and Colombia at 31 December 2024 and a monthly average cost to serve of about US$0.8 per active customer in Q4 2024 (company-reported). Those figures show reach and unit cost, not profit; the company also reported a 90+ day NPL ratio of 7.0%, a reminder that a digital-first model still retains credit risk.',
+    vietnam: 'MB shows digital-first distribution inside a broad joint-stock franchise: in 2024 it added 4.1 million MBBank App users, passed 30.2 million customers and ran 98.6% of transactions through digital channels (company-reported). Reach is not a verified revenue split.',
+    visualKind: v('cb-m3-31-02-model-map', { layout: 'table', title: 'Bank business-model map', kicker: 'Customer × proposition × operating system', headers: ['Model', 'Economic design', 'Watch item'], rows: [
+      { label: 'Retail', a: 'Granular deposits, standardized loans, cards and payments', b: 'CAC, digital activity, fraud and credit losses' },
+      { label: 'Corporate', a: 'Relationship lending, trade, cash management and FX', b: 'Concentration, limit use and cross-sell depth' },
+      { label: 'Universal', a: 'Multiple segments and revenue pools under one group', b: 'Complexity, capital allocation and governance' },
+      { label: 'SME specialist', a: 'Focused underwriting and owner-business relationship', b: 'Information gaps and cost-to-serve' },
+      { label: 'Digital-first', a: 'Remote acquisition and self-service distribution', b: 'Trust, uptime, funding and unit economics' },
+    ], takeaway: 'Describe a bank with four lenses: customer, product, channel and retained risk.' }),
+    visualHeading: 'Business-model comparison', visualIntro: 'The model map connects each label to its operating economics and risk question.', imageAlt: 'Table comparing retail, corporate, universal, SME and digital-first bank models.',
+    statTiles: [s('47.57%', 'Big 4 asset share', 'Among 30 reporting banks, 30 Jun 2025', 'A scoped scale statistic—not a model profitability ranking.'), s(undefined, 'Originate-to-hold', 'Retain credit on balance sheet', 'The bank earns spread and bears lifecycle credit risk.'), s(undefined, 'Originate-to-distribute', 'Transfer or sell exposures', 'The bank relies more on fees and market capacity.')],
+    statsNote: 'Vietnam asset-share evidence is explicitly limited to the reporting-bank sample and date.',
+    keyTerms: [t('Universal bank', 'A bank combining several customer segments and product families.'), t('Originate-to-hold', 'Making loans and retaining their credit exposure on the balance sheet.'), t('Specialist bank', 'A bank concentrated on a narrower segment, product or capability.')],
+    recap: ['Retail and corporate models require different operating systems.', 'Universal breadth trades diversification for complexity.', 'Digital-first describes distribution, not automatically a better business.'], chapterRecap: 'Model labels are useful only when linked to customer, product, channel, funding and risk.', deepDiveTitle: 'Model boundaries',
+    deepDive: ['Relationship versus transactional and originate-to-hold versus originate-to-distribute are separate dimensions. A corporate bank may be deeply relationship-led yet distribute selected exposures; a retail bank may remain originate-to-hold while digitizing acquisition.', 'Vietnam’s system is primarily deposit-funded and universal in orientation. Avoid importing US securitisation assumptions: the research did not validate a quantified Vietnam originate-to-distribute share.'],
+    evidence: 'SBV verifies the institutional taxonomy; VietnamNet verifies the scoped asset figures. No source validates bank-level retail/corporate revenue splits.', sourceIds: ['cb-m03-s03', 'cb-m03-s10'],
+    extraSources: [CB_CASE_SOURCES.nuQ424],
+    caseStudy: CB_CASES.mbDigitalDistribution
+  }),
+  bankingChapter({
+    title: 'How models turn activity into profit', chapterTitle: 'CHAPTER 3 OF 3', readingTime: '9 min',
+    objective: 'Connect revenue composition, funding, costs, capital, risk and scalability to model profitability.',
+    mateIntro: '“More customers” is not yet a profit answer. A good banking model explains what each customer contributes after funding, service, expected loss and capital.',
+    keyInsight: 'Model profitability is revenue minus funding, operating and credit costs, judged against the capital needed to absorb risk.',
+    what: 'Profitability depends on margin and fee yield, balance-sheet volume, funding mix, cost-to-serve, credit quality, tax and required capital. Scalability means growing contribution faster than the resources and risk consumed.',
+    how: 'Retail can scale through automation and granular funding but faces CAC and mass-market credit costs. Corporate can generate large relationship revenue but concentrates exposures. Fee services can improve capital efficiency if recurring and properly costed.',
+    why: 'A model that looks attractive on revenue can destroy value after provisions or capital. Investors therefore compare ROA, ROE and risk-adjusted returns alongside growth.',
+    global: 'JPMorgan Chase reported 2024 return on equity by line of business of 32% in Consumer & Community Banking, 18% in Commercial & Investment Bank and 34% in Asset & Wealth Management, against 18% for the firm, with overhead ratios of 53%, 50% and 67% (company-reported). Segment equity is allocated by management, so the returns compare models only if the allocation and one-off items are understood.',
+    vietnam: 'Vietnamese banks compete for CASA, digital engagement and cross-sell because funding cost and service economics influence how much loan and fee revenue reaches profit.',
+    visualKind: v('cb-m3-31-03-profit-logic', { layout: 'steps', title: 'From model activity to shareholder return', kicker: 'A six-gate profitability test', tagLabel: 'Question', steps: [
+      { label: '1. Revenue mix', detail: 'NII + recurring non-interest income', tag: 'Which lines truly recur?' },
+      { label: '2. Funding', detail: 'CASA, term deposits and wholesale money', tag: 'What does growth cost to fund?' },
+      { label: '3. Operations', detail: 'People, channels, technology and compliance', tag: 'Can volume scale faster than OPEX?' },
+      { label: '4. Credit risk', detail: 'Expected loss, NPLs and provisions', tag: 'What profit survives the cycle?' },
+      { label: '5. Capital', detail: 'RWA and loss-absorbing equity', tag: 'How much scarce capital is consumed?' },
+      { label: '6. Return', detail: 'ROA, ROE and resilience together', tag: 'Is the return sustainable?' },
+    ], note: 'A profitable-looking revenue model can fail at any downstream gate.', takeaway: 'Bank-model analysis ends with risk-adjusted return, not revenue growth.' }),
+    visualHeading: 'Model profitability mechanism', visualIntro: 'The gates preserve all contributors between customer activity and sustainable return.', imageAlt: 'Six-step model profitability framework from revenue through funding, cost, risk and capital.',
+    statTiles: [s(undefined, 'Funding franchise', 'Cost + stability', 'Cheap funding helps margin only if liquidity and concentration remain sound.'), s(undefined, 'Operating leverage', 'Revenue growth vs OPEX growth', 'Scale creates value when contribution grows faster than support cost.'), s(undefined, 'Capital intensity', 'RWA per unit of return', 'A high nominal margin can still earn a weak risk-adjusted return.')],
+    statsNote: 'No invented bank-level segment margins are used; the chapter teaches the mechanism.',
+    keyTerms: [t('Funding franchise', 'A bank’s ability to attract stable funding at an economically attractive cost.'), t('Operating leverage', 'Revenue growing faster than operating expense.'), t('Risk-adjusted return', 'Return evaluated after expected loss and the capital required for risk.')],
+    recap: ['Revenue composition is only the first layer.', 'Funding, OPEX, credit cost and capital explain model quality.', 'Scalability must include risk and service capacity.'], chapterRecap: 'The best model is not the one with the highest headline yield; it is the one that converts activity into resilient risk-adjusted return.', deepDiveTitle: 'A practical model scorecard',
+    deepDive: ['For each model, write a one-line equation: customers × activity × unit revenue − funding − service cost − expected loss, then divide by the relevant capital. This reveals which assumptions require operating data and which require risk data.', 'Fee income is not automatically “free.” Payment rails, fraud controls, advisers and partners have costs. Equally, low-cost deposits are valuable only while customers keep balances and the bank can deploy them safely.'],
+    evidence: 'The framework synthesizes validated business-model research without asserting unavailable segment-level margins.', sourceIds: ['cb-m03-s02', 'cb-m03-s03'],
+    extraSources: [CB_CASE_SOURCES.jpmEarningsQ424, CB_CASE_SOURCES.jpm10kSegments]
+  }),
+];
+
+const L32 = '3.2 Products, Services & Segmentation';
+const deck32 = [
+  bankingChapter({
+    title: 'The banking product system', chapterTitle: 'CHAPTER 1 OF 3', readingTime: '8 min',
+    objective: 'Classify deposit, lending, transaction, trade, treasury and advisory offerings by customer need.',
+    mateIntro: 'A product list becomes useful only when it answers a customer problem and shows how the bank earns, funds and controls the solution.',
+    keyInsight: 'Bank products form a connected system: liabilities fund assets, while services deepen relationships and generate fee or market income.',
+    what: 'Liability products include current, savings and term deposits. Asset products include mortgages, cards and personal, SME or corporate credit. Services include payments, cash management, trade finance, guarantees, FX, wealth and insurance distribution.',
+    how: 'Deposits provide funding and liquidity; loans deploy funds into credit exposure; transaction and advisory products monetize activity and information. Treasury manages the bank’s own liquidity and market positions while serving client FX and rate needs.',
+    why: 'Cross-product design can improve retention, data and economics, but creates conduct, suitability, operational and concentration risks.',
+    global: 'Global universal banks connect corporate lending to cash management, trade and FX, creating a relationship rather than a single-product sale.',
+    vietnam: 'Vietnam’s Big 4 serve broad segments; private banks emphasize selected cards, digital, affluent, SME, wealth or bancassurance propositions. These are positioning examples, not verified revenue rankings.',
+    visualKind: v('cb-m3-32-01-portfolio', { layout: 'mindmap', variant: 'orbit', title: 'Product portfolio and revenue map', kicker: 'Every product links a need to an economic role', center: 'Customer relationship', centerSub: 'Need × product × channel × economics', tagLabel: 'Bank economics', rows: [
+      { label: 'Deposits', a: 'Security, liquidity and saving', b: 'Funding cost + relationship balances' },
+      { label: 'Loans', a: 'Credit access and cash-flow timing', b: 'Interest yield − expected loss' },
+      { label: 'Payments & cards', a: 'Convenient transfers and purchases', b: 'Net fee + engagement' },
+      { label: 'Trade & guarantees', a: 'Execution and performance assurance', b: 'Fees + contingent risk' },
+      { label: 'FX & treasury', a: 'Currency and liquidity management', b: 'Spread, fee or trading income' },
+      { label: 'Wealth & insurance', a: 'Investment and protection access', b: 'Distribution commission + conduct duty' },
+    ], takeaway: 'Products create value as a portfolio, not as isolated labels.' }),
+    visualHeading: 'Product portfolio and revenue map', visualIntro: 'The map connects needs to products and product economics without mixing balances with income.', imageAlt: 'Bank product portfolio mind map around the customer relationship.',
+    statTiles: [s(undefined, 'Liability products', 'Deposits', 'Funding the balance sheet while meeting liquidity and savings needs.'), s(undefined, 'Asset products', 'Loans and securities', 'Deploying funds into earning assets with credit and market risk.'), s(undefined, 'Service products', 'Payments, trade, FX, distribution', 'Generating net fees and other non-interest income.')],
+    statsNote: 'A product can create several economic effects; the map names the primary mechanism.',
+    keyTerms: [t('Contingent liability', 'An obligation that may become a balance-sheet exposure if a specified event occurs, as with some guarantees.'), t('Cash management', 'Services that help businesses collect, hold, forecast and pay cash.'), t('Bancassurance', 'A bank distributing an insurer’s products, typically earning a commission rather than recording the insurer’s premiums.')],
+    recap: ['Deposits, assets and services play different roles.', 'Products should map to a customer job and bank economics.', 'Cross-sell adds value only with suitable controls.'], chapterRecap: 'A banking portfolio connects customer needs to funding, risk deployment and service income.', deepDiveTitle: 'Why product boundaries matter',
+    deepDive: ['Trade finance includes instruments and services that support trade; guarantees create contingent exposure even before a cash loan is drawn. Treasury must distinguish client-flow income from returns or losses on the bank’s own positions.', 'Payments offered by a bank belong in its service portfolio, but this lesson does not redefine the separate Payments & Fintech industry.'],
+    evidence: 'SBV validates the institution taxonomy and legal scope; the detailed product economics are educational accounting structure.', sourceIds: ['cb-m03-s03', 'cb-m03-s04'],
+    restriction: 'Specific operative legal permissions beyond the high-level bank definition are not asserted from secondary commentary.'
+  }),
+  bankingChapter({
+    title: 'Interest income versus non-interest income', chapterTitle: 'CHAPTER 2 OF 3', readingTime: '10 min',
+    objective: 'Distinguish NII from net fees, FX, trading, bancassurance commissions and subsidiary income.',
+    mateIntro: 'A headline that says “fee income grew” can hide very different economics. Was it recurring transaction activity, FX revaluation, trading, an upfront insurance payment—or gross revenue that never belonged to the bank?',
+    keyInsight: 'Income must be classified on a net, bank-level basis before it can be compared or called recurring.',
+    what: 'NII is interest income minus interest expense. Non-interest income can include net fee and commission income, FX, trading or investment results, associate or subsidiary income, recoveries and other operating income.',
+    how: 'Net fees subtract fees paid from fees received. Card, account, transfer, cash-management, trade and guarantee services may generate fees. Bancassurance normally records the bank’s commission—not the insurer’s gross premium. FX and treasury lines can reflect client flow, market movement and accounting classification.',
+    why: 'Different lines have different persistence, volatility, capital use and conduct risk. A one-off upfront commission should not be valued like recurring payment volume.',
+    global: 'Universal banks disclose several non-interest lines because wealth, payments, markets and corporate services behave differently across cycles.',
+    vietnam: 'Vietcombank and FWD announced an exclusive 15-year bancassurance partnership in November 2019, under which Vietcombank distributes FWD’s life insurance products. Financial terms were not disclosed, so no per-bank commission figure is shown; see the case study below.',
+    visualKind: v('cb-m3-32-02-income-map', { layout: 'table', title: 'Income classification map', kicker: 'Classify first; compare second', headers: ['Line', 'What belongs here', 'Common mistake'], rows: [
+      { label: 'NII', a: 'Interest income minus interest expense', b: 'Calling all loan receipts revenue' },
+      { label: 'Net fees', a: 'Fees received minus fees paid', b: 'Comparing gross charges with net income' },
+      { label: 'FX', a: 'Client flow and/or market-linked FX results', b: 'Treating every year as recurring' },
+      { label: 'Trading / investments', a: 'Recognized gains, losses and related income', b: 'Ignoring volatility and classification' },
+      { label: 'Bancassurance', a: 'Bank distribution commission and related fees', b: 'Recording the insurer’s gross premiums as bank revenue' },
+      { label: 'Other income', a: 'Recoveries and disclosed residual operating lines', b: 'Assuming “other” is high-quality recurring income' },
+    ], takeaway: 'Compare like-for-like net income lines and test whether they recur.' }),
+    visualHeading: 'Interest and non-interest income map', visualIntro: 'The classification prevents gross-versus-net and bank-versus-insurer errors.', imageAlt: 'Table classifying bank income lines and common interpretation mistakes.',
+    statTiles: [s(undefined, 'NII', 'Interest income − interest expense', 'A balance-sheet-driven income line.'), s(undefined, 'Net fee income', 'Fees received − fees paid', 'The comparable fee measure.'), s(undefined, 'Bancassurance', 'Commission, not premium', 'Gross premiums belong to the insurer unless consolidated accounting says otherwise.')],
+    statsNote: 'No unverified bank-specific commission or fee-share percentage is shown.',
+    keyTerms: [t('Net fee and commission income', 'Fee and commission income after deducting related fee and commission expense.'), t('Gross insurance premium', 'The premium charged by the insurer; it is not automatically bank revenue.'), t('Run-rate income', 'Income expected to recur under normal activity rather than from a one-off event.')],
+    recap: ['NII is not total revenue.', 'Compare net fees, not gross customer charges.', 'Bancassurance commission and insurance premium are different.'], chapterRecap: 'Correct income classification is the foundation of revenue-quality analysis.', deepDiveTitle: 'Revenue quality questions',
+    deepDive: ['For every non-interest line, ask: Is it recurring? Is it net? Does it consume balance sheet? What conduct or market risk accompanies it? Is it consolidated from a subsidiary or earned directly by the bank?', 'An upfront bancassurance payment can make one year look exceptional while future recurring commission remains modest. Normalize one-offs before comparing banks or projecting growth.'],
+    evidence: 'This chapter directly integrates the Lesson 3.2 research addendum. The accounting distinctions are taught conceptually because bank-specific disclosures were not verified like-for-like.', sourceIds: ['cb-m03-s03', 'cb-m03-s04'],
+    restriction: 'Per-bank bancassurance commission and net-fee-income breakdowns remain Verification Required — Do Not Publish.',
+    caseStudy: CB_CASES.vietcombankFwdBancassurance
+  }),
+  bankingChapter({
+    title: 'Segment, price and measure profitability', chapterTitle: 'CHAPTER 3 OF 3', readingTime: '9 min',
+    objective: 'Build a segment-product profitability view using price, funding, service cost, expected loss and capital.',
+    mateIntro: 'A mortgage rate, account fee or FX spread is a price—not profit. Profitability emerges only after assigning the costs and risks of serving that segment.',
+    keyInsight: 'Good segmentation links customer need to product design, risk-based price, channel and lifetime economics.',
+    what: 'Segments such as mass retail, affluent, SME and corporate differ in balance size, transaction behavior, risk, advice need and service intensity. Pricing can include rates, fees, spreads and bundles.',
+    how: 'Estimate revenue by product, subtract transfer-priced funding, direct service and acquisition cost, expected credit loss and allocated overhead; then assess retention, cross-sell and capital.',
+    why: 'A high-yield segment may have high loss and servicing cost; a low-fee relationship may supply valuable deposits or cross-sell. Single-product margin can therefore misstate relationship value.',
+    global: 'Transaction banks often price a bundle of lending, liquidity and payments rather than optimize one product in isolation.',
+    vietnam: 'Retail, SME and corporate propositions increasingly blend branches, relationship teams and mobile channels; profitability depends on segment behavior, not the channel label alone.',
+    visualKind: v('cb-m3-32-03-segment-economics', { layout: 'steps', title: 'Segment profitability stack', kicker: 'From customer need to risk-adjusted relationship value', tagLabel: 'Output', steps: [
+      { label: 'Need & behavior', detail: 'Liquidity, credit, transaction and advice jobs', tag: 'Relevant proposition' },
+      { label: 'Product & price', detail: 'Rate, fee, spread and bundle design', tag: 'Gross revenue' },
+      { label: 'Funding & channel', detail: 'Transfer price, acquisition and service cost', tag: 'Contribution before risk' },
+      { label: 'Credit & conduct', detail: 'Expected loss, fraud and suitability risk', tag: 'Risk-adjusted contribution' },
+      { label: 'Retention & cross-sell', detail: 'Lifetime activity and relationship depth', tag: 'Customer lifetime value' },
+      { label: 'Capital', detail: 'RWA and scarce equity use', tag: 'Risk-adjusted return' },
+    ], note: 'Do not rank segments from headline yield or fee alone.', takeaway: 'Pricing should recover the full economics of the relationship while remaining fair and competitive.' }),
+    visualHeading: 'Segment-product profitability map', visualIntro: 'The stack shows why transfer pricing, expected loss and capital belong in segment economics.', imageAlt: 'Six-step segment profitability stack.',
+    statTiles: [s(undefined, 'Risk-based pricing', 'Price reflects expected economics', 'Not a license for unfair or opaque treatment.'), s(undefined, 'Transfer price', 'Internal funding charge or credit', 'Connects product profitability to the bank’s funding curve.'), s(undefined, 'Relationship value', 'Multi-product lifetime economics', 'Includes retention and cross-sell, not just today’s product margin.')],
+    statsNote: 'The framework is intentionally metric-ready without inventing segment profitability data.',
+    keyTerms: [t('Funds transfer pricing', 'An internal mechanism that assigns funding value or cost to business lines and products.'), t('Expected credit loss', 'A forward-looking estimate of credit loss used in risk and accounting decisions.'), t('Customer lifetime value', 'Expected relationship contribution over time after relevant costs and risk.')],
+    recap: ['Price is not profit.', 'Segment economics require funding, service, risk and capital.', 'Relationship value can differ from product margin.'], chapterRecap: 'Segment-product decisions should optimize fair, risk-adjusted lifetime economics rather than one visible rate.', deepDiveTitle: 'A profitability cube',
+    deepDive: ['Build a cube with segment, product and channel. For each cell, track balances or activity, net revenue, service cost, expected loss and capital. This makes cross-subsidies visible and prevents a digital channel from being credited for revenue that actually depends on relationship management.', 'Use the result diagnostically: weak contribution may call for redesigned service, better underwriting, deeper cross-sell or exit—not automatically a higher customer price.'],
+    evidence: 'No source supports a numeric Vietnam segment profitability ranking, so the lesson stays at a practical analytical framework.', sourceIds: ['cb-m03-s03']
+  }),
+];
+
+const L33 = '3.3 Customer Segments & Needs';
+const deck33 = [
+  bankingChapter({
+    title: 'Who banks serve', chapterTitle: 'CHAPTER 1 OF 3', readingTime: '8 min',
+    objective: 'Identify mass retail, affluent, SME, large-corporate and institutional customers and their economic profiles.',
+    mateIntro: '“Customers want loans” is too broad. A salary earner, an export SME and a multinational treasury team bring different balances, data, decision cycles and risks.',
+    keyInsight: 'Customer segments differ in need, value, risk and service intensity; the same product label can represent different economics.',
+    what: 'Mass retail values everyday accounts, payments and standardized credit. Affluent and private clients add advice and wealth needs. SMEs combine owner and business finances. Large corporates and institutions require limits, cash management, trade, FX and tailored execution.',
+    how: 'Banks segment using financial behavior, needs, complexity and risk—not demographics alone. Coverage ranges from self-service and pooled support to dedicated relationship managers and specialists.',
+    why: 'Segmentation guides proposition, underwriting, channel and cost-to-serve. It also helps avoid overserving low-complexity needs or underserving high-risk, high-complexity relationships.',
+    global: 'Multinational banks often separate consumer, commercial and corporate/institutional coverage because decision makers and products differ.',
+    vietnam: 'Agribank is associated with rural and agricultural reach; major state-controlled banks serve broad corporate and household needs; private banks differentiate by selected retail, SME and affluent propositions.',
+    visualKind: v('cb-m3-33-01-segment-map', { layout: 'table', title: 'Customer segment map', kicker: 'Need, complexity and coverage design', headers: ['Segment', 'Typical jobs', 'Coverage logic'], rows: [
+      { label: 'Mass retail', a: 'Receive income, pay, save, borrow', b: 'Simple, reliable, digital-first service at scale' },
+      { label: 'Affluent / private', a: 'Liquidity, investment, protection and credit', b: 'Hybrid advice with suitability controls' },
+      { label: 'SME', a: 'Working capital, collections, payroll and trade', b: 'Hybrid relationship + cash-flow underwriting' },
+      { label: 'Large corporate', a: 'Funding, liquidity, trade, FX and risk management', b: 'Dedicated team and specialist execution' },
+      { label: 'Institutional / public', a: 'Large flows, custody, financing and policy-linked needs', b: 'Mandate, governance and concentration discipline' },
+    ], takeaway: 'Segment by the job, complexity and economics—not by customer size alone.' }),
+    visualHeading: 'Segmentation and needs matrix', visualIntro: 'The matrix links customers to jobs and an appropriate service model.', imageAlt: 'Matrix of five bank customer segments, needs and coverage models.',
+    statTiles: [s('≈87%', 'Adult payment-account ownership', 'Reported 2024', 'Secondary source citing SBV; a reach indicator, not profitability.'), s('≈50%', 'Big 4 deposit share', 'End-2023', 'System share reported by Viet Nam News citing SBV.'), s('41.9%', 'Big 4 loan share', 'End-2023', 'Outstanding-loan share; definitions and period retained.')],
+    statsNote: 'The statistics indicate reach and system structure; they do not establish segment-level profitability.',
+    keyTerms: [t('Mass affluent', 'Customers between mass retail and private banking, often with growing advice and wealth needs.'), t('SME', 'A small or medium-sized enterprise whose business and owner finances may be closely connected.'), t('Institutional client', 'A financial, public or investment institution requiring specialized banking services.')],
+    recap: ['Customer groups differ in jobs and complexity.', 'Coverage intensity should fit economics and risk.', 'Scale shares do not prove segment profitability.'], chapterRecap: 'A useful segment definition predicts product need, channel, risk and service cost.', deepDiveTitle: 'Segmentation is behavioral',
+    deepDive: ['Income and company size are only starting points. Transaction frequency, cash-flow volatility, collateral, decision structure and digital comfort often explain product use better.', 'SMEs are strategically important but can be expensive to underwrite because information is less standardized and tickets are smaller. Do not quote an SME finance gap here: the research did not verify one from a primary source.'],
+    evidence: 'Payment-account ownership is snippet-only secondary evidence; Big 4 shares are full-text secondary reporting citing SBV.', sourceIds: ['cb-m03-s07', 'cb-m03-s11', 'cb-m03-s03']
+  }),
+  bankingChapter({
+    title: 'What customers hire a bank to do', chapterTitle: 'CHAPTER 2 OF 3', readingTime: '8 min',
+    objective: 'Translate customer needs into banking jobs, products and trust requirements.',
+    mateIntro: 'A bank is not hired merely to “provide products.” It is hired to make money available, safe and usable at the right moment—and to help customers manage uncertainty.',
+    keyInsight: 'Liquidity, security, credit, convenience, trust and transaction control are the core jobs; products are the mechanisms.',
+    what: 'Households need safe balances, payments, saving and responsible credit. Businesses need working capital, collections, payroll, supplier payments, trade execution, FX and contingency liquidity. All segments need reliability and fair treatment.',
+    how: 'Map a need to a moment, product and service level. A current account supports daily liquidity; a term loan funds investment; a revolving facility bridges cash-flow timing; cash management coordinates collections and payments.',
+    why: 'Need-led design improves adoption and prevents product pushing. In banking, trust and operational resilience are part of the product because failure can interrupt livelihoods and commerce.',
+    global: 'Corporate treasurers consolidate visibility and controls through cash-management platforms while consumers expect secure, immediate payments.',
+    vietnam: 'Mobile accounts and VietQR improve convenience, while branches and relationship teams remain relevant for cash, trust and complex SME or corporate decisions.',
+    visualKind: v('cb-m3-33-02-needs', { layout: 'mindmap', variant: 'sides', title: 'Customer needs to banking jobs', kicker: 'Start with the job; choose the product second', center: 'Financial confidence', centerSub: 'Available • safe • usable', tagLabel: 'Product response', rows: [
+      { label: 'Liquidity', a: 'Money available when obligations fall due', b: 'Current accounts, overdrafts, liquidity lines' },
+      { label: 'Security', a: 'Safeguard funds and control access', b: 'Deposits, authentication, fraud controls' },
+      { label: 'Credit access', a: 'Bring future cash flow into today', b: 'Loans, cards, working-capital facilities' },
+      { label: 'Convenience', a: 'Complete frequent tasks with low friction', b: 'Mobile, cards, QR and self-service' },
+      { label: 'Transactions', a: 'Collect, pay, reconcile and trade', b: 'Payments, cash management, trade services' },
+      { label: 'Trust', a: 'Receive reliable execution and fair treatment', b: 'Resilience, transparency and human support' },
+    ], takeaway: 'The customer buys confidence and completion—not a product label.' }),
+    visualHeading: 'Customer-needs matrix', visualIntro: 'The map connects six fundamental jobs to product responses while keeping trust central.', imageAlt: 'Banking needs mind map centered on financial confidence.',
+    statTiles: [s('80m+', 'NAPAS customers connected', 'Current site, 2026', 'Infrastructure reach; not unique active users of one bank.'), s('20,600+', 'ATMs connected', 'NAPAS network', 'Shared infrastructure reduces the value of ATM count alone.'), s('≈741,000', 'POS/mPOS devices', 'NAPAS network', 'Network scale reported by NAPAS.')],
+    statsNote: 'NAPAS facts describe shared infrastructure, not bank-owned distribution or customer profitability.',
+    keyTerms: [t('Liquidity need', 'The need to have cash or payment capacity available when obligations are due.'), t('Working capital', 'Short-term resources used to finance the operating cycle.'), t('Operational resilience', 'The ability to continue or recover critical services through disruption.')],
+    recap: ['Needs precede products.', 'Trust and resilience are part of banking value.', 'Channel choice should fit the customer moment.'], chapterRecap: 'Banking products are mechanisms for delivering liquidity, security, credit, convenience, transactions and trust.', deepDiveTitle: 'Need-state design',
+    deepDive: ['For each customer journey, identify the trigger, desired outcome, risk and recovery path. A fast payment that cannot be traced or reversed when something goes wrong may fail the underlying trust job.', 'For businesses, transaction data can improve cash-flow visibility and underwriting, but that value depends on consent, security and governance.'],
+    evidence: 'NAPAS is an official full-text source for network scale and services. It is shared infrastructure, not a bank channel.', sourceIds: ['cb-m03-s09', 'cb-m03-s07']
+  }),
+  bankingChapter({
+    title: 'Relationship economics over time', chapterTitle: 'CHAPTER 3 OF 3', readingTime: '9 min',
+    objective: 'Evaluate acquisition, retention, lifetime value, cross-sell, risk and pricing as one relationship system.',
+    mateIntro: 'A cheap acquisition campaign can be expensive if customers leave, keep no balances or take only high-risk credit. Relationship economics asks what survives over time.',
+    keyInsight: 'Customer value is lifetime, multi-product and risk-adjusted; acquisition is only the opening investment.',
+    what: 'Relationship economics combines CAC, onboarding, activity, balances, margin and fees, service cost, expected loss, retention and capital across the customer life.',
+    how: 'Acquire a target segment, activate a core job, earn trust, deepen relevant products, retain through service quality and reprice or redesign when risk and economics change.',
+    why: 'Retention spreads acquisition cost and can deepen data and balances. Cross-sell can raise value, but irrelevant selling creates conduct risk and destroys trust.',
+    global: 'Relationship banking links lending with transaction flows and advice, giving the bank a richer view of customer cash generation and needs.',
+    vietnam: 'CASA competition, digital acquisition and ecosystem propositions make activation and primary-bank status more important than account openings alone.',
+    visualKind: v('cb-m3-33-03-lifecycle', { layout: 'steps', title: 'Relationship-economics flywheel', kicker: 'Value compounds only when each stage works', tagLabel: 'Measure', steps: [
+      { label: 'Acquire', detail: 'Reach the intended segment efficiently', tag: 'CAC + approval quality' },
+      { label: 'Activate', detail: 'Complete a meaningful first job', tag: 'Funded / transacting account' },
+      { label: 'Retain', detail: 'Deliver reliable service and recovery', tag: 'Cohort retention + complaints' },
+      { label: 'Deepen', detail: 'Add relevant products with consent', tag: 'Products + share of wallet' },
+      { label: 'Manage risk', detail: 'Monitor affordability and behavior', tag: 'Loss + fraud + conduct' },
+      { label: 'Earn return', detail: 'Aggregate lifetime contribution and capital', tag: 'Risk-adjusted LTV' },
+    ], note: 'Account openings without activation and retention are not a durable franchise.', takeaway: 'Optimize the full relationship—not conversion in isolation.' }),
+    visualHeading: 'Relationship economics journey', visualIntro: 'The flywheel connects growth metrics to trust, risk and return.', imageAlt: 'Six-stage customer relationship economics flywheel.',
+    statTiles: [s(undefined, 'CAC', 'Acquisition spend ÷ acquired customers', 'Use a consistent acquired-customer definition.'), s(undefined, 'Retention', 'Customers remaining active', 'Measure by cohort and meaningful activity.'), s(undefined, 'Risk-adjusted LTV', 'Lifetime contribution after loss and capital', 'A better decision metric than product count.')],
+    statsNote: 'Formulas are conceptual; the research did not verify bank-level CAC or LTV benchmarks.',
+    keyTerms: [t('Customer acquisition cost (CAC)', 'The cost to acquire a defined new customer or relationship.'), t('Cross-sell', 'Adding relevant products to an existing relationship.'), t('Primary-bank relationship', 'A relationship in which the customer routes meaningful balances or activity through the bank.')],
+    recap: ['Acquisition without activation can destroy value.', 'Retention and relevant cross-sell shape LTV.', 'Credit, fraud and conduct risk belong in customer economics.'], chapterRecap: 'Sustainable relationship value requires activation, trust, retention, relevant depth and disciplined risk.', deepDiveTitle: 'Cohort logic',
+    deepDive: ['Track cohorts by acquisition month, segment and channel. Compare funded activation, transaction frequency, balances, fee and margin contribution, service contacts and losses over time. This separates genuine relationship quality from one-time campaign volume.', 'Price should reflect economics and fairness across the life of the relationship. A profitable cross-sell that damages trust can reduce total LTV and invite conduct or reputation risk.'],
+    evidence: 'No bank-level customer-acquisition or retention statistic is asserted; the chapter provides a reusable analytical design.', sourceIds: ['cb-m03-s07', 'cb-m03-s09']
+  }),
+];
+
+export const CB_LESSON_31: BankingLessonBundle = { deck: deck31, quiz: bankingQuiz('cb-m3-l31', deck31), takeaways: { learned: 'You can distinguish credit-led and fee-led engines, identify retail/corporate/universal models and trace each model through funding, cost, risk and capital.', keyTakeaways: ['NII and non-interest income are different engines.', 'Model labels must connect customer, product, channel and retained risk.', 'Fee income is not costless or automatically recurring.', 'Sustainable profit is risk- and capital-adjusted.'], businessImplications: 'Model diagnosis determines which levers matter: funding and underwriting for spread businesses; adoption, recurrence and conduct for service businesses; capital allocation for both.', remember: 'Identify the engine, then follow every cost and risk to risk-adjusted return.', nextLesson: L32 } };
+export const CB_LESSON_32: BankingLessonBundle = { deck: deck32, quiz: bankingQuiz('cb-m3-l32', deck32), takeaways: { learned: 'You can classify banking products and income correctly, distinguish bancassurance commissions from premiums, and build segment-product profitability.', keyTakeaways: ['Deposits, loans and services have different economic roles.', 'NII, net fees, FX and trading should not be mixed.', 'Compare bank fees net of related fee expense.', 'Price and revenue are not profit.'], businessImplications: 'Product strategy should link a customer job to net revenue, funding, channel cost, expected loss, conduct and capital.', remember: 'Classify income correctly before comparing growth or quality.', nextLesson: L33 } };
+export const CB_LESSON_33: BankingLessonBundle = { deck: deck33, quiz: bankingQuiz('cb-m3-l33', deck33), takeaways: { learned: 'You can segment customers, map needs to banking jobs and evaluate acquisition, retention and cross-sell through risk-adjusted lifetime economics.', keyTakeaways: ['Segments differ in complexity, risk and service intensity.', 'Trust and resilience are part of the product.', 'Acquisition is only the first relationship investment.', 'Cross-sell must be relevant and controlled.'], businessImplications: 'Need-led coverage and cohort economics help banks allocate channels, relationship capacity and risk appetite more intelligently.', remember: 'Optimize the customer relationship over time—not a single product or conversion.', nextLesson: '3.4 Revenue Streams & Cost Structure' } };

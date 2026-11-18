@@ -1,0 +1,202 @@
+import { F3DeepDive, citeF3, f3Chapter, f3Quiz } from './fashionM3Core';
+import type { FashionM3LessonBundle } from './fashionM3Core';
+
+const LESSON = '4. Revenue Streams & Cost Structure';
+
+const deck = [
+  f3Chapter({
+    title: 'Core Revenue Streams', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Name the main ways a fashion, sports and lifestyle business earns revenue and explain how each stream changes its costs and risks.',
+    mateIntro: 'Two companies can sell the same jacket and earn very different money from it. One sells it in its own store, another through a distributor, a third through a marketplace. Where the sale happens decides what is left.',
+    keyInsight: 'Revenue in fashion and sports retail comes from several streams that differ in margin, capital needs and risk. Diversifying across them creates growth options, but each additional stream also adds its own costs, partners and trade-offs.',
+    statTiles: [
+      { value: '7', label: 'Revenue streams profiled', subtitle: 'Direct to circular services', description: 'Direct sales, wholesale, marketplace, licensing, collaborations, private label, and services such as repair and resale.' },
+      { value: 'VND 9,069B', label: 'Authentic fashion e-commerce, H1 2025', subtitle: '+21% year on year', description: 'Covers Shopee, Lazada and Tiki only and excludes sportswear and accessories.' },
+      { value: 'US$2.4B', label: 'Fashion and accessories online GMV, H1 2025', description: 'The largest online category in Vietnam; platform sales value, not brand revenue.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the other two are platform-level e-commerce figures for the first half of 2025 and are not brand revenue or total retail sales.',
+    narrative: [
+      { label: 'What it is', text: 'A fashion, sports and lifestyle business earns revenue through direct sales in brand-owned stores, websites and apps; wholesale to independent retailers, distributors and department stores; sales on third-party marketplaces; licensing of brand names, trademarks and designs; collaborations and limited-edition releases; private-label products made by external producers; and services such as repair, resale, rental and customisation. Each stream reaches the customer through a different route and keeps a different share of the final price.' },
+      { label: 'Why it is happening', text: 'No single route reaches every customer at an acceptable cost. Direct sales keep the most margin but need stores and traffic, wholesale and marketplaces add reach but share the price, and licensing and collaborations extend the brand with little capital. Businesses therefore combine streams and shift the mix as customers and platforms change.' },
+      { label: 'Real-world example', text: 'A sportswear brand may sell through its own stores and app for margin and customer data, supply sporting-goods retailers and department stores for coverage, list on marketplaces for reach, release limited collaborations to create demand, and add repair or resale to extend product life. A retailer such as Decathlon sells under its own private-label sports brands, taking on design and sourcing in exchange for control of price and range.' },
+      { label: 'Vietnam example', text: 'Online, fashion and accessories was Vietnam’s largest category in the first half of 2025 at about US$2.4 billion of gross merchandise value, and YouNet counted VND 9,069 billion of authentic-fashion e-commerce on Shopee, Lazada and Tiki, up 21% year on year. These are platform figures, so they show how large the marketplace stream has become for brands rather than what any one brand earns from it.' },
+      { label: 'Business impact', text: 'A diversified revenue base spreads risk across customers and channels and opens growth options. Because each stream has a different cost, capital need and level of control, the useful question is which mix of streams earns the best return for the brand’s position, not which stream is largest.' },
+    ],
+    visualKind: 'fashion-m3-41-revenue', visualHeading: 'Seven places revenue can come from',
+    visualIntro: 'See where each stream comes from and the main thing to watch in it.',
+    imageAlt: 'Casemate table of seven fashion revenue streams, their sources and what to watch',
+    keyTerms: [
+      { term: 'Revenue stream', definition: 'A distinct way a business earns money, such as direct sales, wholesale or licensing.' },
+      { term: 'Licensing', definition: 'Granting another company the right to use a brand name, trademark or design in return for payment.' },
+      { term: 'Private label', definition: 'A product sold under a retailer’s own brand and made by an external producer.' },
+      { term: 'Gross merchandise value (GMV)', definition: 'The total value of goods sold on a platform, before fees, returns and costs.' },
+    ],
+    recap: [
+      'Revenue comes from direct sales, wholesale, marketplaces, licensing, collaborations, private label and services.',
+      'Each stream differs in margin, capital needs and risk.',
+      'Diversification adds options and adds partners and costs.',
+      'Platform GMV is not the same as a brand’s revenue.',
+    ],
+    chapterRecap: 'Fashion and sports retailers earn revenue through direct sales, wholesale, marketplaces, licensing, collaborations, private label and services. Diversified revenue creates growth options, but each stream carries different costs, capital requirements and risks.',
+    deepDiveTitle: 'Why the biggest stream is not always the best one',
+    body: <F3DeepDive paragraphs={[
+      'A stream that brings the most sales can still bring the least profit once platform fees, shared margin, fulfilment and returns are counted. A smaller stream such as licensing or a well-run collaboration can add profit with little capital, though it can also dilute a brand if it is overused.',
+      'That is why a revenue mix is judged stream by stream: how much it earns after its own costs, how much capital it ties up, and how much control of the brand it gives away.',
+    ]} evidence="The revenue stream framework is qualitative. The Vietnam figures describe e-commerce platforms in the first half of 2025: the YouNet figure covers authentic fashion on three marketplaces only, and GMV is the value of goods sold, not the revenue or profit of any brand." />,
+    sources: citeF3('bofStateOfFashion', 'cimigoEcommerce', 'younetFashion'),
+  }),
+  f3Chapter({
+    title: 'Pricing Strategies and Revenue Optimization', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Compare the main pricing approaches and explain why the lowest price rarely produces the best commercial outcome.',
+    mateIntro: 'A price is a message as well as a number. Set it too low and the product looks cheap and the margin disappears, set it too high and nobody buys. Good pricing finds the point that the brand can defend.',
+    keyInsight: 'Pricing is a strategic tool, not just a calculation of cost plus margin. The lowest price rarely produces the best outcome: pricing has to protect brand value while improving sales, margin and inventory performance.',
+    statTiles: [
+      { value: '7', label: 'Pricing approaches compared', subtitle: 'Cost to dynamic', description: 'Cost-based, value-based, premium, competitive, promotional, assortment-based and dynamic pricing.' },
+      { value: '>30%', label: 'Discount level favoured by Vietnamese Gen Z', description: 'First-half 2025 platform research reports that Gen Z shoppers respond to discounts above 30% in livestreams.' },
+      { value: '3', label: 'Price points in an assortment', subtitle: 'Entry, core, premium', description: 'A range with several price points serves several budgets inside one brand.' },
+    ],
+    statsNote: 'The first and last tiles are counts from the pricing framework; the discount preference is a behavioural finding from first-half 2025 research on Vietnamese online shoppers, not a measured average discount.',
+    narrative: [
+      { label: 'What it is', text: 'Pricing sets the amounts customers pay and shapes revenue, margin and brand perception. Cost-based pricing adds a markup to product cost; value-based pricing follows the benefit customers perceive; premium pricing holds a higher price while quality or exclusivity supports it; competitive pricing compares rivals; promotional pricing uses sales, vouchers, bundles and member offers; assortment-based pricing offers entry, core and premium products; and dynamic pricing adjusts selected prices to demand, stock or timing.' },
+      { label: 'Why it is happening', text: 'Customers compare prices across platforms in seconds, and promotions are used to clear stock, win traffic and respond to rivals. Each approach solves one problem and creates another, for example promotions lift sales but can teach customers to wait for discounts, so the approach has to fit the brand’s position.' },
+      { label: 'Real-world example', text: 'A premium sportswear brand may hold full price on technical products and limit discounts to end-of-season clearance, while a value retailer such as Primark competes on affordable basics. A mid-market retailer such as H&M sets entry, core and premium items inside one range and uses seasonal sales to clear stock. Outlet stores sell selected or previous-season goods at reduced prices, which only works if full-price channels are protected.' },
+      { label: 'Vietnam example', text: 'In first-half 2025 platform research reported by Cimigo, Vietnamese Gen Z shoppers favoured livestreaming, influencer recommendations and discounts of more than 30%, which shows how strongly promotion and entertainment shape price expectations online. For brands selling on these platforms, deep campaign discounts can win volume but make it harder to hold a full price afterwards.' },
+      { label: 'Business impact', text: 'Pricing decisions flow straight into margin, inventory and brand value. The aim is not the lowest price but the price structure that protects brand perception while keeping stock moving, and that needs testing by product, channel and customer group.' },
+    ],
+    visualKind: 'fashion-m3-42-pricing', visualHeading: 'Seven pricing approaches and what each risks',
+    visualIntro: 'Compare how each approach works and what goes wrong if it is misused.',
+    imageAlt: 'Casemate table of seven pricing approaches with how each works and its main risk',
+    keyTerms: [
+      { term: 'Markup', definition: 'The amount added to product cost to reach a selling price.' },
+      { term: 'Value-based pricing', definition: 'Setting price according to the benefit customers perceive rather than the cost of making the product.' },
+      { term: 'Price architecture', definition: 'The set of entry, core and premium price points within a range.' },
+      { term: 'Dynamic pricing', definition: 'Adjusting selected prices in response to demand, stock levels or timing.' },
+    ],
+    recap: [
+      'Pricing shapes revenue, margin and brand perception together.',
+      'Seven approaches each solve one problem and risk another.',
+      'Promotions lift sales but can train customers to wait for discounts.',
+      'The lowest price rarely gives the best outcome.',
+    ],
+    chapterRecap: 'Effective pricing balances cost, perceived value, competition, brand positioning and inventory conditions. The lowest price rarely gives the best outcome: pricing must protect brand value while improving sales and inventory performance.',
+    deepDiveTitle: 'Why discounting is easy to start and hard to stop',
+    body: <F3DeepDive paragraphs={[
+      'A discount produces an immediate sales lift, which makes it tempting each time stock builds up. Repeated often, it changes what customers think the product is worth, and the full price starts to look like a starting offer rather than a real one.',
+      'Brands that hold their price do it with structure: a clear range of price points, limited and predictable sale periods, outlets kept separate from full-price channels, and products that give customers a visible reason to pay more.',
+    ]} evidence="The pricing approaches are described qualitatively in the supplied material. The Gen Z discount preference comes from first-half 2025 research on online platforms in Vietnam and shows a tendency among those shoppers, not a recommended discount level." />,
+    sources: citeF3('bofStateOfFashion', 'cimigoEcommerce', 'deloitteRetail'),
+  }),
+  f3Chapter({
+    title: 'Cost Structure and Profitability Drivers', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Identify the main cost blocks in fashion retail and explain how they combine with pricing and inventory to determine profit.',
+    mateIntro: 'A product that sells well can still lose money. Between the factory gate and the customer sit freight, rent, wages, marketing, platform fees and returns, and each one takes a share.',
+    keyInsight: 'Profit in fashion and sports retail depends on managing product cost, operating expense, pricing and inventory efficiency together. The same product can earn very different profit depending on the channel it is sold through, so costs have to be read by product and by channel.',
+    statTiles: [
+      { value: '6', label: 'Cost blocks', subtitle: 'Goods to inventory productivity', description: 'Cost of goods, logistics, retail operations, marketing, digital commerce and inventory productivity.' },
+      { value: '13.6%', label: 'Average US tariff on Vietnamese footwear', subtitle: 'Reported April 2025', description: 'Reuters reported this average rate, which adds to landed cost for brands that ship footwear from Vietnam to the US.' },
+      { value: '18.8%', label: 'Average US tariff on Vietnamese apparel', subtitle: 'Reported April 2025', description: 'Reuters reported this average rate, a cost that sits outside the factory and the store.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the tariff rates are averages reported by Reuters in April 2025 and trade policy has since been changing, so they illustrate how duties enter landed cost rather than current rates.',
+    narrative: [
+      { label: 'What it is', text: 'The cost structure of a fashion and sports retailer includes cost of goods sold (sourcing, manufacturing and other product costs); logistics (freight, customs where applicable, warehousing and last-mile delivery); retail operations (rent, utilities, wages, visual merchandising and store upkeep); marketing and customer acquisition (advertising, sponsorships, creator partnerships and loyalty programmes); digital commerce (website operations, platform commissions, payments, fulfilment and returns); and inventory productivity (markdowns, excess stock and obsolete products).' },
+      { label: 'Why it is happening', text: 'Fashion has long supply chains, short selling seasons and customers who can switch brands easily, so costs arise at every stage and move with different drivers, from material prices and freight rates to rent, competition for attention and return rates. Online sales remove some store costs but add commissions, fulfilment and returns, which is why channel profitability differs even for the same product.' },
+      { label: 'Real-world example', text: 'A brand-owned store carries rent, staff and visual merchandising but keeps the full retail margin and customer data, while a wholesale sale gives up part of the margin in exchange for lower operating cost and capital. A marketplace sale avoids building traffic but pays commission, and an online order with a free return can cost far more than the same item sold in store. Brands that sell abroad also pay freight and customs duties before the product reaches the shelf.' },
+      { label: 'Vietnam example', text: 'Vietnam is a major production base for sportswear and footwear, so duties in the destination market become part of the cost of the finished product. Reuters reported average US tariff rates of 13.6% on Vietnamese footwear and 18.8% on apparel in April 2025, which brands have to absorb, pass on to customers or offset by moving production, and each choice changes margin.' },
+      { label: 'Business impact', text: 'Understanding where costs sit lets management decide where to invest, which channels to grow and which products to reprice or drop. Profit depends on product cost, operating expense, pricing and inventory efficiency read together, by product and by channel, because an average margin hides the products and channels that lose money.' },
+    ],
+    visualKind: 'fashion-m3-43-costs', visualHeading: 'Where the money goes',
+    visualIntro: 'See what each cost block includes and what moves it.',
+    imageAlt: 'Casemate table of six cost blocks in fashion retail, what each includes and what moves it',
+    keyTerms: [
+      { term: 'Cost of goods sold (COGS)', definition: 'The direct cost of producing or buying the products that were sold.' },
+      { term: 'Landed cost', definition: 'The full cost of a product delivered to the point of sale, including freight and duties.' },
+      { term: 'Gross margin', definition: 'Revenue left after cost of goods sold, before operating costs.' },
+      { term: 'Operating expense', definition: 'Running costs such as rent, wages, marketing and platform fees.' },
+    ],
+    recap: [
+      'Six cost blocks: goods, logistics, retail operations, marketing, digital commerce and inventory productivity.',
+      'Each block moves with different drivers.',
+      'Online removes some store cost and adds commissions, fulfilment and returns.',
+      'Read costs by product and by channel, not as one average.',
+    ],
+    chapterRecap: 'Profit depends on managing product cost, operating expenses, pricing and inventory efficiency together. Retailers need to understand profitability by product and by channel to make better decisions about assortment, pricing and investment.',
+    deepDiveTitle: 'Why an average margin hides the real picture',
+    body: <F3DeepDive paragraphs={[
+      'A retailer with a healthy average margin may still be funding loss-making products or channels from profitable ones. A heavily discounted line, a channel with high returns or a store with high rent can each pull profit down while the total still looks acceptable.',
+      'Reading profit by product and by channel shows where the margin is made and lost. It is the basis for deciding which items to reprice, which channels to grow and where a cost such as freight, duties or returns deserves attention first.',
+    ]} evidence="The cost blocks are described qualitatively in the supplied material. The tariff rates are averages reported by Reuters in April 2025; they were set by policy that has since been changing, so they are shown as an example of landed cost and not as current rates." />,
+    sources: citeF3('bofStateOfFashion', 'reutersTariffs', 'deloitteRetail'),
+  }),
+  f3Chapter({
+    title: 'Inventory Management, Markdown and Returns', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how forecasting, replenishment, markdown and returns handling together protect or destroy margin and cash flow.',
+    mateIntro: 'Fashion is a perishable business. A coat that does not sell by the end of the season does not wait politely for next year, it turns into a markdown. Most of the margin is decided long before the customer walks in.',
+    keyInsight: 'Inventory is both a commercial asset and a financial risk. Accurate forecasting, sensible replenishment and disciplined markdowns protect cash flow and margin, while poor planning leaves excess stock that can only be cleared at a discount.',
+    statTiles: [
+      { value: '5', label: 'Steps in the inventory cycle', subtitle: 'Forecast to returns', description: 'Forecast, plan assortment, replenish, markdown and handle returns.' },
+      { value: '15–35%', label: 'Reported fashion return rates', subtitle: 'Informal Shopee seller survey', description: 'An indicative range from a survey of Shopee Vietnam sellers, not a measured national rate.' },
+      { value: '5', label: 'Metrics to track', subtitle: 'Sell-through to markdown %', description: 'Sell-through, stock turnover, days of inventory, stockout rate and markdown percentage.' },
+    ],
+    statsNote: 'The first and last tiles are counts from this lesson; the return-rate range comes from an informal survey of sellers and is indicative only.',
+    narrative: [
+      { label: 'What it is', text: 'Inventory management covers forecasting demand, planning the assortment by product, size, colour, store, region and channel, replenishing fast sellers, marking down excess and end-of-season stock, and handling returns. Retailers track sell-through, stock turnover, days of inventory, stockout rate and markdown percentage to see whether stock is working for the business or tying up cash.' },
+      { label: 'Why it is happening', text: 'Fashion demand is seasonal and trend-sensitive, supplier lead times and minimum orders force commitments months before the sale, and online selling adds returns, particularly for size and fit. Too little stock loses sales and too much forces markdowns, so the work is to keep the balance as demand changes.' },
+      { label: 'Real-world example', text: 'A retailer forecasts from historical sales, season, trends and promotions, allocates sizes and colours to stores and regions, restocks fast sellers within supplier lead times and minimums, and clears slow stock through planned markdowns or outlets. Returned items are assessed for condition and then resold, repaired or otherwise processed. Retailers that connect store and online stock can move goods to where they will sell before a markdown is needed.' },
+      { label: 'Vietnam example', text: 'An informal survey of Shopee Vietnam sellers reported fashion return rates of 15–35%, which shows how sizing and fit uncertainty can turn a sale into a reverse-logistics cost. YouNet’s first-half 2025 review of Vietnamese fashion also carried the headline that offline stores were closing while local brands kept the lead online, a sign that retailers are reviewing store networks and stock placement as demand shifts.' },
+      { label: 'Business impact', text: 'Disciplined inventory management protects cash flow and margin and reduces the markdowns and write-offs that follow overbuying. Retailers that forecast accurately, replenish quickly and handle returns efficiently turn stock faster and keep more of the price they set.' },
+    ],
+    visualKind: 'fashion-m3-44-inventory', visualHeading: 'Inventory is decided months before the sale',
+    visualIntro: 'Follow the five steps from forecast to returns and the metrics to track.',
+    imageAlt: 'Casemate flow of the inventory cycle from forecasting to markdown and returns',
+    keyTerms: [
+      { term: 'Sell-through', definition: 'The share of delivered stock that has been sold in a given period.' },
+      { term: 'Stock turnover', definition: 'How many times average inventory is sold and replaced over a period.' },
+      { term: 'Markdown', definition: 'A reduction in selling price used to clear excess or end-of-season stock.' },
+      { term: 'Reverse logistics', definition: 'The flow of returned goods back from the customer for inspection, resale, repair or disposal.' },
+    ],
+    recap: [
+      'Inventory is both a commercial asset and a financial risk.',
+      'The cycle runs forecast, plan, replenish, markdown, handle returns.',
+      'Poor forecasting leaves excess stock that is cleared at a discount.',
+      'Track sell-through, turnover, days of inventory, stockouts and markdown percentage.',
+    ],
+    chapterRecap: 'Inventory management, markdown strategy and returns handling directly affect profitability and cash flow. Accurate forecasting and disciplined execution reduce excess stock, protect margins and improve customer service.',
+    deepDiveTitle: 'Why returns are a cost decision made at the point of sale',
+    body: <F3DeepDive paragraphs={[
+      'Every return carries freight both ways, handling, inspection and the chance that the item can no longer be sold at full price. When return rates are high, they can erase the margin on the original sale.',
+      'Because most returns in clothing and footwear come from fit and expectation, clear size guidance, accurate product information and realistic photographs reduce them more cheaply than any process in the warehouse. Returns policy is therefore both a customer promise and a cost lever.',
+    ]} evidence="The inventory cycle is described qualitatively in the supplied material. The return-rate range comes from an informal survey of Shopee Vietnam sellers and is indicative only. The store-closure point is taken from the headline of a YouNet report that covers authentic fashion on three marketplaces." />,
+    sources: citeF3('bofStateOfFashion', 'nsqReturns', 'younetFashion'),
+  }),
+];
+
+const quiz = f3Quiz('fashion-m3-l4', [
+  { chapter: '1', objective: 'List revenue streams', question: 'Which of these is a core revenue stream for a fashion and sports retailer?', application: 'A brand earns money from rights to its name, from its own stores and from wholesale. What are these?', correct: 'Direct sales, wholesale, marketplace sales, licensing, collaborations, private label and services', wrong: ['Only direct sales in one store format', 'Only interest on supplier deposits', 'Only government subsidies for retailers'], explanation: 'Revenue comes from several streams, including direct sales, wholesale, marketplaces, licensing, collaborations, private label and services. Review Chapter 1.' },
+  { chapter: '1', objective: 'Understand diversification', question: 'What is the effect of diversifying revenue streams?', application: 'A brand adds licensing and marketplace sales to its stores. What should it expect?', correct: 'More growth options, but each stream carries different costs, capital needs and risks', wrong: ['Lower costs in every stream automatically', 'No additional risk of any kind', 'A guarantee of higher margins'], explanation: 'Diversified revenue creates growth options, but each stream carries its own costs, capital requirements and risks. Review Chapter 1.' },
+  { chapter: '1', objective: 'Read platform figures correctly', question: 'What does platform GMV measure?', application: 'A report says fashion online GMV was US$2.4 billion. Is that one brand’s revenue?', correct: 'The total value of goods sold on platforms, not the revenue or profit of any brand', wrong: ['The profit of every brand on the platform', 'The revenue of the largest brand only', 'The commission earned by the platform alone'], explanation: 'GMV is the value of goods sold on a platform before fees, returns and costs. Review Chapter 1.' },
+  { chapter: '2', objective: 'Compare pricing approaches', question: 'What does value-based pricing follow?', application: 'A brand prices a technical jacket by the benefit customers perceive. Which approach is this?', correct: 'The benefit and differentiation customers perceive', wrong: ['Only the cost of materials', 'Only the prices of the nearest rival', 'Only the number of stores selling it'], explanation: 'Value-based pricing follows perceived benefit and differentiation, while cost-based adds a markup to cost. Review Chapter 2.' },
+  { chapter: '2', objective: 'Recognise the risk of promotions', question: 'What is a common risk of frequent promotional pricing?', application: 'A retailer runs sales almost every month. What may customers learn?', correct: 'Customers may learn to wait for discounts, weakening full-price sales and brand value', wrong: ['Customers will always pay more over time', 'Inventory will automatically fall to zero', 'Competitors will always raise their prices'], explanation: 'Promotions lift sales but can train customers to wait for discounts. Review Chapter 2.' },
+  { chapter: '2', objective: 'State the pricing principle', question: 'Why is the lowest price rarely the best strategy?', application: 'A manager proposes matching the lowest competitor price. What should be weighed?', correct: 'Pricing must protect brand value while improving sales and inventory performance', wrong: ['Low prices always maximise profit', 'Brand value is unaffected by price', 'Inventory is unaffected by price'], explanation: 'The lowest price rarely gives the best outcome; pricing must protect brand value while improving sales and inventory. Review Chapter 2.' },
+  { chapter: '3', objective: 'Identify cost blocks', question: 'Which of these is a main cost block in fashion retail?', application: 'A finance team lists rent, freight and platform commissions. What are they?', correct: 'Retail operations, logistics and digital commerce costs', wrong: ['Only the cost of raw material discounts', 'Only the cost of customer reviews', 'Only taxes paid by customers'], explanation: 'Cost blocks include cost of goods, logistics, retail operations, marketing, digital commerce and inventory productivity. Review Chapter 3.' },
+  { chapter: '3', objective: 'Read profit by channel', question: 'Why should profitability be read by product and by channel?', application: 'A retailer has a healthy average margin. What can that average hide?', correct: 'Loss-making products or channels that are funded by profitable ones', wrong: ['Nothing, because averages are always accurate', 'Only the colour of the best-selling item', 'Only the number of employees'], explanation: 'The same product can earn different profit by channel, so profit is read by product and channel. Review Chapter 3.' },
+  { chapter: '4', objective: 'Describe the inventory cycle', question: 'Which sequence describes the inventory cycle in this lesson?', application: 'A planner works through forecasting, assortment, restocking, clearing and returns. Which cycle is this?', correct: 'Forecast, plan assortment, replenish, markdown, handle returns', wrong: ['Markdown, forecast, hire staff, replenish', 'Ship, close the store, forecast, advertise', 'Replenish, hire staff, close the store'], explanation: 'The cycle runs from forecasting through assortment planning, replenishment, markdown and returns. Review Chapter 4.' },
+  { chapter: '4', objective: 'Pick inventory metrics', question: 'Which measures show whether stock is working for the business?', application: 'A team wants to judge inventory health. Which measures fit?', correct: 'Sell-through, stock turnover, days of inventory, stockout rate and markdown percentage', wrong: ['Only the number of store windows', 'Only the weight of goods in the warehouse', 'Only the size of the marketing team'], explanation: 'Retailers track sell-through, turnover, days of inventory, stockouts and markdown percentage. Review Chapter 4.' },
+]);
+
+export const LESSON_3_4: FashionM3LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can list the main revenue streams of a fashion and sports business, compare pricing approaches, map the main cost blocks and explain how inventory, markdowns and returns affect margin and cash flow.',
+    keyTakeaways: [
+      'Revenue comes from several streams, each with different costs, capital needs and risks.',
+      'The lowest price rarely gives the best outcome; pricing must protect brand value.',
+      'Profit depends on product cost, operating expense, pricing and inventory efficiency read together.',
+      'Costs and margins should be read by product and by channel.',
+      'Inventory is both an asset and a financial risk, and returns are a cost lever.',
+    ],
+    businessImplications: 'Judge each revenue stream by what it earns after its own costs, set prices to protect the brand rather than to match the lowest rival, and manage inventory so that markdowns and returns are planned rather than forced.',
+    remember: 'Profit is made by reading revenue, price, cost and stock together, product by product and channel by channel.',
+    nextLesson: 'Distribution & Sales Channels',
+  },
+};

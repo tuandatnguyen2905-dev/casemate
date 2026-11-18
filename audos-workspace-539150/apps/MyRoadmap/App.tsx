@@ -2,13 +2,17 @@
 //
 // Home of the roadmap generated from the "Generate My Roadmap" button in the
 // Your Direction "How to get there" panel (and regenerable right here). Shows
-// the target program + match %, the estimated application window, and a
-// week-by-week preparation plan (Case Pool / Case Drill / Aptitude Test
-// targets per week) grouped into expandable monthly overview cards, with a
-// live progress tracker computed from the candidate's ACTUAL completed
-// sessions in the three practice apps. All the heavy lifting lives in
-// lib/prepRoadmap.ts; the roadmap row persists in the prep_roadmaps table
-// keyed to the account identity, so it survives refreshes and re-logins.
+// the target program + match %, an Overall Progress Summary (week X of N,
+// phase, this week's completed/target and remaining activities), this week's
+// goals per practice app with direct CTAs, and a compact four-phase timeline
+// with This Week / Monthly / Full Plan views. Targets and phases come from the
+// saved plan (lib/prepRoadmap.ts, prep_roadmaps table); progress is counted
+// live from completed Case Pool, Case Drill and Aptitude Test sessions by
+// lib/roadmapProgress.ts, re-bucketed whenever the Week 1 start date changes.
+// Below the weekly goals, "Recommended for Your Target Program"
+// (./RecommendedForTarget.tsx) suggests Domain Knowledge, Aptitude Test and Case
+// Drill content for the target from founder-entered candidate reviews, falling
+// back to general preparation.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -20,8 +24,10 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronUp,
+  Circle,
   Cpu,
   Factory,
+  Flag,
   Globe2,
   HeartPulse,
   Hexagon,
@@ -30,6 +36,7 @@ import {
   Loader2,
   Map as MapIcon,
   RefreshCw,
+  RotateCcw,
   ShieldCheck,
   ShoppingCart,
   Sparkles,
@@ -40,30 +47,50 @@ import {
 } from 'lucide-react';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import {
-  currentWeekNumber,
   generateAndSaveRoadmap,
   groupWeeksIntoMonths,
   loadLatestRoadmap,
-  loadRoadmapProgress,
   restartRoadmapJourney,
   ROADMAP_UPDATED_EVENT,
   resolveRoadmapIdentity,
   shortDateLabel,
 } from '../../lib/prepRoadmap';
 import type { RoadmapWeek, SavedRoadmap, WeekProgress } from '../../lib/prepRoadmap';
+import {
+  bucketPracticeSessions,
+  buildWeekSchedule,
+  defaultWeekOneStart,
+  firstVisitIso,
+  fullDateLabel,
+  goalProgress,
+  groupWeeksIntoPhases,
+  isStartDateAllowed,
+  loadFirstProfileSaveDate,
+  loadPracticeSessions,
+  planStatus,
+  readCachedStartChoice,
+  resolveStartChoice,
+  saveWeekOneStart,
+  startDateBounds,
+  todayIso,
+  weekState,
+  writeCachedStartChoice,
+} from '../../lib/roadmapProgress';
+import type { PlanStatus, PracticeSession, RoadmapPhase, WeekStartBasis, WeekState } from '../../lib/roadmapProgress';
 import { READINESS_UPDATED_EVENT } from '../../lib/readinessScore';
-import ReadinessApp from '../Readiness/App';
 import {
   caseRecommendationsForProgram,
   openRecommendedCaseDrill,
 } from '../../lib/caseTypeRecommendations';
-import { applicationWindowDisplay, findProgramTimeline } from '../../lib/programTimelines';
 import { deckFor } from '../IndustryKnowledge/learningDecks';
 import {
   knowledgeRecommendationsForProgram,
   studyCardsForSubcategory,
 } from '../IndustryKnowledge/industrySubcategories';
 import type { KnowledgeRecommendation } from '../IndustryKnowledge/industrySubcategories';
+import { trackAppSwitch, trackStepError, trackStepView } from '../../lib/engagementTracking';
+import { isFounderEmail } from '../../lib/founderAccess';
+import RecommendedForTarget from './RecommendedForTarget';
 
 interface TrackMeta {
   key: 'case_pool' | 'case_drill' | 'aptitude';
@@ -73,6 +100,8 @@ interface TrackMeta {
   targetOf: (week: RoadmapWeek) => number;
   doneOf: (progress: WeekProgress | undefined) => number;
   unit: string;
+  unitOne: string;
+  short: string;
 }
 
 const TRACKS: TrackMeta[] = [
@@ -84,6 +113,8 @@ const TRACKS: TrackMeta[] = [
     targetOf: (week) => week.case_pool_target,
     doneOf: (progress) => progress?.case_pool_done || 0,
     unit: 'full cases',
+    unitOne: 'full case',
+    short: 'CP',
   },
   {
     key: 'case_drill',
@@ -93,6 +124,8 @@ const TRACKS: TrackMeta[] = [
     targetOf: (week) => week.case_drill_target,
     doneOf: (progress) => progress?.case_drill_done || 0,
     unit: 'drills',
+    unitOne: 'drill',
+    short: 'CD',
   },
   {
     key: 'aptitude',
@@ -102,11 +135,34 @@ const TRACKS: TrackMeta[] = [
     targetOf: (week) => week.aptitude_target,
     doneOf: (progress) => progress?.aptitude_done || 0,
     unit: 'tests',
+    unitOne: 'test',
+    short: 'AT',
   },
 ];
 
+type TimelineView = 'week' | 'month' | 'full';
+
+const TIMELINE_VIEWS: Array<{ id: TimelineView; label: string }> = [
+  { id: 'week', label: 'This Week' },
+  { id: 'month', label: 'Monthly' },
+  { id: 'full', label: 'Full Plan' },
+];
+
+const START_BASIS_LABEL: Record<WeekStartBasis, string> = {
+  roadmap_created: 'the day your roadmap was created',
+  profile_saved: 'the day you first saved your profile',
+  first_visit: 'your first visit to My Roadmap',
+};
+
+const SESSION_REFRESH_MIN_MS = 15000;
+
 function openDockApp(appId: string) {
   window.dispatchEvent(new CustomEvent('openApp', { detail: { appId } }));
+}
+
+function openPracticeTrack(track: TrackMeta) {
+  trackAppSwitch('my-roadmap', track.dockAppId, { trigger: 'roadmap_practice_track' });
+  openDockApp(track.dockAppId);
 }
 
 const KNOWLEDGE_ICONS: Record<string, typeof BookOpen> = {
@@ -126,6 +182,14 @@ function readDomainProgress(userId: string): DomainProgressMap {
 }
 
 function openKnowledgeArea(area: KnowledgeRecommendation) {
+  trackStepView('my-roadmap', 'knowledge_areas', {
+    properties: {
+      topic_id: area.subcategoryId || area.pillar || area.industrySlug,
+      industry_slug: area.industrySlug,
+      subcategory_id: area.subcategoryId || null,
+    },
+  });
+  trackAppSwitch('my-roadmap', 'industry-knowledge', { trigger: 'roadmap_knowledge_area' });
   try {
     sessionStorage.setItem('casemate-domain-pending-route', JSON.stringify({
       industrySlug: area.industrySlug,
@@ -160,6 +224,7 @@ function KnowledgeProgressRing({ value }: { value: number }) {
 
 function backToDirection() {
   // The app-first Fit Assessment owns the saved direction and result cards.
+  trackAppSwitch('my-roadmap', 'fit-assessment', { trigger: 'roadmap_back_to_fit' });
   openDockApp('fit-assessment');
 }
 
@@ -248,12 +313,17 @@ function pickTargetProgram(resultJson: unknown): AssessmentTarget | null {
 }
 
 function ProgressBar({ done, target, className = '' }: { done: number; target: number; className?: string }) {
-  const pct = target > 0 ? Math.min(100, Math.round((done / target) * 100)) : 0;
-  const complete = target > 0 && done >= target;
+  const { pct, complete } = goalProgress(done, target);
   return (
-    <div className={`h-1.5 overflow-hidden rounded-full bg-[var(--space-surface-muted)] ${className}`}>
+    <div
+      className={`h-1.5 overflow-hidden rounded-full bg-[var(--space-surface-muted)] ${className}`}
+      role="progressbar"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={pct}
+    >
       <div
-        className="h-full rounded-full"
+        className="h-full rounded-full transition-[width] duration-500"
         style={{
           width: `${Math.max(pct > 0 ? 4 : 0, pct)}%`,
           background: complete ? 'var(--space-semantic-success)' : 'var(--space-brand-primary-600)',
@@ -263,123 +333,86 @@ function ProgressBar({ done, target, className = '' }: { done: number; target: n
   );
 }
 
-const PHASE_META: Record<number, { label: string; color: string; soft: string }> = {
-  1: { label: 'Profile building', color: 'var(--space-semantic-success-600)', soft: 'color-mix(in srgb, var(--space-semantic-success-500) 12%, transparent)' },
-  2: { label: 'Application prep', color: 'var(--space-brand-primary-600)', soft: 'color-mix(in srgb, var(--space-brand-primary-500) 11%, transparent)' },
-  3: { label: 'Interview prep', color: 'var(--space-semantic-warning-600)', soft: 'color-mix(in srgb, var(--space-semantic-warning-500) 13%, transparent)' },
-  4: { label: 'Final polish', color: 'var(--space-brand-primary-900)', soft: 'color-mix(in srgb, var(--space-brand-primary-900) 10%, transparent)' },
+function ExtraBadge({ extra }: { extra: number }) {
+  if (extra <= 0) return null;
+  return (
+    <span className="rounded-full bg-[color-mix(in_srgb,var(--space-semantic-success-500)_12%,transparent)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--space-semantic-success-700)]">
+      +{extra} extra
+    </span>
+  );
+}
+
+function weekTotals(week: RoadmapWeek, progress: WeekProgress | undefined) {
+  let counted = 0;
+  let target = 0;
+  let extra = 0;
+  TRACKS.forEach((track) => {
+    const goal = goalProgress(track.doneOf(progress), track.targetOf(week));
+    counted += goal.counted;
+    extra += goal.extra;
+    target += track.targetOf(week);
+  });
+  return { counted, target, extra, remaining: Math.max(0, target - counted) };
+}
+
+function rangeTotals(weeks: RoadmapWeek[], progress: Record<number, WeekProgress>) {
+  return weeks.reduce(
+    (sum, week) => {
+      const totals = weekTotals(week, progress[week.week]);
+      return { counted: sum.counted + totals.counted, target: sum.target + totals.target, extra: sum.extra + totals.extra };
+    },
+    { counted: 0, target: 0, extra: 0 },
+  );
+}
+
+function phaseState(phase: RoadmapPhase, status: PlanStatus): WeekState {
+  const states = phase.weeks.map((week) => weekState(week.week, status));
+  if (states.includes('current')) return 'current';
+  return states.every((state) => state === 'past') ? 'past' : 'upcoming';
+}
+
+const STATE_CHIP: Record<WeekState, { label: string; className: string }> = {
+  current: {
+    label: 'Current',
+    className: 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]',
+  },
+  past: {
+    label: 'Completed',
+    className: 'bg-[color-mix(in_srgb,var(--space-semantic-success-500)_12%,transparent)] text-[var(--space-semantic-success-700)]',
+  },
+  upcoming: {
+    label: 'Upcoming',
+    className: 'bg-[var(--space-surface-muted)] text-[var(--space-text-muted)]',
+  },
 };
 
-function RoadmapTimeline({ roadmap, currentWeek }: { roadmap: SavedRoadmap; currentWeek: number | null }) {
-  const phases = roadmap.plan_json.reduce<Array<{ phase: number; weeks: RoadmapWeek[] }>>((groups, week) => {
-    const last = groups[groups.length - 1];
-    if (last?.phase === week.phase) last.weeks.push(week);
-    else groups.push({ phase: week.phase, weeks: [week] });
-    return groups;
-  }, []);
-  const minWidth = Math.max(760, roadmap.plan_json.length * 104);
-
+function StateChip({ state, label }: { state: WeekState; label?: string }) {
+  const chip = STATE_CHIP[state];
   return (
-    <section className="overflow-hidden rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)]" data-testid="roadmap-horizontal-timeline">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--space-border-default)] px-4 py-3 sm:px-5 sm:py-4">
-        <div>
-          <p className="text-sm font-bold text-[var(--space-text-primary)]">Preparation timeline</p>
-          <p className="mt-0.5 text-xs text-[var(--space-text-muted)]"><span className="sm:hidden">Your plan, week by week.</span><span className="hidden sm:inline">Scroll across weeks; the red marker shows where you are today.</span></p>
-        </div>
-        <div className="hidden flex-wrap gap-2 sm:flex">
-          {Object.entries(PHASE_META).map(([phase, meta]) => (
-            <span key={phase} className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--space-text-secondary)]">
-              <span className="h-2.5 w-2.5 rounded-full" style={{ background: meta.color }} />{meta.label}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className="grid gap-2 p-3 sm:hidden">
-        {roadmap.plan_json.map((week) => {
-          const meta = PHASE_META[week.phase] || PHASE_META[1];
-          const isCurrent = week.week === currentWeek;
-          return (
-            <div key={week.week} className={`rounded-xl border p-3 ${isCurrent ? 'border-[var(--space-brand-primary-200)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] bg-[var(--space-surface-card)]'}`}>
-              <div className="flex items-start gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-extrabold" style={{ background: meta.color, color: 'var(--space-text-on-primary)' }}>{week.week}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <p className="text-xs font-bold text-[var(--space-text-primary)]">Week {week.week}</p>
-                    <span className="text-[10px] text-[var(--space-text-muted)]">{shortDateLabel(week.start_date)}</span>
-                    {isCurrent && <span className="rounded-full bg-[var(--space-brand-primary-600)] px-2 py-0.5 text-[9px] font-bold text-[var(--space-text-on-primary)]">Today</span>}
-                  </div>
-                  <p className="mt-1 text-xs font-semibold" style={{ color: meta.color }}>{week.theme}</p>
-                  <p className="mt-1 text-[10px] leading-4 text-[var(--space-text-secondary)]">{week.case_pool_target} cases · {week.case_drill_target} drills · {week.aptitude_target} test</p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="hidden overflow-x-auto p-5 overscroll-x-contain sm:block">
-        <div style={{ minWidth }}>
-          <div className="mb-5 flex gap-1">
-            {phases.map((group) => {
-              const meta = PHASE_META[group.phase] || PHASE_META[1];
-              return (
-                <div key={group.phase} className="rounded-lg px-3 py-2 text-xs font-bold" style={{ flex: group.weeks.length, color: meta.color, background: meta.soft }}>
-                  {meta.label} · W{group.weeks[0].week}–W{group.weeks[group.weeks.length - 1].week}
-                </div>
-              );
-            })}
-          </div>
-          <div className="relative grid gap-2 pt-7" style={{ gridTemplateColumns: `repeat(${roadmap.plan_json.length}, minmax(96px, 1fr))` }}>
-            <div className="pointer-events-none absolute left-0 right-0 top-[46px] h-0.5 bg-[var(--space-border-strong)]" />
-            {roadmap.plan_json.map((week) => {
-              const meta = PHASE_META[week.phase] || PHASE_META[1];
-              const isCurrent = week.week === currentWeek;
-              return (
-                <div key={week.week} className="relative min-w-0 text-center">
-                  <div className="relative h-9">
-                    {isCurrent && (
-                      <div className="absolute -top-6 left-1/2 z-20 -translate-x-1/2">
-                        <span className="whitespace-nowrap rounded-full bg-[var(--space-brand-primary-600)] px-2 py-0.5 text-[9px] font-bold text-[var(--space-text-on-primary)]">Today</span>
-                        <span className="mx-auto block h-2.5 w-0.5 bg-[var(--space-brand-primary-600)]" />
-                      </div>
-                    )}
-                    <span className="relative z-10 mx-auto block h-9 w-9 rounded-full border-4 border-[var(--space-surface-card)] text-xs font-extrabold leading-7" style={{ background: meta.color, color: 'var(--space-text-on-primary)' }}>{week.week}</span>
-                  </div>
-                  <div className="mt-3 min-h-11">
-                    <p className="text-[10px] font-bold text-[var(--space-text-primary)]">W{week.week}</p>
-                    <p className="text-[9px] text-[var(--space-text-muted)]">{shortDateLabel(week.start_date)}</p>
-                  </div>
-                  <div className="mt-2 rounded-lg p-2 text-left" style={{ background: meta.soft }}>
-                    <p className="line-clamp-2 text-[10px] font-semibold leading-4" style={{ color: meta.color }}>{week.theme}</p>
-                    <p className="mt-1 text-[9px] leading-4 text-[var(--space-text-secondary)]">{week.case_pool_target} cases · {week.case_drill_target} drills · {week.aptitude_target} test</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
+    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${chip.className}`}>
+      {state === 'past' ? <CheckCircle2 className="h-3 w-3" /> : state === 'upcoming' ? <Circle className="h-3 w-3" /> : null}
+      {label || chip.label}
+    </span>
   );
+}
+
+function stateSurface(state: WeekState): string {
+  if (state === 'current') return 'border-[var(--space-brand-primary-200)] bg-[var(--space-surface-accent-soft)]';
+  if (state === 'past') return 'border-[var(--space-border-default)] bg-[var(--space-surface-card)]';
+  return 'border-dashed border-[var(--space-border-default)] bg-[var(--space-surface-card)] opacity-80';
 }
 
 function WeekRow({
   week,
   progress,
-  isCurrent,
+  state,
 }: {
   week: RoadmapWeek;
   progress: WeekProgress | undefined;
-  isCurrent: boolean;
+  state: WeekState;
 }) {
   return (
-    <div
-      className={`rounded-xl border px-3 py-2.5 ${
-        isCurrent
-          ? 'border-[var(--space-brand-primary-200)] bg-[var(--space-surface-accent-soft)]'
-          : 'border-[var(--space-border-default)] bg-[var(--space-surface-card)]'
-      }`}
-      data-testid={`roadmap-week-${week.week}`}
-    >
+    <div className={`rounded-xl border px-3 py-2.5 ${stateSurface(state)}`} data-testid={`roadmap-week-${week.week}`}>
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span className="text-xs font-bold text-[var(--space-text-primary)]">Week {week.week}</span>
         <span className="text-[10px] text-[var(--space-text-muted)]">
@@ -388,33 +421,31 @@ function WeekRow({
         <span className="rounded-full bg-[var(--space-surface-muted)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-secondary)]">
           {week.theme}
         </span>
-        {isCurrent && (
-          <span className="rounded-full bg-[var(--space-brand-primary-600)] px-2 py-0.5 text-[10px] font-bold text-[var(--space-text-on-primary)]">
-            This week
-          </span>
-        )}
+        <span className="ml-auto">
+          <StateChip state={state} label={state === 'current' ? 'This week' : state === 'past' ? 'Past' : undefined} />
+        </span>
       </div>
       <div className="mt-2 grid gap-2 sm:grid-cols-3">
         {TRACKS.map((track) => {
           const target = track.targetOf(week);
-          const done = track.doneOf(progress);
-          const complete = target > 0 && done >= target;
+          const goal = goalProgress(track.doneOf(progress), target);
           const Icon = track.icon;
           return (
             <div key={track.key}>
               <div className="flex items-center gap-1.5">
                 <Icon className="h-3.5 w-3.5 shrink-0 text-[var(--space-text-brand)]" />
                 <span className="text-[11px] font-semibold text-[var(--space-text-primary)]">{track.label}</span>
+                <ExtraBadge extra={goal.extra} />
                 <span
                   className={`ml-auto text-[11px] font-bold tabular-nums ${
-                    complete ? 'text-[var(--space-semantic-success)]' : 'text-[var(--space-text-secondary)]'
+                    goal.complete ? 'text-[var(--space-semantic-success)]' : 'text-[var(--space-text-secondary)]'
                   }`}
                 >
-                  {Math.min(done, 99)}/{target}
+                  {goal.counted}/{target}
                 </span>
-                {complete && <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[var(--space-semantic-success)]" />}
+                {goal.complete && <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-[var(--space-semantic-success)]" />}
               </div>
-              <ProgressBar done={done} target={target} className="mt-1" />
+              <ProgressBar done={goal.counted} target={target} className="mt-1" />
             </div>
           );
         })}
@@ -423,12 +454,338 @@ function WeekRow({
   );
 }
 
+function SummaryStat({ label, value, sub, testId }: { label: string; value: string; sub?: string; testId: string }) {
+  return (
+    <div className="min-w-0 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-3 py-2.5" data-testid={testId}>
+      <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">{label}</p>
+      <p className="mt-0.5 break-words text-base font-extrabold leading-tight tabular-nums text-[var(--space-text-primary)]">{value}</p>
+      {sub && <p className="mt-0.5 text-[10px] leading-4 text-[var(--space-text-secondary)]">{sub}</p>}
+    </div>
+  );
+}
+
+function GoalCard({
+  track,
+  week,
+  progress,
+}: {
+  track: TrackMeta;
+  week: RoadmapWeek;
+  progress: WeekProgress | undefined;
+}) {
+  const target = track.targetOf(week);
+  const goal = goalProgress(track.doneOf(progress), target);
+  const Icon = track.icon;
+  return (
+    <div className="flex flex-col rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3.5" data-testid={`roadmap-goal-${track.key}`}>
+      <div className="flex items-center gap-2">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--space-surface-accent-soft)]">
+          <Icon className="h-4 w-4 text-[var(--space-text-brand)]" />
+        </span>
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-[var(--space-text-primary)]">{track.label}</p>
+          <p className="text-[10px] text-[var(--space-text-muted)]">Goal: {target} {target === 1 ? track.unitOne : track.unit}</p>
+        </div>
+        <div className="ml-auto text-right">
+          <p className={`text-lg font-extrabold tabular-nums ${goal.complete ? 'text-[var(--space-semantic-success)]' : 'text-[var(--space-text-primary)]'}`} data-testid={`roadmap-goal-${track.key}-count`}>
+            {goal.counted}/{target}
+          </p>
+        </div>
+      </div>
+      <ProgressBar done={goal.counted} target={target} className="mt-3 h-2" />
+      <div className="mt-1.5 flex min-h-5 items-center gap-1.5 text-[10px] text-[var(--space-text-secondary)]">
+        {goal.complete ? (
+          <span className="inline-flex items-center gap-1 font-semibold text-[var(--space-semantic-success)]">
+            <CheckCircle2 className="h-3.5 w-3.5" /> Goal reached
+          </span>
+        ) : (
+          <span>{target - goal.counted} to go this week</span>
+        )}
+        <ExtraBadge extra={goal.extra} />
+      </div>
+      <button
+        type="button"
+        onClick={() => openPracticeTrack(track)}
+        className={`mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold hover:opacity-90 ${
+          goal.complete
+            ? 'border border-[var(--space-border-strong)] bg-[var(--space-surface-card)] text-[var(--space-text-brand)]'
+            : 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]'
+        }`}
+        data-testid={`roadmap-goal-${track.key}-cta`}
+      >
+        <Icon className="h-3.5 w-3.5" />
+        {goal.complete ? `Practise more in ${track.label}` : `Practise ${track.label}`}
+        <ChevronRight className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
+function PhaseStrip({
+  phases,
+  status,
+  progress,
+}: {
+  phases: RoadmapPhase[];
+  status: PlanStatus;
+  progress: Record<number, WeekProgress>;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2 lg:grid-cols-4" data-testid="roadmap-phases">
+      {phases.map((phase) => {
+        const state = phaseState(phase, status);
+        const totals = rangeTotals(phase.weeks, progress);
+        return (
+          <div
+            key={phase.index}
+            className={`rounded-xl border p-3 ${stateSurface(state)}`}
+            data-testid={`roadmap-phase-${phase.index}`}
+            data-state={state}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-1">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Phase {phase.index}</p>
+              <StateChip state={state} />
+            </div>
+            <p className={`mt-1 text-xs font-bold leading-snug ${state === 'current' ? 'text-[var(--space-text-brand)]' : 'text-[var(--space-text-primary)]'}`}>{phase.name}</p>
+            <p className="mt-0.5 text-[10px] text-[var(--space-text-muted)]">
+              W{phase.weeks[0].week}–W{phase.weeks[phase.weeks.length - 1].week} · {shortDateLabel(phase.startIso)} – {shortDateLabel(phase.endIso)}
+            </p>
+            <div className="mt-2 flex items-center justify-between text-[10px] tabular-nums text-[var(--space-text-secondary)]">
+              <span>{totals.counted}/{totals.target} activities</span>
+              <ExtraBadge extra={totals.extra} />
+            </div>
+            <ProgressBar done={totals.counted} target={totals.target} className="mt-1" />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function RoadmapTimeline({
+  schedule,
+  phases,
+  status,
+  progress,
+  view,
+  onViewChange,
+  expandedMonths,
+  onToggleMonth,
+}: {
+  schedule: RoadmapWeek[];
+  phases: RoadmapPhase[];
+  status: PlanStatus;
+  progress: Record<number, WeekProgress>;
+  view: TimelineView;
+  onViewChange: (view: TimelineView) => void;
+  expandedMonths: Record<number, boolean>;
+  onToggleMonth: (month: number) => void;
+}) {
+  const months = useMemo(() => groupWeeksIntoMonths(schedule), [schedule]);
+  const focusWeek = status.kind === 'active'
+    ? schedule.find((week) => week.week === status.week)
+    : status.kind === 'before'
+      ? schedule[0]
+      : schedule[schedule.length - 1];
+  const focusPhase = phases.find((phase) => phase.weeks.some((week) => week.week === focusWeek?.week)) || phases[0];
+
+  return (
+    <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5" data-testid="roadmap-timeline">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-sm font-bold text-[var(--space-text-primary)]">Preparation timeline</p>
+          <p className="mt-0.5 text-xs text-[var(--space-text-muted)]">
+            {schedule.length} weeks in {phases.length} phases · {fullDateLabel(schedule[0].start_date)} – {fullDateLabel(schedule[schedule.length - 1].end_date)}
+          </p>
+        </div>
+        <div className="grid grid-cols-3 rounded-xl bg-[var(--space-surface-muted)] p-1 sm:inline-grid" role="tablist" aria-label="Timeline view" data-testid="roadmap-view-switcher">
+          {TIMELINE_VIEWS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              role="tab"
+              aria-selected={view === option.id}
+              onClick={() => onViewChange(option.id)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
+                view === option.id
+                  ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)] shadow-sm'
+                  : 'text-[var(--space-text-secondary)] hover:text-[var(--space-text-brand)]'
+              }`}
+              data-testid={`roadmap-view-${option.id}`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <PhaseStrip phases={phases} status={status} progress={progress} />
+      </div>
+
+      <div className="mt-4" data-testid={`roadmap-view-panel-${view}`}>
+        {view === 'week' && focusWeek && focusPhase && (
+          <div className="space-y-3">
+            <div>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--space-text-muted)]">
+                Phase {focusPhase.index} · {focusPhase.name}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {focusPhase.weeks.map((week) => {
+                  const state = weekState(week.week, status);
+                  const totals = weekTotals(week, progress[week.week]);
+                  const met = totals.target > 0 && totals.counted >= totals.target;
+                  return (
+                    <span
+                      key={week.week}
+                      className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-bold tabular-nums ${
+                        state === 'current'
+                          ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]'
+                          : state === 'past'
+                            ? 'border-[var(--space-border-default)] bg-[var(--space-surface-card)] text-[var(--space-text-secondary)]'
+                            : 'border-dashed border-[var(--space-border-default)] bg-[var(--space-surface-card)] text-[var(--space-text-muted)]'
+                      }`}
+                      title={`Week ${week.week}: ${totals.counted}/${totals.target} activities`}
+                    >
+                      {state === 'past' && met ? <CheckCircle2 className="h-3 w-3 text-[var(--space-semantic-success)]" /> : null}
+                      W{week.week}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+            <WeekRow week={focusWeek} progress={progress[focusWeek.week]} state={weekState(focusWeek.week, status)} />
+          </div>
+        )}
+
+        {view === 'month' && (
+          <div className="space-y-2" data-testid="roadmap-months">
+            {months.map((month) => {
+              const expanded = !!expandedMonths[month.month];
+              const firstWeek = month.weeks[0];
+              const lastWeek = month.weeks[month.weeks.length - 1];
+              const states = month.weeks.map((week) => weekState(week.week, status));
+              const state: WeekState = states.includes('current') ? 'current' : states.every((s) => s === 'past') ? 'past' : 'upcoming';
+              const totals = TRACKS.map((track) => {
+                let target = 0;
+                let done = 0;
+                month.weeks.forEach((week) => {
+                  target += track.targetOf(week);
+                  done += goalProgress(track.doneOf(progress[week.week]), track.targetOf(week)).counted;
+                });
+                return { track, target, done };
+              });
+              return (
+                <div key={month.month} className={`overflow-hidden rounded-xl border ${stateSurface(state)}`} data-testid={`roadmap-month-${month.month}`}>
+                  <button
+                    type="button"
+                    onClick={() => onToggleMonth(month.month)}
+                    aria-expanded={expanded}
+                    className="flex w-full items-start justify-between gap-3 px-3 py-2.5 text-left hover:bg-[var(--space-surface-muted)]"
+                  >
+                    <div className="min-w-0">
+                      <p className="flex flex-wrap items-center gap-2 text-sm font-bold text-[var(--space-text-primary)]">
+                        {month.label}
+                        <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">
+                          W{firstWeek.week}–W{lastWeek.week} · {shortDateLabel(firstWeek.start_date)} – {shortDateLabel(lastWeek.end_date)}
+                        </span>
+                        <StateChip state={state} />
+                      </p>
+                      <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
+                        {totals.map(({ track, target, done }) => (
+                          <span key={track.key} className="text-[11px] tabular-nums text-[var(--space-text-secondary)]">
+                            <span className="font-semibold text-[var(--space-text-primary)]">{track.label}</span>{' '}
+                            {done}/{target}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    {expanded ? (
+                      <ChevronUp className="mt-1 h-4 w-4 shrink-0 text-[var(--space-text-muted)]" />
+                    ) : (
+                      <ChevronDown className="mt-1 h-4 w-4 shrink-0 text-[var(--space-text-muted)]" />
+                    )}
+                  </button>
+                  {expanded && (
+                    <div className="space-y-2 border-t border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-2.5">
+                      {month.weeks.map((week) => (
+                        <WeekRow key={week.week} week={week} progress={progress[week.week]} state={weekState(week.week, status)} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {view === 'full' && (
+          <div className="space-y-4" data-testid="roadmap-full-plan">
+            {phases.map((phase) => (
+              <div key={phase.index}>
+                <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--space-text-muted)]">
+                  Phase {phase.index} · {phase.name}
+                </p>
+                <div className="overflow-hidden rounded-xl border border-[var(--space-border-default)]">
+                  {phase.weeks.map((week, index) => {
+                    const state = weekState(week.week, status);
+                    return (
+                      <div
+                        key={week.week}
+                        className={`flex flex-col gap-1.5 px-3 py-2 sm:flex-row sm:items-center sm:gap-3 ${index > 0 ? 'border-t border-[var(--space-border-default)]' : ''} ${
+                          state === 'current' ? 'bg-[var(--space-surface-accent-soft)]' : state === 'upcoming' ? 'bg-[var(--space-surface-card)] opacity-80' : 'bg-[var(--space-surface-card)]'
+                        }`}
+                        data-testid={`roadmap-full-week-${week.week}`}
+                        data-state={state}
+                      >
+                        <div className="flex min-w-0 items-center gap-2 sm:w-44 sm:shrink-0">
+                          <span className="text-xs font-bold text-[var(--space-text-primary)]">W{week.week}</span>
+                          <span className="text-[10px] text-[var(--space-text-muted)]">{shortDateLabel(week.start_date)} – {shortDateLabel(week.end_date)}</span>
+                          <span className="sm:hidden"><StateChip state={state} label={state === 'current' ? 'This week' : state === 'past' ? 'Past' : undefined} /></span>
+                        </div>
+                        <div className="grid flex-1 grid-cols-3 gap-2">
+                          {TRACKS.map((track) => {
+                            const target = track.targetOf(week);
+                            const goal = goalProgress(track.doneOf(progress[week.week]), target);
+                            return (
+                              <div key={track.key} className="min-w-0">
+                                <div className="flex items-center justify-between gap-1 text-[10px] tabular-nums">
+                                  <span className="font-semibold text-[var(--space-text-secondary)]" title={track.label}>{track.short}</span>
+                                  <span className={goal.complete ? 'font-bold text-[var(--space-semantic-success)]' : 'text-[var(--space-text-secondary)]'}>
+                                    {goal.counted}/{target}{goal.extra > 0 ? ` +${goal.extra}` : ''}
+                                  </span>
+                                </div>
+                                <ProgressBar done={goal.counted} target={target} className="mt-0.5 h-1" />
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <span className="hidden sm:block sm:w-24 sm:shrink-0 sm:text-right">
+                          <StateChip state={state} label={state === 'current' ? 'This week' : state === 'past' ? 'Past' : undefined} />
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+            <p className="text-[10px] text-[var(--space-text-muted)]">CP = Case Pool · CD = Case Drill · AT = Aptitude Test</p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function MyRoadmapApp() {
-  const { sessionId, userEmail } = useSpaceRuntime();
+  const { sessionId, userEmail, userRole } = useSpaceRuntime();
+  // Same founder detection as the Usage · Founder dashboard; the review server
+  // function re-checks the verified session email on every write.
+  const isReviewAdmin = isFounderEmail(userEmail) || userRole === 'founder';
   const userId = useMemo(() => resolveRoadmapIdentity(sessionId, userEmail).userKey, [sessionId, userEmail]);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [roadmap, setRoadmap] = useState<SavedRoadmap | null>(null);
-  const [progress, setProgress] = useState<Record<number, WeekProgress>>({});
+  const [sessions, setSessions] = useState<PracticeSession[]>([]);
   const [assessmentTarget, setAssessmentTarget] = useState<AssessmentTarget | null>(null);
   const [hasPendingSelection, setHasPendingSelection] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -440,8 +797,18 @@ export default function MyRoadmapApp() {
   const restartCancelRef = useRef<HTMLButtonElement>(null);
   const loadRequestRef = useRef(0);
   const roadmapOwnerRef = useRef<string | null>(null);
+  const sessionsFetchedAtRef = useRef(0);
   const [expandedMonths, setExpandedMonths] = useState<Record<number, boolean>>({});
   const [domainProgress, setDomainProgress] = useState<DomainProgressMap>(() => readDomainProgress(userId));
+  const [now, setNow] = useState(() => new Date());
+  const [timelineView, setTimelineView] = useState<TimelineView | null>(null);
+  const [startChoice, setStartChoice] = useState<string | null>(null);
+  const [startNotice, setStartNotice] = useState<string | null>(null);
+  const [profileSavedAt, setProfileSavedAt] = useState<string | null>(null);
+  const [startEditorOpen, setStartEditorOpen] = useState(false);
+  const [startDraft, setStartDraft] = useState('');
+  const [savingStart, setSavingStart] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
 
   useEffect(() => {
     const sync = () => setDomainProgress(readDomainProgress(userId));
@@ -460,6 +827,12 @@ export default function MyRoadmapApp() {
     if (sessionId && !userEmail) {
       console.warn('[My Roadmap] The active workspace session exposes no sign-in email, so the saved roadmap for this account cannot be loaded.');
     }
+  }, [sessionId, userEmail]);
+
+  const refreshSessions = useCallback(async () => {
+    sessionsFetchedAtRef.current = Date.now();
+    const loaded = await loadPracticeSessions(sessionId, userEmail).catch(() => null);
+    if (loaded) setSessions(loaded);
   }, [sessionId, userEmail]);
 
   const load = useCallback(async () => {
@@ -481,9 +854,10 @@ export default function MyRoadmapApp() {
       if (saved) {
         roadmapOwnerRef.current = userId;
         setRoadmap(saved);
-        const byWeek = await loadRoadmapProgress(saved, sessionId, userEmail).catch(() => ({}));
+        sessionsFetchedAtRef.current = Date.now();
+        const loaded = await loadPracticeSessions(sessionId, userEmail).catch(() => null);
         if (isStale()) return;
-        setProgress(byWeek);
+        if (loaded) setSessions(loaded);
         if (selectedTarget && selectedTarget.program !== saved.target_program) {
           setAssessmentTarget(selectedTarget);
           setHasPendingSelection(true);
@@ -518,6 +892,7 @@ export default function MyRoadmapApp() {
       }
       if (!isStale()) setStatus('ready');
     } catch (e) {
+      trackStepError('my-roadmap', 'access', e, { properties: { operation: 'load_roadmap' } });
       if (!isStale()) setStatus((previous) => (previous === 'ready' ? 'ready' : 'error'));
     }
   }, [sessionId, userEmail, userId]);
@@ -533,6 +908,57 @@ export default function MyRoadmapApp() {
       window.removeEventListener(READINESS_UPDATED_EVENT, onUpdated);
     };
   }, [load]);
+
+  // Coming back from a practice app should show the new session without a reload.
+  const refreshIfStale = useCallback(() => {
+    setNow(new Date());
+    if (!roadmap) return;
+    if (Date.now() - sessionsFetchedAtRef.current < SESSION_REFRESH_MIN_MS) return;
+    void refreshSessions();
+  }, [roadmap, refreshSessions]);
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') refreshIfStale();
+    };
+    const onOpenApp = (event: Event) => {
+      if ((event as CustomEvent)?.detail?.appId === 'my-roadmap') refreshIfStale();
+    };
+    window.addEventListener('focus', refreshIfStale);
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('openApp', onOpenApp);
+    return () => {
+      window.removeEventListener('focus', refreshIfStale);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('openApp', onOpenApp);
+    };
+  }, [refreshIfStale]);
+
+  // The saved roadmap row is authoritative; a local, not-yet-synced choice
+  // covers device-only accounts and a save that has not reached the server.
+  useEffect(() => {
+    if (!roadmap) {
+      setStartChoice(null);
+      return;
+    }
+    const cached = readCachedStartChoice(userId, roadmap.id);
+    const resolved = resolveStartChoice(roadmap, cached);
+    setStartChoice(resolved);
+    if (roadmap.week1_start_date) writeCachedStartChoice(userId, roadmap.id, { value: roadmap.week1_start_date, synced: true });
+    else if (cached?.synced && cached.value) writeCachedStartChoice(userId, roadmap.id, { value: null, synced: true });
+    setStartNotice(cached && !cached.synced && !roadmap.week1_start_date && cached.value ? 'Saved on this device only.' : null);
+  }, [roadmap, userId]);
+
+  useEffect(() => {
+    if (!roadmap || roadmap.created_at || !userEmail) return;
+    let cancelled = false;
+    void loadFirstProfileSaveDate(userEmail).then((value) => {
+      if (!cancelled) setProfileSavedAt(value);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [roadmap, userEmail]);
 
   const generate = useCallback(
     async (target: AssessmentTarget) => {
@@ -559,15 +985,17 @@ export default function MyRoadmapApp() {
         setRoadmap(saved);
         setConfirmRegenerate(false);
         setExpandedMonths({});
-        const byWeek = await loadRoadmapProgress(saved, sessionId, userEmail).catch(() => ({}));
-        setProgress(byWeek);
+        setTimelineView(null);
+        setStartEditorOpen(false);
+        await refreshSessions();
       } catch (e) {
+        trackStepError('my-roadmap', 'access', e, { properties: { operation: 'generate_roadmap' } });
         setGenerateError('Roadmap generation didn\u2019t go through — please try again in a moment.');
       } finally {
         setGenerating(false);
       }
     },
-    [sessionId, userEmail, userId, roadmap],
+    [sessionId, userEmail, userId, roadmap, refreshSessions],
   );
 
   useEffect(() => {
@@ -590,55 +1018,99 @@ export default function MyRoadmapApp() {
       setConfirmRestart(false);
       setAssessmentTarget(null);
       setHasPendingSelection(false);
+      trackAppSwitch('my-roadmap', 'fit-assessment', { trigger: 'roadmap_restart_assessment' });
       openDockApp('fit-assessment');
     } catch (e) {
+      trackStepError('my-roadmap', 'access', e, { properties: { operation: 'restart_assessment' } });
       setRestartError('We couldn’t finish restarting your progress. Please try again.');
     } finally {
       setRestarting(false);
     }
   }, [restarting, sessionId, userEmail]);
 
-  const months = useMemo(() => (roadmap ? groupWeeksIntoMonths(roadmap.plan_json) : []), [roadmap]);
-  const currentWeek = useMemo(() => (roadmap ? currentWeekNumber(roadmap) : null), [roadmap]);
+  const defaultStart = useMemo(() => (roadmap
+    ? defaultWeekOneStart(roadmap, { profileSavedAt, firstVisitIso: firstVisitIso(userId) })
+    : null), [roadmap, profileSavedAt, userId]);
+  const weekOneIso = startChoice || defaultStart?.iso || todayIso();
+  const usingCustomStart = !!startChoice && startChoice !== defaultStart?.iso;
+  const schedule = useMemo(() => (roadmap ? buildWeekSchedule(roadmap.plan_json, weekOneIso) : []), [roadmap, weekOneIso]);
+  const phases = useMemo(() => groupWeeksIntoPhases(schedule), [schedule]);
+  const progress = useMemo(() => bucketPracticeSessions(sessions, schedule), [sessions, schedule]);
+  const planState = useMemo(() => planStatus(schedule, now), [schedule, now]);
+  const goalWeek = planState.kind === 'active'
+    ? schedule.find((week) => week.week === planState.week) || null
+    : planState.kind === 'before'
+      ? schedule[0] || null
+      : null;
+  const goalTotals = goalWeek ? weekTotals(goalWeek, progress[goalWeek.week]) : null;
+  const currentPhase = goalWeek
+    ? phases.find((phase) => phase.weeks.some((week) => week.week === goalWeek.week)) || null
+    : phases[phases.length - 1] || null;
+  const planTotals = useMemo(() => rangeTotals(schedule, progress), [schedule, progress]);
+  const hasAnyPractice = planTotals.counted + planTotals.extra > 0;
+  const effectiveView: TimelineView = timelineView || (planState.kind === 'complete' ? 'full' : 'week');
+  const bounds = startDateBounds(now);
+
   const recommendedCaseTypes = useMemo(() => roadmap ? caseRecommendationsForProgram({
     company: roadmap.target_company,
     program: roadmap.target_program,
   }) : [], [roadmap]);
-  const liveWindow = useMemo(() => {
-    if (!roadmap) return null;
-    return applicationWindowDisplay(findProgramTimeline(
-      roadmap.target_company || roadmap.target_program,
-      roadmap.target_program,
-    ));
-  }, [roadmap]);
   const knowledgeAreas = useMemo(() => roadmap
     ? knowledgeRecommendationsForProgram(roadmap.target_program, roadmap.target_company).slice(0, 4)
     : [], [roadmap]);
+  const recommendationTarget = useMemo(() => {
+    if (roadmap) {
+      return {
+        company: roadmap.target_company || null,
+        program: roadmap.target_program || null,
+        position: roadmap.target_function || null,
+        programId: roadmap.target_program_id || null,
+      };
+    }
+    return assessmentTarget
+      ? { company: assessmentTarget.company, program: assessmentTarget.program, position: null, programId: null }
+      : null;
+  }, [roadmap, assessmentTarget]);
+
   // Default-expand the month containing the current week (or the first month).
   useEffect(() => {
-    if (!roadmap || months.length === 0) return;
+    if (!roadmap || schedule.length === 0) return;
+    const months = groupWeeksIntoMonths(schedule);
     setExpandedMonths((previous) => {
       if (Object.keys(previous).length > 0) return previous;
-      const target = currentWeek
-        ? months.find((month) => month.weeks.some((week) => week.week === currentWeek))
-        : months[0];
+      const target = goalWeek ? months.find((month) => month.weeks.some((week) => week.week === goalWeek.week)) : months[0];
       return target ? { [target.month]: true } : { [months[0].month]: true };
     });
-  }, [roadmap, months, currentWeek]);
+  }, [roadmap, schedule, goalWeek]);
 
-  const overallTotals = useMemo(() => {
-    if (!roadmap) return null;
-    let done = 0;
-    let target = 0;
-    roadmap.plan_json.forEach((week) => {
-      const weekProgress = progress[week.week];
-      TRACKS.forEach((track) => {
-        target += track.targetOf(week);
-        done += Math.min(track.doneOf(weekProgress), track.targetOf(week));
-      });
-    });
-    return { done, target, pct: target > 0 ? Math.round((done / target) * 100) : 0 };
-  }, [roadmap, progress]);
+  const applyStartChoice = useCallback(async (value: string | null) => {
+    if (!roadmap) return;
+    setSavingStart(true);
+    setStartError(null);
+    const previous = startChoice;
+    setStartChoice(value);
+    writeCachedStartChoice(userId, roadmap.id, { value, synced: false });
+    try {
+      if (!roadmap.id || !userEmail) throw Object.assign(new Error('device_only'), { code: 'device_only' });
+      await saveWeekOneStart(roadmap.id, value, sessionId);
+      writeCachedStartChoice(userId, roadmap.id, { value, synced: true });
+      setRoadmap((current) => (current && current.id === roadmap.id ? { ...current, week1_start_date: value } : current));
+      setStartNotice(null);
+      setStartEditorOpen(false);
+    } catch (e: any) {
+      if (e?.code === 'device_only' || e?.code === 'verified_email_required') {
+        setStartNotice(value ? 'Saved on this device only.' : null);
+        setStartEditorOpen(false);
+      } else {
+        trackStepError('my-roadmap', 'access', e, { properties: { operation: 'save_start_date' } });
+        setStartChoice(previous);
+        writeCachedStartChoice(userId, roadmap.id, { value: previous, synced: false });
+        setStartError('We couldn’t save your start date. Please try again.');
+      }
+    } finally {
+      setSavingStart(false);
+    }
+  }, [roadmap, startChoice, userId, userEmail, sessionId]);
 
   const regenerateTarget: AssessmentTarget | null = roadmap
     ? {
@@ -648,8 +1120,13 @@ export default function MyRoadmapApp() {
       }
     : assessmentTarget;
 
+  const draftValid = isStartDateAllowed(startDraft, now);
+
   return (
-    <div className="flex min-h-full w-full flex-col bg-[var(--space-surface-page)] [&_button]:min-h-11 [&_button]:min-w-11">
+    <div
+      className="flex min-h-full w-full flex-col bg-[var(--space-surface-page)] [&_button]:min-h-11 [&_button]:min-w-11"
+      onPointerEnter={refreshIfStale}
+    >
       <div className="w-full space-y-4 p-3 sm:space-y-5 sm:p-6 lg:p-7">
         <div>
           <h1 className="flex items-center gap-2 text-lg font-bold text-[var(--space-text-primary)]">
@@ -657,7 +1134,7 @@ export default function MyRoadmapApp() {
             My Roadmap
           </h1>
           <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">
-            Your personalized preparation plan and readiness benchmark in one place.
+            Your personalized preparation plan — see this week’s goals and track your progress.
           </p>
         </div>
 
@@ -671,7 +1148,8 @@ export default function MyRoadmapApp() {
             Your roadmap is temporarily unavailable — please reopen this app in a moment.
           </div>
         ) : !roadmap && !assessmentTarget ? (
-          /* No roadmap AND no saved direction — the assessment comes first. */
+          <>
+          {/* No roadmap AND no saved direction — the assessment comes first. */}
           <div className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5" data-testid="roadmap-needs-assessment">
             <p className="text-sm font-semibold text-[var(--space-text-primary)]">
               Complete your fit assessment first to generate your roadmap
@@ -690,8 +1168,17 @@ export default function MyRoadmapApp() {
               Start my fit assessment
             </button>
           </div>
+          <RecommendedForTarget
+            target={null}
+            sessionId={sessionId}
+            userKey={userId}
+            isAdmin={isReviewAdmin}
+            onChooseTarget={backToDirection}
+          />
+          </>
         ) : !roadmap && assessmentTarget ? (
-          /* Direction exists but no roadmap yet — generate right here. */
+          <>
+          {/* Direction exists but no roadmap yet — generate right here. */}
           <div className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5" data-testid="roadmap-generate-cta">
             <p className="text-sm font-semibold text-[var(--space-text-primary)]">No roadmap yet — let’s build yours</p>
             <p className="mt-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">
@@ -714,6 +1201,14 @@ export default function MyRoadmapApp() {
               {generating ? 'Building your roadmap…' : 'Generate My Roadmap'}
             </button>
           </div>
+          <RecommendedForTarget
+            target={recommendationTarget}
+            sessionId={sessionId}
+            userKey={userId}
+            isAdmin={isReviewAdmin}
+            onChooseTarget={backToDirection}
+          />
+          </>
         ) : roadmap ? (
           <>
             {/* Target program + window header */}
@@ -729,37 +1224,24 @@ export default function MyRoadmapApp() {
                   </span>
                 )}
               </div>
-              {(roadmap.target_company || roadmap.target_function || roadmap.recruitment_cycle) && (
+              {(roadmap.target_company || roadmap.target_function) && (
                 <p className="mt-1 text-xs font-semibold text-[var(--space-text-secondary)]">
-                  {[roadmap.target_company, roadmap.target_function, roadmap.recruitment_cycle ? `Cycle: ${roadmap.recruitment_cycle}` : null].filter(Boolean).join(' · ')}
+                  {[roadmap.target_company, roadmap.target_function].filter(Boolean).join(' · ')}
                 </p>
               )}
               <div className="mt-2 space-y-1">
                 <p className="flex items-start gap-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">
                   <CalendarDays className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--space-text-brand)]" />
                   <span>
-                    <span className="font-semibold text-[var(--space-text-primary)]">Application window:</span>{' '}
-                    {liveWindow?.openLabel || "Check the company's careers page for the latest application window"}
-                    {liveWindow?.closeLabel ? ` · ${liveWindow.closeLabel}` : ''}
+                    <span className="font-semibold text-[var(--space-text-primary)]">Application status:</span>{' '}
+                    This program may be open — check the company's careers page to confirm before you apply.
                   </span>
                 </p>
                 <p className="text-xs leading-5 text-[var(--space-text-secondary)]">
-                  <span className="font-semibold text-[var(--space-text-primary)]">{roadmap.total_weeks}-week plan</span>
-                  {' · '}started {shortDateLabel(roadmap.start_date)}
+                  <span className="font-semibold text-[var(--space-text-primary)]">{schedule.length}-week plan</span>
                   {roadmap.baseline_json ? ` · paced from your ${roadmap.baseline_json.level} baseline (${roadmap.baseline_json.total_sessions} completed session${roadmap.baseline_json.total_sessions === 1 ? '' : 's'})` : ''}
                 </p>
               </div>
-              {overallTotals && (
-                <div className="mt-3" data-testid="roadmap-overall-progress">
-                  <div className="flex flex-col gap-0.5 text-[11px] sm:flex-row sm:items-center sm:justify-between">
-                    <span className="font-semibold text-[var(--space-text-primary)]">Overall plan progress</span>
-                    <span className="font-bold tabular-nums text-[var(--space-text-secondary)]">
-                      {overallTotals.done}/{overallTotals.target} targets · {overallTotals.pct}%
-                    </span>
-                  </div>
-                  <ProgressBar done={overallTotals.done} target={overallTotals.target} className="mt-1.5 h-2" />
-                </div>
-              )}
               <div className="mt-3 grid gap-2 sm:flex sm:flex-wrap sm:items-center">
                 <button
                   type="button"
@@ -810,7 +1292,254 @@ export default function MyRoadmapApp() {
               )}
             </div>
 
-            <ReadinessApp embedded />
+            {/* Overall Progress Summary */}
+            <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5" data-testid="roadmap-progress-summary" data-plan-state={planState.kind}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-sm font-bold text-[var(--space-text-primary)]">Overall progress</p>
+                {planState.kind === 'active' && (
+                  <span className="rounded-full bg-[var(--space-brand-primary-600)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--space-text-on-primary)]">
+                    Week {planState.week} of {schedule.length}
+                  </span>
+                )}
+                {planState.kind === 'before' && (
+                  <span className="rounded-full bg-[var(--space-surface-accent-soft)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--space-text-brand)]" data-testid="roadmap-starts-on">
+                    Starts on {fullDateLabel(planState.startsOn)}
+                  </span>
+                )}
+                {planState.kind === 'complete' && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--space-semantic-success-500)_12%,transparent)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--space-semantic-success-700)]" data-testid="roadmap-plan-complete">
+                    <Flag className="h-3 w-3" /> Plan complete
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4">
+                <SummaryStat
+                  testId="roadmap-summary-week"
+                  label="Current week"
+                  value={planState.kind === 'active' ? `${planState.week}/${schedule.length}` : planState.kind === 'before' ? `0/${schedule.length}` : `${schedule.length}/${schedule.length}`}
+                  sub={goalWeek && planState.kind === 'active'
+                    ? `${shortDateLabel(goalWeek.start_date)} – ${shortDateLabel(goalWeek.end_date)}`
+                    : planState.kind === 'before'
+                      ? `Starts ${fullDateLabel(planState.startsOn)}`
+                      : `Ended ${fullDateLabel(schedule[schedule.length - 1].end_date)}`}
+                />
+                <SummaryStat
+                  testId="roadmap-summary-phase"
+                  label="Phase"
+                  value={currentPhase?.name || '—'}
+                  sub={currentPhase ? `Phase ${currentPhase.index} of ${phases.length}` : undefined}
+                />
+                {goalTotals ? (
+                  <>
+                    <SummaryStat
+                      testId="roadmap-summary-weekly"
+                      label={planState.kind === 'before' ? 'Week 1 goal' : 'This week'}
+                      value={`${goalTotals.counted}/${goalTotals.target}`}
+                      sub={goalTotals.extra > 0 ? `activities done · +${goalTotals.extra} extra` : 'activities done'}
+                    />
+                    <SummaryStat
+                      testId="roadmap-summary-remaining"
+                      label="Remaining"
+                      value={String(goalTotals.remaining)}
+                      sub={goalTotals.remaining === 0
+                        ? 'Weekly goals reached'
+                        : `activit${goalTotals.remaining === 1 ? 'y' : 'ies'} ${planState.kind === 'before' ? 'to do in Week 1' : 'left this week'}`}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <SummaryStat testId="roadmap-summary-weekly" label="Whole plan" value={`${planTotals.counted}/${planTotals.target}`} sub="activities done" />
+                    <SummaryStat testId="roadmap-summary-remaining" label="Extra practice" value={String(planTotals.extra)} sub="beyond weekly goals" />
+                  </>
+                )}
+              </div>
+
+              <div className="mt-3" data-testid="roadmap-overall-progress">
+                <div className="flex flex-col gap-0.5 text-[11px] sm:flex-row sm:items-center sm:justify-between">
+                  <span className="font-semibold text-[var(--space-text-primary)]">Whole plan</span>
+                  <span className="font-bold tabular-nums text-[var(--space-text-secondary)]">
+                    {planTotals.counted}/{planTotals.target} activities{planTotals.extra > 0 ? ` · +${planTotals.extra} extra` : ''}
+                  </span>
+                </div>
+                <ProgressBar done={planTotals.counted} target={planTotals.target} className="mt-1.5 h-2" />
+              </div>
+
+              <div className="mt-3 border-t border-[var(--space-border-default)] pt-3" data-testid="roadmap-start-date">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                  <CalendarDays className="h-3.5 w-3.5 shrink-0 text-[var(--space-text-brand)]" />
+                  <span className="text-[11px] text-[var(--space-text-secondary)]">
+                    Week 1 {planState.kind === 'before' ? 'starts' : 'started'}{' '}
+                    <span className="font-semibold text-[var(--space-text-primary)]" data-testid="roadmap-week1-date">{fullDateLabel(weekOneIso)}</span>
+                    {usingCustomStart ? ' · your chosen date' : defaultStart ? ` · ${START_BASIS_LABEL[defaultStart.basis]}` : ''}
+                  </span>
+                  {!startEditorOpen && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setStartDraft(isStartDateAllowed(weekOneIso, now) ? weekOneIso : todayIso(now));
+                        setStartError(null);
+                        setStartEditorOpen(true);
+                      }}
+                      className="ml-auto inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-[var(--space-text-brand)] underline decoration-[var(--space-border-strong)] underline-offset-4 hover:opacity-80"
+                      data-testid="button-change-start-date"
+                    >
+                      Change start date
+                    </button>
+                  )}
+                </div>
+                {startNotice && !startEditorOpen && (
+                  <p className="mt-1 text-[10px] text-[var(--space-text-muted)]">{startNotice}</p>
+                )}
+                {startEditorOpen && (
+                  <div className="mt-2.5 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3" data-testid="roadmap-start-date-editor">
+                    <label htmlFor="roadmap-week1-input" className="text-[11px] font-semibold text-[var(--space-text-primary)]">
+                      When should Week 1 start?
+                    </label>
+                    <p className="mt-0.5 text-[10px] leading-4 text-[var(--space-text-muted)]">
+                      Pick any date from {fullDateLabel(bounds.min)} to {fullDateLabel(bounds.max)}. Your practice history stays the same; it is just grouped into weeks from the new date.
+                    </p>
+                    <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <input
+                        id="roadmap-week1-input"
+                        type="date"
+                        min={bounds.min}
+                        max={bounds.max}
+                        value={startDraft}
+                        onChange={(event) => setStartDraft(event.target.value)}
+                        className="min-h-11 w-full rounded-lg border border-[var(--space-border-strong)] bg-[var(--space-surface-card)] px-3 text-sm text-[var(--space-text-primary)] sm:w-48"
+                        data-testid="input-start-date"
+                      />
+                      <div className="grid grid-cols-2 gap-2 sm:flex">
+                        <button
+                          type="button"
+                          onClick={() => void applyStartChoice(startDraft === defaultStart?.iso ? null : startDraft)}
+                          disabled={!draftValid || savingStart}
+                          className="inline-flex items-center justify-center gap-1 rounded-lg bg-[var(--space-brand-primary-600)] px-3 py-1.5 text-xs font-bold text-[var(--space-text-on-primary)] hover:opacity-90 disabled:opacity-50"
+                          data-testid="button-save-start-date"
+                        >
+                          {savingStart && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setStartEditorOpen(false);
+                            setStartError(null);
+                          }}
+                          disabled={savingStart}
+                          className="rounded-lg border border-[var(--space-border-strong)] bg-[var(--space-surface-card)] px-3 py-1.5 text-xs font-semibold text-[var(--space-text-secondary)] hover:bg-[var(--space-surface-muted)]"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                    {!draftValid && startDraft && (
+                      <p className="mt-1.5 text-[10px] font-semibold text-[var(--space-semantic-danger)]">Choose a date between {fullDateLabel(bounds.min)} and {fullDateLabel(bounds.max)}.</p>
+                    )}
+                    {startError && <p className="mt-1.5 text-[10px] font-semibold text-[var(--space-semantic-danger)]" role="alert">{startError}</p>}
+                    {usingCustomStart && defaultStart && (
+                      <button
+                        type="button"
+                        onClick={() => void applyStartChoice(null)}
+                        disabled={savingStart}
+                        className="mt-2 inline-flex items-center gap-1 rounded-lg px-1 py-1 text-[11px] font-semibold text-[var(--space-text-secondary)] underline decoration-[var(--space-border-strong)] underline-offset-4 hover:text-[var(--space-text-brand)]"
+                        data-testid="button-reset-start-date"
+                      >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        Reset to default ({fullDateLabel(defaultStart.iso)})
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Weekly goals */}
+            {goalWeek ? (
+              <section data-testid="roadmap-weekly-goals">
+                <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                  <p className="text-sm font-bold text-[var(--space-text-primary)]">
+                    {planState.kind === 'before' ? 'Week 1 goals' : 'This week’s goals'}
+                    <span className="ml-2 text-[11px] font-semibold text-[var(--space-text-muted)]">
+                      Week {goalWeek.week} · {shortDateLabel(goalWeek.start_date)} – {shortDateLabel(goalWeek.end_date)} · {goalWeek.theme}
+                    </span>
+                  </p>
+                </div>
+                {planState.kind === 'before' && (
+                  <p className="mb-2 rounded-xl bg-[var(--space-surface-accent-soft)] px-3 py-2 text-[11px] leading-5 text-[var(--space-text-secondary)]">
+                    Your plan starts on <span className="font-semibold text-[var(--space-text-primary)]">{fullDateLabel(planState.startsOn)}</span>. Sessions you complete from that day count toward Week 1.
+                  </p>
+                )}
+                {!hasAnyPractice && planState.kind === 'active' && (
+                  <div className="mb-2 flex flex-col gap-2 rounded-xl border border-[var(--space-brand-primary-200)] bg-[var(--space-surface-accent-soft)] p-3 sm:flex-row sm:items-center sm:justify-between" data-testid="roadmap-empty-state">
+                    <div>
+                      <p className="text-xs font-bold text-[var(--space-text-primary)]">Start your first practice</p>
+                      <p className="mt-0.5 text-[11px] leading-4 text-[var(--space-text-secondary)]">A quick Case Drill takes a few minutes. Every case, drill or test you finish this week fills these bars.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => openPracticeTrack(TRACKS[1])}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[var(--space-brand-primary-600)] px-4 py-2 text-xs font-bold text-[var(--space-text-on-primary)] hover:opacity-90"
+                      data-testid="button-start-first-practice"
+                    >
+                      <Zap className="h-3.5 w-3.5" />
+                      Start your first practice
+                    </button>
+                  </div>
+                )}
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {TRACKS.map((track) => (
+                    <GoalCard key={track.key} track={track} week={goalWeek} progress={progress[goalWeek.week]} />
+                  ))}
+                </div>
+              </section>
+            ) : (
+              <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5" data-testid="roadmap-weekly-goals-complete">
+                <p className="flex items-center gap-1.5 text-sm font-bold text-[var(--space-text-primary)]">
+                  <Flag className="h-4 w-4 text-[var(--space-semantic-success)]" />
+                  Plan complete
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">
+                  You’ve reached the end of your {schedule.length}-week plan. Review every week in the Full Plan below, keep practising, or regenerate a fresh roadmap for your next target.
+                </p>
+                <div className="mt-3 grid gap-2 sm:flex sm:flex-wrap">
+                  {TRACKS.map((track) => {
+                    const Icon = track.icon;
+                    return (
+                      <button
+                        key={track.key}
+                        type="button"
+                        onClick={() => openPracticeTrack(track)}
+                        className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[var(--space-surface-accent-soft)] px-3 py-2 text-[11px] font-semibold sm:w-auto sm:py-1.5 text-[var(--space-text-brand)] hover:opacity-90"
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        Practise in {track.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
+            <RecommendedForTarget
+              target={recommendationTarget}
+              sessionId={sessionId}
+              userKey={userId}
+              isAdmin={isReviewAdmin}
+              onChooseTarget={backToDirection}
+            />
+
+            <RoadmapTimeline
+              schedule={schedule}
+              phases={phases}
+              status={planState}
+              progress={progress}
+              view={effectiveView}
+              onViewChange={setTimelineView}
+              expandedMonths={expandedMonths}
+              onToggleMonth={(month) => setExpandedMonths((prev) => ({ ...prev, [month]: !prev[month] }))}
+            />
 
             <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5" data-testid="roadmap-case-priorities">
               <div className="flex flex-wrap items-start justify-between gap-3">
@@ -821,7 +1550,11 @@ export default function MyRoadmapApp() {
               </div>
               <div className="mt-3 grid gap-2 sm:grid-cols-3">
                 {recommendedCaseTypes.map((caseType, index) => (
-                  <button key={caseType.label} type="button" onClick={() => openRecommendedCaseDrill(caseType.drillSkillId, sessionId)} className="flex items-center gap-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3 text-left hover:border-[var(--space-brand-primary-200)]">
+                  <button key={caseType.label} type="button" onClick={() => {
+                    trackStepView('my-roadmap', 'case_types', { properties: { case_type: caseType.drillSkillId, case_type_label: caseType.label, rank: index + 1 } });
+                    trackAppSwitch('my-roadmap', 'case-drill', { trigger: 'roadmap_case_type' });
+                    openRecommendedCaseDrill(caseType.drillSkillId, sessionId);
+                  }} className="flex items-center gap-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3 text-left hover:border-[var(--space-brand-primary-200)]">
                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[var(--space-brand-primary-600)] text-xs font-bold text-[var(--space-text-on-primary)]">{index + 1}</span>
                     <span className="text-xs font-semibold text-[var(--space-text-primary)]">{caseType.label}</span>
                     <Zap className="ml-auto h-3.5 w-3.5 text-[var(--space-text-brand)]" />
@@ -829,8 +1562,6 @@ export default function MyRoadmapApp() {
                 ))}
               </div>
             </section>
-
-            <RoadmapTimeline roadmap={roadmap} currentWeek={currentWeek} />
 
             <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5" data-testid="roadmap-knowledge-areas">
               <div>
@@ -850,119 +1581,12 @@ export default function MyRoadmapApp() {
               </div>
             </section>
 
-            {/* This week focus */}
-            {currentWeek != null && (
-              <div data-testid="roadmap-this-week">
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--space-text-muted)]">
-                  This week’s targets
-                </p>
-                {roadmap.plan_json
-                  .filter((week) => week.week === currentWeek)
-                  .map((week) => (
-                    <WeekRow key={week.week} week={week} progress={progress[week.week]} isCurrent />
-                  ))}
-                <div className="mt-2 grid gap-2 sm:flex sm:flex-wrap">
-                  {TRACKS.map((track) => {
-                    const Icon = track.icon;
-                    return (
-                      <button
-                        key={track.key}
-                        type="button"
-                        onClick={() => openDockApp(track.dockAppId)}
-                        className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[var(--space-surface-accent-soft)] px-3 py-2 text-[11px] font-semibold sm:w-auto sm:py-1.5 text-[var(--space-text-brand)] hover:opacity-90"
-                      >
-                        <Icon className="h-3.5 w-3.5" />
-                        Practice in {track.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Monthly overview → expandable weekly detail */}
-            <div className="space-y-3" data-testid="roadmap-months">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--space-text-muted)]">
-                Monthly overview — tap a month for its weekly detail
-              </p>
-              {months.map((month) => {
-                const expanded = !!expandedMonths[month.month];
-                const firstWeek = month.weeks[0];
-                const lastWeek = month.weeks[month.weeks.length - 1];
-                const totals = TRACKS.map((track) => {
-                  let target = 0;
-                  let done = 0;
-                  month.weeks.forEach((week) => {
-                    target += track.targetOf(week);
-                    done += Math.min(track.doneOf(progress[week.week]), track.targetOf(week));
-                  });
-                  return { track, target, done };
-                });
-                const themes = Array.from(new Set(month.weeks.map((week) => week.theme)));
-                const containsCurrent = currentWeek != null && month.weeks.some((week) => week.week === currentWeek);
-                return (
-                  <div
-                    key={month.month}
-                    className={`overflow-hidden rounded-2xl border ${
-                      containsCurrent ? 'border-[var(--space-brand-primary-200)]' : 'border-[var(--space-border-default)]'
-                    } bg-[var(--space-surface-card)]`}
-                    data-testid={`roadmap-month-${month.month}`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setExpandedMonths((prev) => ({ ...prev, [month.month]: !expanded }))}
-                      className="flex w-full items-start justify-between gap-3 px-4 py-3 text-left hover:bg-[var(--space-surface-muted)]"
-                    >
-                      <div className="min-w-0">
-                        <p className="flex flex-wrap items-center gap-2 text-sm font-bold text-[var(--space-text-primary)]">
-                          {month.label}
-                          <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">
-                            Weeks {firstWeek.week}–{lastWeek.week} · {shortDateLabel(firstWeek.start_date)} – {shortDateLabel(lastWeek.end_date)}
-                          </span>
-                          {containsCurrent && (
-                            <span className="rounded-full bg-[var(--space-brand-primary-600)] px-2 py-0.5 text-[10px] font-bold text-[var(--space-text-on-primary)]">
-                              Now
-                            </span>
-                          )}
-                        </p>
-                        <p className="mt-0.5 text-[11px] text-[var(--space-text-secondary)]">{themes.join(' → ')}</p>
-                        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-                          {totals.map(({ track, target, done }) => (
-                            <span key={track.key} className="text-[11px] tabular-nums text-[var(--space-text-secondary)]">
-                              <span className="font-semibold text-[var(--space-text-primary)]">{track.label}</span>{' '}
-                              {done}/{target}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      {expanded ? (
-                        <ChevronUp className="mt-1 h-4 w-4 shrink-0 text-[var(--space-text-muted)]" />
-                      ) : (
-                        <ChevronDown className="mt-1 h-4 w-4 shrink-0 text-[var(--space-text-muted)]" />
-                      )}
-                    </button>
-                    {expanded && (
-                      <div className="space-y-2 border-t border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3">
-                        {month.weeks.map((week) => (
-                          <WeekRow
-                            key={week.week}
-                            week={week}
-                            progress={progress[week.week]}
-                            isCurrent={currentWeek === week.week}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
             <p className="text-[10px] leading-4 text-[var(--space-text-muted)]">
               Weekly targets are Mate’s pacing recommendation from your baseline and the program’s
               {roadmap.window_kind === 'verified' ? ' verified' : ' estimated'} application window — always confirm
-              exact dates on the company’s careers page. Progress counts your completed sessions in Case Pool, Case
-              Drill, and Aptitude Test automatically.
+              exact dates on the company’s careers page. Progress counts your completed Case Pool, Case Drill and
+              Aptitude Test sessions automatically: a session counts in the week you finish it, each case, drill or
+              test counts once (retakes don’t add to the total), and anything beyond a weekly goal shows as extra.
             </p>
           </>
         ) : null}

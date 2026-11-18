@@ -1,0 +1,398 @@
+import type { ConstructionAdvisoryChapterVisual } from './constructionAdvisoryVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Project & Construction Advisory Module 01, keyed by visualKind. */
+export const CONSTRUCTION_ADVISORY_M1_VISUALS: Record<string, ConstructionAdvisoryChapterVisual> = {
+  'professional-advisory-m1-1': {
+    heading: 'Three kinds of help an adviser gives a construction investment without building it',
+    intro: 'Advisers help clients evaluate, plan, govern, procure and deliver construction and infrastructure investments, but they do not directly execute the construction works.',
+    spec: {
+      layout: 'taxonomy', title: '01 What Is the Project & Construction Advisory Industry?', kicker: '',
+      root: 'Project & construction advisory', rootDetail: 'Professional services for the client, not execution of the works',
+      groups: [
+        { label: 'Strategic advice', detail: 'Test the investment case before approval', items: ['Evaluate', 'Plan'] },
+        { label: 'Delivery assurance', detail: 'Review delivery risk as the project proceeds', items: ['Govern', 'Procure', 'Deliver'] },
+        { label: 'Professional boundaries', detail: 'Clarify who is responsible for what', items: ['Client decides', 'Adviser advises', 'Contractor executes'] },
+      ],
+      note: 'Example from the chapter: an investor appoints an independent adviser to test a development proposal, clarify responsibilities and review delivery risk before investment approval.',
+      takeaway: 'Project and Construction Advisory connects investment objectives with practical delivery while helping clients manage uncertainty, complexity and risk.',
+    },
+  },
+  'professional-advisory-m1-2': {
+    heading: 'An independent adviser sits on the client side of governance, decisions and review',
+    intro: 'What sets advisory apart is that it supports the client’s governance and decisions and reviews proposals independently, rather than producing the design or the works itself.',
+    spec: {
+      layout: 'compare', title: '02 What Makes Project & Construction Advisory Unique?', kicker: '',
+      leftTitle: 'Delivery party (designer or contractor)', rightTitle: 'Independent adviser to the client',
+      rows: [
+        { label: 'Project governance', a: 'Works within the client’s decision rights and reporting', b: 'Helps set decision rights, reporting and accountability' },
+        { label: 'Decision support', a: 'Proposes its own design or method', b: 'Tests proposals before the client approves them' },
+        { label: 'Independent review', a: 'Checks its own output', b: 'Reviews delivery risk across parties' },
+        { label: 'Responsibility', a: 'For the design or the works it delivers', b: 'For the scoped advice in its appointment' },
+      ],
+      note: 'Project governance means the structures, decision rights, reporting and accountability used to direct and control a project.',
+      takeaway: 'Advisory value comes from helping clients manage uncertainty, complexity and risk while the delivery parties execute.',
+    },
+  },
+  'professional-advisory-m1-3': {
+    heading: 'Each project role has a boundary set by appointment, competence and legal responsibility',
+    intro: 'Advisers support decisions, management or oversight; contractors execute works; designers create technical designs; regulators keep statutory functions. One firm offering overlapping services does not merge these roles.',
+    spec: {
+      layout: 'table', title: '03 Where Does Construction Advisory Begin and End?', kicker: '',
+      headers: ['Role', 'What it does', 'What it is not'],
+      rows: [
+        { label: 'Owner adviser', a: 'Supports client decisions, management or oversight', b: 'Not the party executing the works' },
+        { label: 'Designer', a: 'Creates the technical designs', b: 'Not general project management' },
+        { label: 'Project manager', a: 'Coordinates scope, schedule and decisions', b: 'Does not control means and methods' },
+        { label: 'Construction supervisor', a: 'Oversees the works on site', b: 'Not statutory approval' },
+        { label: 'Contractor', a: 'Executes works; controls means and methods', b: 'Not the client’s independent adviser' },
+        { label: 'EPC contractor', a: 'Takes on execution of the project', b: 'Not a project management consultant' },
+        { label: 'Regulator', a: 'Retains statutory approval functions', b: 'Not replaced by any consultancy label' },
+      ],
+      note: 'For design, supervision, certification or sign-off, verify the licensed entity, named professionals, current legal scope and contract.',
+      takeaway: 'Project management consultant is not EPC contractor, construction supervision is not statutory approval, and architectural design is not general project management.',
+    },
+  },
+  'professional-advisory-m1-4': {
+    heading: 'The same project stages can be served by specialist or integrated advisory appointments',
+    intro: 'Advisory services span initiation through commissioning and handover. A client can appoint specialists for chosen services or combine services in one appointment across successive stages.',
+    spec: {
+      layout: 'pathway', title: '04 Understanding Construction Advisory Services', kicker: '',
+      trunk: [
+        { label: 'Initiation & feasibility', detail: 'Scope and budget can still be shaped' },
+        { label: 'Design & procurement', detail: 'Risk allocation is set before commitment' },
+        { label: 'Construction', detail: 'Delivery is monitored and assured' },
+        { label: 'Commissioning & handover', detail: 'Asset is tested and transferred', kind: 'outcome' },
+      ],
+      optionsLabel: 'Ways to appoint the services — alternatives, not steps',
+      options: [
+        { label: 'Specialist appointments', detail: 'Separate appointments for chosen services', items: ['Development management', 'Technical assurance'] },
+        { label: 'Integrated appointment', detail: 'Services combined across successive stages', items: ['Feasibility', 'Cost planning', 'Programme management', 'Technical assurance'] },
+      ],
+      note: 'Match each service to current approvals, procurement route, appointment terms, professional competence and the client’s internal delivery capacity.',
+      takeaway: 'Early advisory involvement can influence scope, budget, procurement and risk allocation before costly commitments become difficult to reverse.',
+    },
+  },
+  'professional-advisory-m1-5': {
+    heading: 'The client sits at the centre of the specialists and stakeholders it appoints or answers to',
+    intro: 'Clients combine services such as cost planning, programme management, technical assurance and commissioning, and match them to approvals and their own delivery capacity.',
+    spec: {
+      layout: 'ecosystem', title: '05 Who Are the Industry\'s Clients and Stakeholders?', kicker: '',
+      center: { label: 'Client / project owner', detail: 'Holds the investment and the decisions' },
+      actors: [
+        { label: 'Cost manager', relation: 'Plans and forecasts project cost', flows: ['information', 'service'] },
+        { label: 'Programme manager', relation: 'Coordinates stages and reporting', flows: ['service', 'information'] },
+        { label: 'Technical assurance adviser', relation: 'Reviews technical delivery risk', flows: ['risk', 'service'] },
+        { label: 'Commissioning specialist', relation: 'Verifies systems meet requirements', flows: ['service'] },
+        { label: 'Approving authority', relation: 'Grants the required approvals', flows: ['oversight'] },
+        { label: 'Client delivery team', relation: 'Internal capacity that receives the advice', flows: ['money', 'information'] },
+      ],
+      note: 'Commissioning is planned verification that systems and assets are installed, tested and capable of meeting defined requirements.',
+      takeaway: 'Early advisory involvement can influence scope, budget, procurement and risk allocation before costly commitments become difficult to reverse.',
+    },
+  },
+  'professional-advisory-m1-6': {
+    heading: 'Separate cost and supervision practices grew into dedicated project management',
+    intro: 'Modern project management emerged as specialised cost, engineering and supervision practices were joined by dedicated project management, programme controls and multidisciplinary coordination.',
+    spec: {
+      layout: 'timeline', title: '06 How Did Modern Project Management Emerge?', kicker: '',
+      events: [
+        { period: 'Earlier', label: 'Quantity surveying', detail: 'Specialised cost practice', status: 'historical' },
+        { period: 'Earlier', label: 'Site supervision', detail: 'Specialised engineering and supervision practice', status: 'historical' },
+        { period: 'Later', label: 'Dedicated project management', detail: 'A role focused on coordinating the whole project', status: 'historical' },
+        { period: 'Now', label: 'Programme controls & coordination', detail: 'Central teams coordinate many designers and contractors', status: 'current' },
+      ],
+      note: 'Example from the chapter: a major infrastructure programme sets up a central project-management team to coordinate multiple designers, work packages and contractors.',
+      takeaway: 'The shift from individual disciplines to integrated advisory reflects the need to coordinate technical, commercial and organizational decisions on complex projects.',
+    },
+  },
+  'professional-advisory-m1-7': {
+    heading: 'Consulting moved from single-discipline appointments to integrated multidisciplinary teams',
+    intro: 'Engineering advice and contract administration were once separate specialisms. Complex programmes now need them integrated, with clear reporting and decision rights.',
+    spec: {
+      layout: 'compare', title: '07 How Did Engineering and Construction Consulting Evolve?', kicker: '',
+      leftTitle: 'Single-discipline consulting', rightTitle: 'Multidisciplinary advisory',
+      rows: [
+        { label: 'Engineering advice', a: 'Given discipline by discipline', b: 'Coordinated with cost, design and programme' },
+        { label: 'Contract administration', a: 'Handled package by package', b: 'Coordinated across work packages and contractors' },
+        { label: 'Multidisciplinary integration', a: 'Left to the client', b: 'Led by a central project team' },
+        { label: 'Decision rights', a: 'Assumed within each appointment', b: 'Made explicit in reporting and integration' },
+      ],
+      note: 'One appointment does not automatically cover every duty; discipline-specific competence still matters.',
+      takeaway: 'The shift from individual disciplines to integrated advisory reflects the need to coordinate technical, commercial and organizational decisions on complex projects.',
+    },
+  },
+  'professional-advisory-m1-8': {
+    heading: 'Published standards gave advisers a shared method for information and project management',
+    intro: 'International delivery networks use common methods, BIM, dashboards and quality assurance to standardise reporting and support review across projects. The chapter cites two ISO standards that anchor this.',
+    spec: {
+      layout: 'timeline', title: '08 How Did International Project Standards and Delivery Models Develop?', kicker: '',
+      events: [
+        { period: 'Earlier', label: 'Firm-specific methods', detail: 'Reporting differed by project and location', status: 'historical' },
+        { period: '2018', label: 'ISO 19650-1', detail: 'Information management using BIM', status: 'historical' },
+        { period: '2020', label: 'ISO 21502', detail: 'Project, programme and portfolio management guidance', status: 'historical' },
+        { period: 'Now', label: 'Global method and dashboards', detail: 'Shared platform with quality assurance across locations', status: 'current' },
+      ],
+      note: 'Example from the chapter: a consultancy uses a controlled shared platform and a common project-controls method across several locations.',
+      takeaway: 'Competitive advantage increasingly combines professional expertise with repeatable processes, cross-border capability and effective digital information management.',
+    },
+  },
+  'professional-advisory-m1-9': {
+    heading: 'Global digital methods work in Vietnam only once they are adapted locally',
+    intro: 'Advisory in Vietnam has adopted project controls, a Common Data Environment and AI-assisted review, but each must be adapted to local language, approvals, contracts, data controls and team capability.',
+    spec: {
+      layout: 'driverTree', title: '09 How Has Project & Construction Advisory Developed in Vietnam?', kicker: '',
+      root: { label: 'Usable digital delivery in Vietnam', detail: 'Global systems adapted to the project' },
+      drivers: [
+        { label: 'Project controls', detail: 'Planning, measuring and forecasting', children: [{ label: 'Common method' }, { label: 'Local contracts and approvals' }] },
+        { label: 'Common Data Environment', detail: 'Agreed source of controlled information', children: [{ label: 'Data controls' }, { label: 'Project information requirements' }] },
+        { label: 'AI-assisted review', detail: 'Supports review across projects', children: [{ label: 'Human checking' }, { label: 'Personal data protection' }] },
+        { label: 'Local capability', detail: 'People who run the systems', children: [{ label: 'Local language' }, { label: 'Team capability' }] },
+      ],
+      note: 'Personal data handling should be checked against the chapter source, Law on Personal Data Protection No. 91/2025/QH15.',
+      takeaway: 'Competitive advantage increasingly combines professional expertise with repeatable processes, cross-border capability and effective digital information management.',
+    },
+  },
+  'professional-advisory-m1-10': {
+    heading: 'Advisory demand depends on asset type, financing, complexity and owner capability',
+    intro: 'Global demand spans capital projects with different asset types, financing structures, technical complexity and owner capabilities. Investment creates potential demand; only commissioned services become advisory revenue.',
+    spec: {
+      layout: 'driverTree', title: '10 How Is the Global Construction Advisory Market Structured?', kicker: '',
+      root: { label: 'Advisory services commissioned', detail: 'Not the same as construction investment' },
+      drivers: [
+        { label: 'Asset type', children: [{ label: 'Infrastructure' }, { label: 'Industrial' }, { label: 'Utilities' }, { label: 'Public facilities' }] },
+        { label: 'Financing structure', detail: 'e.g. a lender commissions independent technical monitoring' },
+        { label: 'Technical complexity', detail: 'Shapes the need for specialist expertise' },
+        { label: 'Owner capability', detail: 'Owners may keep their own design and delivery teams' },
+      ],
+      note: 'Do not convert total construction investment into advisory revenue without a defined service scope, project share, fee basis, period and geography.',
+      takeaway: 'Construction investment creates potential demand, but advisory revenue depends on which projects procure external expertise and what services are actually commissioned.',
+    },
+  },
+  'professional-advisory-m1-11': {
+    heading: 'Project spending, contractor revenue and advisory fees are different measures',
+    intro: 'Market measurement separates total client project spending from the much smaller professional-service fees earned by advisers, and from contractor or designer revenue.',
+    spec: {
+      layout: 'table', title: '11 How Are Construction Advisory Markets Measured?', kicker: '',
+      headers: ['Measure', 'What it counts', 'Do not treat it as'],
+      rows: [
+        { label: 'Construction expenditure', a: 'Total client spending on projects', b: 'Advisory revenue' },
+        { label: 'Infrastructure investment', a: 'Capital put into infrastructure assets', b: 'Advisory demand without a defined scope' },
+        { label: 'Advisory fee', a: 'Fees for scoped professional work', b: 'The value of the project' },
+        { label: 'Engineering-services revenue', a: 'Revenue of engineering-service firms', b: 'Cash received in the same period' },
+        { label: 'Design or contractor revenue', a: 'Revenue earned by designers or contractors', b: 'Fees earned by advisers' },
+        { label: 'Backlog', a: 'Contracted work not yet delivered', b: 'Recognized revenue' },
+      ],
+      note: 'Example from the chapter: a US$100 million project with a US$2 million advisory appointment is not a US$100 million consulting market contribution.',
+      takeaway: 'Project CAPEX, construction contract value, advisory-firm revenue, billed fees, recognized revenue, cash and backlog are different measures with different entities, periods and accounting bases.',
+    },
+  },
+  'professional-advisory-m1-12': {
+    heading: 'Investors match the adviser type to what each regional market requires',
+    intro: 'Mature renewal markets and developing investment markets are served by both multidisciplinary firms and engineering consultancies. Clients often split programme governance from local technical support.',
+    spec: {
+      layout: 'decision', title: '12 Which Regions Drive Construction Consulting Demand?', kicker: '',
+      root: { label: 'Project in a regional market', detail: 'Mature renewal or developing investment market' },
+      question: 'What capability does the project need in this market?',
+      branches: [
+        { condition: 'Programme governance across borders', outcome: 'Multidisciplinary firm', detail: 'Scale and cross-border delivery', tone: 'positive' },
+        { condition: 'Specialist technical depth', outcome: 'Engineering consultancy', detail: 'Discipline expertise for the asset', tone: 'positive' },
+        { condition: 'Local regulatory and market support', outcome: 'Add a local consultancy', detail: 'Verify its licenses and delivery capacity', tone: 'caution' },
+      ],
+      note: 'Verify actual local office services, qualified team, references, licenses, delivery capacity and subcontracting rather than relying on global brand breadth.',
+      takeaway: 'Scale, local expertise, specialist depth and cross-border delivery capability shape competitive positioning across geographic markets.',
+    },
+  },
+  'professional-advisory-m1-13': {
+    heading: 'Global advisory participants differ by scale, specialism and local depth',
+    intro: 'The global market includes global consultancies, specialist project and cost managers, engineering firms and regional providers, each competing on a different mix of scale and local depth.',
+    spec: {
+      layout: 'taxonomy', title: '13 Who Are the Major Global Advisory Participants?', kicker: '',
+      root: 'Global advisory participants', rootDetail: 'Provider types — a firm may fit more than one',
+      groups: [
+        { label: 'Global consultancies', detail: 'Scale and cross-border delivery' },
+        { label: 'Specialist project managers', detail: 'Programme governance and project controls' },
+        { label: 'Specialist cost managers', detail: 'Cost planning and commercial advice' },
+        { label: 'Engineering firms', detail: 'Technical depth across disciplines' },
+        { label: 'Regional providers', detail: 'Local expertise and market knowledge' },
+      ],
+      note: 'Judge a participant by the team, services and licenses it actually offers in the market, not by brand breadth.',
+      takeaway: 'Scale, local expertise, specialist depth and cross-border delivery capability shape competitive positioning across geographic markets.',
+    },
+  },
+  'professional-advisory-m1-14': {
+    heading: 'An international investor’s project draws on global and local advisers at once',
+    intro: 'In the chapter example, an international investor appoints a global adviser for programme governance and a local consultancy for regulatory and market-specific technical support.',
+    spec: {
+      layout: 'ecosystem', title: '14 How Does the International Construction Advisory Ecosystem Operate?', kicker: '',
+      center: { label: 'International investor', detail: 'Owns the project and its decisions' },
+      actors: [
+        { label: 'Global adviser', relation: 'Runs programme governance', flows: ['oversight', 'information'] },
+        { label: 'Local consultancy', relation: 'Regulatory and market-specific technical support', flows: ['service', 'information'] },
+        { label: 'Quantity surveyor', relation: 'Measures and prices the work', flows: ['money', 'information'] },
+        { label: 'Local specialist', relation: 'Adds technical depth for local conditions', flows: ['service'] },
+        { label: 'Subcontracted providers', relation: 'Deliver part of an adviser’s scope', flows: ['service', 'risk'] },
+      ],
+      note: 'Check which work is subcontracted and whether each party holds the licenses its role requires.',
+      takeaway: 'Scale, local expertise, specialist depth and cross-border delivery capability shape competitive positioning across geographic markets.',
+    },
+  },
+  'professional-advisory-m1-15': {
+    heading: 'Vietnam’s advisory market is shaped by growth drivers and cost volatility',
+    intro: 'Demand in Vietnam comes from urbanization, industrial expansion and public facilities, while cost volatility raises the need for cost certainty. Announced projects only become demand once they are ready.',
+    spec: {
+      layout: 'driverTree', title: '15 What Does Vietnam\'s Construction Advisory Market Look Like?', kicker: '',
+      root: { label: 'Advisory demand in Vietnam', detail: 'Complex projects needing stronger preparation' },
+      drivers: [
+        { label: 'Urbanization', detail: 'Transport, utilities and residential projects' },
+        { label: 'Industrial expansion', detail: 'Facilities needing design, cost and commissioning support' },
+        { label: 'Public facilities', detail: 'Public projects needing governance and coordination' },
+        { label: 'Cost volatility', detail: 'Raises the value of cost certainty and control' },
+      ],
+      note: 'Assess project preparation, approvals, land, funding, procurement, contractor capacity and cost exposure before treating an announced project as advisory demand.',
+      takeaway: 'Vietnam opportunities grow where complex projects require stronger preparation, cost certainty, technical assurance, coordination and governance.',
+    },
+  },
+  'professional-advisory-m1-16': {
+    heading: 'Vietnam project types create advisory demand only once they are ready',
+    intro: 'Demand comes from transport, utilities, industrial, logistics, energy, commercial, residential and public-facility projects, subject to readiness, approvals, land, funding and capability.',
+    spec: {
+      layout: 'taxonomy', title: '16 Which Project Types Drive Advisory Demand in Vietnam?', kicker: '',
+      root: 'Project types in Vietnam', rootDetail: 'Categories of demand, not steps',
+      groups: [
+        { label: 'Infrastructure investment', items: ['Transport', 'Utilities', 'Energy'] },
+        { label: 'Industrial and logistics', items: ['Industrial', 'Logistics'] },
+        { label: 'Commercial development', items: ['Commercial', 'Residential'] },
+        { label: 'Public facilities' },
+        { label: 'Filter: project readiness', detail: 'Approvals, land, funding and capability decide whether demand is real' },
+      ],
+      note: 'An announced project is not yet advisory demand.',
+      takeaway: 'Vietnam opportunities grow where complex projects require stronger preparation, cost certainty, technical assurance, coordination and governance.',
+    },
+  },
+  'professional-advisory-m1-17': {
+    heading: 'What international and domestic participants bring, and what to check',
+    intro: 'International and domestic engineering, cost, design, project-management and supervision providers are building talent, methods and digital capability. Compare them on what they actually provide.',
+    spec: {
+      layout: 'table', title: '17 Who Are the Key Project and Construction Advisory Participants?', kicker: '',
+      headers: ['Participant or capability', 'What it brings', 'Check before relying on it'],
+      rows: [
+        { label: 'International provider', a: 'Reporting methods and schedule controls', b: 'Senior involvement and continuity' },
+        { label: 'Domestic provider', a: 'Local service coverage and language', b: 'Current licensed scope' },
+        { label: 'Cost expertise', a: 'Cost forecasting for complex projects', b: 'Who in the team does the work' },
+        { label: 'Digital capability', a: 'Digital project-delivery methods', b: 'Evidence it is used on similar projects' },
+      ],
+      note: 'Also compare knowledge transfer between international and domestic team members.',
+      takeaway: 'Long-term competitiveness depends on combining international delivery practices with local regulatory knowledge, professional talent and cost-effective execution.',
+    },
+  },
+  'professional-advisory-m1-18': {
+    heading: 'A project-controls cycle run by a domestic team with international support',
+    intro: 'Projects in Vietnam are increasingly managed through project controls. In the chapter example, a domestic team works with an international adviser to strengthen reporting, cost forecasting and schedule controls.',
+    spec: {
+      layout: 'flow', title: '18 How Are Construction Projects Planned and Managed in Vietnam?', kicker: '',
+      steps: [
+        { label: 'Plan the baseline', detail: 'Scope, cost and schedule', owner: 'Domestic consultancy' },
+        { label: 'Measure progress', detail: 'Against the approved baseline', owner: 'Domestic consultancy' },
+        { label: 'Forecast cost and schedule', detail: 'Strengthened with international methods', owner: 'With international adviser' },
+        { label: 'Report and decide', detail: 'Risk and change go to the client', kind: 'decision', owner: 'Client' },
+      ],
+      loop: 'Each decision updates the baseline for the next reporting period.',
+      note: 'Project controls are integrated processes for planning, measuring and forecasting scope, cost, schedule, risk and change.',
+      takeaway: 'Long-term competitiveness depends on combining international delivery practices with local regulatory knowledge, professional talent and cost-effective execution.',
+    },
+  },
+  'professional-advisory-m1-19': {
+    heading: 'Vietnam’s capability gains bring opportunities, each with a constraint to check',
+    intro: 'Domestic providers are developing engineering capability, professional training and digital delivery. Each opportunity comes with something a client should verify.',
+    spec: {
+      layout: 'compare', title: '19 What Opportunities and Constraints Shape Vietnam\'s Advisory Industry?', kicker: '',
+      leftTitle: 'Opportunity', rightTitle: 'Constraint to check',
+      rows: [
+        { label: 'Engineering capability', a: 'Domestic providers building methods and talent', b: 'Licensed scope and senior involvement vary' },
+        { label: 'Professional training', a: 'Knowledge transfer from international advisers', b: 'Continuity of trained teams' },
+        { label: 'Local knowledge', a: 'Language and regulatory familiarity', b: 'Must be matched to the specific project' },
+        { label: 'Digital delivery', a: 'Growing digital project-delivery capability', b: 'Needs evidence on real projects' },
+      ],
+      note: 'Compare current local service coverage, licensed scope, senior involvement, digital capability, language, continuity and knowledge transfer.',
+      takeaway: 'Long-term competitiveness depends on combining international delivery practices with local regulatory knowledge, professional talent and cost-effective execution.',
+    },
+  },
+  'professional-advisory-m1-20': {
+    heading: 'Investment, inflation, approvals and contracts drive demand for specialist support',
+    intro: 'Economic, financing, approval and contractual conditions affect how projects are prepared and executed, and so how much specialist advice clients need.',
+    spec: {
+      layout: 'driverTree', title: '20 How Do Economic Conditions Affect Construction Advisory Demand?', kicker: '',
+      root: { label: 'Demand for advisory support', detail: 'Driven by activity and uncertainty' },
+      drivers: [
+        { label: 'Capital investment', detail: 'Creates the underlying project activity', children: [{ label: 'Approved capital' }, { label: 'Actual disbursement' }] },
+        { label: 'Construction inflation', detail: 'Rising prices trigger cost review', children: [{ label: 'Cost plan refresh' }, { label: 'Value-engineering options' }] },
+        { label: 'Planning approval', detail: 'Approvals shape timing and readiness' },
+        { label: 'Contract framework', detail: 'Contract terms shape risk and change' },
+      ],
+      note: 'Example from the chapter: rising material prices lead a developer to refresh the cost plan, scenario assumptions and value-engineering options before tender.',
+      takeaway: 'Construction activity creates underlying demand while economic uncertainty and regulatory complexity influence the specialist support clients require.',
+    },
+  },
+  'professional-advisory-m1-21': {
+    heading: 'Rules and public finance gate each step from policy announcement to actual spending',
+    intro: 'Public spending, procurement rules and interest rates decide how far a project moves from announcement to disbursement. Advisers keep each stage separate and check current official requirements.',
+    spec: {
+      layout: 'flow', title: '21 Why Do Regulation, Safety and Technical Standards Matter?', kicker: '',
+      steps: [
+        { label: 'Policy announcement', detail: 'Intent, not yet funded' },
+        { label: 'Approved capital', detail: 'Public spending is authorised', owner: 'Approving authority' },
+        { label: 'Procurement', detail: 'Run under the applicable procurement rules', kind: 'decision' },
+        { label: 'Commitment', detail: 'Contracts are signed' },
+        { label: 'Actual disbursement', detail: 'Money is paid out', kind: 'outcome' },
+      ],
+      note: 'Interest rates affect financing at each stage. Use current official requirements and project-specific legal advice.',
+      takeaway: 'Construction activity creates underlying demand while economic uncertainty and regulatory complexity influence the specialist support clients require.',
+    },
+  },
+  'professional-advisory-m1-22': {
+    heading: 'Three digital capabilities, each with boundaries to set before scaling',
+    intro: 'BIM, whole-life carbon assessment and cybersecurity are reshaping advisory delivery. Each needs defined ownership, controls and boundaries before digital workflows are scaled.',
+    spec: {
+      layout: 'taxonomy', title: '22 How Are BIM and Digital Technologies Changing Project Advisory?', kicker: '',
+      root: 'Digital capabilities in advisory', rootDetail: 'Capabilities used together, not in sequence',
+      groups: [
+        { label: 'BIM', detail: 'Shared asset information across lifecycle stages', items: ['Information ownership', 'Access', 'Validation'] },
+        { label: 'Whole-life carbon', detail: 'Sustainability assessment of the asset', items: ['Assessment boundary'] },
+        { label: 'Cybersecurity', detail: 'Protection of project information', items: ['Cyber controls'] },
+      ],
+      note: 'Chapter sources include ISO 19650-1:2018 and Cybersecurity Law No. 116/2025/QH15.',
+      takeaway: 'Technology and specialist expertise improve productivity and decisions only when supported by reliable data, effective implementation and professional judgment.',
+    },
+  },
+  'professional-advisory-m1-23': {
+    heading: 'Clients expect AI-assisted and climate outputs to be reviewed before they are used',
+    intro: 'Clients now expect AI-assisted reporting and climate-resilience assessment. Before scaling these workflows, define information ownership, validation, human review and assessment boundaries.',
+    spec: {
+      layout: 'decision', title: '23 How Are Client Expectations and Project Delivery Models Evolving?', kicker: '',
+      root: { label: 'AI-assisted or climate-resilience output', detail: 'A new kind of advisory deliverable' },
+      question: 'Are its data validated, its boundaries defined and its conclusions reviewed by a person?',
+      branches: [
+        { condition: 'Validated and reviewed', outcome: 'Use it to support the client decision', tone: 'positive' },
+        { condition: 'Data not yet validated', outcome: 'Validate the source data first', tone: 'caution' },
+        { condition: 'No human review or boundary', outcome: 'Do not scale the workflow', tone: 'negative' },
+      ],
+      note: 'Professional judgment stays with the adviser; the tool supports it.',
+      takeaway: 'Technology and specialist expertise improve productivity and decisions only when supported by reliable data, effective implementation and professional judgment.',
+    },
+  },
+  'professional-advisory-m1-24': {
+    heading: 'A dashboard flags a risk, but specialist people turn it into corrective action',
+    intro: 'In the chapter example, a project-controls team uses a dashboard to spot a schedule deviation, checks the source data, and agrees accountable corrective action.',
+    spec: {
+      layout: 'flow', title: '24 What External Risks and Opportunities Shape the Industry?', kicker: '',
+      steps: [
+        { label: 'Dashboard flags deviation', detail: 'Early sight of schedule risk', owner: 'Project dashboard' },
+        { label: 'Validate source data', detail: 'Confirm the signal is real', owner: 'Specialist talent' },
+        { label: 'Agree corrective action', detail: 'With a named accountable owner', kind: 'decision', owner: 'Project team' },
+        { label: 'Deviation controlled', kind: 'outcome' },
+      ],
+      note: 'Specialist talent is part of the control: without people who validate the data, a dashboard can mislead.',
+      takeaway: 'Technology and specialist expertise improve productivity and decisions only when supported by reliable data, effective implementation and professional judgment.',
+    },
+  },
+};

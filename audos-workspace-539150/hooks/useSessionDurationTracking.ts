@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { isFounderEmail } from '../lib/founderAccess';
+import { getEngagementLocation, isEngagementActive } from '../lib/engagementTracking';
 
 const SESSION_TABLE = 'session_tracking';
-const HEARTBEAT_MS = 60_000;
+const HEARTBEAT_MS = 30_000;
+const ACTIVE_IDLE_MS = 60_000;
 const IDLE_TIMEOUT_MS = 5 * 60_000;
 const WORKSPACE_ID = 'c6ce26d1-7466-4b72-962d-b7bf7a471c88';
 
@@ -11,6 +13,8 @@ interface ActiveVisit {
   visitSessionId: string;
   startedMs: number;
   appOpens: number;
+  activeSeconds: number;
+  lastTickMs: number;
 }
 
 interface SessionTrackerOptions {
@@ -91,15 +95,28 @@ export function useSessionDurationTracking({
       ended_at: new Date(endedMs).toISOString(),
       duration_seconds: Math.max(0, Math.round((endedMs - visit.startedMs) / 1000)),
       app_opens_in_session: visit.appOpens,
+      active_seconds: visit.activeSeconds,
     });
+
+    const heartbeatPatch = (visit: ActiveVisit, nowMs: number) => {
+      const elapsedMs = Math.min(Math.max(0, nowMs - visit.lastTickMs), HEARTBEAT_MS + 5_000);
+      visit.lastTickMs = nowMs;
+      if (!isEngagementActive(ACTIVE_IDLE_MS)) return durationPatch(visit, nowMs);
+      visit.activeSeconds += Math.round(elapsedMs / 1000);
+      const location = getEngagementLocation();
+      return {
+        ...durationPatch(visit, nowMs),
+        last_app_id: location.appId,
+        last_step_name: location.stepName,
+        last_heartbeat_at: new Date(nowMs).toISOString(),
+      };
+    };
 
     const updateWithSdk = (visit: ActiveVisit, patch: Record<string, unknown>) => {
       updateChain = updateChain
         .catch(() => undefined)
         .then(() => db.from(SESSION_TABLE).update(visit.rowId, patch))
-        .catch((error: unknown) => {
-          console.warn('[SessionTracking] Update skipped:', error);
-        });
+        .catch(() => undefined);
     };
 
     const updateWithKeepalive = (visit: ActiveVisit, patch: Record<string, unknown>) => {
@@ -165,6 +182,8 @@ export function useSessionDurationTracking({
           visitSessionId,
           startedMs,
           appOpens: pendingAppOpens,
+          activeSeconds: 0,
+          lastTickMs: Date.now(),
         };
         pendingAppOpens = 0;
         if (disposed) {
@@ -176,8 +195,8 @@ export function useSessionDurationTracking({
           updateWithSdk(visit, { app_opens_in_session: visit.appOpens });
         }
         if (document.visibilityState === 'hidden') finishVisit(Date.now(), true);
-      } catch (error) {
-        console.warn('[SessionTracking] Start skipped:', error);
+      } catch {
+        // Analytics must never delay or disrupt the product experience.
       } finally {
         starting = false;
       }
@@ -241,11 +260,16 @@ export function useSessionDurationTracking({
         void startVisit();
         return;
       }
-      updateWithSdk(active, durationPatch(active, Date.now()));
+      updateWithSdk(active, heartbeatPatch(active, Date.now()));
     }, HEARTBEAT_MS);
 
-    void startVisit();
-    scheduleIdleEnd();
+    // Session analytics are non-critical: give the app time to paint and
+    // become interactive before the first WorkspaceDB write.
+    const initialStartTimer = window.setTimeout(() => {
+      if (disposed) return;
+      void startVisit();
+      scheduleIdleEnd();
+    }, 1500);
 
     return () => {
       const visit = active;
@@ -253,6 +277,7 @@ export function useSessionDurationTracking({
       if (visit) updateWithKeepalive(visit, durationPatch(visit, Date.now()));
       disposed = true;
       recordAppOpenRef.current = () => undefined;
+      window.clearTimeout(initialStartTimer);
       if (idleTimer) clearTimeout(idleTimer);
       if (heartbeatTimer) clearInterval(heartbeatTimer);
       activityEvents.forEach((eventName) => window.removeEventListener(eventName, noteActivity));

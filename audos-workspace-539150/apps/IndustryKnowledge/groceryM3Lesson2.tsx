@@ -1,0 +1,202 @@
+import { G3DeepDive, citeG3, g3Chapter, g3Quiz } from './groceryM3Core';
+import type { GroceryM3LessonBundle } from './groceryM3Core';
+
+const LESSON = '2. Products, Services & Segmentation';
+
+const deck = [
+  g3Chapter({
+    title: 'Grocery and Food Products', chapterTitle: LESSON, readingTime: '6',
+    objective: 'List the main grocery product groups and explain why each needs its own handling, replenishment and waste control.',
+    mateIntro: 'Vegetables, rice, ice cream and bottled water share one shop but not one set of rules. Some spoil in days, some last for months, and each needs different care.',
+    keyInsight: 'Grocery retail requires a balance between product freshness, availability, affordability, and waste control. Product-level management is essential because different food categories have distinct demand patterns, shelf lives, and margin profiles.',
+    statTiles: [
+      { value: '6', label: 'Key grocery product groups', subtitle: 'Fresh food to private-label food', description: 'Fresh food, packaged food, dairy and bakery, frozen products, beverages and private-label food.' },
+      { value: '~40%', label: 'Fresh food share of Bach Hoa Xanh products in 2024', subtitle: 'A share of the range, not of sales', description: 'VnExpress reported fresh food as about 40% of the chain’s products.' },
+      { value: '5–15%', label: 'Bach Hoa Xanh fresh-food sales growth in 2025', subtitle: 'FMCG grew 5–20%', description: 'The company reported growth in most main categories while the wider FMCG market grew only slightly.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the fresh-food share describes the range and the growth rates are company-reported ranges, so neither gives fresh food’s exact share of sales.',
+    narrative: [
+      { label: 'What it is', text: 'Grocery products include fresh produce, meat, seafood, dairy, bakery products, packaged foods, beverages, frozen products and other food essentials. Their retail characteristics vary with perishability, storage conditions, purchase frequency, safety requirements and sensitivity to price changes. Retailers must manage different product flows in the same store: fresh products need careful handling and frequent replenishment, while shelf-stable goods allow longer storage and may support larger purchasing quantities.' },
+      { label: 'Why it is happening', text: 'Shoppers expect fresh food to be fresh and staples to be affordable and always available. Each food category sells differently and loses value at a different speed, so one rule for the whole store does not work.' },
+      { label: 'Real-world example', text: 'Retailers manage produce, meat, seafood and other products needing close quality control; sell cereals, snacks, sauces, canned foods and convenience meals; coordinate replenishment, freshness and expiry dates for dairy and bakery; keep cold-chain integrity for frozen products; manage drinks categories such as water, soft drinks, coffee and tea; and offer retailer-branded staples and snacks.' },
+      { label: 'Vietnam example', text: 'VnExpress reported fresh food at about 40% of Bach Hoa Xanh’s products in 2024, and the chain’s 150–200 square metre stores were reaching capacity. For 2025, Mobile World Group reported fresh-food growth of about 5–15% and FMCG growth of 5–20% at Bach Hoa Xanh, and linked the chain’s results to better fresh-food quality and lower wastage. Saigon Co.op’s private-label food includes Co.op Finest ST25 rice and GlobalG.A.P. vegetables.' },
+      { label: 'Business impact', text: 'Product-level management of sourcing, storage, pricing and replenishment lets retailers hold freshness and availability without letting waste erode margin. A category that spoils quickly needs a different order cycle from one that keeps.' },
+    ],
+    visualKind: 'grocery-m3-21-grocery-products', visualHeading: 'Six food product flows and the control each needs',
+    visualIntro: 'See six grocery product groups around the assortment and the key control each requires.',
+    imageAlt: 'Casemate orbit mind map of six grocery product groups and the key control each needs',
+    keyTerms: [
+      { term: 'Perishable', definition: 'A product that loses quality or safety quickly if not sold or stored correctly.' },
+      { term: 'Shelf-stable', definition: 'A product that keeps for a long time without refrigeration.' },
+      { term: 'Expiry date', definition: 'The date after which a product should not be sold or used.' },
+      { term: 'Cold chain', definition: 'Temperature-controlled storage and transport from supplier to shelf.' },
+    ],
+    recap: [
+      'Grocery covers fresh, packaged, dairy and bakery, frozen, beverages and private-label food.',
+      'Fresh products need frequent replenishment and close quality control.',
+      'Shelf-stable goods allow longer storage and larger purchase quantities.',
+      'Each category has its own demand pattern, shelf life and margin profile.',
+    ],
+    chapterRecap: 'Grocery products form the core assortment of food-oriented retailers. Their management requires category-specific sourcing, storage, pricing, and replenishment strategies.',
+    deepDiveTitle: 'Why fresh and shelf-stable goods need different order cycles',
+    body: <G3DeepDive paragraphs={[
+      'A tray of vegetables must be ordered close to demand because every extra day lowers quality and raises the chance of waste. A case of canned goods can be ordered in larger quantities less often, because it loses nothing on the shelf.',
+      'The same store therefore runs several order cycles at once. Getting each category’s cycle right is how a retailer keeps shelves full and waste low at the same time.',
+    ]} evidence="The product groups are described qualitatively in the supplied material. The fresh-food share is from VnExpress International, the growth ranges and wastage are from VnExpress and Mobile World Group’s reporting, and the private-label examples are from Saigon Co.op as reported by Vietnam.vn." />,
+    sources: citeG3('vnexpressFirstProfits', 'vnexpressBhx', 'mwgBusiness2025', 'coopPrivateLabel'),
+  }),
+  g3Chapter({
+    title: 'General Merchandise and Household Essentials', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe the role of non-food products in a grocery retailer and the inventory risk that broad ranges create.',
+    mateIntro: 'Detergent, storage boxes and school supplies last longer than lettuce. They add to the basket but can also sit unsold if the range grows too wide.',
+    keyInsight: 'General merchandise expands the retailer’s revenue opportunities beyond food, but excessive assortment breadth can tie up working capital and increase the risk of slow-moving inventory.',
+    statTiles: [
+      { value: '6', label: 'Key general merchandise activities', subtitle: 'Household essentials to range rationalisation', description: 'Household essentials, kitchen and storage, personal care, stationery and seasonal goods, small appliances and assortment rationalisation.' },
+      { value: '5–20%', label: 'Non-food share of products across MM Mega Market formats', subtitle: 'Cash and carry 10%, supermarket 20%', description: 'Depots about 5%, hypermarket about 15%, as presented in 2025.' },
+      { value: '30,000', label: 'Products in an MM Mega Market cash-and-carry store', subtitle: 'About 90% food', description: 'Shows how a very wide range is still mostly food even in a wholesale format.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the format shares and range sizes are from an investor presentation by MM Mega Market’s prospective owner and describe one company’s product counts, not sales.',
+    narrative: [
+      { label: 'What it is', text: 'General merchandise includes non-food products such as cleaning supplies, kitchenware, storage products, stationery, personal-care goods, small household accessories and selected consumer electronics. The category often has a longer shelf life than fresh groceries, but demand can be more sensitive to trends, product launches, seasonality and discretionary spending. Retailers may combine these products with food to increase basket size and encourage one-stop shopping, or operate specialised stores focused on particular merchandise categories.' },
+      { label: 'Why it is happening', text: 'Adding non-food products to a food shop raises what a customer can buy in one trip. Because many non-food items sell more slowly, each extra product also adds stock that must be financed and stored.' },
+      { label: 'Real-world example', text: 'Retailers sell cleaning products, tissues and detergents; cookware, utensils and containers; toiletries and hygiene products; school supplies and holiday goods; selected small appliances and accessories; and remove underperforming items to prioritise products with stronger demand.' },
+      { label: 'Vietnam example', text: 'MM Mega Market’s presentation shows food dominating even broad ranges: about 30,000 products in its cash-and-carry stores are about 90% food and 10% non-food, its Hanoi supermarket is 80% food and 20% non-food, and its Da Nang hypermarket is 85% food and 15% non-food. Saigon Co.op’s private-label lines extend into cosmetics, baby care and home products such as Co.op Select laundry detergent and Co.op Finest biodegradable wet wipes, with repeat purchase of 70–80% for essential groups such as laundry detergent.' },
+      { label: 'Business impact', text: 'General merchandise broadens the range and can raise basket value. Category management helps retailers balance choice with inventory productivity and margin, so that extra range does not become extra unsold stock.' },
+    ],
+    visualKind: 'grocery-m3-22-general-merchandise', visualHeading: 'Six general merchandise activities and what each requires',
+    visualIntro: 'See six non-food activities branching from the centre and what each requires the retailer to watch.',
+    imageAlt: 'Casemate tree mind map of six general merchandise activities and what to watch for each',
+    keyTerms: [
+      { term: 'General merchandise', definition: 'Non-food products such as household goods, kitchenware, stationery and small appliances.' },
+      { term: 'Basket size', definition: 'The total value or number of items in one customer purchase.' },
+      { term: 'Slow-moving inventory', definition: 'Stock that sells slowly and ties up cash and space.' },
+      { term: 'Assortment rationalisation', definition: 'Removing weak products to focus space and capital on stronger ones.' },
+    ],
+    recap: [
+      'General merchandise adds non-food products to the revenue base.',
+      'It usually keeps longer than fresh food but follows trends and seasons.',
+      'Excessive breadth ties up working capital.',
+      'Rationalising the range keeps inventory productive.',
+    ],
+    chapterRecap: 'General merchandise broadens retail assortment and can increase basket value. Effective category management helps retailers balance customer choice with inventory productivity and margin performance.',
+    deepDiveTitle: 'Why a longer shelf life is not the same as lower risk',
+    body: <G3DeepDive paragraphs={[
+      'A product that does not spoil can still lose value if it goes out of fashion, is replaced by a new model or misses its season. The cost shows up as markdowns and as cash tied up in stock that does not sell.',
+      'Reviewing sales, margin and stock cover by product shows which items earn their space and which should be removed, which is why range reviews are a regular task rather than a one-off.',
+    ]} evidence="The activities are described qualitatively in the supplied material. Format and range figures are from an investor presentation by MM Mega Market’s prospective owner, and the private-label and repeat-purchase figures are company statements reported by Vietnam.vn." />,
+    sources: citeG3('bjcMmvn', 'coopPrivateLabel'),
+  }),
+  g3Chapter({
+    title: 'Product Categories by Purchasing Frequency and Demand Characteristics', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Segment products by purchasing behaviour and explain how that changes stock, space and promotion decisions.',
+    mateIntro: 'Rice and eggs are bought every week. A festival gift or a new gadget is not. Treating them the same wastes space and money.',
+    keyInsight: 'Product segmentation should reflect consumer purchasing behavior and operating requirements, not simply the physical type of product. This allows retailers to allocate space, inventory, and promotional resources more effectively.',
+    statTiles: [
+      { value: '6', label: 'Demand-based product groups', subtitle: 'FMCG to long-tail assortment', description: 'Fast-moving consumer goods, staples, impulse purchases, seasonal products, discretionary merchandise and long-tail assortment.' },
+      { value: '90%+', label: 'Increase in sales of some products around Tet', subtitle: 'Versus the pre-Tet period', description: 'NielsenIQ reports that some products see Tet sales surge by over 90% in northern Vietnam.' },
+      { value: '70–80%', label: 'Repeat purchase of essentials at Saigon Co.op', subtitle: 'Rice, cooking oil, laundry detergent', description: 'Company-reported repeat-buying rates for essential product groups.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the Tet figure is a NielsenIQ observation for certain products and the repeat rate is a company statement, so neither applies to every category or retailer.',
+    narrative: [
+      { label: 'What it is', text: 'Retailers can segment products by how often consumers buy them, how much they usually spend and how they compare alternatives. Everyday essentials tend to generate recurring demand, while seasonal or discretionary products may sell more variably. These differences influence stocking policies, promotion, shelf allocation, pricing and supplier relationships, so one business may need separate approaches for high-frequency necessities and occasional purchases.' },
+      { label: 'Why it is happening', text: 'Frequent purchases are habits and are judged on availability and price, while occasional purchases are compared and timed. Treating all products alike misallocates space, stock and promotion money.' },
+      { label: 'Real-world example', text: 'Retailers manage frequently bought food, drinks, toiletries and household products as FMCG; keep rice, cooking oil, eggs and other essentials reliably available; place snacks and small accessories in high-visibility spots as impulse items; adjust stock for holidays, festivals, school seasons and weather; manage discretionary goods that customers may delay or compare; and offer niche long-tail products with lower individual volumes.' },
+      { label: 'Vietnam example', text: 'NielsenIQ reports that in northern Vietnam some products see Tet sales surge by more than 90% over pre-Tet periods, an extreme seasonal peak. Saigon Co.op reports repeat-purchase rates of 70–80% for essentials such as rice, cooking oil and laundry detergent, showing the steady demand behind staple categories, and its seasonal promotions, such as discounts on local specialties and OCOP products, show how campaigns follow demand peaks.' },
+      { label: 'Business impact', text: 'Demand-based segmentation matches inventory and merchandising to purchasing patterns. It supports better use of retail space, working capital and promotional budgets, and reduces the risk of overstocking items that sell only at certain times.' },
+    ],
+    visualKind: 'grocery-m3-23-demand', visualHeading: 'Mapping product groups by purchase frequency and demand variability',
+    visualIntro: 'See six product groups placed by how often they are bought and how steady their demand is.',
+    imageAlt: 'Casemate matrix placing six product groups by purchase frequency and demand variability',
+    keyTerms: [
+      { term: 'FMCG', definition: 'Fast-moving consumer goods that are bought often and sell quickly.' },
+      { term: 'Staple', definition: 'An essential product that households buy regularly, such as rice or cooking oil.' },
+      { term: 'Impulse purchase', definition: 'A low-consideration item bought on the spot.' },
+      { term: 'Long tail', definition: 'Many niche products that each sell in small volumes.' },
+    ],
+    recap: [
+      'Segment products by how customers buy, not just by type.',
+      'Essentials give recurring demand; seasonal and discretionary items vary.',
+      'Segmentation guides stocking, shelf space, pricing and promotion.',
+      'Different groups need different management approaches.',
+    ],
+    chapterRecap: 'Demand-based segmentation helps retailers match inventory and merchandising decisions to purchasing patterns. It supports more effective use of retail space, working capital, and promotional budgets.',
+    deepDiveTitle: 'Why impulse items sit near the checkout and staples sit deep in the store',
+    body: <G3DeepDive paragraphs={[
+      'Staples are bought on purpose, so customers will walk to find them and the retailer can place them where they best support the shopper’s route through the store. Impulse items depend on being seen, so they go where many customers pass.',
+      'Seasonal goods need a plan for both the build-up and the clearance, since stock left after the season ends must be sold at a loss or carried at a cost.',
+    ]} evidence="The product groups are described qualitatively in the supplied material. The Tet observation is from NielsenIQ, and repeat-purchase rates and campaigns are company statements reported by Vietnam.vn and The Hanoi Times." />,
+    sources: citeG3('niqTariffs', 'coopPrivateLabel', 'hanoitimesPromo'),
+  }),
+  g3Chapter({
+    title: 'Value Tiers, Brands, and Assortment Positioning', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how price tiers, national brands and private labels combine into a coherent assortment.',
+    mateIntro: 'A good assortment tells shoppers why they should come to your store: lowest prices, a trusted brand or something special. Too many look-alike products blur that message.',
+    keyInsight: 'A coherent assortment creates a clear reason for customers to shop at a particular retailer. Offering too many overlapping products can increase complexity without generating sufficient incremental sales.',
+    statTiles: [
+      { value: '6', label: 'Key assortment positioning activities', subtitle: 'Economy tier to assortment optimisation', description: 'Economy, mainstream and premium tiers, national brands, private labels and assortment optimisation.' },
+      { value: '3', label: 'Saigon Co.op private-label lines', subtitle: 'Co.op Happy, Select and Finest', description: 'Essentials, mainstream and higher-quality tiers under one retailer.' },
+      { value: '15–30%', label: 'Price gap of Saigon Co.op private label', subtitle: 'Below comparable market products', description: 'A company-reported gap that varies by item.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the tier names and price gap are company statements reported by a Vietnamese business magazine and Vietnam.vn, and early reporting cited a smaller gap of 5–20%.',
+    narrative: [
+      { label: 'What it is', text: 'Retailers structure assortments across price and quality tiers to serve consumers with different budgets and expectations. Common approaches include economy, mainstream, premium, national-brand and private-label offerings. The right mix depends on positioning, target customers, local competition, purchasing power and store format: a discount retailer may emphasise low prices and a narrower range, while a premium-oriented retailer may focus on provenance, specialty selections and differentiated service.' },
+      { label: 'Why it is happening', text: 'Customers differ in budget and in what they value, so a retailer needs a clear position and a range that supports it. Too many overlapping products add cost and complexity without adding sales.' },
+      { label: 'Real-world example', text: 'Retailers provide affordable essentials and entry-level alternatives; widely used products at competitive prices; specialty, imported, organic or gourmet products where demand supports them; established manufacturer brands that attract recognition and trust; retailer-owned alternatives at chosen price and quality points; and review sales, margin, availability and preferences to decide the range.' },
+      { label: 'Vietnam example', text: 'Saigon Co.op now runs three private-label lines: Co.op Happy for essentials at saving prices, Co.op Select for mainstream needs balancing price, quality and utility, and Co.op Finest for customers who want higher-quality ingredients and experience, priced about 15–30% below comparable products. NielsenIQ describes a polarised Vietnamese FMCG market in which some consumers trade down in categories such as home care while others trade up in categories such as milk-based products, and 64% say they would pay more for restaurant-quality experiences at home.' },
+      { label: 'Business impact', text: 'Tiering lets a retailer serve different needs while differentiating its proposition. Effective assortment design balances choice, affordability, brand appeal and operational simplicity, and keeps the range from growing without purpose.' },
+    ],
+    visualKind: 'grocery-m3-24-tiers', visualHeading: 'How tiers, brands and private labels build one assortment',
+    visualIntro: 'See five assortment layers from premium to private label and the role each plays.',
+    imageAlt: 'Casemate pyramid of five assortment layers from premium tier to private labels and their roles',
+    keyTerms: [
+      { term: 'Price tier', definition: 'A band of products grouped by price and quality, such as economy, mainstream or premium.' },
+      { term: 'National brand', definition: 'An established manufacturer brand sold across many retailers.' },
+      { term: 'Positioning', definition: 'The clear reason a retailer gives customers to choose it.' },
+      { term: 'Assortment optimisation', definition: 'Choosing the range by sales, margin, availability and customer preference.' },
+    ],
+    recap: [
+      'Assortments are built across economy, mainstream and premium tiers.',
+      'National brands and private labels play different roles.',
+      'Positioning depends on target customers, competition and format.',
+      'Overlapping products add complexity without enough extra sales.',
+    ],
+    chapterRecap: 'Product positioning helps retailers serve different needs while differentiating their value proposition. Effective assortment design balances choice, affordability, brand appeal, and operational simplicity.',
+    deepDiveTitle: 'Why more brands do not always mean more sales',
+    body: <G3DeepDive paragraphs={[
+      'If a shelf holds five near-identical products at the same price, most customers pick one and the other four add stock, ordering and handling without adding sales. Removing the weakest creates room for something that serves a different need.',
+      'A clear tier structure helps customers choose quickly and gives the retailer a place for each product, so growth in range comes from filling gaps rather than adding copies.',
+    ]} evidence="The tiers are described qualitatively in the supplied material. Private-label lines and price gaps are company statements reported by a Vietnamese business magazine and Vietnam.vn, and the consumer findings are from NielsenIQ." />,
+    sources: citeG3('coopPrivateLabel2500', 'coopPrivateLabel', 'niqTariffs', 'hanoitimesPromo'),
+  }),
+];
+
+const quiz = g3Quiz('grocery-m3-l2', [
+  { chapter: '1', objective: 'Describe grocery product groups', question: 'Which of these is a core grocery product group?', application: 'A store sells vegetables, rice and ice cream. Which groups do these belong to?', correct: 'Fresh food, packaged food and frozen products', wrong: ['Only general merchandise', 'Only electronics', 'Only services'], explanation: 'Grocery covers fresh, packaged, frozen and other food groups. Review Chapter 1.' },
+  { chapter: '1', objective: 'Explain category-level management', question: 'Why is product-level management essential in grocery?', application: 'Fresh produce and canned goods sit in the same store. What differs?', correct: 'Different food categories have distinct demand patterns, shelf lives and margin profiles', wrong: ['All foods behave the same', 'Only price matters', 'Only brand matters'], explanation: 'Shelf life and demand differ by category. Review Chapter 1.' },
+  { chapter: '1', objective: 'Balance freshness and waste', question: 'What balance does grocery retail require?', application: 'A store wants fresh stock without throwing away unsold goods. What must it balance?', correct: 'Freshness, availability, affordability and waste control', wrong: ['Size and colour', 'Brand and advertising only', 'Rent and wages only'], explanation: 'These four pull against each other. Review Chapter 1.' },
+  { chapter: '2', objective: 'Define general merchandise', question: 'Which of these is general merchandise?', application: 'A supermarket sells detergent, containers and notebooks. What are these?', correct: 'Non-food products such as cleaning supplies, kitchenware and stationery', wrong: ['Fresh meat and seafood', 'Dairy products', 'Frozen food'], explanation: 'General merchandise covers non-food items. Review Chapter 2.' },
+  { chapter: '2', objective: 'Identify the risk of breadth', question: 'What risk does an excessively broad general merchandise range create?', application: 'A store adds hundreds of slow-selling non-food items. What happens?', correct: 'It ties up working capital and raises the risk of slow-moving inventory', wrong: ['It guarantees higher profit', 'It removes the need for forecasting', 'It reduces storage costs'], explanation: 'Each added item needs stock and space. Review Chapter 2.' },
+  { chapter: '3', objective: 'Segment by behaviour', question: 'On what should product segmentation be based?', application: 'A retailer groups products only by physical type. What is missing?', correct: 'Consumer purchasing behaviour and operating requirements', wrong: ['Package colour only', 'Supplier country only', 'Store opening date'], explanation: 'Behaviour and operating needs drive decisions. Review Chapter 3.' },
+  { chapter: '3', objective: 'Recognise seasonal demand', question: 'How should a retailer treat seasonal products?', application: 'A product sells strongly only near a festival. What should the retailer do?', correct: 'Adjust inventory to holidays, festivals, school seasons or weather', wrong: ['Stock the same amount all year', 'Never stock them', 'Price them below cost always'], explanation: 'Seasonal demand needs a plan for build-up and clearance. Review Chapter 3.' },
+  { chapter: '4', objective: 'Name the tiers', question: 'Which tiers do retailers commonly combine in an assortment?', application: 'A store offers basic, standard and higher-quality versions. What is this structure?', correct: 'Economy, mainstream, premium, national-brand and private-label offerings', wrong: ['Only luxury goods', 'Only one price level', 'Only imported goods'], explanation: 'Tiers serve different budgets. Review Chapter 4.' },
+  { chapter: '4', objective: 'Explain assortment coherence', question: 'Why does a coherent assortment matter?', application: 'A shelf holds many near-identical products. What is the effect?', correct: 'It gives customers a clear reason to shop there; overlapping products add complexity without enough extra sales', wrong: ['More overlapping products always raise sales', 'Assortment has no effect on loyalty', 'Only price matters'], explanation: 'Clear positioning supports choice. Review Chapter 4.' },
+  { chapter: '4', objective: 'Differentiate positioning', question: 'How might a discount retailer differ from a premium-oriented one?', application: 'Two stores serve different customers. How do they differ?', correct: 'Discount emphasises low prices and a narrower range; premium emphasises provenance, specialty selections and service', wrong: ['They are identical', 'Discount always has more services', 'Premium has no brands'], explanation: 'Assortment follows positioning. Review Chapter 4.' },
+]);
+
+export const LESSON_G3_2: GroceryM3LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can describe the main product groups, explain the role and risk of general merchandise, segment products by purchasing behaviour and build a coherent tiered assortment.',
+    keyTakeaways: [
+      'Grocery balances freshness, availability, affordability and waste control by category.',
+      'General merchandise broadens revenue but can tie up working capital if the range is too wide.',
+      'Segment products by how customers buy, not only by what they are.',
+      'A coherent assortment gives customers a clear reason to shop at a retailer.',
+      'Tiers, national brands and private labels each play a role in positioning.',
+    ],
+    businessImplications: 'Manage each category with its own sourcing, storage and replenishment, rationalise ranges regularly, and design tiers and brands around a clear positioning.',
+    remember: 'Manage products by behaviour and give the range a clear purpose.',
+    nextLesson: 'Customer Segments & Needs',
+  },
+};

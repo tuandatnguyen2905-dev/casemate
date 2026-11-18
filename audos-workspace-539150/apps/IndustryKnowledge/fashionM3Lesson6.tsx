@@ -1,0 +1,202 @@
+import { F3DeepDive, citeF3, f3Chapter, f3Quiz } from './fashionM3Core';
+import type { FashionM3LessonBundle } from './fashionM3Core';
+
+const LESSON = '6. Industry Ecosystem & Stakeholders';
+
+const deck = [
+  f3Chapter({
+    title: 'Brands, Manufacturers and Suppliers', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Identify the upstream participants in the fashion ecosystem and explain how brands coordinate them.',
+    mateIntro: 'A pair of trainers on a shelf is the end of a long chain of people: a brand that designed it, suppliers of materials and parts, and a factory that made it. Each one has to deliver for the product to arrive.',
+    keyInsight: 'The operational core of the fashion ecosystem is the relationship between brands that set requirements and the manufacturers and suppliers that meet them. Reliable coordination between commercial needs and production capability supports quality, efficiency and resilience.',
+    statTiles: [
+      { value: '6', label: 'Upstream participants', subtitle: 'Brand owners to compliance', description: 'Brand owners, raw material suppliers, component manufacturers, contract manufacturers, development partners and compliance functions.' },
+      { value: 'US$44B', label: 'Vietnam textile and garment exports, 2024', subtitle: 'VITAS figure as reported', description: 'Shows the scale of the production base that international brands draw on.' },
+      { value: 'US$27B+', label: 'Vietnam footwear and leather exports, 2024', subtitle: 'LEFASO data as reported', description: 'Reported with a note that domestic added value in contract manufacturing is limited.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the export values are national trade-association figures for 2024, as reported by Vietnamese news outlets, and cover whole industries rather than fashion retail.',
+    narrative: [
+      { label: 'What it is', text: 'Brand owners define positioning, design direction, intellectual property and commercial strategy. Raw material suppliers provide fibres, textiles, leather, rubber and synthetic materials; component manufacturers make zippers, soles, cushioning systems and fasteners; contract manufacturers assemble finished goods to agreed specification and quality; development partners support prototyping, engineering and material testing; and compliance functions check labour, safety, environmental and contractual requirements.' },
+      { label: 'Why it is happening', text: 'Few brands make everything themselves. Specialist producers offer capacity, skill and cost advantages, so brands concentrate on design, marketing and customer relationships and manage a network of partners. That creates dependency, which is why coordination, specification and supplier compliance matter as much as price.' },
+      { label: 'Real-world example', text: 'A sportswear brand specifies a new running shoe, material suppliers and component makers provide the upper, sole and cushioning, a contract manufacturer assembles it, and development partners test it for durability and performance. Throughout, the brand audits suppliers on labour, safety and environmental standards, and the quality of the shoe depends on every link keeping to the specification.' },
+      { label: 'Vietnam example', text: 'Vietnam’s textile and garment exports reached about US$44 billion in 2024 according to VITAS figures reported by VietnamPlus, and footwear and leather exports passed US$27 billion according to LEFASO data. The same reporting notes that domestic added value in contract footwear manufacturing is limited, because much of the material is imported and the brand owns the design and the customer.' },
+      { label: 'Business impact', text: 'Brands that coordinate commercial requirements with production capability, and manage suppliers for quality, capacity and compliance, are better placed to deliver consistently and respond to disruption. Suppliers that move from making to specification toward development and design capture more of the value.' },
+    ],
+    visualKind: 'fashion-m3-61-upstream', visualHeading: 'The operational core of the ecosystem',
+    visualIntro: 'See what each upstream participant contributes and the relationship to manage.',
+    imageAlt: 'Casemate table of brand owners, suppliers and manufacturers with their contribution and relationship to manage',
+    keyTerms: [
+      { term: 'Brand owner', definition: 'The company that sets positioning, design direction and strategy and owns the consumer brand.' },
+      { term: 'Contract manufacturer', definition: 'A producer that makes finished goods to another company’s specification.' },
+      { term: 'Component manufacturer', definition: 'A producer of parts such as zippers, soles or cushioning systems.' },
+      { term: 'Supplier compliance', definition: 'Checks that suppliers meet labour, safety, environmental and contractual requirements.' },
+    ],
+    recap: [
+      'Brands set requirements; manufacturers and suppliers meet them.',
+      'Six participants make up the upstream network.',
+      'Coordination supports quality, efficiency and resilience.',
+      'Supplier compliance sits alongside cost and capacity.',
+    ],
+    chapterRecap: 'Brands, manufacturers and suppliers form the operational core of the fashion ecosystem. Reliable coordination between commercial requirements and production capability supports quality, efficiency and supply-chain resilience.',
+    deepDiveTitle: 'Why a supplier relationship is more than a price list',
+    body: <F3DeepDive paragraphs={[
+      'A brand that treats suppliers as interchangeable price quotes risks late deliveries, quality problems and compliance failures that reach customers under its own name. A brand that shares forecasts, specifications and development plans gets better quality and more reliable lead times in return.',
+      'Compliance programmes such as factory-level audits and improvement schemes sit within the relationship, because a brand is judged on how its products are made as well as how they look.' ,
+    ]} evidence="The ecosystem roles are described qualitatively in the supplied material. The export values are trade-association figures for 2024 reported by Vietnamese news outlets and cover whole industries, not only the supply to fashion retail brands." />,
+    sources: citeF3('bofStateOfFashion', 'vietnamPlusTextile', 'lefasoFootwear', 'betterWork'),
+  }),
+  f3Chapter({
+    title: 'Retailers, Distributors and E-commerce Platforms', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain what each intermediary adds between brand and customer and what it can take in return.',
+    mateIntro: 'Between most brands and most shoppers stands a middleman, and the middleman is rarely idle. A distributor, a department store or a marketplace each supplies something the brand lacks and charges for it.',
+    keyInsight: 'Intermediaries give brands market access, local knowledge, traffic and logistics, but they also take margin, customer data or control of presentation. Brands should choose partners whose reach, incentives and service match their market strategy and the level of control they want to keep.',
+    statTiles: [
+      { value: '5', label: 'Intermediary types', subtitle: 'Distributors to marketplaces', description: 'Distributors and importers, department stores, specialty retailers, multi-brand retailers and e-commerce marketplaces.' },
+      { value: 'US$2.4B', label: 'Fashion and accessories online GMV, H1 2025', description: 'Sold largely through online platforms in Vietnam, which shows the scale of the marketplace intermediary.' },
+      { value: '20+', label: 'Planned H&M stores in Vietnam', subtitle: 'Reported expansion plan', description: 'An international retailer investing in direct presence rather than relying on partners alone.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the other two are platform-level and company-reported figures that illustrate the intermediary landscape and are not market totals.',
+    narrative: [
+      { label: 'What it is', text: 'Distributors and importers provide market entry, local logistics and retailer relationships; department stores and multi-brand fashion retailers provide a shared environment with traffic and curated choice; specialty retailers add category expertise; and e-commerce marketplaces provide traffic, payments and selected fulfilment. In return they take margin, fees, a say over presentation and, often, the direct relationship with the customer.' },
+      { label: 'Why it is happening', text: 'A brand entering a new market rarely has the stores, local knowledge or customer base to reach shoppers alone. Intermediaries solve that problem quickly and with less capital, and that convenience is what the brand pays for in margin and control.' },
+      { label: 'Real-world example', text: 'A sportswear brand may enter a country through a distributor that handles imports, logistics and retail accounts, supply sporting-goods retailers and department stores for reach, and list on marketplaces for discovery. As it grows it may open its own stores and apps to keep more margin and customer data, and keep the intermediaries where they still add value.' },
+      { label: 'Vietnam example', text: 'Online, fashion and accessories was Vietnam’s largest category in the first half of 2025 at about US$2.4 billion of gross merchandise value, with Shopee and TikTok Shop attracting different generations. Government-portal reporting also describes H&M planning more than 20 stores in Vietnam, an example of an international retailer building direct presence in a market where marketplaces and distributors already operate.' },
+      { label: 'Business impact', text: 'The choice of intermediary shapes margin, control and customer data for years. Brands that match partners to market strategy, and review the balance as their scale grows, keep the benefits of reach without losing the relationships that sustain the brand.' },
+    ],
+    visualKind: 'fashion-m3-62-intermediaries', visualHeading: 'Reach versus control: where each intermediary sits',
+    visualIntro: 'See how wider market reach usually costs a brand control of margin, data or presentation.',
+    imageAlt: 'Casemate matrix of own stores, specialty retailers, department stores, multi-brand retailers, distributors and marketplaces by reach and brand control',
+    keyTerms: [
+      { term: 'Distributor', definition: 'A company that buys from a brand and sells onward, often handling imports and local logistics.' },
+      { term: 'Importer', definition: 'A company that brings goods into a market and meets customs and regulatory requirements.' },
+      { term: 'Multi-brand retailer', definition: 'A retailer that curates and sells products from several brands.' },
+      { term: 'Channel conflict', definition: 'Tension that arises when a brand’s channels compete for the same customer or price.' },
+    ],
+    recap: [
+      'Intermediaries supply access, local knowledge, traffic and logistics.',
+      'They can take margin, customer data and control of presentation.',
+      'Choose partners that match market strategy and desired control.',
+      'Review the balance as the brand grows.',
+    ],
+    chapterRecap: 'Retailers, distributors and e-commerce platforms connect brands with customers. Brands should choose partners whose reach, incentives and service quality match their market strategy and desired level of control.',
+    deepDiveTitle: 'Why the right partner changes as a brand grows',
+    body: <F3DeepDive paragraphs={[
+      'A distributor is often the fastest way into a new country, and a poor choice once the brand is big enough to run its own operation. The early benefits of speed and local knowledge turn into costs in margin and lost customer data.',
+      'Brands often plan this transition from the start, agreeing performance targets, data sharing and review points so that they can bring functions in-house when the time is right.' ,
+    ]} evidence="The intermediary roles are described qualitatively in the supplied material. The GMV figure is platform-level data for the first half of 2025, and the H&M plan comes from a government-portal report; neither describes the whole market." />,
+    sources: citeF3('bofStateOfFashion', 'cimigoEcommerce', 'hmVietnam', 'deloitteRetail'),
+  }),
+  f3Chapter({
+    title: 'Technology, Logistics and Service Providers', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe the specialist providers that support fashion retail and the dependencies they create.',
+    mateIntro: 'Behind a smooth order sits a stack of services the customer never sees: systems that track stock, couriers, payment processors and security. Outsource them well and you gain capability. Outsource them badly and you gain a single point of failure.',
+    keyInsight: 'Technology, logistics and service providers extend a retailer’s capability without requiring it to build everything itself. They also create dependency, so reliable execution, integration and governance decide whether outsourcing improves efficiency.',
+    statTiles: [
+      { value: '7', label: 'Provider categories', subtitle: 'Systems to cybersecurity', description: 'Enterprise systems, retail technology, logistics, payments, marketing and analytics, returns and repair, and cybersecurity.' },
+      { value: '100+', label: 'Canifa stores on a unified engagement platform', subtitle: 'Vendor case study', description: 'Shows a Vietnamese brand using a specialist provider to join online and offline customer data.' },
+      { value: '1 Jun 2025', label: 'Vietnam e-invoice rules took effect', subtitle: 'Decree 70/2025', description: 'Order and payment systems, often supplied by providers, have to meet the rules.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the Canifa figure comes from a vendor case study and the date is the effective date of an official decree.',
+    narrative: [
+      { label: 'What it is', text: 'Enterprise systems such as ERP, PLM, WMS and OMS support finance, product development, warehouses and orders; retail technology covers point of sale, CRM and analytics; logistics providers handle freight, warehousing and last-mile delivery; payment services secure transactions and prevent fraud; marketing and analytics firms run campaigns and measurement; returns and repair services inspect, repair, resell or recycle products; and cybersecurity providers protect access and data.' },
+      { label: 'Why it is happening', text: 'Building every capability in-house is slow and costly, and specialists can offer scale, expertise and constant upgrades. Retailers therefore buy capability from providers and concentrate on brand, product and customer, while accepting dependence on providers’ performance and stability.' },
+      { label: 'Real-world example', text: 'A retailer uses an order management system to route online orders to the nearest store, a third-party logistics firm for warehousing and delivery, a payment provider for secure checkout and fraud checks, and a returns partner to inspect and resell goods. When the systems share data well, orders flow smoothly, and when they do not, stock records, delivery promises and customer service all suffer.' },
+      { label: 'Vietnam example', text: 'Canifa, which operates more than 100 stores and an app, uses a customer engagement platform from CleverTap to combine online and offline data, according to a vendor case study. Vietnam’s e-invoice rules under Decree 70/2025 took effect on 1 June 2025, which means the order and payment systems that retailers buy from providers have to produce documents that meet the requirements.' },
+      { label: 'Business impact', text: 'Specialist providers extend capability and can reduce cost, but reliable execution, integration and governance determine whether they improve efficiency. Retailers should assess providers on performance, data quality, security and the cost of switching, because dependency is the price of outsourcing.' },
+    ],
+    visualKind: 'fashion-m3-63-services', visualHeading: 'Outsourced capability, and the dependency it creates',
+    visualIntro: 'See what each provider supports and the dependency it creates.',
+    imageAlt: 'Casemate table of technology, logistics and service providers and the dependency each creates',
+    keyTerms: [
+      { term: 'ERP', definition: 'Enterprise resource planning software that runs finance and core business processes.' },
+      { term: 'WMS and OMS', definition: 'Warehouse management and order management systems that control stock and orders.' },
+      { term: 'Last-mile delivery', definition: 'The final stage of delivery from a local hub to the customer.' },
+      { term: 'Switching cost', definition: 'The cost and effort of changing from one provider to another.' },
+    ],
+    recap: [
+      'Providers extend capability without building everything in-house.',
+      'Seven categories range from enterprise systems to cybersecurity.',
+      'Outsourcing creates dependency on performance and data quality.',
+      'Integration and governance decide whether it improves efficiency.',
+    ],
+    chapterRecap: 'Technology, logistics and service providers extend retailers’ capabilities. Reliable execution, system integration and governance determine whether these partnerships improve efficiency, customer experience and resilience.',
+    deepDiveTitle: 'Why integration matters more than the individual tool',
+    body: <F3DeepDive paragraphs={[
+      'A strong tool that does not share data with the others still leaves gaps: stock numbers that differ between systems, orders that cannot be routed and customer records that never join up. Problems that look like service failures are often integration failures.' ,
+      'Retailers therefore judge providers on how well they connect with the existing stack, how they handle data and security, and how easily the relationship can be changed, not on features alone.',
+    ]} evidence="The provider categories are described qualitatively in the supplied material. The Canifa details come from a vendor case study, so they are illustrative; the date is from an official summary of Decree 70/2025/ND-CP." />,
+    sources: citeF3('bofStateOfFashion', 'canifaCleverTap', 'vnEInvoice'),
+  }),
+  f3Chapter({
+    title: 'Regulators, Industry Associations and Sustainability Partners', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Identify the rule-setting and standard-setting stakeholders in the fashion ecosystem and how businesses should respond to them.',
+    mateIntro: 'Some stakeholders never buy a thing and still shape every product: regulators who set the rules, associations who set shared positions and partners who test sustainability claims. Ignore them and they show up as fines, delays and lost trust.',
+    keyInsight: 'Regulators, associations and sustainability partners shape what can be made, sold and claimed. Compliance and credible sustainability work are risk management and a source of trust, but certifications are not proof of a fully sustainable supply chain.',
+    statTiles: [
+      { value: '6', label: 'Stakeholder groups', subtitle: 'Safety rules to circular partners', description: 'Product safety and consumer rules, trade and customs, labour and environment, associations, standards and certification, and circular partners.' },
+      { value: '15 Feb 2022', label: 'Amended goods-label rules took effect', subtitle: 'Decree 111/2021', description: 'Vietnam’s Ministry of Industry and Trade announced the amended labelling rules for goods.' },
+      { value: '1 Jan 2022', label: 'E-commerce product information rules took effect', subtitle: 'Decree 85/2021', description: 'Rules on the product information that e-commerce sites must show.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the two dates are effective dates of Vietnamese decrees and show how rules enter a retailer’s labelling and online listing processes.',
+    narrative: [
+      { label: 'What it is', text: 'Regulators set rules on product safety, labelling, chemical limits, warranties, advertising and consumer rights, as well as trade, customs and origin requirements and labour and environmental conditions in production. Industry associations enable sector collaboration and shared positions, standards and certification bodies recognise specific materials, processes or management practices, and circular-economy partners support recycling, resale, repair and material innovation.' },
+      { label: 'Why it is happening', text: 'Fashion has long cross-border supply chains and heavy environmental and social footprints, so governments, customers and investors expect clear rules and credible evidence. Standards and certifications give brands a way to show what they do, and partners help extend product life, but each has limits that businesses need to understand.' },
+      { label: 'Real-world example', text: 'A brand selling in several markets follows each market’s requirements on labelling and product safety, complies with duties and origin rules along its trade routes, monitors suppliers on labour and environmental conditions and keeps records, engages with associations on standards and policy, and partners with recyclers and resale platforms to extend product life. It claims only what a certification actually covers.' },
+      { label: 'Vietnam example', text: 'Vietnam’s Ministry of Industry and Trade announced that the amended goods-labelling rules under Decree 111/2021 took effect on 15 February 2022, and Decree 85/2021 on e-commerce, effective 1 January 2022, covers the product information shown on e-commerce sites. Both apply to anything sold to Vietnamese consumers, which is why labelling and online listings are checked against local rules.' },
+      { label: 'Business impact', text: 'Compliance and credible sustainability work reduce legal, supply and reputation risk and build trust with customers, partners and regulators. Businesses should follow the rules in every sales market, monitor suppliers, engage with associations and avoid claims that go beyond what a certification covers.' },
+    ],
+    visualKind: 'fashion-m3-64-rules', visualHeading: 'Who sets the rules, and how a business should respond',
+    visualIntro: 'See what each stakeholder influences and what a business should do.',
+    imageAlt: 'Casemate table of regulators, associations and sustainability partners with what each influences and the business response',
+    keyTerms: [
+      { term: 'Regulator', definition: 'A public body that sets and enforces rules on products, trade, labour or the environment.' },
+      { term: 'Industry association', definition: 'An organisation that brings sector members together to share positions and standards.' },
+      { term: 'Certification', definition: 'Independent confirmation that a material, process or practice meets a defined standard.' },
+      { term: 'Circular partner', definition: 'A business that supports recycling, resale, repair or material innovation.' },
+    ],
+    recap: [
+      'Regulators, associations and partners shape what can be made, sold and claimed.',
+      'Follow the rules of each sales market and trade route.',
+      'Monitor suppliers and keep records.',
+      'A certification covers a defined scope and is not proof of a sustainable chain.',
+    ],
+    chapterRecap: 'Regulators, industry associations and sustainability partners influence compliance, reputation and long-term risk. Businesses need to follow applicable rules, engage credibly with standards and avoid claims that exceed what a certification covers.',
+    deepDiveTitle: 'Why a certification is not a clean bill of health',
+    body: <F3DeepDive paragraphs={[
+      'A certification typically covers a defined material, factory or process. A product can carry a recognised label and still come from a supply chain with other unaddressed issues, and a claim that stretches beyond the scope of the certificate is a reputational and legal risk.' ,
+      'Credible sustainability work therefore starts with knowing exactly what each standard covers, keeping records that back every claim and being open about what is still being improved.',
+    ]} evidence="The stakeholder roles are described qualitatively in the supplied material. The Vietnamese decree dates come from an official ministry notice and a legal database, and the e-commerce decree text is in Vietnamese; confirm current requirements with the issuing authority before relying on them." />,
+    sources: citeF3('bofStateOfFashion', 'vnLabelling', 'vnEcommerceDecree', 'emfFashion', 'textileExchange'),
+  }),
+];
+
+const quiz = f3Quiz('fashion-m3-l6', [
+  { chapter: '1', objective: 'Identify upstream participants', question: 'Which participants form the operational core of the fashion ecosystem?', application: 'A product moves from design to finished goods. Who is involved?', correct: 'Brand owners, material and component suppliers, contract manufacturers and development partners', wrong: ['Only retail store cashiers', 'Only advertising agencies', 'Only customers and competitors'], explanation: 'Brands set requirements and manufacturers and suppliers meet them. Review Chapter 1.' },
+  { chapter: '1', objective: 'Explain coordination', question: 'What does reliable coordination between brands and suppliers support?', application: 'A brand shares specifications and forecasts with its factories. What does this support?', correct: 'Quality, efficiency and supply-chain resilience', wrong: ['Higher return rates', 'Weaker supplier compliance', 'Longer lead times by design'], explanation: 'Reliable coordination supports quality, efficiency and resilience. Review Chapter 1.' },
+  { chapter: '1', objective: 'Read trade figures correctly', question: 'What do the 2024 Vietnam export values cover?', application: 'A learner quotes US$44 billion as fashion retail revenue. What is wrong?', correct: 'They are national trade-association export figures for whole industries, not retail revenue', wrong: ['They are the profits of one brand', 'They are the revenue of all stores', 'They are the cost of raw materials'], explanation: 'The figures describe the scale of the production base, not fashion retail revenue. Review Chapter 1.' },
+  { chapter: '2', objective: 'Compare intermediaries', question: 'What can a distributor provide to a brand entering a new market?', application: 'A brand has no stores in a new country. What can a distributor add?', correct: 'Market entry, local logistics and retailer relationships', wrong: ['Control of every product design', 'Ownership of the brand', 'A guarantee of full-price sales'], explanation: 'Distributors provide market entry, local logistics and relationships, but can take margin and customer data. Review Chapter 2.' },
+  { chapter: '2', objective: 'Recognise intermediary costs', question: 'What can intermediaries take from a brand?', application: 'A marketplace brings traffic. What may the brand give up?', correct: 'Margin, customer data and some control of presentation', wrong: ['Its legal ownership of the trademark', 'All its factories', 'Its design team'], explanation: 'Intermediaries add reach but can take margin, data and control. Review Chapter 2.' },
+  { chapter: '3', objective: 'List provider types', question: 'Which of these is a technology or service provider category?', application: 'A retailer uses ERP, a payment processor and a courier. Which categories are these?', correct: 'Enterprise systems, payment services and logistics providers', wrong: ['Only fabric dyeing houses', 'Only sports clubs', 'Only landlords'], explanation: 'Provider categories include enterprise systems, retail technology, logistics, payments, marketing, returns and cybersecurity. Review Chapter 3.' },
+  { chapter: '3', objective: 'Understand dependency', question: 'What decides whether outsourcing to providers improves efficiency?', application: 'A retailer outsources its warehousing. What should it check?', correct: 'Reliable execution, integration and governance', wrong: ['Only the lowest quoted price', 'Only the provider’s logo', 'Only the length of the contract'], explanation: 'Providers create dependency, so execution, integration and governance decide the outcome. Review Chapter 3.' },
+  { chapter: '4', objective: 'Identify rule-setters', question: 'Which stakeholder groups shape what can be sold and claimed?', application: 'A brand checks labelling, customs and certification rules. Which groups are these?', correct: 'Regulators, standards and certification bodies, and industry associations', wrong: ['Only competitors', 'Only shoppers', 'Only landlords'], explanation: 'Regulators, associations and standards bodies influence compliance, reputation and risk. Review Chapter 4.' },
+  { chapter: '4', objective: 'Limit certification claims', question: 'What does a certification prove?', application: 'A product carries a recognised label. What can the brand claim?', correct: 'Only what the certification’s defined scope covers, not a fully sustainable supply chain', wrong: ['That the whole supply chain is sustainable', 'That no regulation applies', 'That the product cannot be returned'], explanation: 'Certifications cover specific materials, processes or practices; they are not proof of a fully sustainable chain. Review Chapter 4.' },
+  { chapter: '4', objective: 'Respond to regulation', question: 'What should a business do about product safety, labelling and trade rules?', application: 'A brand sells in several countries. How should it approach the rules?', correct: 'Follow the requirements of each sales market and comply along every trade route', wrong: ['Follow only the home-market rules', 'Ignore rules until a complaint arrives', 'Rely on marketing to resolve disputes'], explanation: 'Compliance and credible sustainability work reduce risk and build trust. Review Chapter 4.' },
+]);
+
+export const LESSON_3_6: FashionM3LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can map the participants in the fashion ecosystem, from brands, suppliers and manufacturers to intermediaries, technology and logistics providers, and the regulators, associations and partners who set the rules.',
+    keyTakeaways: [
+      'Brands set requirements and manufacturers and suppliers meet them, so coordination matters.',
+      'Intermediaries supply access and traffic and can take margin, data and control.',
+      'Providers extend capability and create dependency; integration and governance decide the result.',
+      'Regulators and associations shape what can be made, sold and claimed.',
+      'A certification covers a defined scope and is not proof of a sustainable chain.',
+    ],
+    businessImplications: 'Choose partners for fit with strategy and control, manage suppliers and providers for performance and compliance, and make only the sustainability claims that the evidence and certification scope support.',
+    remember: 'A fashion business is a network; its strength is the quality of coordination, compliance and trust across it.',
+    nextLesson: 'Industry Competition Structure',
+  },
+};

@@ -174,6 +174,31 @@ export function submitPerformanceRecord(options: SubmitOptions): Promise<Ranking
   return promise;
 }
 
+function jsonObject(value: unknown): Record<string, any> {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, any>;
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+  return {};
+}
+
+function persistedScoreScale(row: any, app: RankingApp): 5 | 10 {
+  if (app === 'case_pool') {
+    const scoring = jsonObject(jsonObject(jsonObject(row.rubric_json)._casemate).grade_report).scoring;
+    return Number(scoring?.scale) === 10 ? 10 : 5;
+  }
+  if (app === 'case_drill') {
+    const scoring = jsonObject(jsonObject(row.feedback_json).scoring);
+    return Number(scoring.scale) === 10 ? 10 : 5;
+  }
+  return 10;
+}
+
 function completedAtOf(row: any): string {
   const raw = row.completed_on || row.completed_at || row.created_at;
   const time = new Date(raw || Date.now()).getTime();
@@ -199,7 +224,7 @@ async function sourceRows(app: RankingApp): Promise<RankingRow[]> {
       .map((row) => ({
         user_id: `legacy:case_pool:${row.id}`,
         app,
-        score: clampScore(Number(row.score) * 20),
+        score: clampScore(Number(row.score) * (100 / persistedScoreScale(row, app))),
         time_seconds: elapsedBetween(row),
         completed_at: completedAtOf(row),
       }));
@@ -216,7 +241,7 @@ async function sourceRows(app: RankingApp): Promise<RankingRow[]> {
       .map((row) => ({
         user_id: `legacy:case_drill:${row.id}`,
         app,
-        score: clampScore(Number(row.score) * 20),
+        score: clampScore(Number(row.score) * (100 / persistedScoreScale(row, app))),
         time_seconds: clampTime(row.elapsed_seconds),
         completed_at: completedAtOf(row),
       }));

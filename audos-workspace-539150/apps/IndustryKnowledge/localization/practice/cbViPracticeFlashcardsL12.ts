@@ -1,0 +1,103 @@
+import type { ViFlashcard } from './cbViPracticeTypes';
+
+// Vietnamese text for the authored Commercial Banking lesson 1.2 flashcards
+// (apps/InteractiveLearning/flashcards/decks/commercialBankingM01B1.ts), keyed by card id.
+
+export const CB_VI_FLASHCARDS_L12: Record<string, ViFlashcard> = {
+  'cb12-origins-capabilities': {
+    en: 'Which developments turned early safekeeping and lending into modern commercial banking?',
+    front: 'Những bước phát triển nào đã biến dịch vụ giữ hộ tài sản và cho vay sơ khai thành ngân hàng thương mại hiện đại?',
+    back: 'Hoạt động trung gian của tư nhân được kết hợp với mạng lưới thanh toán có thể mở rộng, nhu cầu tín dụng công nghiệp và các định chế công (ngân hàng trung ương và cơ quan giám sát) giúp củng cố niềm tin.',
+    explanation: 'Trình tự cấu trúc đi từ giữ hộ tài sản và trao đổi tiền tệ, đến quy mô huy động và cho vay, đến mạng lưới thanh toán, rồi đến ngân hàng trung ương và giám sát. Điều cần học là sự thay đổi về năng lực, không phải một niên biểu các mốc thời gian.',
+    example: 'Một thương nhân thời kỳ đầu chủ yếu cần giữ hộ tài sản, trao đổi tiền tệ và thỉnh thoảng một khoản vay; một doanh nghiệp công nghiệp hiện đại cần tiền gửi, tín dụng vốn lưu động và một mạng lưới thanh toán bù trừ ở quy mô lớn.',
+    terms: ['Trung gian tài chính', 'Mạng lưới thanh toán', 'Giám sát'],
+  },
+  'cb12-central-vs-commercial-bank': {
+    en: 'Why is a central bank part of banking history but not itself a commercial bank?',
+    front: 'Vì sao ngân hàng trung ương là một phần lịch sử ngân hàng nhưng bản thân nó không phải ngân hàng thương mại?',
+    back: 'Ngân hàng trung ương hỗ trợ tiền tệ, chính sách và ổn định hệ thống. Ngân hàng thương mại phục vụ khách hàng và chấp nhận rủi ro tín dụng thương mại.',
+    explanation: 'Tách bạch hai vai trò giúp làm rõ ai đặt ra điều kiện cho hoạt động cho vay và ai thực sự định giá và cấp khoản vay.',
+    example: 'Ngân hàng trung ương định hình các điều kiện để một khoản vay được cấp; ngân hàng thương mại quyết định có cho một người vay cụ thể vay hay không và với mức giá nào.',
+    terms: ['Ngân hàng trung ương', 'Ngân hàng thương mại'],
+  },
+  'cb12-lender-of-last-resort': {
+    en: 'What is a lender of last resort, and why did scale make the role necessary?',
+    front: 'Người cho vay cuối cùng là gì, và vì sao quy mô khiến vai trò này trở nên cần thiết?',
+    back: 'Vai trò của ngân hàng trung ương trong việc cung cấp thanh khoản khẩn cấp cho các tổ chức đủ điều kiện, theo những điều kiện xác định. Quy mô làm ngân hàng hữu ích hơn nhưng cũng mang tính hệ thống hơn, nên một sự đổ vỡ có thể lan ra ngoài phạm vi một tổ chức.',
+    explanation: 'Khi ngân hàng lớn dần, một sự đổ vỡ có thể ảnh hưởng đến người gửi tiền, hoạt động thanh toán và tín dụng trên toàn hệ thống, vì vậy các cơ chế hỗ trợ của khu vực công đã hình thành xung quanh ngân hàng tư nhân.',
+    example: 'Một ngân hàng còn khả năng thanh toán đối mặt với làn sóng rút tiền đột ngột có thể được cấp thanh khoản khẩn cấp theo những điều kiện đã định, thay vì bị buộc phải bán tháo tài sản một cách hỗn loạn.',
+    terms: ['Người cho vay cuối cùng', 'Tính hệ thống'],
+  },
+  'cb12-crisis-safeguard-cycle': {
+    en: 'Describe the cycle through which banking crises produce new regulation.',
+    front: 'Mô tả chu kỳ qua đó các cuộc khủng hoảng ngân hàng tạo ra quy định mới.',
+    back: 'Điểm yếu về đòn bẩy hoặc thanh khoản gây ra khủng hoảng, tổn thất của khu vực công bộc lộ lỗ hổng, và các biện pháp bảo vệ mới định hình lại hành vi của ngân hàng.',
+    explanation: 'Nhiều quy định trông có vẻ thận trọng cho đến khi bạn hỏi chúng được thiết kế để ngăn chặn sự đổ vỡ nào. Bảo hiểm tiền gửi, chuẩn mực vốn và thanh khoản đều mang ký ức của những cuộc khủng hoảng trước đây.',
+    example: 'Cuộc khủng hoảng tài chính toàn cầu bộc lộ lỗ hổng về vốn, đòn bẩy, thanh khoản và khả năng xử lý đổ vỡ; phản ứng sau đó là các kỷ luật Basel III chặt chẽ hơn.',
+    terms: ['Quy định an toàn (prudential)', 'Chu kỳ khủng hoảng'],
+  },
+  'cb12-safeguard-failure-channels': {
+    en: 'Match each safeguard to the failure it addresses: capital, liquid assets, supervision, resolution.',
+    front: 'Ghép mỗi biện pháp bảo vệ với kiểu đổ vỡ mà nó xử lý: vốn, tài sản thanh khoản, giám sát, xử lý đổ vỡ.',
+    back: 'Vốn hấp thụ tổn thất. Tài sản thanh khoản đáp ứng dòng tiền rút ra trong điều kiện căng thẳng. Giám sát phát hiện sự suy giảm. Kế hoạch xử lý đổ vỡ hướng tới duy trì các chức năng thiết yếu mà không mặc định rằng mọi bên liên quan đều được bảo vệ.',
+    explanation: 'Ngân hàng có đòn bẩy và liên kết chặt chẽ, nên căng thẳng có thể làm gián đoạn thanh toán và lan qua niềm tin và thị trường vốn. Mỗi biện pháp bảo vệ xử lý một kênh đổ vỡ khác nhau; không có tỷ lệ đơn lẻ nào làm ngân hàng an toàn.',
+    example: 'Một ngân hàng bị rút tiền đột ngột sẽ dùng đến tài sản thanh khoản; một ngân hàng chịu tổn thất cho vay sẽ dựa vào vốn. Hai kiểu đổ vỡ khác nhau cần hai biện pháp bảo vệ khác nhau.',
+    terms: ['Vốn', 'Thanh khoản', 'Xử lý đổ vỡ', 'Rủi ro hệ thống'],
+  },
+  'cb12-liquidity-vs-solvency': {
+    en: 'Why can liquidity support not repair an insolvent bank?',
+    front: 'Vì sao hỗ trợ thanh khoản không thể cứu một ngân hàng đã mất khả năng thanh toán?',
+    back: 'Một ngân hàng còn khả năng thanh toán có thể đối mặt với làn sóng rút tiền tạm thời và cần nguồn vốn thanh khoản. Một ngân hàng mất khả năng thanh toán có tổn thất lớn hơn vốn của mình, và cho ngân hàng đó vay thêm không xóa được những tổn thất đó.',
+    explanation: 'Sự phân biệt này quyết định biện pháp ứng phó là hỗ trợ thanh khoản, tái cấp vốn, tái cơ cấu hay xử lý đổ vỡ.',
+    example: 'Cho vay khẩn cấp phù hợp với một ngân hàng lành mạnh gặp cú sốc niềm tin; một ngân hàng mà tổn thất cho vay đã dùng hết vốn thì cần tái cơ cấu hoặc xử lý đổ vỡ.',
+    terms: ['Thanh khoản', 'Khả năng thanh toán', 'Tái cấp vốn'],
+  },
+  'cb12-digital-competitive-shift': {
+    en: 'How does digital banking change what banks compete on?',
+    front: 'Ngân hàng số thay đổi những gì ngân hàng cạnh tranh như thế nào?',
+    back: 'Nó giảm chi phí phân phối và mở rộng phạm vi tiếp cận, nhưng chuyển lợi thế cạnh tranh sang dữ liệu, độ tin cậy, an ninh mạng và khả năng phối hợp vận hành xuyên biên giới.',
+    explanation: 'Chi phí biên phục vụ thấp hơn hỗ trợ phạm vi tiếp cận và quy mô, nhưng rủi ro an ninh mạng, gian lận, quyền riêng tư, thuê ngoài và khả năng chống chịu vận hành trở nên quan trọng hơn. Các mối quan hệ phức tạp vẫn cần đánh giá và phục vụ của con người.',
+    example: 'Một chiếc điện thoại có thể khởi tạo chuyển khoản hoặc hồ sơ vay vào bất cứ giờ nào, nên ngân hàng được đánh giá qua việc hệ thống có ổn định và an toàn hay không, chứ không phải giờ mở cửa chi nhánh.',
+    terms: ['Mở tài khoản số', 'Khả năng chống chịu vận hành'],
+  },
+  'cb12-digital-not-asset-light': {
+    en: 'Why does digital distribution not make banking asset-light?',
+    front: 'Vì sao phân phối số không làm ngân hàng trở nên nhẹ tài sản?',
+    back: 'Một ứng dụng có thể giảm chi phí chi nhánh và chi phí phục vụ, nhưng cho vay vẫn tiêu tốn nguồn vốn, vốn chủ sở hữu và tạo ra rủi ro tín dụng. Một ngân hàng số có ít điểm giao dịch vật lý hơn nhưng vẫn mang kinh tế học về bảng cân đối và quy định quản lý của ngân hàng.',
+    explanation: 'Kênh số thay đổi cách tiếp cận và phục vụ khách hàng, không thay đổi chi phí cấp vốn cho một khoản vay, lượng vốn chủ sở hữu cần đứng sau nó hay tổn thất nếu khoản vay không được hoàn trả.',
+    example: 'Một tổ chức cho vay ưu tiên số không có chi nhánh nào vẫn cần nguồn vốn cho mọi khoản vay và vốn chủ sở hữu đứng sau rủi ro tín dụng mà nó chấp nhận.',
+    terms: ['Rủi ro tín dụng', 'Bảng cân đối kế toán'],
+  },
+  'cb12-correspondent-banking': {
+    en: 'What is correspondent banking, and where does it sit in global banking?',
+    front: 'Ngân hàng đại lý là gì, và nó nằm ở đâu trong ngân hàng toàn cầu?',
+    back: 'Quan hệ trong đó một ngân hàng cung cấp dịch vụ xuyên biên giới hoặc dịch vụ ngoại tệ cho một ngân hàng khác. Các ngân hàng quốc tế kết hợp giấy phép tại từng nước với mạng lưới ngân quỹ, ngân hàng đại lý và tài trợ thương mại toàn cầu.',
+    explanation: 'Ngân hàng toàn cầu kết nối thương mại, tiền tệ, nguồn vốn và khách hàng đa quốc gia qua nhiều khu vực pháp lý, trong khi mỗi pháp nhân tại từng nước vẫn giữ giấy phép riêng.',
+    example: 'Một ngân hàng không có chi nhánh tại quốc gia của đối tác thương mại vẫn có thể quyết toán khoản thanh toán xuyên biên giới cho khách hàng bằng cách sử dụng một ngân hàng khác cung cấp dịch vụ ngoại tệ.',
+    terms: ['Ngân hàng đại lý', 'Tài trợ thương mại', 'Ngân quỹ'],
+  },
+  'cb12-mono-vs-two-tier': {
+    en: 'What is the difference between a mono-tier and a two-tier banking system, and what did Vietnam change?',
+    front: 'Hệ thống ngân hàng một cấp khác hệ thống hai cấp như thế nào, và Việt Nam đã thay đổi điều gì?',
+    back: 'Một cấp: ngân hàng trung ương đồng thời thực hiện chức năng ngân hàng thương mại. Hai cấp: ngân hàng trung ương tách biệt với các định chế thương mại phục vụ khách hàng. Việt Nam chuyển từ mô hình NHNN đảm nhận cả hai vai trò sang tách bạch chính sách khỏi hoạt động ngân hàng thương mại.',
+    explanation: 'Sự tách bạch này giúp các ngân hàng có vốn nhà nước chi phối và ngân hàng TMCP phát triển mảng kinh doanh khách hàng riêng dưới sự giám sát của ngân hàng trung ương.',
+    example: 'Trong hệ thống một cấp, cùng một định chế vừa đặt ra điều kiện tiền tệ vừa cho khách hàng vay; trong hệ thống hai cấp, các chức năng đó nằm ở những định chế khác nhau.',
+    terms: ['Hệ thống ngân hàng một cấp', 'Hệ thống ngân hàng hai cấp', 'NHNN'],
+  },
+  'cb12-vietnam-structure-drivers': {
+    en: 'Which developments shaped the structure of Vietnam’s banking system today?',
+    front: 'Những bước phát triển nào đã định hình cấu trúc hệ thống ngân hàng Việt Nam hiện nay?',
+    back: 'Cải cách hai cấp, mở cửa thị trường, tái cơ cấu sau giai đoạn nợ xấu và việc từng bước áp dụng các quy định an toàn và quản trị chặt chẽ hơn.',
+    explanation: 'Lịch sử giải thích vì sao cùng tồn tại các định chế lớn có vốn nhà nước chi phối, ngân hàng TMCP tư nhân và ngân hàng nước ngoài, với vai trò mạnh mẽ của NHNN trong điều hành tín dụng và ổn định.',
+    example: 'Các ngân hàng có vốn nhà nước chi phối vẫn giữ quy mô và vai trò chính sách, trong khi ngân hàng TMCP thường cạnh tranh quyết liệt hơn ở mảng bán lẻ, ngân hàng số và dịch vụ thu phí.',
+    terms: ['Mở cửa thị trường', 'Tái cơ cấu', 'Quy định an toàn'],
+  },
+  'cb12-vietnam-bank-categories': {
+    en: 'Which four categories of commercial bank does the official SBV taxonomy include?',
+    front: 'Phân loại chính thức của NHNN gồm bốn loại hình ngân hàng thương mại nào?',
+    back: 'Ngân hàng thương mại nhà nước, ngân hàng thương mại cổ phần, ngân hàng 100% vốn nước ngoài và ngân hàng liên doanh.',
+    explanation: 'Các loại hình mô tả hình thức sở hữu và tổ chức. Chúng giúp giải thích vì sao các ngân hàng theo đuổi những mô hình cạnh tranh khác nhau trong cùng một hệ thống được quản lý.',
+    example: 'Một ngân hàng được cấp phép tại Việt Nam và thuộc sở hữu của một tập đoàn ngân hàng nước ngoài là ngân hàng 100% vốn nước ngoài, còn một ngân hàng được tổ chức dưới hình thức công ty cổ phần là ngân hàng TMCP.',
+    terms: ['Ngân hàng thương mại cổ phần', 'Ngân hàng 100% vốn nước ngoài'],
+  },
+};

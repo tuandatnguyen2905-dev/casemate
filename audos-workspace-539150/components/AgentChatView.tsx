@@ -48,6 +48,7 @@ import remarkGfm from 'remark-gfm';
 import { tw } from '../lib/colors';
 import { showViewportToast } from './ViewportToast';
 import { findProgramTimeline, deadlineStatus, roundStepsFor } from '../lib/programTimelines';
+import { MAY_BE_OPEN_LABEL } from '../lib/programRecruitmentWindow';
 import { findProgramRewards } from '../lib/programRewards';
 import { generateAndSaveRoadmap, ROADMAP_APP_ID } from '../lib/prepRoadmap';
 import {
@@ -1968,49 +1969,15 @@ function DirectionCard({
                         {quadrant.emoji} {quadrant.label} — {quadrant.description}
                       </p>
                     )}
-                    {/* Days-remaining line: countdown off a concrete verified
-                        close date; "Applications closed" when it has passed; the
-                        record's estimated window text when only a month-level
-                        estimate is verified; "Check dates on the website" when the
-                        record carries no deadline data at all. */}
-                    <p
-                      className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] leading-4"
-                      data-testid={`program-deadline-${i}`}
-                    >
-                      {deadline.kind === 'countdown' ? (
-                        <>
-                          <span className="font-bold text-[var(--space-semantic-success)]">{deadline.label}</span>
-                          <span className="text-[var(--space-text-muted)]">| Closes: {deadline.closeDateLabel}</span>
-                        </>
-                      ) : deadline.kind === 'closed' ? (
-                        <span className="font-semibold text-[var(--space-text-muted)] line-through">Applications closed</span>
-                      ) : deadline.kind === 'estimated' ? (
-                        <span className="font-medium text-[var(--space-text-secondary)]">{deadline.label || deadline.closeText || deadline.openText}</span>
-                      ) : (
-                        <span className="font-medium text-[var(--space-text-muted)]">Check dates on the website</span>
-                      )}
-                    </p>
-                    {item.availability && (
+                    {/* Application dates are never shown — only whether the
+                        program may be open. */}
+                    {(deadline.kind === 'countdown' || item.availability_status === 'open_now_estimated' || item.availability_status === 'closing_estimated') && (
                       <p
-                        className={`mt-2 flex items-start gap-1.5 text-[11px] font-medium leading-4 ${
-                          item.availability_status === 'open_now_estimated'
-                            ? 'text-[var(--space-semantic-success)]'
-                            : item.availability_status === 'closing_estimated'
-                              ? 'text-[var(--space-semantic-warning)]'
-                              : 'text-[var(--space-text-secondary)]'
-                        }`}
-                        data-testid="program-availability"
+                        className="mt-2 flex items-center gap-1.5 text-[11px] font-semibold leading-4 text-[var(--space-semantic-success)]"
+                        data-testid={`program-deadline-${i}`}
                       >
-                        <span
-                          className={`mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full ${
-                            item.availability_status === 'open_now_estimated'
-                              ? 'bg-[var(--space-semantic-success)]'
-                              : item.availability_status === 'closing_estimated'
-                                ? 'bg-[var(--space-semantic-warning)]'
-                                : 'bg-[var(--space-border-strong)]'
-                          }`}
-                        />
-                        <span>{item.availability}</span>
+                        <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[var(--space-semantic-success)]" />
+                        {MAY_BE_OPEN_LABEL}
                       </p>
                     )}
                     {/* v1.6: does this program verifiably open the candidate's
@@ -2212,12 +2179,6 @@ function DirectionCard({
                           only — never changes your match %.
                         </p>
                       </div>
-                    )}
-                    {item.timeline && !/details coming soon/i.test(item.timeline) && (
-                      <p className="mt-1.5 flex items-start gap-1.5 text-[11px] leading-4 text-[var(--space-text-muted)]">
-                        <CalendarClock className="mt-0.5 h-3 w-3 flex-shrink-0" />
-                        <span>{item.timeline}</span>
-                      </p>
                     )}
                     {item.rounds && !/details coming soon/i.test(item.rounds) && (
                       <p className="mt-1.5 flex items-start gap-1.5 text-[11px] leading-4 text-[var(--space-text-muted)]" data-testid={`program-rounds-${i}`}>
@@ -2588,7 +2549,7 @@ function ProgramGuidePanel({
   // Unified program catalog (rubric-fit-v3): active ideal-candidate rubrics
   // are read from the same canonical rows as sector, attractiveness,
   // difficulty, tier, timelines, requirements, functions, and official URLs.
-  const { data: rubricRows } = (window as any).useWorkspaceDB('fa_company_programs', {
+  const { data: rubricRows } = (window as any).useWorkspaceDB('programs', {
     orderBy: { column: 'id', direction: 'desc' },
     limit: 200,
     shared: true,
@@ -2663,20 +2624,19 @@ function ProgramGuidePanel({
   const factOr = (value: unknown, soonText: string) =>
     value ? String(value) : comingSoon ? soonText : '';
   const facts: Array<{ label: string; value: string }> = [];
-  const availabilityText = guide.availability || program.availability;
-  if (availabilityText) facts.push({ label: 'Application status', value: String(availabilityText) });
-  // Program timeline (application window + selection rounds) renders as its
-  // own visual section fed by the founder-verified record
-  // (lib/programTimelines) — the old "Application window" / "Selection
-  // rounds" facts rows (and their "coming soon" boilerplate) moved there.
+  // Application dates are never shown — the status only says whether the
+  // program may be open.
   const timelineRecord = findProgramTimeline(program.company, program.program || program.company);
   const deadline = deadlineStatus(timelineRecord);
+  const availabilityStatus = String(guide.availability_status || program.availability_status || '');
+  const mayBeOpen = deadline.kind === 'countdown' || availabilityStatus === 'open_now_estimated' || availabilityStatus === 'closing_estimated';
+  facts.push({
+    label: 'Application status',
+    value: mayBeOpen
+      ? `${MAY_BE_OPEN_LABEL} — check the company’s careers page to confirm before you apply.`
+      : 'Check the company’s careers page for the latest application details.',
+  });
   const roundSteps = roundStepsFor(timelineRecord, guide.rounds || program.rounds);
-  // Window prose from the saved result stays usable when it is real verified
-  // data — the "coming soon" placeholder is never treated as data.
-  const timelineProse = String(guide.timeline || program.timeline || '');
-  const timelineProseReal = timelineProse && !/coming soon/i.test(timelineProse) ? timelineProse : '';
-  const hasWindowData = deadline.kind !== 'unknown' || !!timelineProseReal;
   if (guide.selection_style) facts.push({ label: 'Selection style', value: String(guide.selection_style) });
   const eligibilityFact = factOr(guide.eligibility, 'Details coming soon — eligibility criteria haven’t been founder-verified yet.');
   if (eligibilityFact) facts.push({ label: 'Eligibility', value: eligibilityFact });
@@ -2990,46 +2950,13 @@ function ProgramGuidePanel({
           </div>
         )}
 
-        {/* Program timeline — application window + selection rounds straight
-            from the founder-verified record. "Coming soon" never appears
-            here: where the record genuinely has no timeline data the
-            candidate gets the honest website fallback instead. */}
         <div data-testid="program-timeline-section">
-          <p className={sectionLabel}>Program timeline</p>
-          {hasWindowData || roundSteps.length > 0 ? (
+          <p className={sectionLabel}>Selection rounds</p>
+          {roundSteps.length > 0 ? (
             <div className="mt-2 space-y-2">
-              {hasWindowData && (
-                <div className="rounded-xl bg-[var(--space-surface-muted)] px-3 py-2.5" data-testid="program-application-window">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Application window</p>
-                  {deadline.kind === 'countdown' || deadline.kind === 'closed' ? (
-                    <>
-                      <p className="mt-0.5 text-xs font-semibold leading-5 text-[var(--space-text-primary)]">
-                        {deadline.openDateLabel ? `Opens: ${deadline.openDateLabel} — ` : ''}Closes: {deadline.closeDateLabel}
-                      </p>
-                      {deadline.kind === 'countdown' ? (
-                        <p className="mt-0.5 text-xs font-bold text-[var(--space-semantic-success)]">{deadline.label}</p>
-                      ) : (
-                        <p className="mt-0.5 text-xs font-bold text-[var(--space-text-muted)] line-through">Applications closed</p>
-                      )}
-                    </>
-                  ) : deadline.kind === 'estimated' ? (
-                    <>
-                      {deadline.openText && (
-                        <p className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)]">{deadline.openText}</p>
-                      )}
-                      {deadline.closeText && (
-                        <p className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)]">{deadline.closeText}</p>
-                      )}
-                    </>
-                  ) : (
-                    <p className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)]">{timelineProseReal}</p>
-                  )}
-                </div>
-              )}
               {roundSteps.length > 0 && (
                 <div className="rounded-xl bg-[var(--space-surface-muted)] px-3 py-2.5" data-testid="program-rounds-timeline">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Selection rounds</p>
-                  <ol className="mt-2">
+                  <ol>
                     {roundSteps.map((step, i) => (
                       <li key={i} className="relative flex gap-2.5 pb-3 last:pb-0">
                         {i < roundSteps.length - 1 && (
@@ -3040,9 +2967,6 @@ function ProgramGuidePanel({
                         </span>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold leading-5 text-[var(--space-text-primary)]">{step.name}</p>
-                          {step.period && (
-                            <p className="text-[11px] leading-4 text-[var(--space-text-muted)]">{step.period}</p>
-                          )}
                         </div>
                       </li>
                     ))}
@@ -3052,7 +2976,7 @@ function ProgramGuidePanel({
             </div>
           ) : timelineRecord && timelineRecord.programUrl ? (
             <p className="mt-2 rounded-xl bg-[var(--space-surface-muted)] px-3 py-2.5 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="program-timeline-fallback">
-              No verified timeline data for this program yet —{' '}
+              Selection rounds for this program aren’t verified yet —{' '}
               <a
                 href={timelineRecord.programUrl}
                 target="_blank"
@@ -3065,7 +2989,7 @@ function ProgramGuidePanel({
             </p>
           ) : (
             <p className="mt-2 rounded-xl bg-[var(--space-surface-muted)] px-3 py-2.5 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="program-timeline-fallback">
-              No verified timeline data for this program yet — check the program website ({program.company}'s careers page).
+              Selection rounds for this program aren’t verified yet — check the program website ({program.company}'s careers page).
             </p>
           )}
         </div>

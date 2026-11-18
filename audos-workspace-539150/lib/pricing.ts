@@ -1,17 +1,44 @@
+import paymentConfig from '../data/payment-config.json';
+
+interface PaymentCatalogPlan {
+  id: string;
+  priceCents: number;
+  introPriceCents?: number;
+  creemProductId?: string;
+}
+
+function paymentCatalogPlan(billingPlanId: string) {
+  return (paymentConfig.plans as PaymentCatalogPlan[]).find((candidate) => candidate.id === billingPlanId);
+}
+
+function cardUsd(billingPlanId: string, useIntroPrice = false) {
+  const plan = paymentCatalogPlan(billingPlanId);
+  const cents = useIntroPrice ? plan?.introPriceCents ?? plan?.priceCents : plan?.priceCents;
+  if (!Number.isFinite(cents) || Number(cents) <= 0) throw new Error(`Missing USD price for ${billingPlanId}.`);
+  return Number(cents) / 100;
+}
+
+function creemProductId(billingPlanId: string) {
+  const productId = String(paymentCatalogPlan(billingPlanId)?.creemProductId || '');
+  if (!productId.startsWith('prod_')) throw new Error(`Missing Creem product for ${billingPlanId}.`);
+  return productId;
+}
+
 export const PRICING = {
   first_month_promo: {
     id: 'price_monthly_promo',
-    usd: 5,
+    usd: cardUsd('first_month_5'),
+    productId: creemProductId('first_month_5'),
     vnd: 150000,
     days: 30,
     label: 'First month',
     title: 'First Month Promo',
-    description: '150.000₫ for the first month, then automatically renews at 200.000₫/month',
+    description: 'One-time purchase for 30 days of Casemate Pro access',
     badge: 'Start for 150.000₫',
   },
   monthly: {
     id: 'price_monthly',
-    usd: 8,
+    usd: cardUsd('monthly_8'),
     vnd: 200000,
     days: 30,
     label: 'Monthly',
@@ -20,7 +47,8 @@ export const PRICING = {
   },
   six_month: {
     id: 'price_6month',
-    usd: 30,
+    usd: cardUsd('six_month_30'),
+    productId: creemProductId('six_month_30'),
     vnd: 800000,
     days: 180,
     label: '6 months',

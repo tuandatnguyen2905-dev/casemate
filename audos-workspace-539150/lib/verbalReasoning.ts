@@ -6,8 +6,16 @@
 // statements per passage. Facts, entities and figures are generated
 // deterministically from the test number, giving 180 distinct passages and 900
 // distinct statements while keeping every answer auditable from its passage.
+//
+// The ten source-attributed AssessmentDay Verbal Comprehension tests (multiple
+// choice, see lib/assessmentDayVerbalTests.ts) are listed ahead of the originals.
 
-export type VerbalDifficulty = 'easy' | 'medium' | 'hard';
+import { loadAssessmentDayVerbalTests } from './assessmentDayVerbalTests';
+import { loadAssessmentDayCuteVerbalTests } from './assessmentDayCuteVerbalTests';
+import { loadAssessmentDaySyllogismTests } from './assessmentDaySyllogismTests';
+import { loadAssessmentDayCappVerbalTests } from './assessmentDayCappVerbalTests';
+
+export type VerbalDifficulty = 'easy' | 'medium' | 'hard' | 'mixed';
 export type VerbalAnswer = 'True' | 'False' | 'Cannot Say';
 
 export interface VerbalQuestion {
@@ -15,12 +23,28 @@ export interface VerbalQuestion {
   id: string;
   difficulty: VerbalDifficulty;
   passage: string;
+  /** Heading shown above the passage; defaults to "Passage". */
+  passageLabel?: string;
+  /** Heading above the prompt; defaults to "Statement" ("Question" for lettered options). */
+  promptLabel?: string;
   prompt: string;
-  options: VerbalAnswer[];
-  optionLabels: VerbalAnswer[];
-  correctAnswer: VerbalAnswer;
+  options: string[];
+  optionLabels: string[];
+  correctAnswer: string;
   explanation: string;
   patternName: string;
+  /** Full option wording for lettered multiple-choice questions (labels A, B, C...). */
+  optionTexts?: string[];
+  /** 'text' means the candidate types the answer (spelling corrections); absent means pick one option. */
+  answerKind?: 'choice' | 'text';
+  /** Normalised (lower-case, letters and digits) typed answers accepted as correct. */
+  textAccept?: string[];
+  textExact?: boolean;
+  /** Readable form of the correct answer for typed questions. */
+  answerLabel?: string;
+  sourceOrganization?: string;
+  sourceQuestionNumber?: number;
+  answerKeySource?: 'official' | 'derived';
 }
 
 export interface VerbalTest {
@@ -31,6 +55,8 @@ export interface VerbalTest {
   difficulty: 'mixed';
   timeLimitSeconds: number;
   questions: VerbalQuestion[];
+  sourceOrganization?: string;
+  answerKeySource?: 'official' | 'derived';
 }
 
 export const VERBAL_TEST_COUNT = 30;
@@ -249,6 +275,14 @@ function buildTest(testNumber: number): VerbalTest {
 let cache: VerbalTest[] | null = null;
 
 export function loadVerbalReasoningLibrary(): VerbalTest[] {
-  if (!cache) cache = Array.from({ length: VERBAL_TEST_COUNT }, (_, index) => buildTest(index + 1));
+  if (!cache) {
+    cache = [
+      ...loadAssessmentDayVerbalTests(),
+      ...loadAssessmentDayCuteVerbalTests(),
+      ...loadAssessmentDaySyllogismTests(),
+      ...loadAssessmentDayCappVerbalTests(),
+      ...Array.from({ length: VERBAL_TEST_COUNT }, (_, index) => buildTest(index + 1)),
+    ];
+  }
   return cache;
 }

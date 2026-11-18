@@ -1,3 +1,5 @@
+import { GOLDEN_GATE_LOGO_DATA_URL } from './goldenGateLogo';
+
 export type CompanyLogoAsset = {
   name: string;
   url: string;
@@ -40,12 +42,19 @@ export const COMPANY_LOGO_ASSETS: readonly CompanyLogoAsset[] = [
   { name: 'CapitaLand Vietnam', aliases: ['CapitaLand Vietnam', 'CapitaLand Development', 'CapitaLand'], url: 'https://storage.googleapis.com/audos-images/attachments/general/0ec26f72-af80-452f-9c23-43134ae80241.png' },
   { name: 'Savills', aliases: ['Savills', 'Savills Vietnam'], url: 'https://storage.googleapis.com/audos-images/attachments/general/0cec5887-b033-41a7-91d7-af755551ecd1.png' },
   { name: 'Standard Chartered', aliases: ['Standard Chartered'], url: 'https://storage.googleapis.com/audos-images/attachments/general/9605d19e-6145-46e8-bd6c-6b2a736dbd29.png' },
+  { name: 'P&G', aliases: ['P&G', 'Procter & Gamble', 'Procter and Gamble'], url: 'https://storage.googleapis.com/audos-images/attachments/general/ef4ef2fe-299a-4738-9bf1-181ee79bb9c6.png' },
+  { name: 'One Mount', aliases: ['One Mount', 'OneMount', 'One Mount Group'], url: 'https://storage.googleapis.com/audos-images/attachments/general/413ea521-ba6b-406d-a384-15a8446c7c92.png' },
   { name: 'Colgate-Palmolive', aliases: ['Colgate-Palmolive', 'Colgate Palmolive', 'Colgate'], url: 'https://storage.googleapis.com/audos-images/attachments/general/be0c4eef-f031-4b44-bfce-c986c0c0c450.png' },
   { name: 'ITL & SOTRANS', aliases: ['ITL & SOTRANS', 'ITL', 'SOTRANS'], url: 'https://storage.googleapis.com/audos-images/attachments/general/5fe68020-ae6c-4281-b5f1-f504c41c07b1.png' },
   { name: 'FPT Long Châu', aliases: ['FPT Long Châu', 'FPT Long Chau', 'Long Châu', 'Long Chau'], url: 'https://storage.googleapis.com/audos-images/attachments/general/8b31cc46-74b4-4af5-8a60-59a424c3aace.png' },
   { name: 'TTC AgriS', aliases: ['TTC AgriS', 'TTC Agris', 'AgriS'], url: 'https://storage.googleapis.com/audos-images/attachments/general/62136eb6-5eb9-4b9a-9538-33ad61f6788a.png' },
   { name: 'VNG', aliases: ['VNG'], url: 'https://storage.googleapis.com/audos-images/attachments/general/4176c716-9b3f-495c-96dd-aa3c01657f6b.png' },
   { name: 'WPP Media', aliases: ['WPP Media', 'WPP'], url: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/df982513-6caf-4e73-8e07-734bf76017c8.png' },
+  { name: 'Fast Retailing', aliases: ['Fast Retailing'], url: 'https://storage.googleapis.com/audos-images/attachments/general/94b81779-b255-401a-aeed-910942568747.png' },
+  { name: 'Michelin', aliases: ['Michelin', 'Michelin Vietnam'], url: 'https://storage.googleapis.com/audos-images/attachments/general/b6219961-6fad-4022-9a78-172fdf121ff5.png' },
+  { name: 'Golden Gate', aliases: ['Golden Gate', 'Golden Gate Group'], url: GOLDEN_GATE_LOGO_DATA_URL },
+  { name: 'AnyMind Group', aliases: ['AnyMind Group', 'AnyMind'], url: 'https://storage.googleapis.com/audos-images/attachments/general/afe46870-84d3-4bf2-ad52-97d657e76643.png' },
+  { name: 'EY', aliases: ['EY', 'Ernst & Young'], url: 'https://storage.googleapis.com/audos-images/attachments/general/3b0130b4-2c73-472f-b38d-80d31795b3e6.png' },
 ];
 
 function normalizeCompanyName(value: string) {

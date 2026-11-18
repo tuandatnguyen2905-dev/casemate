@@ -1,0 +1,121 @@
+// Audit & Assurance, Module 03 (apps/IndustryKnowledge/auditAssuranceModule03.tsx), lessons 3.1 to 3.6.
+// Several lessons here show text on a different topic than their title (see source.ts). Cards are
+// grounded in the text each chapter actually displays and are placed on the chapter that owns it.
+// Currency amounts appear only on cards that teach the chapter\u2019s labelled hypothetical.
+
+import type { FlashcardDeckContent } from '../../types';
+import { lessonDeck } from '../../kit';
+import { PA_M3 as module } from '../source';
+
+export const PA_M03_DECKS: FlashcardDeckContent[] = [
+  lessonDeck({
+    module, lessonNo: 1,
+    description: 'How partnership governance and incentives relate to independence and quality.',
+    notes: ['Chapters 1 and 3 repeat the lesson\u2019s single source item under titles about revenue and adjacent services, which the text does not address. Cards cite chapter 2, whose title the text answers.'],
+    cards: [
+      ['partnership-alignment', 2, 'M', 'When does partnership align expertise with client accountability?', 'Only when governance and incentives reinforce independence and quality.', 'Incentives that reward volume over quality would pull the other way.', 'A leader whose reward depends on retaining a client faces pressure on independence.', ['Governance', 'Incentives'],
+        [[2, 'Partnership aligns expertise and client accountability only when governance and incentives reinforce independence and quality.']]],
+      ['leader-responsibilities', 2, 'C', 'Which responsibilities do leaders in a professional partnership combine?', 'Engagement, client, quality, talent, risk and commercial responsibilities.', 'Leaders carry commercial and professional duties together.', 'A partner who wins a client also answers for the quality of its audit.', ['Partner', 'Practice structure'],
+        [[2, 'professional partnerships, member firms and practice structures in which leaders combine engagement, client, quality, talent, risk and commercial responsibilities.']]],
+      ['network-firms-separate-entities', 2, 'D', 'What can network firms share, and what do they remain?', 'They can share methods and brand while remaining separate legal entities, so contractual and engagement responsibility must be understood.', 'Shared branding does not make the firms one entity.', 'A client contracting with one member firm needs to know which entity is responsible for the engagement.', ['Network firm', 'Legal entity'],
+        [[2, 'Network firms can share methods and brand while remaining separate legal entities, so contractual and engagement responsibility must be understood.']]],
+      ['align-leadership-incentives', 2, 'B', 'What should be aligned so that firm leadership supports quality?', 'Leadership incentives, client acceptance, partner portfolios, quality indicators and legal responsibility.', 'Aligning these keeps commercial goals from overriding quality.', 'The firm checks that partner rewards reflect quality indicators as well as revenue.', ['Quality indicator', 'Portfolio'],
+        [[2, 'Align leadership incentives, client acceptance, partner portfolios, quality indicators and legal responsibility']]],
+    ],
+  }),
+  lessonDeck({
+    module, lessonNo: 2,
+    description: 'Engagement economics in the first two chapters, and the reporting areas that drive audit work in the third.',
+    notes: ['Chapters 1 and 2 are titled about segmentation and about review, agreed-upon procedures and advisory, but their text is about fees and engagement economics. Cards on that text sit on chapter 1 (the item\u2019s owner) except the utilization definition, which chapter 2 shows.'],
+    cards: [
+      ['realistic-scope-and-delivery', 1, 'M', 'What do sustainable audit economics require, and what can fee pressure not justify?', 'Realistic scope and disciplined delivery. Fee pressure cannot justify insufficient procedures or supervision.', 'Economics must be built on doing the required work properly.', 'A team cannot drop required supervision because the fee was set low.', ['Scope', 'Supervision'],
+        [[1, 'Sustainable economics require realistic scope and disciplined delivery; fee pressure cannot justify insufficient procedures or supervision.']]],
+      ['fixed-fee-weak-records', 1, 'B', 'A fixed-fee audit turns out to be uneconomic because the records are unreliable. What cannot be cut to protect margin?', 'The required evidence and quality.', 'Margin pressure does not change what the audit must do.', 'The firm discusses the scope change with the client instead of reducing procedures.', ['Fixed fee', 'Margin'],
+        [[1, 'A fixed-fee audit can become uneconomic when records are unreliable or complexity changes, but required evidence and quality cannot be removed to protect margin.']]],
+      ['engagement-economics-factors', 1, 'C', 'Which factors does engagement economics cover?', 'Fee structures, hours, staffing, specialists, technology, rework, risk, billing and collections.', 'Economics extends beyond the headline fee.', 'Rework appears in the list because it adds hours without adding fees.', ['Rework', 'Collections'],
+        [[1, 'fee structures, hours, staffing, specialists, technology, rework, risk, billing and collections across audit and assurance engagements.']]],
+      ['utilization-meaning', 2, 'F', 'What does utilization measure?', 'Chargeable or productive time relative to available professional capacity, under a stated definition.', 'It compares time used productively with the time available.', 'A team with many chargeable hours against its available hours has high utilization.', ['Utilization', 'Capacity'],
+        [[2, 'Chargeable or productive time relative to available professional capacity under a stated definition.']]],
+      ['document-scope-changes', 1, 'B', 'The scope changes during an engagement. What should be documented?', 'The assumptions, scope changes and responsibilities.', 'Documented assumptions make later fee discussions easier to ground.', 'The team records what changed in scope and who is responsible for each part.', ['Scope change', 'Assumptions'],
+        [[1, 'Document assumptions, scope changes and responsibilities']]],
+      ['reporting-areas-driving-work', 3, 'C', 'Name the reporting areas that most often shape what an audit team tests.', 'Revenue, inventory, receivables, provisions, estimates, related parties and going concern, within significant transaction classes, balances and disclosures.', 'Audit teams focus on assertions and risks in significant areas.', 'Revenue and inventory both sit among the significant areas that shape the plan.', ['Assertion', 'Disclosure'],
+        [[3, 'Audit teams focus on assertions and risks within significant transaction classes, balances and disclosures, including revenue, inventory, receivables, provisions, estimates, related parties and going concern.']]],
+      ['inventory-vs-revenue-evidence', 3, 'D', 'How does the evidence that matters differ for inventory and for revenue?', 'For inventory: existence, condition, costing and net realizable value. For revenue: occurrence, cutoff and contract terms.', 'Different balances raise different questions, so the evidence differs.', 'Counting stock speaks to existence, while contract terms speak to revenue.', ['Existence', 'Cutoff', 'Net realizable value'],
+        [[3, 'For inventory, existence, condition, costing and net realizable value may require different evidence; for revenue, occurrence, cutoff and contract terms can drive procedures.']]],
+      ['no-universal-treatment', 3, 'B', 'Two entities report under different frameworks. May a team infer one universal treatment for a balance?', 'No. It should apply the entity\u2019s actual reporting framework and the current accounting and audit requirements.', 'The curriculum flags audit implications and does not replace the accounting standards.', 'The team confirms each entity\u2019s framework before deciding how to audit a provision.', ['Reporting framework'],
+        [[3, 'Apply the entity\u2019s actual reporting framework and current accounting and audit requirements; do not infer one universal treatment.']]],
+    ],
+  }),
+  lessonDeck({
+    module, lessonNo: 3,
+    description: 'Staffing models, leverage and capacity.',
+    notes: ['All three chapters are titled about customers and who requires audit, but the text in each is about staffing and leverage. Cards teach that text and sit on chapter 1; none teaches customer segments.'],
+    cards: [
+      ['effective-leverage', 1, 'M', 'What makes leverage effective, and what does cutting senior time indiscriminately cause?', 'Effective leverage matches task complexity with competence and supervision. Indiscriminate senior-time reduction increases rework and quality risk.', 'The right person for the task matters more than the cheapest one.', 'Giving a complex estimate to the least experienced person without review raises rework.', ['Leverage', 'Supervision'],
+        [[1, 'Effective leverage matches task complexity with competence and supervision; indiscriminate senior-time reduction increases rework and quality risk.']]],
+      ['team-layers', 1, 'C', 'Which layers make up an audit team?', 'Assistants, experienced staff, managers, directors, partners and specialists, allocated by risk and competence.', 'Work is spread across layers according to risk and skill.', 'A specialist joins the team for a complex estimate rather than being allocated by seniority.', ['Team hierarchy', 'Specialist'],
+        [[1, 'layered teams of assistants, experienced staff, managers, directors, partners and specialists allocated by risk and competence.']]],
+      ['automation-and-judgment', 1, 'B', 'Automation takes over some junior tasks. What still needs experienced judgment?', 'Complex estimates, contradictions, conclusions and supervision.', 'Automation changes the task mix, not the need for judgment.', 'A tool can extract data, but a senior person decides what a contradiction means.', ['Automation', 'Judgment'],
+        [[1, 'Automation can change junior tasks, but experienced judgment remains necessary for complex estimates, contradictions, conclusions and supervision.']]],
+      ['capacity-planning-scope', 1, 'B', 'Beyond utilization, what should capacity planning cover?', 'Qualified capacity for peak deadlines, language, sector knowledge, technology, group instructions, coaching and reviews.', 'Hours alone do not show whether the right skills are available.', 'A firm plans for peak-season deadlines by checking it has enough people able to review the work.', ['Capacity planning', 'Seasonality'],
+        [[1, 'Plan qualified capacity for peak deadlines, language, sector knowledge, technology, group instructions, coaching and reviews rather than utilization alone.']]],
+    ],
+  }),
+  lessonDeck({
+    module, lessonNo: 4,
+    description: 'How audit engagements earn revenue, what they cost and which measures describe a firm.',
+    notes: ['All three chapters show authored detail text that answers their titles. The hypothetical in chapter 1 is labelled as such in the source, and cards that use its figures say so.'],
+    cards: [
+      ['revenue-bases', 1, 'C', 'Which measures occur on different bases for an audit engagement?', 'Contract value, invoice, recognized revenue, cash and profit.', 'The same engagement shows up differently in each, so they are not interchangeable.', 'A milestone can be invoiced before cash arrives and before the revenue is recognized.', ['Contract value', 'Recognized revenue'],
+        [[1, 'Contract value, invoice, recognized revenue, cash and profit occur on different bases.']]],
+      ['how-firms-earn', 1, 'C', 'How do audit firms earn engagement revenue?', 'Through fixed or scope-based fees, milestone billings and permitted assurance fees.', 'Fees may be fixed or follow scope.', 'A firm may agree a fixed fee with milestone invoices.', ['Fixed fee', 'Milestone billing'],
+        [[1, 'Audit firms earn fixed or scope-based engagement fees, milestone billings and permitted assurance fees.']]],
+      ['hypothetical-contribution', 1, 'F', 'In the chapter\u2019s hypothetical, how is contribution found, and what margin does it give?', 'Contribution is the fee less total delivery cost, and margin is contribution as a share of the fee. In the hypothetical, 1,200m less 1,000m is 200m, a margin of 16.7%.', 'The example shows the calculation only; it is not a benchmark margin.', 'Hypothetically, a fee of 1,200m with delivery cost of 1,000m leaves 200m of contribution.', ['Contribution', 'Margin'],
+        [[1, 'contribution=1,200\u22121,000=200m; margin=16.7%.']]],
+      ['hypothetical-delivery-cost', 1, 'F', 'In the hypothetical, how is the total delivery cost of 1,000m built up?', 'Labor of 4,000 hours at 0.18m is 720m, plus 120m for specialists and 160m for other delivery cost, giving 1,000m.', 'Delivery cost adds labor to specialist and other costs.', 'Hypothetically, specialists cost 120m and other delivery cost is 160m, on top of 720m of labor.', ['Delivery cost', 'Labor'],
+        [[1, 'labor=4,000\u00d70.18m=720m; total delivery cost=720+120+160=1,000m']]],
+      ['margin-is-not-quality', 2, 'D', 'What can high utilization or engagement margin not show, and what must commercial pressure not override?', 'They do not automatically indicate high audit quality. Commercial pressure must not override required evidence, supervision, independence or review.', 'Financial results and quality are separate questions.', 'A team with high margin has not shown that its evidence was sufficient.', ['Utilization', 'Audit quality'],
+        [[2, 'High utilization or engagement margin does not automatically indicate high audit quality; commercial pressure must not override required evidence, supervision, independence or review.']]],
+      ['delivery-cost-components', 2, 'C', 'Which costs make up the cost of delivering an audit?', 'Staff time, partner and manager supervision, specialists, tools, training, quality management, compliance, liability, travel, rework and working capital.', 'Delivery cost goes well beyond staff time.', 'Training and quality management are costs even though they do not appear on any single engagement.', ['Delivery cost', 'Working capital'],
+        [[2, 'Delivery cost includes staff time, partner and manager supervision, specialists, tools, training, quality management, compliance, liability, travel, rework and working capital.']]],
+      ['low-fee-weak-records', 2, 'B', 'A low-fee audit has weak records. What can it require, and what is not an acceptable response?', 'It can require more senior time. Reducing procedures to protect margin is not an acceptable response.', 'The cost of the work follows the state of the records.', 'The team asks for more senior time and does not trim its testing.', ['Senior time', 'Procedures'],
+        [[2, 'A low-fee engagement can require more senior time when records are weak or estimates complex; reducing procedures to protect margin is not an acceptable response.']]],
+      ['kpi-needs-a-definition', 3, 'M', 'What does every KPI need before it can be compared?', 'An entity, service scope, period, numerator, denominator and accounting basis.', 'Without a definition two figures are not comparable.', 'Two firms\u2019 utilization figures cannot be compared until each states how it counts hours and capacity.', ['Numerator', 'Denominator'],
+        [[3, 'Every KPI needs an entity, service scope, period, numerator, denominator and accounting basis.']]],
+      ['utilization-and-realization', 3, 'F', 'Define utilization and realization.', 'Utilization is chargeable or productive time relative to available professional capacity. Realization is fees earned relative to recorded or standard billable effort. Each is under a stated or defined basis.', 'One compares time used with capacity; the other compares fees with effort.', 'A team can have high utilization and low realization if much of its effort is not billed.', ['Utilization', 'Realization'],
+        [[3, 'Chargeable or productive time relative to available professional capacity under a stated definition.'], [3, 'Fees earned relative to recorded or standard billable effort under a defined basis.']]],
+      ['equal-fees-different-engagements', 3, 'B', 'Two engagements carry equal fees. How can they still differ?', 'In hours, specialist needs, risk, review effort, collection timing and quality outcomes.', 'The fee is only one feature of an engagement.', 'One engagement needs more review time because its risks are greater, though the fee is the same.', ['Fee', 'Review effort'],
+        [[3, 'Two engagements with equal fees can have different hours, specialist needs, risk, review effort, collection timing and quality outcomes.']]],
+      ['quality-indicators-include', 3, 'C', 'Which items can quality indicators include?', 'Consultation, review, training, workload, findings and remediation, under defined methods.', 'Quality indicators sit beside the financial KPIs.', 'Findings and remediation show whether problems were found and fixed.', ['Quality indicator', 'Remediation'],
+        [[3, 'quality indicators can include consultation, review, training, workload, findings and remediation under defined methods.']]],
+    ],
+  }),
+  lessonDeck({
+    module, lessonNo: 5,
+    description: 'Portfolio choices: specialization, diversification and client review.',
+    notes: ['All three chapters are titled about staffing, utilization and quality indicators, but the text is about client portfolio and specialization. Cards teach that text and sit on chapter 1.'],
+    cards: [
+      ['specialization-vs-diversification', 1, 'D', 'What does specialization improve, what does diversification strengthen, and what do both require?', 'Specialization improves relevance and diversification strengthens resilience. Both require competence, capacity, independence and disciplined risk selection.', 'The two pull in different directions but need the same discipline.', 'A firm that specializes in one sector gains depth but depends on that sector.', ['Specialization', 'Diversification'],
+        [[1, 'Specialization improves relevance while diversification strengthens resilience; both require competence, capacity, independence and disciplined risk selection.']]],
+      ['portfolio-choice-factors', 1, 'C', 'On which factors do a firm\u2019s portfolio choices turn?', 'Sector, entity type, geography, reporting complexity, risk, profitability and strategic fit.', 'A portfolio is a set of deliberate choices, not an accumulation.', 'Reporting complexity and risk are weighed alongside profitability.', ['Portfolio', 'Strategic fit'],
+        [[1, 'portfolio choices by sector, entity type, geography, reporting complexity, risk, profitability and strategic fit.']]],
+      ['sector-capabilities-differ', 1, 'B', 'A firm audits a financial-services client and a manufacturer. How do the capabilities needed differ?', 'They can require different regulatory, systems, estimate and specialist capabilities.', 'Sector shapes what the team must be able to do.', 'The financial-services audit may need different specialists from the manufacturing one.', ['Sector', 'Specialist'],
+        [[1, 'A financial-services audit and a manufacturing audit can require different regulatory, systems, estimate and specialist capabilities.']]],
+      ['review-each-client', 1, 'B', 'What should be reviewed for each client before it joins the portfolio?', 'Eligibility, independence, reputation, evidence readiness, technical needs, concentration, collection risk and staffing capacity.', 'Each client is judged on its own as well as on how it fits the whole.', 'The firm checks it can staff the work and collect the fee before accepting.', ['Concentration', 'Collection risk'],
+        [[1, 'Review each client for eligibility, independence, reputation, evidence readiness, technical needs, concentration, collection risk and staffing capacity.']]],
+    ],
+  }),
+  lessonDeck({
+    module, lessonNo: 6,
+    description: 'Independence as an operating constraint.',
+    notes: ['Chapter 3 is titled about regulators and technology providers, which the text does not address; no card is placed there. A card on the chapter\u2019s statement about local rules overriding international examples is not used, because it is a legal-applicability claim.'],
+    cards: [
+      ['independence-is-a-condition', 2, 'C', 'How does the chapter describe independence in relation to credible assurance?', 'It is a condition of credible assurance and a core operating constraint, not an optional differentiator.', 'A firm cannot treat independence as a feature it chooses to offer.', 'A firm cannot market itself as independent as a selling point and then relax the rules on a profitable client.', ['Independence', 'Operating constraint'],
+        [[2, 'Independence is a condition of credible assurance and a core operating constraint\u2014not an optional differentiator.']]],
+      ['independence-affects-operations', 2, 'C', 'Which parts of a firm\u2019s operations do ethical and independence requirements affect?', 'Client acceptance, services, staffing, fees, relationships, governance and commercial planning.', 'The requirements reach well beyond the audit team.', 'Fees and relationships are checked when a client is accepted, not only at the audit.', ['Client acceptance', 'Fees'],
+        [[2, 'ethical and independence requirements affecting client acceptance, services, staffing, fees, relationships, governance and commercial planning.']]],
+      ['iesba-parts-4a-4b', 2, 'D', 'What do IESBA Parts 4A and 4B distinguish?', 'Independence requirements for audit and review engagements, and for other assurance engagements.', 'The same principle is set out separately for different engagement types.', 'A review engagement and another assurance engagement fall under different parts of the code.', ['IESBA', 'Part 4A', 'Part 4B'],
+        [[2, 'IESBA Parts 4A and 4B distinguish independence requirements for audit/review and other assurance engagements.']]],
+    ],
+  }),
+];

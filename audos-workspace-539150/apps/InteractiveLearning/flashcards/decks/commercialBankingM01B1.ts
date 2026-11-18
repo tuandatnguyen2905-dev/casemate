@@ -1,0 +1,210 @@
+// Commercial Banking Module 01, Lesson 1.2 (apps/IndustryKnowledge/commercialBankingM01B1.tsx).
+// Lesson 1.1 keeps its original deck in commercialBankingFundamentals.ts and is not changed here.
+// Cards restate chapter text; every excerpt is verbatim and re-checked by decks.test.ts. No statistics,
+// dates or legal provisions are used: the chapter flags its milestone dates as awaiting verification.
+
+import type { FlashcardDeckContent } from '../models';
+import { defineLessonDeck } from './factory';
+
+const COMMON = {
+  industryId: 'banking-commercial',
+  industryLabel: 'Commercial Banking',
+  moduleId: 'cb-m01',
+  moduleLabel: 'Module 01',
+  moduleKey: 'COMMERCIAL_BANKING_MODULE01',
+  file: 'apps/IndustryKnowledge/commercialBankingM01B1.tsx',
+  readAtSha256: '8fc1179449d733280179148df4856f7423b8e1c84610f2aacc2c0c02ff6fd3fe',
+  readAt: '2026-11-08',
+  chapterMarker: 'bankingChapter({',
+  contentStatus: 'Draft / Ready for Review',
+};
+
+export const CB_LESSON_12_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'commercial-banking-history-development',
+  title: 'Commercial Banking: Industry History & Development',
+  description: 'How banking scaled, how crises produced safeguards, what digital and global banking changed, and how Vietnam’s two-tier system formed.',
+  lessonId: 'cb-m1-l12',
+  lessonTitle: '1.2 Industry History & Development',
+  startMarker: "const L12 = '1.2 Industry History & Development';",
+  endMarker: 'export const CB_LESSON_11: BankingLessonBundle',
+  chapterIdPrefix: 'cb-m1-l12',
+  chapters: [
+    { title: 'From Early Banking to Modern Financial Institutions', sourceTitle: '01 From Early Banking to Modern Financial Institutions', citations: ['cb-m01-s02', 'cb-m01-s08'] },
+    { title: 'Banking Regulation, Crises, and Financial Stability', sourceTitle: '02 Banking Regulation, Crises, and Financial Stability', citations: ['cb-m01-s02', 'cb-m01-s03', 'cb-m01-s07'] },
+    { title: 'The Rise of Digital and Global Banking', sourceTitle: '03 The Rise of Digital and Global Banking', citations: ['cb-m01-s12'] },
+    { title: "The Development of Vietnam's Banking System", sourceTitle: "04 The Development of Vietnam's Banking System", citations: ['cb-m01-s07', 'cb-m01-s08'] },
+  ],
+  mappingNotes: [
+    'Lesson 1.2 has no restriction notice and no entry in reviewHolds.ts at read time.',
+    'Milestone years, Basel dates, the capital minimum and the VAMC/ordinance timing in the chapter are deliberately not used: the chapter itself marks them as awaiting primary-source verification.',
+  ],
+  cards: [
+    {
+      id: 'cb12-origins-capabilities',
+      ch: 1,
+      front: 'Which developments turned early safekeeping and lending into modern commercial banking?',
+      back: 'Private intermediation was joined by scalable payment networks, industrial demand for credit, and public institutions (central banks and supervisors) that support confidence.',
+      explanation: 'The structural sequence runs from safekeeping and exchange, to deposit and lending scale, to payment networks, to central banking and supervision. The learning point is the shift in capability, not a chronology of dates.',
+      example: 'An early merchant mainly needed safekeeping, exchange and the occasional loan; a modern industrial firm needs deposits, working-capital credit and a payment network that clears at scale.',
+      terms: ['Intermediation', 'Payment networks', 'Supervision'],
+      refs: [
+        [1, 'Modern commercial banking emerged when private intermediation was joined by scalable payments, industrial credit demand and public institutions that support confidence and supervision.'],
+        [1, 'Early banking centred on safekeeping, exchange and lending.'],
+      ],
+    },
+    {
+      id: 'cb12-central-vs-commercial-bank',
+      ch: 1,
+      front: 'Why is a central bank part of banking history but not itself a commercial bank?',
+      back: 'A central bank supports money, policy and system stability. A commercial bank serves customers and takes commercial credit risk.',
+      explanation: 'Separating the roles clarifies who sets the conditions for lending and who actually prices and extends a loan.',
+      example: 'The central bank shapes the conditions in which a loan is made; the commercial bank decides whether to lend to a given borrower and at what price.',
+      terms: ['Central bank', 'Commercial bank'],
+      refs: [
+        [1, 'A central bank supports money, policy and system stability; a commercial bank serves customers and takes commercial credit risk.'],
+        [1, 'Separating those roles clarifies who sets the conditions for lending and who actually prices and extends a loan.'],
+      ],
+    },
+    {
+      id: 'cb12-lender-of-last-resort',
+      ch: 1,
+      front: 'What is a lender of last resort, and why did scale make the role necessary?',
+      back: 'A central-bank role providing emergency liquidity to eligible institutions under defined conditions. Scale made banking more useful and more systemic, so a failure could spread beyond one institution.',
+      explanation: 'As banks grew, a failure could affect depositors, payments and credit across the system, which is why public backstops developed around private banks.',
+      example: 'A solvent bank facing sudden withdrawals can be given emergency liquidity under set conditions instead of being forced into disorderly asset sales.',
+      terms: ['Lender of last resort', 'Systemic'],
+      refs: [
+        [1, 'A central-bank role providing emergency liquidity to eligible institutions under defined conditions.'],
+        [1, 'Scale made banking more useful and more systemic.'],
+        [1, 'scale required records, payment networks and a public authority capable of stabilising the system.'],
+      ],
+    },
+    {
+      id: 'cb12-crisis-safeguard-cycle',
+      ch: 2,
+      front: 'Describe the cycle through which banking crises produce new regulation.',
+      back: 'Leverage or liquidity weakness causes a crisis, public losses reveal the gaps, and new safeguards reshape bank behaviour.',
+      explanation: 'Many rules look conservative until you ask what failure they were designed to stop. Deposit insurance, capital and liquidity standards each carry the memory of earlier crises.',
+      example: 'The global financial crisis exposed gaps in capital, leverage, liquidity and resolvability; the response was the tougher Basel III disciplines that followed.',
+      terms: ['Prudential regulation', 'Crisis cycle'],
+      refs: [
+        [2, 'Bank regulation evolves through a repeated cycle: leverage or liquidity weakness causes crisis, public losses reveal gaps, and new safeguards reshape bank behaviour.'],
+        [2, 'Deposit insurance, capital and liquidity standards all carry the memory of earlier crises.'],
+        [2, 'global financial crisis drove Basel III capital, leverage, liquidity and resolvability reforms.'],
+      ],
+    },
+    {
+      id: 'cb12-safeguard-failure-channels',
+      ch: 2,
+      front: 'Match each safeguard to the failure it addresses: capital, liquid assets, supervision, resolution.',
+      back: 'Capital absorbs losses. Liquid assets meet stressed outflows. Supervision identifies deterioration. Resolution planning seeks to preserve critical functions without assuming every stakeholder is protected.',
+      explanation: 'Banks are leveraged and interconnected, so distress can interrupt payments and spread through confidence and funding markets. Each safeguard covers a different failure channel; no single ratio makes a bank safe.',
+      example: 'A bank hit by sudden withdrawals draws on its liquid assets; a bank hit by loan losses relies on its capital. Two different failures call on two different safeguards.',
+      terms: ['Capital', 'Liquidity', 'Resolution', 'Systemic risk'],
+      refs: [
+        [2, 'Capital absorbs losses, liquid assets meet stressed outflows, supervision identifies deterioration and resolution planning seeks to preserve critical functions without assuming every stakeholder is protected.'],
+        [2, 'Banks are leveraged and interconnected.'],
+        [2, 'Capital and liquidity address different failure channels.'],
+      ],
+    },
+    {
+      id: 'cb12-liquidity-vs-solvency',
+      ch: 2,
+      front: 'Why can liquidity support not repair an insolvent bank?',
+      back: 'A solvent bank can face temporary withdrawals and need liquid funding. An insolvent bank has losses greater than its capital, and lending it more does not erase those losses.',
+      explanation: 'The distinction decides whether the response is liquidity assistance, recapitalisation, restructuring or resolution.',
+      example: 'Emergency lending suits a sound bank hit by a confidence shock; a bank whose loan losses have used up its capital needs restructuring or resolution instead.',
+      terms: ['Liquidity', 'Solvency', 'Recapitalisation'],
+      refs: [
+        [2, 'A solvent bank can face temporary withdrawals and need liquid funding.'],
+        [2, 'An insolvent bank has losses greater than its capital; lending it more does not erase those losses.'],
+        [2, 'That distinction determines whether the response is liquidity assistance, recapitalisation, restructuring or resolution.'],
+      ],
+    },
+    {
+      id: 'cb12-digital-competitive-shift',
+      ch: 3,
+      front: 'How does digital banking change what banks compete on?',
+      back: 'It lowers distribution cost and expands reach, but shifts competitive advantage toward data, reliability, cybersecurity and coordinated cross-border operations.',
+      explanation: 'Lower marginal service cost supports reach and scale, but cyber, fraud, privacy, outsourcing and operational-resilience risks become more important. Complex relationships still require human judgement and service.',
+      example: 'A phone can start a transfer or a loan application at any hour, so the bank is judged on whether its systems stay reliable and secure, not on branch opening hours.',
+      terms: ['Digital onboarding', 'Operational resilience'],
+      refs: [
+        [3, 'Digital banking lowers distribution cost and expands reach, but shifts competitive advantage toward data, reliability, cybersecurity and coordinated cross-border operations.'],
+        [3, 'Lower marginal service cost can support inclusion and scale, yet cyber, fraud, privacy, outsourcing and operational-resilience risks become more important.'],
+        [3, 'Complex relationships still require human judgement and service.'],
+      ],
+    },
+    {
+      id: 'cb12-digital-not-asset-light',
+      ch: 3,
+      front: 'Why does digital distribution not make banking asset-light?',
+      back: 'An app can reduce branch and servicing cost, but lending still consumes funding and capital and creates credit risk. A digital bank has a lighter footprint but the balance-sheet and regulatory economics of banking.',
+      explanation: 'Digital changes how customers are reached and served, not what a loan costs to fund, to support with capital or to lose if it is not repaid.',
+      example: 'A digital-first lender with no branches still needs funding for every loan it makes and capital behind the credit risk it takes.',
+      terms: ['Credit risk', 'Balance sheet'],
+      refs: [
+        [3, 'An app can reduce branch and servicing cost, but lending still consumes funding and capital and creates credit risk.'],
+        [3, 'A digital bank may have a lighter physical footprint, yet its balance-sheet and regulatory economics remain those of banking.'],
+      ],
+    },
+    {
+      id: 'cb12-correspondent-banking',
+      ch: 3,
+      front: 'What is correspondent banking, and where does it sit in global banking?',
+      back: 'A relationship through which one bank provides cross-border or currency services for another. International banks combine local licences with global treasury, correspondent-banking and trade-finance networks.',
+      explanation: 'Global banking connects trade, currencies, funding and multinational clients across jurisdictions while each local entity keeps its own licence.',
+      example: 'A bank without branches in a trading partner’s country can still settle a client’s cross-border payment by using another bank that provides the currency service.',
+      terms: ['Correspondent banking', 'Trade finance', 'Treasury'],
+      refs: [
+        [3, 'A relationship through which one bank provides cross-border or currency services for another.'],
+        [3, 'International banks combine local licences with global treasury, correspondent-banking and trade-finance networks.'],
+      ],
+    },
+    {
+      id: 'cb12-mono-vs-two-tier',
+      ch: 4,
+      front: 'What is the difference between a mono-tier and a two-tier banking system, and what did Vietnam change?',
+      back: 'Mono-tier: the central bank also performs commercial-banking functions. Two-tier: the central bank is separate from the commercial institutions serving customers. Vietnam moved from the SBV combining both roles to separating policy from commercial banking.',
+      explanation: 'The separation made it possible for state-controlled and joint-stock banks to develop distinct customer businesses under a supervising central bank.',
+      example: 'Under a mono-tier system the same institution sets monetary conditions and lends to customers; under two tiers those functions sit in different institutions.',
+      terms: ['Mono-tier banking', 'Two-tier banking', 'SBV'],
+      refs: [
+        [1, 'A system in which the central bank also performs commercial-banking functions.'],
+        [1, 'A system separating the central bank from commercial institutions serving customers.'],
+        [1, 'Vietnam later moved from a mono-tier structure, where the SBV combined central and commercial functions, toward a two-tier system separating policy and commercial banking.'],
+        [4, 'The pre-reform system was mono-tier.'],
+        [4, 'policy and supervision were separated from commercial banking, enabling state-controlled and joint-stock banks to develop distinct customer businesses.'],
+      ],
+    },
+    {
+      id: 'cb12-vietnam-structure-drivers',
+      ch: 4,
+      front: 'Which developments shaped the structure of Vietnam’s banking system today?',
+      back: 'The two-tier reform, market opening, post-bad-debt restructuring and the progressive adoption of stronger prudential and governance rules.',
+      explanation: 'History explains why large state-controlled institutions, private joint-stock banks and foreign banks coexist, with a strong SBV role in credit and stability.',
+      example: 'State-controlled banks retain scale and policy roles, while joint-stock banks often compete more aggressively in retail, digital and fee businesses.',
+      terms: ['Market opening', 'Restructuring', 'Prudential rules'],
+      refs: [
+        [4, 'Vietnam’s modern banking structure was shaped by the two-tier reform, market opening, post-bad-debt restructuring and progressive adoption of stronger prudential and governance rules.'],
+        [4, 'History explains today’s coexistence of large state-controlled institutions, private joint-stock banks, foreign banks and a strong SBV role in credit and stability.'],
+        [4, 'State-controlled banks retain scale and policy roles, while joint-stock banks often compete more aggressively in retail, digital and fee businesses.'],
+      ],
+    },
+    {
+      id: 'cb12-vietnam-bank-categories',
+      ch: 4,
+      front: 'Which four categories of commercial bank does the official SBV taxonomy include?',
+      back: 'State-owned, joint-stock, wholly foreign-owned and joint-venture commercial banks.',
+      explanation: 'The categories describe ownership and organisational form. They help explain why banks pursue different competitive models within the same regulated system.',
+      example: 'A locally licensed bank owned by a foreign banking group is a wholly foreign-owned bank, while a bank organised as a shareholding company is joint-stock.',
+      terms: ['Joint-stock commercial bank', 'Wholly foreign-owned bank'],
+      refs: [
+        [4, 'The official SBV taxonomy now includes state-owned, joint-stock, wholly foreign-owned and joint-venture commercial banks.'],
+      ],
+    },
+  ],
+});
+
+export const COMMERCIAL_BANKING_M01B1_DECKS: FlashcardDeckContent[] = [CB_LESSON_12_DECK];

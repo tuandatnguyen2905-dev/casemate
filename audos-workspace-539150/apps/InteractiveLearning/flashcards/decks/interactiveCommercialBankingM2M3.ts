@@ -1,0 +1,431 @@
+// MCQ and fill-in-the-blank cards for Commercial Banking lessons 2.4 to 2.6 and 3.1 to 3.3: one of each per chapter.
+// Each card restates one authored card (`basedOn`) of the same chapter and reuses that card's verbatim,
+// source-checked excerpts, so every answer is chapter text. The restricted chapters (2.6 ch3, 3.1 ch1, 3.2 ch1-2)
+// only use classification logic and definitions. No statistics, years, legal thresholds or company results.
+// Distractors are other statements from the same lesson, or the reverse of what the chapter says, and avoid
+// absolute words. Card IDs are pinned in __tests__/interactiveCards.test.tsx; never rename one.
+
+import type { InteractiveCardSpec } from '../interactive';
+
+const OPTION_IDS = ['a', 'b', 'c', 'd'] as const;
+
+/** Four options; `correct` is the index of the keyed option and `back` repeats its text. */
+function mcqCard(id: string, basedOn: string, front: string, options: string[], correct: number, explanation: string): InteractiveCardSpec {
+  return {
+    id,
+    basedOn,
+    front,
+    back: options[correct],
+    explanation,
+    interaction: {
+      type: 'mcq',
+      options: options.map((text, index) => ({ id: OPTION_IDS[index], text })),
+      correctOptionId: OPTION_IDS[correct],
+    },
+  };
+}
+
+/** `statement` holds one ____; `back` is the statement completed with the answer. */
+function fillCard(id: string, basedOn: string, statement: string, answer: string, acceptedAnswers: string[], explanation: string): InteractiveCardSpec {
+  return {
+    id,
+    basedOn,
+    front: statement,
+    back: statement.replace('____', answer),
+    explanation,
+    interaction: { type: 'fill_blank', answer, acceptedAnswers },
+  };
+}
+
+export const CB_INTERACTIVE_CARDS_M2_M3: Record<string, InteractiveCardSpec[]> = {
+  'commercial-banking-downstream-activities': [
+    mcqCard(
+      'cb24-mcq-digital-shift-measure',
+      'cb24-closing-branches-not-strategy',
+      'A bank closes branches and moves transactions online. According to the chapter, what should it measure instead of branch count alone?',
+      [
+        'The number of transactions that now run through the app',
+        'Total customer outcome and cost-to-serve',
+        'The number of branches closed in the period',
+        'The share of customers who stop contacting the bank',
+      ],
+      1,
+      'Moving transactions online can reduce cost, but customers still need support, accessible design, cash services and advice for complex decisions. The right metric is total customer outcome and cost-to-serve, not branch count alone.',
+    ),
+    fillCard(
+      'cb24-fill-contact-centre',
+      'cb24-channel-roles',
+      'The ____ handles support, complaints and service recovery when something goes wrong.',
+      'contact centre',
+      ['contact center', 'call centre', 'call center'],
+      'Each channel has a job: mobile, internet and self-service for routine payments, branches for cash and assisted onboarding, relationship managers for complex needs, and the contact centre for service recovery.',
+    ),
+    mcqCard(
+      'cb24-mcq-bundling-risk',
+      'cb24-cross-sell-and-conduct-risk',
+      'A bank bundles products that customers do not need in order to raise its product count. What risk does the chapter say this creates?',
+      [
+        'Higher customer lifetime value from more stable deposits',
+        'A lower cost-to-serve on each product sold',
+        'Damaged trust and conduct risk',
+        'Lower acquisition cost for useful services',
+      ],
+      2,
+      'Cross-sell can raise customer lifetime value and stable deposits when products are useful and suitable. Inappropriate bundling damages trust and creates conduct risk, so value comes from suitable depth, not product count.',
+    ),
+    fillCard(
+      'cb24-fill-primary-account',
+      'cb24-payroll-primary-account',
+      'Payroll creates recurring transactions and can make an account ____, supporting stable balances and lower acquisition cost for useful services.',
+      'primary',
+      ['primary account'],
+      'Salary flow brings regular activity, balances and information. It does not by itself show that every credit product is affordable, so the bank still assesses repayment capacity.',
+    ),
+    mcqCard(
+      'cb24-mcq-digital-success-measure',
+      'cb24-metrics-not-downloads',
+      'A campaign doubles app downloads. Which measure does the chapter use to show whether digital banking is working?',
+      [
+        'The total number of app downloads across the campaign period',
+        'The visual polish of the main app screens and menus',
+        'How many branch visits customers still make each month',
+        'Verified account opening and a first funded transaction',
+      ],
+      3,
+      'Downloads are not a complete measure of customer experience. Track verified account opening, first funded transaction, sustained active use and successful support resolution, and pair growth with fraud, complaint and accessibility measures.',
+    ),
+    fillCard(
+      'cb24-fill-digital-scale',
+      'cb24-digital-journey-stages',
+      'A small failure rate becomes large at digital ____, so trust depends on both convenience and dependable exception handling.',
+      'scale',
+      [],
+      'A digital experience is the reliable completion of important financial jobs, including clear handling of fraud, errors and complaints, not the visual design of a screen.',
+    ),
+  ],
+  'commercial-banking-inputs-outputs-value': [
+    mcqCard(
+      'cb25-mcq-deposit-meaning',
+      'cb25-deposits-not-revenue-loans-not-profit',
+      'In the chapter\u2019s inputs-and-outputs view of a bank, how should a customer deposit be understood?',
+      [
+        'Sales revenue that the bank has already earned',
+        'Profit that the bank keeps from its lending',
+        'A loan asset that the bank holds against the customer',
+        'An input the bank owes back',
+      ],
+      3,
+      'Deposits are an input the bank owes back, not sales, and loans are assets, not profit. Calling deposits revenue or loans profit hides the liability and the risk the transaction creates.',
+    ),
+    fillCard(
+      'cb25-fill-economic-profit',
+      'cb25-more-output-can-destroy-value',
+      'Volume then grows assets and headline income while weakening economic ____ and resilience.',
+      'profit',
+      [],
+      'A bank can originate more loans at prices that fail to cover funding, expected loss, service and capital costs, so a bigger balance sheet is not the same as more value.',
+    ),
+    mcqCard(
+      'cb25-mcq-nim-definition',
+      'cb25-nii-and-nim-definitions',
+      'How does the chapter define NIM, the net interest margin?',
+      [
+        'Interest income minus interest expense over the period',
+        'NII divided by average interest-earning assets',
+        'The headline loan rate minus the headline deposit rate',
+        'NII divided by total assets at the end of the period',
+      ],
+      1,
+      'NII is interest income minus interest expense; NIM scales it by average interest-earning assets. A simple loan-minus-deposit rate ignores asset mix, idle liquidity and the full funding mix.',
+    ),
+    fillCard(
+      'cb25-fill-period-end',
+      'cb25-average-assets-and-annualising',
+      'NIM should use average opening and closing earning assets rather than ____ total assets.',
+      'period-end',
+      ['end of period'],
+      'A period-end balance can be unusually high or low and may not represent the assets that generated income throughout the period. Annualise quarter or half-year NIM before comparing it with a full-year figure.',
+    ),
+    mcqCard(
+      'cb25-mcq-cir-definition',
+      'cb25-cir-and-pre-provision-profit',
+      'How does the chapter define the cost-to-income ratio (CIR)?',
+      [
+        'Operating expense divided by total operating income',
+        'Credit provision expense divided by the average loan book',
+        'Total operating income divided by total operating expense',
+        'Interest expense divided by total interest-earning assets',
+      ],
+      0,
+      'CIR is operating expense divided by total operating income. Analysts compare it with pre-provision operating profit and provision charges to separate operating performance from the credit cycle.',
+    ),
+    fillCard(
+      'cb25-fill-cost-of-risk',
+      'cb25-profitability-waterfall',
+      'In the profitability waterfall, operating expense drives CIR, while provision expense drives ____.',
+      'Cost of Risk',
+      ['CoR'],
+      'Net interest income and non-interest income give operating income; operating expense, provisions and tax then lead to net profit, which ROA and ROE scale against assets and equity.',
+    ),
+  ],
+  'commercial-banking-global-vs-local-chain': [
+    mcqCard(
+      'cb26-mcq-parent-liquidity-limits',
+      'cb26-parent-cannot-move-cash-freely',
+      'Why can a parent bank not always move liquidity and capital freely to a local subsidiary?',
+      [
+        'A subsidiary is not permitted to hold liquid assets of its own',
+        'Group strength removes the need for local capital rules',
+        'Local supervisors may require them to remain available to the local entity',
+        'Correspondent banks keep the parent\u2019s liquidity out of reach',
+      ],
+      2,
+      'Group strength helps, but legal claims and prudential restrictions determine where resources can actually move. Ring-fencing keeps capital, liquidity or operations inside a local entity or jurisdiction.',
+    ),
+    fillCard(
+      'cb26-fill-group-treasury',
+      'cb26-group-treasury-correspondent-network',
+      'Group ____ coordinates funding, liquidity, capital and market risks across a banking group.',
+      'treasury',
+      ['treasury function'],
+      'Group treasury, a correspondent network, shared technology and group risk standards create scale and client reach, but they are limited by currency, data and legal dependencies.',
+    ),
+    mcqCard(
+      'cb26-mcq-vietnam-growth-limit',
+      'cb26-vietnam-localised-chain',
+      'Beyond customer demand, what does the chapter say shapes how fast a Vietnamese bank can grow its lending?',
+      [
+        'The number of branches the bank operates',
+        'The cost-to-income ratio of the bank',
+        'Basel liquidity ratios applied directly',
+        'Credit room set by the SBV',
+      ],
+      3,
+      'Vietnam\u2019s chain is universal in logic but local in constraints: SBV credit room shapes lending growth, so a plan built only on loan demand would ignore the room the bank has been allowed.',
+    ),
+    fillCard(
+      'cb26-fill-asset-quality',
+      'cb26-do-not-copy-developed-market',
+      'A strategy copied from a developed market can fail if it ignores local growth limits, funding structure, legal process and ____ context.',
+      'asset quality',
+      [],
+      'Localisation means adapting a general operating model to local rules, customers and infrastructure. Developed systems also rely more on fee and capital-markets income and have no Vietnam-style bank-specific credit room.',
+    ),
+    mcqCard(
+      'cb26-mcq-insolvency-description',
+      'cb26-liquidity-stress-vs-insolvency',
+      'Which description fits insolvency rather than liquidity stress?',
+      [
+        'Losses overwhelm capital, or liabilities exceed asset value',
+        'Difficulty meeting obligations when due despite possible long-term asset value',
+        'A rapid withdrawal of funding by depositors after a confidence shock',
+        'A temporary shortfall that a solvent bank can bridge with liquidity support',
+      ],
+      0,
+      'A solvent bank may need temporary liquidity; an insolvent bank needs loss recognition and restructuring or resolution. The diagnosis matters because the tools differ.',
+    ),
+    fillCard(
+      'cb26-fill-basel-domestic-law',
+      'cb26-basel-reference-not-domestic-rule',
+      'Basel standards are reference points, not automatic domestic ____.',
+      'law',
+      ['legislation', 'rules'],
+      'Safe analysis separates global standards from verified local implementation, and describes Vietnam\u2019s rules from verified local sources rather than assuming them from Basel.',
+    ),
+  ],
+  'commercial-banking-business-models': [
+    mcqCard(
+      'cb31-mcq-funding-liability',
+      'cb31-nii-versus-non-interest-income',
+      'Which of these is a funding liability rather than revenue, according to the chapter?',
+      [
+        'Net fees received from customers',
+        'Loan principal outstanding',
+        'Deposits',
+        'Trading and FX income',
+      ],
+      2,
+      'Only the interest and fee flows enter revenue. Deposits are funding liabilities, not revenue, and loan principal is an asset, not income.',
+    ),
+    fillCard(
+      'cb31-fill-credit-cycles',
+      'cb31-spread-versus-fee-exposure',
+      'A spread-led bank is more exposed to funding costs, lending growth and ____ cycles.',
+      'credit',
+      [],
+      'A larger recurring fee base can diversify revenue and often uses less incremental balance-sheet capital, but fees still need customers, infrastructure, controls and sometimes partners.',
+    ),
+    mcqCard(
+      'cb31-mcq-model-lenses',
+      'cb31-model-four-lenses',
+      'According to the chapter, which four lenses define a bank\u2019s business model?',
+      [
+        'Total assets, customer deposits, loans and equity capital',
+        'Size, ownership, listing status and number of branches',
+        'Funding, liquidity, capital and provisioning policy',
+        'Customer, product, channel and retained risk',
+      ],
+      3,
+      'A model is defined by whom it serves, what it offers, how it distributes and which risks it retains, not by size alone. Each model creates a different funding franchise, cost base and revenue mix.',
+    ),
+    fillCard(
+      'cb31-fill-digital-first',
+      'cb31-breadth-and-digital-first-trade-offs',
+      'Digital-first describes ____, not automatically a better business.',
+      'distribution',
+      [],
+      'Universal breadth can diversify earnings but increases operational and governance complexity. Each model has to be judged on its funding, cost, risk and unit economics, not on its label.',
+    ),
+    mcqCard(
+      'cb31-mcq-best-model',
+      'cb31-risk-adjusted-return-test',
+      'Which bank model does the chapter call the best?',
+      [
+        'The one that earns the highest headline yield on its largest loan portfolio',
+        'The one that converts activity into resilient risk-adjusted return',
+        'The one that serves the widest range of customer segments at once',
+        'The one that grows its balance sheet fastest in each reporting period',
+      ],
+      1,
+      'Model profitability is revenue minus funding, operating and credit costs, judged against the capital needed to absorb risk. A high headline yield can still earn a weak return once expected loss and capital are counted.',
+    ),
+    fillCard(
+      'cb31-fill-scalability-risk',
+      'cb31-scalability-and-downstream-gates',
+      'Scalability means growing contribution faster than the resources and ____ consumed.',
+      'risk',
+      ['risks'],
+      'Operating leverage means revenue growing faster than operating expense, and scalability must also include risk and service capacity. A model that looks attractive on revenue can destroy value after provisions or capital.',
+    ),
+  ],
+  'commercial-banking-products-segmentation': [
+    mcqCard(
+      'cb32-mcq-guarantee-exposure',
+      'cb32-contingent-liability-and-cash-management',
+      'A bank issues a guarantee for a customer, but no cash loan has been drawn. What does the chapter say about the bank\u2019s position?',
+      [
+        'It will carry exposure from the day a cash loan is drawn',
+        'It has booked the guaranteed amount as revenue',
+        'It already carries contingent exposure',
+        'It has converted the guarantee into a customer deposit',
+      ],
+      2,
+      'A contingent liability is an obligation that may become a balance-sheet exposure if a specified event occurs. Guarantees create exposure even before a cash loan is drawn.',
+    ),
+    fillCard(
+      'cb32-fill-credit-exposure',
+      'cb32-product-system-roles',
+      'Deposits provide funding and liquidity, loans deploy funds into credit ____, and transaction and advisory products monetise activity and information.',
+      'exposure',
+      [],
+      'Bank products form a connected system: liabilities fund assets, while services deepen relationships and generate fee or market income. Cross-product design also brings conduct, suitability and concentration risks.',
+    ),
+    mcqCard(
+      'cb32-mcq-bancassurance-income',
+      'cb32-bancassurance-commission-not-premium',
+      'A bank sells an insurer\u2019s policy to a customer. What does bancassurance normally record as the bank\u2019s income?',
+      [
+        'The commission the bank earns on the sale',
+        'The gross premium paid by the customer',
+        'The insurer\u2019s profit on the policy',
+        'The deposit the customer places with the bank',
+      ],
+      0,
+      'Bancassurance normally records the bank\u2019s commission, not the insurer\u2019s gross premium. Gross premiums belong to the insurer unless consolidated accounting says otherwise.',
+    ),
+    fillCard(
+      'cb32-fill-net-fees',
+      'cb32-classify-income-on-net-basis',
+      'Net fees subtract fees ____ from fees received.',
+      'paid',
+      ['paid out'],
+      'Income must be classified on a net, bank-level basis before it can be compared or called recurring. Compare net fees, not gross customer charges.',
+    ),
+    mcqCard(
+      'cb32-mcq-segment-profit-step',
+      'cb32-price-is-not-profit',
+      'After estimating revenue by product, what does the chapter say to do next when measuring segment profitability?',
+      [
+        'Add the expected cross-sell income of other segments to the product revenue',
+        'Divide product revenue by the number of branches that serve the segment',
+        'Subtract funding, service cost, expected loss and overhead',
+        'Replace revenue with the headline price quoted to the customer',
+      ],
+      2,
+      'A mortgage rate, account fee or FX spread is a price. Profit emerges only after transfer-priced funding, service and acquisition cost, expected credit loss and allocated overhead, then retention, cross-sell and capital are assessed.',
+    ),
+    fillCard(
+      'cb32-fill-ftp-products',
+      'cb32-transfer-pricing-and-relationship-value',
+      'Funds transfer pricing is an internal mechanism that assigns funding value or cost to business lines and ____.',
+      'products',
+      [],
+      'Transfer pricing connects product profitability to the bank\u2019s funding curve, which is why single-product margin can misstate relationship value.',
+    ),
+  ],
+  'commercial-banking-customer-segments-needs': [
+    mcqCard(
+      'cb33-mcq-segmentation-starting-point',
+      'cb33-segmentation-is-behavioural',
+      'Which of these does the chapter treat as only a starting point for segmenting customers?',
+      [
+        'Transaction frequency and decision structure',
+        'Cash-flow volatility and collateral held',
+        'Digital comfort and service intensity',
+        'Income and company size',
+      ],
+      3,
+      'Income and company size are only starting points. Transaction frequency, cash-flow volatility, collateral, decision structure and digital comfort often explain product use better.',
+    ),
+    fillCard(
+      'cb33-fill-service-cost',
+      'cb33-segments-differ-in-economics',
+      'A useful segment definition predicts product need, channel, risk and service ____.',
+      'cost',
+      [],
+      'Segmentation guides proposition, underwriting, channel and cost-to-serve, so low-complexity needs are not overserved and complex, high-risk relationships are not underserved.',
+    ),
+    mcqCard(
+      'cb33-mcq-core-job',
+      'cb33-jobs-not-products',
+      'Which of these is a core job a customer hires a bank to do, rather than a product?',
+      [
+        'Liquidity',
+        'A term loan',
+        'A current account',
+        'A revolving facility',
+      ],
+      0,
+      'Liquidity, security, credit, convenience, trust and transaction control are the core jobs; products are the mechanisms. A current account, a term loan and a revolving facility each serve a job.',
+    ),
+    fillCard(
+      'cb33-fill-operational-resilience',
+      'cb33-trust-is-part-of-the-product',
+      'In banking, trust and operational ____ are part of the product because failure can interrupt livelihoods and commerce.',
+      'resilience',
+      [],
+      'A fast payment that cannot be traced or reversed when something goes wrong may fail the underlying trust job, so each journey needs a trigger, an outcome, a risk and a recovery path.',
+    ),
+    mcqCard(
+      'cb33-mcq-acquisition-meaning',
+      'cb33-lifetime-risk-adjusted-value',
+      'How does the chapter describe customer acquisition?',
+      [
+        'The main source of lifetime customer value',
+        'A measure of how much risk the customer adds',
+        'Only the opening investment in the relationship',
+        'The point at which a customer becomes profitable',
+      ],
+      2,
+      'Customer value is lifetime, multi-product and risk-adjusted. Retention spreads acquisition cost, while acquisition without activation can destroy value.',
+    ),
+    fillCard(
+      'cb33-fill-cohort-channel',
+      'cb33-cohort-logic',
+      'Track cohorts by acquisition month, segment and ____.',
+      'channel',
+      [],
+      'Cohorts separate genuine relationship quality from one-time campaign volume. Compare activation, activity, balances, margin, service contacts and losses over time.',
+    ),
+  ],
+};

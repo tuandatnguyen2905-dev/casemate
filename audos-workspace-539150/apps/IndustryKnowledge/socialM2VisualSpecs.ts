@@ -1,0 +1,307 @@
+import type { VisualSpec } from './fashionVisualKit';
+
+export interface SocialChapterVisual { heading: string; intro: string; spec: VisualSpec }
+
+/** Chapter-specific Learning Visuals for Social & Communication Platforms Module 02 (Value Chain), keyed by visualKind. */
+export const SOCIAL_M2_VISUALS: Record<string, SocialChapterVisual> = {
+  'social-m2-1': {
+    heading: 'Value moves from infrastructure to monetization, then feeds back into the chain',
+    intro: 'Unlike a linear media chain, participation and campaign data feed back into ranking, product, safety, creator strategy and commercial decisions.',
+    spec: {
+      layout: 'flow', title: 'Structure and Core Stages of the Industry Value Chain', kicker: '',
+      steps: [
+        { label: 'Infrastructure supply', detail: 'Cloud, CDN and technology', owner: 'Technology providers' },
+        { label: 'Platform development', detail: 'Products and creation tools', owner: 'Platforms' },
+        { label: 'Content and interaction', detail: 'Messages and content from all participants', owner: 'Users, creators, brands' },
+        { label: 'Distribution and engagement', detail: 'Feeds, search, messaging, notifications, recommendations', owner: 'Platforms' },
+        { label: 'Monetization and optimization', detail: 'Ads, subscriptions, business messaging, virtual goods, commerce', kind: 'outcome', owner: 'Advertisers and businesses' },
+      ],
+      loop: 'Engagement and campaign data flow back into ranking, product, safety and creator strategy.',
+      note: 'Vietnam’s ecosystem combines global infrastructure and platforms with Zalo and other domestic services, local creators, agencies, businesses and communities.',
+      takeaway: 'The industry is an interconnected ecosystem in which users consume, produce, interact, generate signals and strengthen network effects.',
+    },
+  },
+  'social-m2-2': {
+    heading: 'Platforms sit between participants and coordinate content, data, attention and money',
+    intro: 'Advertisers pay platforms, platforms may pay creators, users provide attention and activity, and feedback changes future distribution.',
+    spec: {
+      layout: 'ecosystem', title: 'Key Participants and Value Flows', kicker: '',
+      center: { label: 'Platform operators', detail: 'Build and govern services' },
+      actors: [
+        { label: 'Technology providers', relation: 'Supply computing and security', flows: ['service'] },
+        { label: 'Users and communities', relation: 'Communicate, contribute, give attention', flows: ['information'] },
+        { label: 'Creators and publishers', relation: 'Supply content; may receive revenue share', flows: ['product', 'money'] },
+        { label: 'Advertisers and businesses', relation: 'Fund reach and tools', flows: ['money'] },
+        { label: 'Supporting partners', relation: 'Payments, agencies, analytics, moderation, developers', flows: ['service', 'information'] },
+      ],
+      note: 'A sponsored creator campaign links brand funding, creator content, platform ranking and ads, audience engagement, measurement, fees and possible revenue sharing.',
+      takeaway: 'Platforms coordinate content, data, attention and financial flows and gain power through control of access, distribution, data and commercial interaction.',
+    },
+  },
+  'social-m2-3': {
+    heading: 'A single livestream crosses every layer of technical infrastructure',
+    intro: 'Messaging, uploads, video, livestreams and calls produce variable traffic with heavy storage, bandwidth and latency demands, so each layer must scale reliably.',
+    spec: {
+      layout: 'flow', title: 'Digital Infrastructure and Technical Resources', kicker: '',
+      steps: [
+        { label: 'Capture and encoding', detail: 'Device and operating-system compatibility', owner: 'Creator device' },
+        { label: 'Upload connectivity', detail: 'Mobile and broadband access', owner: 'Telecom networks' },
+        { label: 'Compute and moderation', detail: 'Processing, storage and safety checks', owner: 'Cloud' },
+        { label: 'CDN distribution', detail: 'Media cached closer to viewers', owner: 'CDN' },
+        { label: 'Playback and chat', detail: 'Low-latency viewing and interaction', kind: 'outcome', owner: 'Viewers' },
+      ],
+      note: 'Identity security, monitoring, backups and recovery run across every layer. Vietnamese service quality depends on domestic and international connectivity and device diversity.',
+      takeaway: 'Scalable, secure, reliable and cost-efficient infrastructure enables richer services and is both a resilience capability and a competitive advantage.',
+    },
+  },
+  'social-m2-4': {
+    heading: 'Build or buy each technical capability, and do not ship it until it is evaluated',
+    intro: 'Proprietary systems can differentiate a platform, while external services speed development but add data, vendor, cost, control and governance risks.',
+    spec: {
+      layout: 'decision', title: 'Software, AI, Data, and Technical Capability Development', kicker: '',
+      root: { label: 'New technical capability', detail: 'Ranking, translation, assistants, safety detection, ad bidding' },
+      question: 'Is it differentiating, and are its objectives and evaluation broad enough?',
+      branches: [
+        { condition: 'Core differentiator', outcome: 'Build proprietary', detail: 'Own relevance, safety or monetization logic', tone: 'positive' },
+        { condition: 'Speed matters, risk manageable', outcome: 'Use an external service with controls', detail: 'Manage data, vendor, cost and control risk', tone: 'caution' },
+        { condition: 'Narrow objectives or evaluation', outcome: 'Hold until evaluated', detail: 'Risk of bias, repetitive content or harmful amplification', tone: 'negative' },
+      ],
+      note: 'Vietnamese platforms need local-language data, safety capability, engineering, advertising tools, analytics and responsible AI processes.',
+      takeaway: 'Software and AI shape relevance, safety, efficiency and monetization, but need quality data, evaluation, governance and monitoring.',
+    },
+  },
+  'social-m2-5': {
+    heading: 'Content supply depends on creators, rights holders, publishers and brands, each with its own terms',
+    intro: 'Distinctive content attracts audiences and advertisers, but rights, eligibility, market availability and creator economics vary by partner.',
+    spec: {
+      layout: 'ecosystem', title: 'Content Supply, Rights, and Ecosystem Partnerships', kicker: '',
+      center: { label: 'Platform content supply', detail: 'Relevant, diverse and legally usable' },
+      actors: [
+        { label: 'Creators', relation: 'Use creation tools; earn funds, revenue share, gifts', flows: ['product', 'money'] },
+        { label: 'Music and media licensors', relation: 'License catalog for use on the platform', flows: ['product', 'money'] },
+        { label: 'Publishers and organizations', relation: 'Sports, education and media partnerships', flows: ['product'] },
+        { label: 'Brands and agencies', relation: 'Fund branded collaborations', flows: ['money'] },
+        { label: 'Rights management', relation: 'Detect copyright and resolve disputes', flows: ['oversight'] },
+      ],
+      note: 'A short-video platform may license music, detect copyrighted audio, share revenue and resolve rights claims. Vietnamese creators and publishers need clear rights, contracts, eligibility and local support.',
+      takeaway: 'Sustainable content supply requires relevance, diversity, legal usability, creator and publisher relationships and viable incentives, not volume alone.',
+    },
+  },
+  'social-m2-6': {
+    heading: 'Sustained use and business trust rest on six product and operations capabilities',
+    intro: 'Communication failures are immediately visible: a delayed message or account lockout can disrupt relationships, work and customer service even when the feed stays up.',
+    spec: {
+      layout: 'driverTree', title: 'Platform Development, Product Management, and Service Operations', kicker: '',
+      root: { label: 'Sustained use and business trust', detail: 'Engagement balanced with reliability' },
+      drivers: [
+        { label: 'Product design and UX', detail: 'Usable for every need', children: [{ label: 'Onboarding' }, { label: 'Accessibility and privacy' }] },
+        { label: 'Core service engineering', detail: 'Chats, calls, uploads, sync' },
+        { label: 'Testing and iteration', detail: 'Experiments before rollout' },
+        { label: 'Service reliability', detail: 'Visible when it fails', children: [{ label: 'Monitoring and capacity' }, { label: 'Incidents and recovery' }] },
+        { label: 'Localization', detail: 'Vietnamese language and local workflows', children: [{ label: 'Device and network performance' }, { label: 'Country-specific support' }] },
+        { label: 'Business and developer tools', detail: 'APIs and business accounts' },
+      ],
+      note: 'Private messaging, public content, creators, communities and business workflows have different needs and risks.',
+      takeaway: 'Product quality and reliability determine sustained use and whether businesses trust the platform for communication and customer relationships.',
+    },
+  },
+  'social-m2-7': {
+    heading: 'Activity reaches audiences through several distribution routes, all balanced against trust',
+    intro: 'Distribution decides who sees what. Platforms must balance relevance, diversity, freshness, safety, relationships, business goals and user well-being rather than maximize interaction alone.',
+    spec: {
+      layout: 'pathway', title: 'Content Distribution, Recommendation, and Engagement Management', kicker: '',
+      trunk: [
+        { label: 'Messages and content created', detail: 'Activity looking for an audience' },
+      ],
+      optionsLabel: 'Distribution routes, alternatives that run in parallel',
+      options: [
+        { label: 'Direct messages and groups', detail: 'Contacts and group membership' },
+        { label: 'Social graph', detail: 'Followed accounts' },
+        { label: 'Search, hashtags and trends', detail: 'Intent-led discovery' },
+        { label: 'Ranked feeds and recommendations', detail: 'Reach beyond followers' },
+        { label: 'Notifications', detail: 'Prompts to return' },
+      ],
+      afterLabel: 'Managed with',
+      after: [
+        { label: 'Audience and creator analytics' },
+        { label: 'User controls and frequency limits' },
+        { label: 'Safety and creator-health measures', kind: 'outcome' },
+      ],
+      note: 'A recommendation feed can help a new Vietnamese creator reach beyond followers; local language, culture, news and commerce need market-specific signals and moderation.',
+      takeaway: 'Distribution allocates attention and strongly influences user experience, creator opportunity, advertising exposure and information circulation.',
+    },
+  },
+  'social-m2-8': {
+    heading: 'One scam report triggers a full trust-and-safety cycle that feeds back into enforcement',
+    intro: 'Scale introduces scams, impersonation, harassment and manipulation, and automation can misread language and context, so platforms combine detection, human review and appeals.',
+    spec: {
+      layout: 'flow', title: 'Trust, Safety, Moderation, and Platform Governance', kicker: '',
+      steps: [
+        { label: 'User report or detection', detail: 'Automated signals plus user reports', owner: 'Users and systems' },
+        { label: 'Review and account action', detail: 'Human review and enforcement', kind: 'decision', owner: 'Trust & safety team' },
+        { label: 'Victim support', detail: 'Account protection and recovery', owner: 'Support' },
+        { label: 'Appeal', detail: 'Contested decisions re-examined', owner: 'Review team' },
+        { label: 'Pattern analysis', detail: 'Evidence and recurring abuse', kind: 'outcome', owner: 'Safety analytics' },
+      ],
+      loop: 'Findings improve enforcement, advertiser controls and transparency reporting.',
+      note: 'Measure accuracy, consistency, response, appeals, recurrence and trust, not removal volume alone. Vietnamese-language moderation and fraud prevention are essential.',
+      takeaway: 'Trust and safety are core operations supporting user confidence, advertiser suitability, compliance and ecosystem viability.',
+    },
+  },
+  'social-m2-9': {
+    heading: 'Growth counts only when a new user reaches value and keeps returning',
+    intro: 'Messaging grows through relevant contacts, content products through creators and discovery, and professional networks through career utility. Acquisition without activation or retention has limited value.',
+    spec: {
+      layout: 'flow', title: 'Audience Access, Marketing, and User Acquisition', kicker: '',
+      steps: [
+        { label: 'Acquire', detail: 'Marketing, referrals, creators, app stores', owner: 'Growth team' },
+        { label: 'Onboard', detail: 'Interests, contacts and recommendations', owner: 'Product' },
+        { label: 'Activate', detail: 'Find contacts, join a group, follow creators', kind: 'decision', owner: 'New user' },
+        { label: 'Retain and reactivate', detail: 'Reminders, updates and useful content', owner: 'Product' },
+        { label: 'Durable network utility', detail: 'Supported by help, recovery and accessibility', kind: 'outcome', owner: 'Customer support' },
+      ],
+      note: 'Track activation, meaningful connections, retention, satisfaction, safety, support and acquisition cost, not downloads alone. In Vietnam, local creators, communities, referrals and business use can drive adoption.',
+      takeaway: 'User growth creates value only when registrations become meaningful, recurring participation and durable network utility.',
+    },
+  },
+  'social-m2-10': {
+    heading: 'Advertising monetizes discovery while business messaging monetizes communication utility',
+    intro: 'Commercial intensity can reduce user experience, and privacy, attribution limits, policies and inventory quality shape the economics of each model.',
+    spec: {
+      layout: 'compare', title: 'Advertising, Business Solutions, and Commercial Monetization', kicker: '',
+      leftTitle: 'Advertising on public content', rightTitle: 'Business messaging and tools',
+      rows: [
+        { label: 'What is sold', a: 'Sponsored posts, video, display, search', b: 'Messaging APIs, notifications, service tools' },
+        { label: 'How it is delivered', a: 'Auctions, targeting, contextual delivery', b: 'Verified notifications and support conversations' },
+        { label: 'Value shown by', a: 'Measurement and attribution', b: 'Service value to the customer' },
+        { label: 'Trust risk', a: 'Frequency and relevance', b: 'Consent and transparency' },
+        { label: 'Add-ons', a: 'Creator and brand partnerships', b: 'Premium management features' },
+      ],
+      note: 'Vietnamese businesses can combine platform ads, official accounts, creators, messaging, commerce, CRM and support across local and global services.',
+      takeaway: 'Monetization succeeds when audience attention and communication utility become measurable business value without undermining user trust.',
+    },
+  },
+  'social-m2-11': {
+    heading: 'Each paid model charges for something different and needs its own condition to work',
+    intro: 'Subscriptions need perceived premium value, creator tools need audiences and earning opportunity, and commerce needs reliable discovery, communication, transactions and support.',
+    spec: {
+      layout: 'table', title: 'Subscriptions, Creator Monetization, Commerce, and Customer Support', kicker: '',
+      headers: ['Paid model', 'What the user pays for', 'Needs to succeed'],
+      rows: [
+        { label: 'Premium subscriptions', a: 'Premium or professional features, storage', b: 'Perceived premium value' },
+        { label: 'Creator memberships', a: 'Exclusive content and community access', b: 'Audience and earning opportunity' },
+        { label: 'Gifts, tips and digital goods', a: 'Badges and virtual items', b: 'Active creator communities' },
+        { label: 'Commerce enablement', a: 'Catalogs and livestream shopping', b: 'Reliable discovery, transactions and rights' },
+        { label: 'Integrations and support', a: 'Partner services and billing help', b: 'Customer support and fraud control' },
+      ],
+      note: 'Track adoption, retention, creator earnings, fees, fraud and the impact on the free-service experience. Vietnamese platforms and creators can use these models where supported and compliant.',
+      takeaway: 'Diversified revenue strengthens resilience only when each paid model fits core user behavior and provides clear value.',
+    },
+  },
+  'social-m2-12': {
+    heading: 'Six complementary input types, with data governed rather than unrestricted',
+    intro: 'A recommendation feature needs infrastructure, software, product design, user participation, evaluation, safety, data governance and operating capital at the same time.',
+    spec: {
+      layout: 'taxonomy', title: 'Key Inputs and Operational Resources', kicker: '',
+      root: 'Platform inputs',
+      rootDetail: 'Complementary: a bottleneck in one limits the others',
+      groups: [
+        { label: 'Infrastructure', detail: 'Enables scale', items: ['Compute', 'Storage', 'Networks and CDNs'] },
+        { label: 'Software and IP', detail: 'Enables functionality', items: ['Software', 'Algorithms'] },
+        { label: 'Human capital', detail: 'Enables execution', items: ['Product and engineering', 'Design and safety', 'Sales and support'] },
+        { label: 'User participation', detail: 'Creates network value', items: ['Relationships', 'Content', 'Conversations'] },
+        { label: 'Governed data', detail: 'Limited by purpose, consent, security, retention and law' },
+        { label: 'Capital and partners', detail: 'Funds and extends operations', items: ['Capital', 'Suppliers', 'Creators and partnerships'] },
+      ],
+      note: 'In Vietnam, local language, talent, creators, domestic relationships, connectivity, regulation and global technology all affect platform capability.',
+      takeaway: 'Infrastructure enables scale, technology enables functionality, people enable execution and participation creates network value; the inputs are complementary.',
+    },
+  },
+  'social-m2-13': {
+    heading: 'Each benefit a platform produces has a matching harm when governance fails',
+    intro: 'Benefits coexist with fraud, harassment, privacy loss, misleading content, manipulation and excessive engagement costs. A community can support education while the same distribution system spreads scams.',
+    spec: {
+      layout: 'compare', title: 'Outputs, Value Creation, and Economic Benefits', kicker: '',
+      leftTitle: 'Value created', rightTitle: 'Cost if governance fails',
+      rows: [
+        { label: 'Communication', a: 'Messaging, calls and communities', b: 'Harassment and privacy loss' },
+        { label: 'Information', a: 'Discovery, learning and public information', b: 'Misleading content and manipulation' },
+        { label: 'Creators', a: 'Reach and earnings', b: 'Weak creator health' },
+        { label: 'Business', a: 'Customer communication and acquisition', b: 'Fraud and scams' },
+        { label: 'Attention', a: 'Entertainment and civic participation', b: 'Excessive engagement costs' },
+      ],
+      note: 'Platforms in Vietnam can support family and business communication, creators, commerce, education and public information alongside safety responsibilities.',
+      takeaway: 'Sustainable value combines utility, participation, distribution, monetization, trust, user outcomes, ecosystem health and management of negative externalities.',
+    },
+  },
+  'social-m2-14': {
+    heading: 'Performance is value captured minus the cost and risk of serving every participant',
+    intro: 'A large audience may monetize weakly or be costly, while a smaller professional audience may have high value, and strong engagement can conceal safety problems.',
+    spec: {
+      layout: 'driverTree', title: 'Value Capture, Cost Structure, and Performance Measurement', kicker: '',
+      root: { label: 'Platform economic performance', detail: 'A balanced scorecard, not one metric' },
+      formula: 'Value captured − cost and risk of serving participants',
+      drivers: [
+        { label: 'Revenue', detail: 'What is captured', children: [{ label: 'Ads and subscriptions' }, { label: 'Business fees and commerce' }] },
+        { label: 'Users and engagement', detail: 'Consistent definitions', children: [{ label: 'MAU/DAU and retention' }, { label: 'Meaningful interaction' }] },
+        { label: 'Costs', detail: 'Grow with content and safety', op: '−', children: [{ label: 'Infrastructure and AI' }, { label: 'Moderation, security, compliance' }] },
+        { label: 'Creator and partner economics', detail: 'Payouts and incentives', op: '−' },
+        { label: 'Risk and trust', detail: 'Fraud, incidents, trust', op: '−' },
+        { label: 'Operational performance', detail: 'Uptime, latency, delivery' },
+      ],
+      note: 'Video growth can increase ad inventory and creator value while raising storage, delivery, moderation and compute cost.',
+      takeaway: 'Economic performance depends on value capture relative to the cost and risk of serving users, creators, advertisers, businesses and communities.',
+    },
+  },
+  'social-m2-15': {
+    heading: 'Global platforms centralize core technology and localize the market-facing work',
+    intro: 'Scale spreads development cost and expands networks, yet language, culture, content, privacy, legal and commercial conditions differ in every market.',
+    spec: {
+      layout: 'compare', title: 'Global Value Chain: Scale, Technology, and Cross-Border Ecosystems', kicker: '',
+      leftTitle: 'Centralized globally', rightTitle: 'Localized for each market',
+      rows: [
+        { label: 'Technology', a: 'Core software, AI and recommendation systems', b: 'Vietnamese language models' },
+        { label: 'Infrastructure', a: 'Global infrastructure management', b: 'Local service quality' },
+        { label: 'Content and creators', a: 'Cross-border content distribution', b: 'Local creator programs' },
+        { label: 'Commercial', a: 'Ads systems and international advertising', b: 'Business sales and support' },
+        { label: 'Governance', a: 'Security and multi-market policy', b: 'Moderation and legal processes' },
+      ],
+      note: 'Vietnam benefits from global platform technology and distribution while contributing audiences, creators, advertisers, commerce and local execution.',
+      takeaway: 'Global scale supports shared technology, infrastructure utilization, R&D, creators and advertisers, but requires effective localization and governance.',
+    },
+  },
+  'social-m2-16': {
+    heading: 'Vietnam’s local chain links domestic messaging, global content platforms and local execution',
+    intro: 'Vietnam’s language, mobile behavior, commerce, SMEs, creators, local relationships and legal environment create market-specific value and constraints.',
+    spec: {
+      layout: 'ecosystem', title: 'Vietnam’s Local Value Chain: Platform Adoption, Domestic Services, and Market Adaptation', kicker: '',
+      center: { label: 'Vietnamese users and businesses', detail: 'Broad context, not one shared audience' },
+      actors: [
+        { label: 'Zalo', relation: 'Domestic messaging and business use', flows: ['service'] },
+        { label: 'YouTube, Facebook and TikTok', relation: 'Discovery, content, creators and advertising', flows: ['product', 'information'] },
+        { label: 'Local creators and publishers', relation: 'Supply local relevance', flows: ['product'] },
+        { label: 'Agencies and software providers', relation: 'Run campaigns and customer operations', flows: ['service', 'money'] },
+        { label: 'SMEs and social commerce', relation: 'Sell and serve customers', flows: ['money'] },
+        { label: 'Privacy and regulatory compliance', relation: 'Sets local legal obligations', flows: ['oversight'] },
+      ],
+      note: 'Local competitiveness depends on user function, customer service, content, integration, measurement, trust, safety and legal compliance. Keep global reach and local participation measures distinct.',
+      takeaway: 'Vietnam combines global platform infrastructure with domestic communication habits, content, creators, agencies, commerce and business execution.',
+    },
+  },
+  'social-m2-17': {
+    heading: 'How exposed a local business is to a platform change depends on the assets it controls',
+    intro: 'Algorithm, policy, account, fee, monetization or data-access changes can affect local businesses that have little influence over platform decisions.',
+    spec: {
+      layout: 'decision', title: 'Global–Local Interdependence and Strategic Implications', kicker: '',
+      root: { label: 'Platform change', detail: 'Algorithm, policy, fee or data-access change' },
+      question: 'Does the business keep its own customer relationships, content and fallback channels?',
+      branches: [
+        { condition: 'Several platforms plus owned assets', outcome: 'Absorb the change', detail: 'Consented CRM, website, content library, contingency plans', tone: 'positive' },
+        { condition: 'Some owned assets', outcome: 'Activate fallback channels', detail: 'Shift effort while monitoring policy risk', tone: 'caution' },
+        { condition: 'Reliant on one platform', outcome: 'High exposure', detail: 'Little influence over the decision', tone: 'negative' },
+      ],
+      note: 'Platforms need localization and compliance; local businesses need cross-platform capability and direct customer relationships without abandoning effective global reach.',
+      takeaway: 'Strong strategies combine international scale with local knowledge, diversified participation, resilient customer relationships and responsible data governance.',
+    },
+  },
+};

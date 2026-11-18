@@ -3,9 +3,9 @@
   "workspaceId": "c6ce26d1-7466-4b72-962d-b7bf7a471c88",
   "configId": 539150,
   "name": "Casemate",
-  "tagline": "Test your business thinking. Work under pressure. Stand out.",
+  "tagline": "Start to become a future leader. Upload your CV and see which industries, functions and graduate programs fit you best.",
   "logoUrl": "https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/e28b4f5e-44e7-4243-a6ec-91b01e5e68bb.png",
-  "iconUrl": "https://storage.googleapis.com/audos-images/brand-logos/a631377d-382b-491f-a398-787914c9a5b9.png",
+  "iconUrl": "https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/89b30a22-1b16-4449-972a-5d8c6b459198.svg",
   "logoOnDarkUrl": "https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/02ad64ce-be52-4d70-992f-08e0b01728f1.png",
   "colors": {
     "primary": "#CC0000",
@@ -144,5 +144,5 @@
     "headingFont": "Inter",
     "bodyFont": "Inter"
   },
-  "heroVideoUrl": "https://storage.googleapis.com/audos-images/videos/scene_group_1783566441761_stitched.mp4"
+  "heroVideoUrl": ""
 }

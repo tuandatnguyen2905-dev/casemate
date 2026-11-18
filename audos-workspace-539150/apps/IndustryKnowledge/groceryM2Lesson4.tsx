@@ -1,0 +1,202 @@
+import { G2DeepDive, citeG2, g2Chapter, g2Quiz } from './groceryM2Core';
+import type { GroceryM2LessonBundle } from './groceryM2Core';
+
+const LESSON = '4. Downstream Activities';
+
+const deck = [
+  g2Chapter({
+    title: 'Retail Operations, Merchandising, and Store Management', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how assortment, shelf, price and daily store execution turn inventory into sales.',
+    mateIntro: 'Everything upstream comes down to a few metres of shelf. Whether a shopper finds a fresh, fairly priced product there is decided by merchandising and by how well the store is run that day.',
+    keyInsight: 'Retail performance depends on converting inventory into sales efficiently. Product assortment, shelf placement, pricing, store location, and operational consistency determine how effectively retailers meet local customer needs.',
+    statTiles: [
+      { value: '6', label: 'Store-level activities', subtitle: 'Assortment to private label', description: 'Assortment management, category management, visual merchandising, pricing, store operations and private-label merchandising.' },
+      { value: '~35%', label: 'Fresh food’s share of Bach Hoa Xanh sales, H1 2024', subtitle: 'Broker estimate', description: 'Freshness and availability are central to store execution in the format.' },
+      { value: '200–300 m²', label: 'Typical Bach Hoa Xanh store size', subtitle: 'Single minimart format', description: 'A small number of stores reach about 500 m².' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the fresh-food share and store size are broker research on one chain and describe a format, not the whole market.',
+    narrative: [
+      { label: 'What it is', text: 'Downstream activities bring products to consumers through supermarkets, hypermarkets, convenience stores, minimarts, specialty stores, traditional shops and online channels. Retailers decide how products are presented, priced, promoted and replenished at the point of sale. Store-level execution is especially important in grocery, where freshness, availability, convenience and shopping frequency strongly influence customer satisfaction.' },
+      { label: 'Why it is happening', text: 'Customers shop often and judge a store on whether what they need is there, fresh and easy to find. Small differences in execution therefore show up quickly in repeat visits and sales.' },
+      { label: 'Real-world example', text: 'Retailers select products and brands by store format, location and customer demand, and manage related groups such as dairy, beverages, household cleaning or personal care as categories. They organise shelves, displays, signage and promotional areas to make products visible, set regular prices, discounts, bundles and offers, manage staff, opening hours, checkout, cleanliness and availability, and promote retailer-owned brands to differentiate and improve margin.' },
+      { label: 'Vietnam example', text: 'Vietcap describes Bach Hoa Xanh as a single minimart format with most stores of 200–300 m², strong in fresh food at competitive prices for low-to-middle-income households, with fresh food about 35% of sales in the first half of 2024. WinCommerce’s WinMart+ targeted 4,500 outlets in 2025, 42% of them in rural areas, which shows retailers tailoring format and assortment to the neighbourhoods they serve.' },
+      { label: 'Business impact', text: 'Retail operations turn products into customer-facing offers. Strong merchandising and store management help retailers increase sales productivity, strengthen differentiation and improve shopping experiences.' },
+    ],
+    visualKind: 'grocery-m2-41-store-operations', visualHeading: 'Converting inventory into sales',
+    visualIntro: 'See six store-level activities around one goal and what each aims to achieve.',
+    imageAlt: 'Casemate orbit mind map of six store-level activities and the goal of each',
+    keyTerms: [
+      { term: 'Category management', definition: 'Managing a group of related products as a business unit with its own role and targets.' },
+      { term: 'Visual merchandising', definition: 'Arranging shelves, displays and signs to make products easy to see and choose.' },
+      { term: 'Planogram', definition: 'A plan showing where each product belongs on a shelf.' },
+      { term: 'Private label', definition: 'A product sold under the retailer’s own brand.' },
+    ],
+    recap: [
+      'Downstream brings products to consumers through stores and online channels.',
+      'Store-level execution is critical in grocery.',
+      'Assortment, category management, merchandising, pricing and operations convert stock into sales.',
+      'Private labels differentiate and can improve margin.',
+    ],
+    chapterRecap: 'Retail operations turn products into customer-facing offers. Strong merchandising and store management help retailers increase sales productivity, strengthen differentiation, and improve shopping experiences.',
+    deepDiveTitle: 'Why the shelf is where upstream mistakes become visible',
+    body: <G2DeepDive paragraphs={[
+      'A poor forecast, a late delivery or a quality fault at the supplier ends up as a gap on the shelf or a product past its best. The customer sees only the result and may switch stores.' ,
+      'Store teams are therefore the last line of control: rotating stock, checking freshness, keeping prices accurate and reporting problems early so the rest of the chain can respond.',
+    ]} evidence="The activities are described qualitatively in the supplied material. The Bach Hoa Xanh format and fresh-food share are broker estimates from Vietcap, and the WinMart+ target is a company statement reported by Hanoi Times." />,
+    sources: citeG2('vietcapGrocery', 'hanoitimesModern', 'winCommerceExpansion'),
+  }),
+  g2Chapter({
+    title: 'Sales Channels and Omnichannel Fulfilment', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how channels connect and why digital sales are not automatically more profitable.',
+    mateIntro: 'A phone order for a bag of rice and a basket of vegetables looks like a sale. For the retailer it also means someone to pick, pack and ride, and a customer who expects it fresh in an hour.',
+    keyInsight: 'Omnichannel capability can expand market reach and increase convenience, but digital sales are not automatically more profitable. Picking costs, last-mile delivery, platform commissions, and return handling must be managed carefully.',
+    statTiles: [
+      { value: '~5%', label: 'Online share of Bach Hoa Xanh revenue, 2025', subtitle: 'About VND 2.3 trillion', description: 'More than 7 million successful online transactions.' },
+      { value: '+150%', label: 'Growth of Bach Hoa Xanh’s online revenue in 2025', subtitle: 'Company-reported', description: 'Fast growth from a small base.' },
+      { value: 'US$22.5B', label: 'Online retail of goods in Vietnam, 2025', subtitle: 'Ministry report', description: 'Covers all online goods, not grocery alone.' },
+    ],
+    statsNote: 'The first two tiles are company-reported figures for one chain; the third is a ministry estimate for all online goods, and Euromonitor data put food e-commerce at about 1% of food retail value in 2024.',
+    narrative: [
+      { label: 'What it is', text: 'Grocery and general merchandise products reach consumers through physical stores, e-commerce websites, mobile applications, social-commerce channels and third-party marketplaces. Retailers may run these channels independently or integrate them into a coordinated omnichannel model that connects product discovery, purchase, payment, inventory visibility, fulfilment and returns. The operational challenge is to give a consistent experience without excessive fulfilment cost.' },
+      { label: 'Why it is happening', text: 'Customers want to choose how they shop, so retailers add channels. Each channel has its own costs, and without careful management the convenience customers value can erase the margin.' },
+      { label: 'Real-world example', text: 'Retailers sell through supermarkets, minimarts, convenience stores and general merchandise outlets, and run searchable online catalogues with digital payments. They let customers order online and collect at a designated location, deliver groceries and household products to homes, use third-party platforms to reach customers beyond their own channels, and coordinate stock information across stores, warehouses and online channels.' },
+      { label: 'Vietnam example', text: 'Mobile World Group reports that Bach Hoa Xanh served more than 7 million successful online transactions in 2025, earning about VND 2.3 trillion, nearly 5% of chain revenue and 150% more than a year earlier. The Ministry of Industry and Trade puts online retail of goods at US$22.5 billion in 2025, yet food e-commerce was still only about 1% of food retail value in 2024, so most grocery sales remain in stores.' },
+      { label: 'Business impact', text: 'Sales-channel development expands how retailers reach and serve consumers. Successful omnichannel models integrate digital convenience with efficient physical operations and fulfilment.' },
+    ],
+    visualKind: 'grocery-m2-42-channels', visualHeading: 'Convenience rises with fulfilment cost',
+    visualIntro: 'See five channels placed by customer convenience and the cost of fulfilling each order.',
+    imageAlt: 'Casemate matrix placing store sales, click-and-collect, marketplace, e-commerce and home delivery by convenience and fulfilment cost',
+    keyTerms: [
+      { term: 'Click-and-collect', definition: 'Ordering online and collecting at a designated location.' },
+      { term: 'Last-mile delivery', definition: 'The final stage of delivery from a local point to the customer.' },
+      { term: 'Platform commission', definition: 'A fee charged by a marketplace on each sale.' },
+      { term: 'Unified inventory', definition: 'One accurate view of stock across stores, warehouses and online.' },
+    ],
+    recap: [
+      'Products reach consumers through stores, websites, apps, social commerce and marketplaces.',
+      'Omnichannel connects discovery, purchase, payment, stock, fulfilment and returns.',
+      'Digital sales are not automatically more profitable.',
+      'Manage picking, delivery, commission and return costs.',
+    ],
+    chapterRecap: 'Sales-channel development expands how retailers reach and serve consumers. Successful omnichannel models integrate digital convenience with efficient physical operations and fulfillment.',
+    deepDiveTitle: 'Why store-based picking can make online grocery pay',
+    body: <G2DeepDive paragraphs={[
+      'Picking an order from a nearby store uses stock that is already close, avoids a separate warehouse and keeps delivery distances short. That lowers the cost per order compared with a purpose-built online warehouse.' ,
+      'The trade-off is the strain on store staff and the risk that online picking empties shelves for walk-in customers, so retailers must plan picking times, stock accuracy and staffing carefully.',
+    ]} evidence="The channels are described qualitatively in the supplied material. The Bach Hoa Xanh online figures are company-reported, the online goods retail figure is from the ministry’s report and the food e-commerce share is Euromonitor data in a USDA report." />,
+    sources: citeG2('mwgBusiness2025', 'vnexpressBhx', 'govRetailReport', 'usdaRetailFoods'),
+  }),
+  g2Chapter({
+    title: 'Marketing, Customer Experience, and Loyalty', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Show how loyalty, promotion and customer data build repeat purchase and why over-promotion damages margin.',
+    mateIntro: 'A shopper who buys vegetables from the same place every morning is loyal for reasons that have little to do with a discount. Understanding those reasons, and measuring them, is what the downstream customer work is about.',
+    keyInsight: 'Customer data becomes commercially valuable when it helps retailers deliver relevant offers, improve shopping convenience, and build repeat purchasing. Poor targeting or excessive promotional dependence can weaken margins and customer trust.',
+    statTiles: [
+      { value: '6', label: 'Customer-value activities', subtitle: 'Loyalty to experience measurement', description: 'Loyalty programmes, promotions, CRM, personalised recommendations, customer service and experience measurement.' },
+      { value: 'Up to 20%', label: 'Discount for WIN members on WinEco vegetables', subtitle: 'Company membership programme', description: 'An example of a loyalty benefit tied to a product the chain wants to promote.' },
+      { value: '70%+', label: 'Consumers who prefer shopping at grocery stores', subtitle: 'Business association survey', description: 'Reasons include reasonable prices, convenience and personal connections with sellers.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the discount and survey figures are company and association statements reported by news outlets and show tendencies, not audited measures.',
+    narrative: [
+      { label: 'What it is', text: 'Downstream value creation extends beyond the transaction to acquiring customers, keeping them, serving them and managing the relationship. Retailers use loyalty programmes, promotions, personalised offers, product recommendations and customer service to encourage repeat purchases. In grocery, loyalty is often driven by habit, convenience, competitive prices and confidence in quality, while general merchandise retailers may rely more on assortment breadth, product discovery, seasonal campaigns and service.' },
+      { label: 'Why it is happening', text: 'Customers have many choices and shop often, so keeping them is cheaper than winning new ones. Data lets retailers target offers better, but heavy dependence on promotions erodes margins and trains customers to wait for discounts.' },
+      { label: 'Real-world example', text: 'Retailers reward repeat purchases through points, membership benefits or exclusive prices; run discounts, bundles, seasonal offers and demonstrations; analyse purchase history and engagement to improve retention; and suggest relevant products through apps, websites or digital messages. They handle enquiries, complaints, refunds and product concerns, and track satisfaction, repeat purchase rates, conversion and retention.' },
+      { label: 'Vietnam example', text: 'WinCommerce runs a WIN membership that gives members discounts of up to 20% on WinEco vegetables. A survey by the Business Association of High Quality Vietnamese Products found that more than 70% of consumers prefer shopping at grocery stores for reasonable prices, convenience and personal connections with sellers. Since 1 January 2026 Vietnam’s Personal Data Protection Law has required consent for advertising that uses personal data, so personalisation has to be permission-based.' },
+      { label: 'Business impact', text: 'Marketing and customer experience influence both immediate sales and long-term customer value. Retailers need to balance promotional activity with sustainable margins and trusted customer relationships.' },
+    ],
+    visualKind: 'grocery-m2-43-loyalty', visualHeading: 'Value beyond the transaction',
+    visualIntro: 'See six customer-value activities and the measure that shows whether each works.',
+    imageAlt: 'Casemate mind map of six customer-value activities and the measure for each',
+    keyTerms: [
+      { term: 'Loyalty programme', definition: 'A scheme that rewards repeat purchases with points, benefits or exclusive prices.' },
+      { term: 'CRM', definition: 'Customer relationship management: using purchase history and engagement to improve retention.' },
+      { term: 'Personalisation', definition: 'Tailoring offers and recommendations to a customer’s history and preferences.' },
+      { term: 'Retention', definition: 'The share of customers who keep buying over time.' },
+    ],
+    recap: [
+      'Value extends beyond the transaction to acquisition, retention, service and relationships.',
+      'Grocery loyalty is driven by habit, convenience, price and trust in quality.',
+      'Customer data creates value through relevant offers and repeat purchasing.',
+      'Excessive promotion weakens margins and trust.',
+    ],
+    chapterRecap: 'Marketing and customer experience influence both immediate sales and long-term customer value. Retailers need to balance promotional activity with sustainable margins and trusted customer relationships.',
+    deepDiveTitle: 'Why a discount is the weakest form of loyalty',
+    body: <G2DeepDive paragraphs={[
+      'A customer who returns only because of a price cut leaves when a competitor cuts deeper. A customer who returns for freshness, convenience and a familiar face has a reason that cannot be matched with a coupon.' ,
+      'The aim of loyalty programmes is to add reasons, such as relevant benefits and reliable quality, to the habit that already exists. Measuring repeat rate and retention, rather than only redemptions, shows whether they are working.',
+    ]} evidence="The activities are described qualitatively in the supplied material. The WIN discount is a company programme reported by a news outlet, the survey is by a business association as reported by Viet Nam News, and the law is summarised from a secondary English source." />,
+    sources: citeG2('winEcoFarms', 'nielsenGrocery', 'vnPdpl'),
+  }),
+  g2Chapter({
+    title: 'After-Sales Service, Returns, and Reverse Logistics', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe how returns, recalls and reverse flows protect trust and recover value.',
+    mateIntro: 'The sale is not the end of the story. A spoiled item, a faulty kettle or a recalled batch tests whether the retailer can put things right quickly, and what can still be done with the product.',
+    keyInsight: 'Returns and service failures create additional costs, but a reliable resolution process can protect customer loyalty. Retailers should distinguish between products that can be resold, safely recovered, repaired, recycled, or must be discarded.',
+    statTiles: [
+      { value: '6', label: 'After-sales activities', subtitle: 'Returns to waste management', description: 'Returns management, warranty coordination, food-safety response, product recovery, packaging recovery and waste management.' },
+      { value: '1 Jan 2024', label: 'Vietnam’s packaging recycling obligations began', subtitle: 'Decree 08/2022, EPR', description: 'Producers and importers of packaging for food, cosmetics, medicines, detergents and similar products must recycle set shares.' },
+      { value: '10–22%', label: 'Mandatory packaging recycling rates in the first period', subtitle: 'Depending on material', description: 'Companies with previous-year revenue below VND 30 billion are exempt.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the rates and dates are from Vietnamese reporting on Decree 08/2022 for named packaging groups, so check which products and packaging a retailer’s own brands fall under.',
+    narrative: [
+      { label: 'What it is', text: 'After-sales activities handle problems that arise after purchase, including returns, refunds, exchanges, complaints and warranty claims. Their importance varies by category: fresh groceries need quick complaint resolution and food-safety controls, while electronics and household goods may need repair, replacement or warranty services. Reverse logistics moves products or materials from consumers back to retailers, service providers, manufacturers or recycling facilities, and effective processes can recover value and reduce waste while keeping customer confidence.' },
+      { label: 'Why it is happening', text: 'Some products will always fail, spoil or not suit the customer, and a retailer is judged on how it responds. Handling them well protects loyalty and compliance and, where possible, recovers value that would otherwise be lost.' },
+      { label: 'Real-world example', text: 'Retailers process eligible returns, exchanges and refunds, and connect customers with manufacturers or authorised service centres for warranty claims. They investigate complaints, remove affected batches and communicate recalls, assess whether returned goods can be resold, refurbished or repaired, collect reusable packaging, cartons and recyclable materials, and handle expired, damaged or unsellable products as required.' },
+      { label: 'Vietnam example', text: 'Since 1 January 2024 Vietnamese producers and importers of packaging for food, cosmetics, medicines and detergents must recycle shares of 10–22% depending on material, with exemptions below VND 30 billion of revenue. Mobile World Group reported that Bach Hoa Xanh works with partners such as Wipro and Colgate on plastic-waste initiatives and runs a responsible-quality programme that checks product quality and food safety, linking reverse flows to quality control.' },
+      { label: 'Business impact', text: 'After-sales service and reverse logistics extend the value chain beyond the point of sale. Efficient processes support customer trust, regulatory compliance and more responsible use of resources.' },
+    ],
+    visualKind: 'grocery-m2-44-after-sales', visualHeading: 'What happens after the sale',
+    visualIntro: 'See six after-sales and reverse-flow activities and the outcome each delivers.',
+    imageAlt: 'Casemate tree mind map of six after-sales activities and the outcome of each',
+    keyTerms: [
+      { term: 'Reverse logistics', definition: 'Moving products or materials back from consumers to retailers, service providers, manufacturers or recyclers.' },
+      { term: 'Recall', definition: 'Removing an unsafe or faulty batch from sale and informing customers.' },
+      { term: 'Warranty claim', definition: 'A customer request for repair or replacement under a manufacturer’s guarantee.' },
+      { term: 'Product recovery', definition: 'Assessing returned goods for resale, refurbishment or repair.' },
+    ],
+    recap: [
+      'After-sales covers returns, refunds, exchanges, complaints and warranties.',
+      'Fresh groceries need quick complaint resolution and food-safety controls.',
+      'Reverse logistics recovers value and reduces waste.',
+      'Separate what can be resold, repaired, recycled or discarded.',
+    ],
+    chapterRecap: 'After-sales service and reverse logistics extend the value chain beyond the point of sale. Efficient processes support customer trust, regulatory compliance, and more responsible resource use.',
+    deepDiveTitle: 'Why a clear decision tree for returns saves money',
+    body: <G2DeepDive paragraphs={[
+      'When staff must decide on the spot what to do with every returned item, results vary and good stock is thrown away while faulty stock goes back on sale. A simple decision rule, by category and condition, makes outcomes consistent.' ,
+      'Such a rule sorts items into resell, repair or refurbish, return to supplier, recycle or discard, and records the reason, which also gives suppliers and quality teams the data to prevent the same problem again.',
+    ]} evidence="The activities are described qualitatively in the supplied material. The packaging rules are as reported by VietnamPlus on Decree 08/2022/ND-CP for named product groups, and the Bach Hoa Xanh initiatives are as described in Mobile World Group’s own summary." />,
+    sources: citeG2('vietnamplusEpr', 'mwgBusiness2025', 'vnLabelling'),
+  }),
+];
+
+const quiz = g2Quiz('grocery-m2-l4', [
+  { chapter: '1', objective: 'State what downstream does', question: 'What do downstream activities do?', application: 'A product reaches the shopper through a store or app. Which stage is this?', correct: 'Bring products to consumers and decide how they are presented, priced, promoted and replenished', wrong: ['Grow raw materials', 'Make packaging only', 'Negotiate import tariffs'], explanation: 'Store-level execution is especially important in grocery. Review Chapter 1.' },
+  { chapter: '1', objective: 'Define category management', question: 'What is category management?', application: 'A team manages dairy, beverages and cleaning as separate groups. What is this?', correct: 'Managing related product groups such as dairy, beverages, household cleaning or personal care', wrong: ['Managing only staff schedules', 'Managing only supplier contracts', 'Managing only store rent'], explanation: 'Categories are managed with their own roles. Review Chapter 1.' },
+  { chapter: '1', objective: 'State what retail performance depends on', question: 'What does retail performance depend on?', application: 'A store has stock but low sales. What may be missing?', correct: 'Converting inventory into sales efficiently through assortment, shelf placement, pricing, location and consistency', wrong: ['Stock volume alone', 'Advertising alone', 'Rent alone'], explanation: 'Execution determines how well local needs are met. Review Chapter 1.' },
+  { chapter: '2', objective: 'List sales channels', question: 'Through which channels can grocery products reach consumers?', application: 'A retailer lists its routes to market. Which belong?', correct: 'Physical stores, websites, mobile apps, social commerce and third-party marketplaces', wrong: ['Only physical stores', 'Only marketplaces', 'Only wholesale'], explanation: 'Channels can be independent or integrated. Review Chapter 2.' },
+  { chapter: '2', objective: 'Challenge the digital-profit assumption', question: 'Are digital sales automatically more profitable?', application: 'A retailer expects online sales to be cheaper. What should it check?', correct: 'No; picking, last-mile delivery, platform commissions and returns must be managed', wrong: ['Yes; always', 'Yes; because stores cost more', 'No; digital channels never pay'], explanation: 'Omnichannel adds reach and convenience but also cost. Review Chapter 2.' },
+  { chapter: '2', objective: 'Define click-and-collect', question: 'What is click-and-collect?', application: 'A customer orders online and picks up at a store. What is this service?', correct: 'Ordering online and collecting purchases at a designated location', wrong: ['Delivery by drone only', 'Buying only in store', 'Returning goods to the supplier'], explanation: 'It is an omnichannel fulfilment option. Review Chapter 2.' },
+  { chapter: '3', objective: 'State when customer data is valuable', question: 'When does customer data become commercially valuable?', application: 'A retailer collects data but sends irrelevant offers. What is missing?', correct: 'When it helps deliver relevant offers, improve convenience and build repeat purchasing', wrong: ['When it is collected in large amounts', 'When it is hidden', 'When it replaces service'], explanation: 'Poor targeting weakens margin and trust. Review Chapter 3.' },
+  { chapter: '3', objective: 'Describe drivers of grocery loyalty', question: 'What often drives loyalty in grocery retail?', application: 'Customers return daily to the same shop. What explains it?', correct: 'Habitual shopping, convenience, price competitiveness and confidence in product quality', wrong: ['Only advertising', 'Only store size', 'Only loyalty points'], explanation: 'Loyalty has several roots beyond discounts. Review Chapter 3.' },
+  { chapter: '3', objective: 'Warn against promotional dependence', question: 'What is a risk of excessive promotional dependence?', application: 'A retailer discounts constantly. What can happen?', correct: 'It can weaken margins and customer trust', wrong: ['It always raises loyalty', 'It always lowers costs', 'It removes the need for service'], explanation: 'Balance promotion with sustainable margins. Review Chapter 3.' },
+  { chapter: '4', objective: 'Distinguish disposition of returns', question: 'How should retailers treat returned or failed products?', application: 'Returned goods arrive in different conditions. What is the right approach?', correct: 'Distinguish products that can be resold, safely recovered, repaired, recycled or must be discarded', wrong: ['Resell everything', 'Discard everything', 'Return everything to suppliers'], explanation: 'A reliable resolution process protects loyalty. Review Chapter 4.' },
+]);
+
+export const LESSON_G2_4: GroceryM2LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can explain how store operations, channels, customer programmes and after-sales processes turn inventory into sales, keep customers and recover value.',
+    keyTakeaways: [
+      'Performance depends on converting inventory into sales through assortment, shelf, price and consistency.',
+      'Omnichannel adds reach and convenience, but digital sales are not automatically more profitable.',
+      'Customer data is valuable only when it brings relevant offers and repeat purchasing.',
+      'Reliable returns and recall processes protect loyalty.',
+      'Separate what can be resold, repaired, recycled or must be discarded.',
+    ],
+    businessImplications: 'Execute well at the shelf, measure channel economics after picking, delivery and commission, build loyalty from reasons beyond discounts and give returns a clear decision rule.',
+    remember: 'The sale is the middle of the story: execution before it, trust after it.',
+    nextLesson: 'Inputs, Outputs & Value Creation',
+  },
+};

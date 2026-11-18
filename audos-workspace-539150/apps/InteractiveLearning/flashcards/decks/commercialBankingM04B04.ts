@@ -1,0 +1,272 @@
+// Commercial Banking Module 04, Lessons 4.4 and 4.5 (apps/IndustryKnowledge/commercialBankingM04B04.tsx).
+// Excerpts are verbatim. No figures, named-bank metrics or capital minimums are used; the chapters' ratios and
+// system-depth numbers are deliberately left out. Neither lesson carries a restriction notice or a review hold.
+
+import type { FlashcardDeckContent } from '../models';
+import { defineLessonDeck } from './factory';
+
+const COMMON = {
+  industryId: 'banking-commercial',
+  industryLabel: 'Commercial Banking',
+  moduleId: 'cb-m04',
+  moduleLabel: 'Module 04',
+  moduleKey: 'COMMERCIAL_BANKING_MODULE04',
+  file: 'apps/IndustryKnowledge/commercialBankingM04B04.tsx',
+  readAtSha256: '346f0c583114a68959a472562c6d50cd7a527491645333e55d32ac283e1e51c0',
+  readAt: '2026-11-08',
+  chapterMarker: 'bankingChapter({',
+  contentStatus: 'Draft / Ready for Review',
+};
+
+export const CB_LESSON_44_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'commercial-banking-key-success-factors',
+  title: 'Commercial Banking: Key Success Factors',
+  description: 'Funding and asset quality, capital, efficiency and distribution, and how innovation and trust become lasting advantage.',
+  lessonId: 'cb-m4-l44',
+  lessonTitle: '4.4 Key Success Factors',
+  startMarker: "const L44 = '4.4 Key Success Factors';",
+  endMarker: "const L45 = '4.5 SWOT & Strategic Challenges';",
+  chapterIdPrefix: 'cb-m4-l44',
+  chapters: [
+    { title: 'Funding strength and asset quality', sourceTitle: 'Funding strength and asset quality', citations: ['cb-m04-s07', 'cb-m04-s10'] },
+    { title: 'Capital, efficiency and distribution', sourceTitle: 'Capital, efficiency and distribution', citations: ['cb-m04-s02', 'cb-m04-s03'] },
+    { title: 'Innovation, trust and sustainable advantage', sourceTitle: 'Innovation, trust and sustainable advantage', citations: ['cb-m04-s03', 'cb-m04-s07', 'cb-m04-s10', 'cb-m04-s11'] },
+  ],
+  mappingNotes: ['Lesson 4.4 has no restriction notice and no entry in reviewHolds.ts at read time. The chapters\u2019 company-attributed ratios, capital minimum and account-ownership figure are not used.'],
+  cards: [
+    {
+      id: 'cb44-funding-and-asset-quality-pair',
+      ch: 1,
+      front: 'Why is the first success factor a pairing of funding and asset quality, not either alone?',
+      back: 'A durable bank combines a stable funding franchise with disciplined asset selection, monitoring, provisioning and recovery. Stable lower-cost funding supports NIM and liquidity, and disciplined credit converts that margin into profit by limiting cost of risk.',
+      explanation: 'Funding and asset quality form the first capability pair behind resilient bank earnings.',
+      example: 'A bank with very low-cost deposits still loses money if it lends to borrowers who do not repay.',
+      terms: ['Funding concentration', 'Asset quality'],
+      refs: [
+        [1, 'A durable bank combines a stable funding franchise with disciplined asset selection, monitoring, provisioning and recovery.'],
+        [1, 'Stable lower-cost funding supports NIM and liquidity; disciplined credit converts that margin into profit by limiting cost of risk.'],
+        [1, 'Funding and asset quality form the first capability pair behind resilient bank earnings.'],
+      ],
+    },
+    {
+      id: 'cb44-high-margin-weak-credit',
+      ch: 1,
+      front: 'What can go wrong when a bank has strength in only one of funding or credit?',
+      back: 'High NIM with poor credit quality can destroy capital, while strong assets funded by unstable liabilities can create liquidity stress.',
+      explanation: 'Stress testing connects the two under adverse rates, withdrawals and borrower weakness.',
+      example: 'A bank earning a wide margin on risky loans may later write off enough of them to erase that margin.',
+      terms: ['Stress testing', 'Liquidity stress'],
+      refs: [
+        [1, 'High NIM with poor credit quality can destroy capital, while strong assets funded by unstable liabilities can create liquidity stress.'],
+      ],
+    },
+    {
+      id: 'cb44-funding-and-credit-failure-modes',
+      ch: 1,
+      front: 'What are common ways a funding or credit strength can be less valuable than it looks?',
+      back: 'A bank may chase CASA through expensive rewards or fragile concentration, making the headline ratio less valuable. Assess liability runoff and asset deterioration together, because a credit shock can damage confidence and funding at the same time.',
+      explanation: 'Companion metrics and cohorts matter, since current NPLs can look low during rapid growth while risk emerges later.',
+      example: 'A high CASA ratio built on costly incentives may not lower overall funding cost.',
+      terms: ['CASA', 'Early-warning indicator'],
+      refs: [
+        [1, 'A bank may chase CASA through expensive rewards or fragile concentration, making the headline ratio less valuable.'],
+        [1, 'Assess liability runoff and asset deterioration together.'],
+      ],
+    },
+    {
+      id: 'cb44-three-growth-capacities',
+      ch: 2,
+      front: 'Why must capital, efficiency and distribution scale together?',
+      back: 'They are complements: weakening one can turn growth in the others into fragility or wasted cost. Growth needs capital to absorb risk, operations to process and control volume, and distribution to acquire and serve the right relationships.',
+      explanation: 'Capital absorbs loss and constrains risk-weighted assets, efficiency compares operating expense with income, and distribution creates reach.',
+      example: 'Rapid account acquisition cannot be turned into profitable growth if capital is thin or operations cannot control the volume.',
+      terms: ['Risk-weighted assets', 'Operating efficiency'],
+      refs: [
+        [2, 'Capital, efficiency and distribution are complements: weakening one can turn growth in the others into fragility or wasted cost.'],
+        [2, 'Growth needs three forms of capacity: capital to absorb risk, operations to process and control volume, and distribution to acquire and serve the right relationships.'],
+      ],
+    },
+    {
+      id: 'cb44-efficiency-without-fragility',
+      ch: 2,
+      front: 'How can a low cost-to-income ratio mislead, and how should cost cuts be judged?',
+      back: 'Underinvestment can flatter CIR temporarily, and cutting people or controls can lower OPEX now while increasing fraud, service failure or future remediation. So structural simplification must be separated from deferred cost.',
+      explanation: 'Digital investment can raise CIR before its benefits arrive, so adoption, error reduction and uptime should be evaluated alongside spending.',
+      example: 'Reducing control staff improves this year\u2019s efficiency ratio but may lead to fraud losses later.',
+      terms: ['Failure demand', 'CIR'],
+      refs: [
+        [2, 'Cutting people or controls can lower OPEX now while increasing fraud, service failure or future remediation.'],
+        [2, 'Separate structural simplification from deferred cost.'],
+        [2, 'underinvestment can flatter CIR temporarily'],
+      ],
+    },
+    {
+      id: 'cb44-innovation-to-sustainable-advantage',
+      ch: 3,
+      front: 'When does innovation become a sustainable bank advantage?',
+      back: 'When it links to customer jobs, recurring economics, secure execution and trusted governance. A bank advantage lasts only when new experiences strengthen trust, risk control and relationship economics.',
+      explanation: 'Innovation earns attention; reliability earns balances.',
+      example: 'A new app feature that other banks copy quickly adds little unless it deepens trusted primary relationships.',
+      terms: ['Primary relationship', 'Cyber resilience', 'Recurring fee income'],
+      refs: [
+        [3, 'Sustainable advantage links innovation to customer jobs, recurring economics, secure execution and trusted governance.'],
+        [3, 'A bank advantage lasts only when new experiences strengthen trust, risk control and relationship economics.'],
+        [3, 'Innovation earns attention; reliability earns balances.'],
+      ],
+    },
+    {
+      id: 'cb44-feature-to-franchise-test',
+      ch: 3,
+      front: 'How can you test whether a feature has strengthened the franchise, and how is trust observed?',
+      back: 'Test four stages: feature use, job completion, relationship behaviour and financial outcome. Trust is observable through funded retention, complaint outcomes, recovery, uptime and customer choice, not only brand surveys.',
+      explanation: 'A feature that boosts logins without balances, transactions or retention may not strengthen the franchise.',
+      example: 'An app redesign that raises logins but not funded balances has not yet shown a franchise benefit.',
+      terms: ['Adoption', 'Trust'],
+      refs: [
+        [3, 'Test four stages: feature use, job completion, relationship behavior and financial outcome.'],
+        [3, 'Features commoditize. A reliable primary relationship creates balances, activity, data and cross-sell that reinforce the franchise.'],
+        [3, 'Trust is observable through funded retention, complaint outcomes, recovery, uptime and customer choice\u2014not only brand surveys.'],
+      ],
+    },
+  ],
+});
+
+export const CB_LESSON_45_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'commercial-banking-swot-strategic-challenges',
+  title: 'Commercial Banking: SWOT & Strategic Challenges',
+  description: 'Building an evidence-led SWOT, tracing how risks transmit, and designing strategic responses with guardrails.',
+  lessonId: 'cb-m4-l45',
+  lessonTitle: '4.5 SWOT & Strategic Challenges',
+  startMarker: "const L45 = '4.5 SWOT & Strategic Challenges';",
+  endMarker: 'export const CB_LESSON_44: BankingLessonBundle',
+  chapterIdPrefix: 'cb-m4-l45',
+  chapters: [
+    { title: 'A disciplined banking SWOT', sourceTitle: 'A disciplined banking SWOT', citations: ['cb-m04-s03', 'cb-m04-s04', 'cb-m04-s05', 'cb-m04-s15'] },
+    { title: 'Strategic risks and their transmission', sourceTitle: 'Strategic risks and their transmission', citations: ['cb-m04-s02', 'cb-m04-s04', 'cb-m04-s15'] },
+    { title: 'Strategic responses that change economics', sourceTitle: 'Strategic responses that change economics', citations: ['cb-m04-s03', 'cb-m04-s05', 'cb-m04-s15'] },
+  ],
+  mappingNotes: ['Lesson 4.5 has no restriction notice and no entry in reviewHolds.ts at read time. System-depth, credit-growth and share statistics in the chapters are not used.'],
+  cards: [
+    {
+      id: 'cb45-swot-internal-versus-external',
+      ch: 1,
+      front: 'What belongs on each side of a disciplined banking SWOT, and what must each item have?',
+      back: 'Strengths and weaknesses are internal to the analysed bank or system; opportunities and threats are external. Every item needs a financial mechanism.',
+      explanation: 'A SWOT becomes generic when the same word appears in every box, so name the mechanism and keep industry conditions separate from one bank\u2019s capabilities.',
+      example: 'A strong digital customer base is an internal strength, whereas growing non-bank substitutes are an external threat.',
+      terms: ['SWOT', 'Correlated exposure'],
+      refs: [
+        [1, 'Strengths and weaknesses are internal to the analyzed bank or system; opportunities and threats are external\u2014and every item needs a financial mechanism.'],
+      ],
+    },
+    {
+      id: 'cb45-industry-weakness-is-not-bank-weakness',
+      ch: 1,
+      front: 'Why is an industry weakness not automatically a weakness at every bank, and how should unverified SWOT items be treated?',
+      back: 'An external opportunity creates value only if the institution has the capabilities and capital to capture it, and an industry weakness need not apply to each bank. Treat unverified items as hypotheses for diligence, not facts for publication.',
+      explanation: 'A bank-specific SWOT needs that bank\u2019s own portfolio, funding, capital and control evidence.',
+      example: 'Concentration risk may be a system concern yet be well managed at one bank.',
+      terms: ['Unit of analysis'],
+      refs: [
+        [1, 'An industry weakness is not automatically a weakness at every bank; an external opportunity creates value only if the institution has capabilities and capital to capture it.'],
+        [1, 'Treat unverified items as hypotheses for diligence, not facts for publication.'],
+      ],
+    },
+    {
+      id: 'cb45-credit-stock-is-not-disbursement-or-profit',
+      ch: 1,
+      front: 'What is a credit stock, and what is it not?',
+      back: 'Outstanding credit at a point in time, which is different from new disbursement during a period. Credit growth is not disbursement or profit.',
+      explanation: 'Confusing a stock with a flow, or growth with profit, leads to wrong conclusions in a SWOT.',
+      example: 'Outstanding loans can rise while new lending in a period falls, if repayments are slow.',
+      terms: ['Credit stock'],
+      refs: [
+        [1, 'Outstanding credit at a point in time; different from new disbursement during a period.'],
+        [1, 'Credit growth is not disbursement or profit.'],
+      ],
+    },
+    {
+      id: 'cb45-risk-transmission-paths',
+      ch: 2,
+      front: 'What does strategic risk analysis follow, and why use scenarios rather than a single forecast?',
+      back: 'Transmission paths across income, balance sheet, capital, operations and trust. Interactions create nonlinear outcomes, so individually manageable risks can compound through confidence, collateral, funding and operational dependencies.',
+      explanation: 'Map each risk from trigger to first-order exposure, financial statement line, behavioural response and second-order consequence.',
+      example: 'A cyber outage creates direct cost and can then change customer behaviour through lost trust, turning an operational problem into a funding one.',
+      terms: ['Second-order effect', 'Liquidity runoff'],
+      refs: [
+        [2, 'Strategic risk analysis follows transmission paths across income, balance sheet, capital, operations and trust.'],
+        [2, 'Use scenarios rather than a single forecast.'],
+        [2, 'cyber outages can create both direct cost and trust-driven customer behavior'],
+        [2, 'Cyber risk can become trust and liquidity risk.'],
+        [2, 'Interactions create nonlinear outcomes. Individually manageable risks can compound through confidence, collateral, funding and operational dependencies.'],
+      ],
+    },
+    {
+      id: 'cb45-property-downturn-chain',
+      ch: 2,
+      front: 'How can a credit problem become a funding and margin problem?',
+      back: 'A property downturn can raise NPLs, provisions and capital pressure; news of those losses can trigger funding stress; emergency liquidity can then compress NIM.',
+      explanation: 'Risk rarely stays in one box, so analysis should follow each step into the statements and into customer behaviour.',
+      example: 'A bank that tracks only NPLs would miss that the same downturn can later show up as costlier funding and a thinner margin.',
+      terms: ['Second-order effect', 'Credit migration'],
+      refs: [
+        [2, 'A property downturn can raise NPLs, provisions and capital pressure; news of those losses can trigger funding stress; emergency liquidity can then compress NIM.'],
+      ],
+    },
+    {
+      id: 'cb45-reverse-stress-testing',
+      ch: 2,
+      front: 'What does a reverse stress test ask?',
+      back: 'What combination of losses, outflows or operational failures would breach risk appetite or force a strategy change. It is used alongside scenarios run at multiple severities.',
+      explanation: 'A scenario tree starts from a trigger and models customer behaviour, collateral, deposit runoff and capital responses; a reverse stress test starts from the breaking point instead.',
+      example: 'A bank might ask how large a funding outflow combined with credit losses would have to be to exceed its limits.',
+      terms: ['Reverse stress test', 'Scenario tree'],
+      refs: [
+        [2, 'Use multiple severities and reverse stress tests: ask what combination of losses, outflows or operational failures would breach risk appetite or force a strategy change.'],
+        [2, 'Choose a trigger, such as a rate increase or sector downturn.'],
+      ],
+    },
+    {
+      id: 'cb45-credible-strategic-response',
+      ch: 3,
+      front: 'What makes a strategic response credible?',
+      back: 'It names the capability, KPI mechanism, trade-off, owner and evidence of progress. Each lever needs a guardrail: a constraint or companion measure that stops one target from damaging another outcome.',
+      explanation: '\u201cGo digital\u201d is not a strategy until it names the customer job, operating change, risk control and financial outcome.',
+      example: 'A digital onboarding project is credible if it names the failure rate it will cut and the fraud guardrail it must keep.',
+      terms: ['Guardrail', 'Portfolio steering'],
+      refs: [
+        [3, 'A strategic response is credible when it names the capability, KPI mechanism, trade-off, owner and evidence of progress.'],
+        [3, 'A constraint or companion measure that prevents one target from damaging another outcome.'],
+      ],
+    },
+    {
+      id: 'cb45-strategies-conflict',
+      ch: 3,
+      front: 'How can strategic responses conflict with one another?',
+      back: 'Deposit campaigns raise cost; faster growth consumes capital; fee initiatives create conduct risk; cost cuts can weaken controls; and capital raises dilute owners.',
+      explanation: 'Review the interactions regularly: a weaker headline is not always a worse outcome, since a provision build that lowers PBT can be consistent with stronger resilience.',
+      example: 'A funding campaign that improves the CASA percentage but raises incentive expense and attracts unstable balances may not improve value.',
+      terms: ['Capital planning', 'Guardrail'],
+      refs: [
+        [3, 'Strategies can conflict: deposit campaigns raise cost; faster growth consumes capital; fee initiatives create conduct risk; cost cuts can weaken controls; capital raises dilute owners.'],
+        [3, 'A funding campaign that improves CASA percentage but raises incentive expense and attracts unstable balances may not improve value.'],
+      ],
+    },
+    {
+      id: 'cb45-execution-plan-elements',
+      ch: 3,
+      front: 'What should be defined for each strategic response when turning the map into an execution plan?',
+      back: 'Baseline, target, owner, leading indicator, lagging financial result and risk guardrail.',
+      explanation: 'Leading indicators come before claims: fix failed digital onboarding before claiming a lower acquisition cost.',
+      example: 'Improving early-warning coverage comes before accelerating lending into a target sector.',
+      terms: ['Leading indicator', 'Lagging result'],
+      refs: [
+        [3, 'For each response, define baseline, target, owner, leading indicator, lagging financial result and risk guardrail.'],
+      ],
+    },
+  ],
+});
+
+export const COMMERCIAL_BANKING_M04B04_DECKS: FlashcardDeckContent[] = [CB_LESSON_44_DECK, CB_LESSON_45_DECK];

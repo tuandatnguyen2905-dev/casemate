@@ -1,0 +1,202 @@
+import { F5DeepDive, citeF5, f5Chapter, f5Quiz } from './fashionM5Core';
+import type { FashionM5LessonBundle } from './fashionM5Core';
+
+const LESSON = '1. Consumer Trends';
+
+const deck = [
+  f5Chapter({
+    title: 'Changing Consumer Preferences and Lifestyle Needs', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how changing lifestyles blur the boundaries between fashion, sportswear and everyday apparel, and what that means for product portfolios.',
+    mateIntro: 'People no longer dress for one occasion a day. The same outfit has to get through the commute, the office, a workout and dinner. Demand follows the day, not the category label on the rail.',
+    keyInsight: 'Brands must understand how consumers use products in their daily lives rather than relying solely on traditional product categories. Products that combine style, functionality, and versatility can appeal to consumers with multiple lifestyle needs.',
+    statTiles: [
+      { value: '5', label: 'Lifestyle-demand activities', subtitle: 'Lifestyle to insight', description: 'Lifestyle-oriented consumption, comfort and functionality, casualization, category convergence and consumer insight.' },
+      { value: '72.5%+', label: 'Online shoppers who are Gen Z or Millennial', subtitle: 'First half of 2025', description: 'Vietnamese online-shopper research reported by Cimigo; these groups shape what everyday fashion has to do.' },
+      { value: '+13.8%', label: 'Garment retail revenue growth, December 2025', subtitle: 'Year on year', description: 'Reported from National Statistics Office data on retail sales of goods and consumer services.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the other two are reported Vietnamese figures for all online shoppers and for garment retail revenue in one month, not measures of lifestyle preferences themselves.',
+    narrative: [
+      { label: 'What it is', text: 'Consumer preferences in Fashion, Sports & Lifestyle Retail are shaped by changing lifestyles, purchasing power, cultural influences and expectations about quality and value. Consumers increasingly judge products not only by appearance and price but also by comfort, functionality, versatility and relevance to their daily activities, and the boundaries between fashion, sportswear and everyday apparel keep overlapping.' },
+      { label: 'Why it is happening', text: 'Work, leisure, fitness and social activities have become more interconnected, so shoppers look for products that serve several purposes without compromising style or comfort. The result is demand that follows how a product is used across a day rather than the category a retailer files it under.' },
+      { label: 'Real-world example', text: 'Businesses develop apparel suitable for work, leisure, travel and everyday activities; emphasise breathable fabrics, flexible designs, comfort and practical features; expand casual and versatile collections as dress codes become more flexible; combine sportswear, fashion and lifestyle elements in products designed for everyday use; and use customer surveys, sales data and trend research to identify how preferences are changing.' },
+      { label: 'Vietnam example', text: 'Gen Z and Millennials make up over 72.5% of Vietnam’s online shoppers according to first-half 2025 research reported by Cimigo. YouNet ECI found Vietnamese local brands leading its online fashion ranking on the back of minimalist, practical products, and Coolmate pairs men’s basics with content about everyday situations such as running and swimming. National Statistics Office data reported by VietnamPlus showed garment retail revenue up 13.8% year on year in December 2025.' },
+      { label: 'Business impact', text: 'Changing lifestyles are reshaping demand across fashion, sportswear and lifestyle products. Businesses should adapt their product portfolios to reflect how consumers combine functionality, comfort, appearance and versatility, and keep testing the assumption with their own customer data.' },
+    ],
+    visualKind: 'fashion-m5-11-lifestyle', visualHeading: 'How everyday life is reshaping demand',
+    visualIntro: 'See five ways brands respond to lifestyle-led demand and the signal to watch in each.',
+    imageAlt: 'Casemate mind map of five responses to changing lifestyle needs with the signal to watch for each',
+    keyTerms: [
+      { term: 'Casualization', definition: 'The shift toward more casual and flexible dress for work and social occasions.' },
+      { term: 'Category convergence', definition: 'The overlap of fashion, sportswear and lifestyle products in everyday use.' },
+      { term: 'Versatility', definition: 'A product’s ability to serve several occasions without losing comfort or style.' },
+      { term: 'Consumer insight', definition: 'Understanding of why customers choose products, drawn from surveys, sales data and trend research.' },
+    ],
+    recap: [
+      'Consumers weigh comfort, function, versatility and relevance as well as appearance and price.',
+      'Fashion, sportswear and everyday apparel keep overlapping.',
+      'Work, leisure, fitness and social life are increasingly interconnected.',
+      'Adapt portfolios to how products are actually used.',
+    ],
+    chapterRecap: 'Changing lifestyles are reshaping demand across fashion, sportswear, and lifestyle products. Businesses should adapt their product portfolios to reflect how consumers combine functionality, comfort, appearance, and versatility.',
+    deepDiveTitle: 'Why category labels are a poor guide to demand',
+    body: <F5DeepDive paragraphs={[
+      'A retailer may sort products into sportswear, casual and workwear, but a customer buying a jacket is thinking about a day that includes all three. The jacket that works for the commute and a weekend walk is, to that customer, the better product.',
+      'The practical response is to look at occasions and use cases in sales and survey data, then check whether the range answers them. Gaps between how products are filed and how they are used are where new demand tends to appear.',
+    ]} evidence="The five activities are described qualitatively in the supplied material. The Gen Z and Millennial share is from first-half 2025 research on online shoppers reported by Cimigo, and the garment growth figure is a news report of National Statistics Office data for a single month." />,
+    sources: citeF5('bofStateOfFashion', 'cimigoEcommerce', 'younetFashion', 'vietnamplusRetail2025'),
+  }),
+  f5Chapter({
+    title: 'Value-Conscious and Quality-Oriented Consumption', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain why value is not the same as the lowest price and how brands justify their prices with tangible benefits.',
+    mateIntro: 'A shopper who buys a cheap jacket that falls apart has not found value. Neither has one who pays for a famous name and gets nothing extra. Value is what you get for what you pay.',
+    keyInsight: 'Value is not synonymous with the lowest price. Brands need to communicate why their products are worth the cost through quality, functionality, durability, design, service, or a distinctive customer experience.',
+    statTiles: [
+      { value: '5', label: 'Value-building activities', subtitle: 'Positioning to comparison', description: 'Value-for-money positioning, durability and quality, price segmentation, promotion management and product comparison.' },
+      { value: 'Economy & Mainstream', label: 'Price tiers behind most TikTok Shop transactions', subtitle: 'Fashion, beauty and FMCG, H1 2025', description: 'YouNet ECI found most transactions in these three categories came from the lower and middle price tiers.' },
+      { value: '9.2% / 6.7%', label: 'Vietnam retail sales growth in 2025', subtitle: 'Nominal and real', description: 'The gap shows how much of reported growth is price rises rather than extra volume.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the price-tier finding is YouNet ECI’s reading of one platform in the first half of 2025, and the retail growth figures are National Statistics Office estimates for all consumer goods and services.',
+    narrative: [
+      { label: 'What it is', text: 'Consumers increasingly assess the relationship between price, product quality, durability and overall value. Some continue to prioritise premium products and brand prestige, while others look for affordable alternatives that deliver reliable performance and practical benefits. That puts pressure on brands to justify their prices with tangible product advantages and credible positioning.' },
+      { label: 'Why it is happening', text: 'Customers can compare prices and reviews instantly and promotions are everywhere, so price alone no longer persuades. Promotional activity may stimulate short-term demand, but excessive discounting can weaken perceived value and encourage customers to postpone purchases.' },
+      { label: 'Real-world example', text: 'Brands communicate product benefits relative to price and competing alternatives; emphasise construction, material performance, comfort and longevity; offer differentiated ranges for value-oriented, mainstream and premium consumers; use targeted promotions without making discounts the main reason to buy; and provide clear specifications, sizing information, reviews and care instructions so customers can compare with confidence.' },
+      { label: 'Vietnam example', text: 'Cimigo’s reading of first-half 2025 platform research found Vietnamese Gen Z shoppers favouring discounts of more than 30%, and YouNet ECI reported that most TikTok Shop transactions in fashion, beauty and FMCG came from Economy and Mainstream price tiers. National Statistics Office data show retail sales up 9.2% in 2025 but 6.7% once price rises are removed, and an informal Shopee seller survey reported fashion return rates of 15–35%, a sign of value lost when sizing and expectations are unclear.' },
+      { label: 'Business impact', text: 'Value-conscious consumption increases the importance of transparent pricing, reliable quality and a clear value proposition. Businesses should balance affordability with brand positioning and long-term profitability instead of competing on discounts alone.' },
+    ],
+    visualKind: 'fashion-m5-12-value', visualHeading: 'Value is not the lowest price',
+    visualIntro: 'See how price level and perceived quality combine to make value, and where brands go wrong.',
+    imageAlt: 'Casemate value map placing bargain trap, value basics, mainstream, premium and overpriced by price and perceived quality',
+    keyTerms: [
+      { term: 'Value for money', definition: 'The benefit a customer receives relative to the price paid and the alternatives available.' },
+      { term: 'Price segmentation', definition: 'Offering ranges for value-oriented, mainstream and premium customers.' },
+      { term: 'Perceived value', definition: 'What customers believe a product is worth, shaped by quality, brand and experience.' },
+      { term: 'Promotion management', definition: 'Using targeted offers without making discounts the main reason to buy.' },
+    ],
+    recap: [
+      'Value is the relationship between price, quality, durability and benefit.',
+      'Premium and affordable customers coexist and want different proofs.',
+      'Excess discounting weakens perceived value and delays purchases.',
+      'Make value visible through specifications, sizing, reviews and care information.',
+    ],
+    chapterRecap: 'Value-conscious consumption increases the importance of transparent pricing, reliable quality, and a clear value proposition. Businesses should balance affordability with brand positioning and long-term profitability.',
+    deepDiveTitle: 'Why a low price can still be poor value',
+    body: <F5DeepDive paragraphs={[
+      'A very low price attracts attention but can carry doubts about quality, sizing and returns. If the product disappoints, the customer pays again in time, in a return or in a lost purchase, and does not come back.',
+      'Clear information is therefore part of the price. Accurate sizing, specifications, reviews and care instructions let customers see what they are getting, which supports a fair price and reduces returns.',
+    ]} evidence="The value-building activities are described qualitatively in the supplied material. The Gen Z discount finding and price-tier finding are from first-half 2025 platform research, the retail figures are National Statistics Office estimates and the return range is an informal seller survey, so all are indicative." />,
+    sources: citeF5('bofStateOfFashion', 'cimigoEcommerce', 'younetEciPlatforms', 'nsoPress2025', 'nsqReturns'),
+  }),
+  f5Chapter({
+    title: 'Health, Wellness, and Athleisure Adoption', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Distinguish performance-driven from lifestyle-driven athleisure customers and explain how brands can serve both credibly.',
+    mateIntro: 'A runner and a weekend wearer may buy the same leggings for different reasons. One checks the fabric and fit, the other the look and the price of a coffee afterwards. A good brand speaks to both.',
+    keyInsight: 'The opportunity lies in connecting functional benefits with lifestyle relevance. Brands that understand both performance requirements and everyday use cases can serve broader customer needs without losing product credibility.',
+    statTiles: [
+      { value: '12,000+', label: 'Runners at VnExpress Marathon Hue 2025', subtitle: 'April 2025', description: 'Across 5 km, 10 km, 21 km and full-marathon distances at a single event.' },
+      { value: '37.5%', label: 'Early registrants choosing the full marathon at VM Hai Phong 2025', subtitle: 'Against a 16.85% series average', description: 'Organiser data showing a rise in serious, long-distance running.' },
+      { value: 'VND 228.7B', label: 'Pickleball product sales on four platforms, Q1 2025', subtitle: 'Metric.vn data', description: 'Nearly equal to the whole of 2024 (VND 271.9 billion), across rackets, shoes, bags and apparel.' },
+    ],
+    statsNote: 'These are event-organiser and platform figures about specific events and sports; they point to growing participation and spending but do not measure national fitness or athleisure sales.',
+    narrative: [
+      { label: 'What it is', text: 'Growing interest in fitness, physical activity and wellness supports demand for sportswear and for products that combine performance with everyday comfort. Athleisure has extended sports-inspired apparel beyond gyms and sports facilities into casual, travel and social settings. Needs differ within the category: performance-oriented customers prioritise technical functionality, fit and durability, while lifestyle-oriented customers place more weight on appearance, versatility, comfort and brand identity.' },
+      { label: 'Why it is happening', text: 'More people exercise regularly, and events, communities and social content make participation visible and shareable. Because athletic wear is comfortable and practical, it moves easily into daily life, which widens the customer base beyond serious athletes.' },
+      { label: 'Real-world example', text: 'Brands develop performance apparel for running, training, yoga and other activities; everyday athleisure that combines athletic functionality with designs suited to casual and social occasions; wellness positioning that links products to active lifestyles, comfort, movement and well-being; collections and engagement initiatives for runners, gym users and outdoor enthusiasts; and functional innovation in moisture management, flexibility, cushioning, breathability and comfort.' },
+      { label: 'Vietnam example', text: 'More than 12,000 runners took part in VnExpress Marathon Hue in April 2025, and VM Hai Phong drew a record of almost 3,000 early registrations for the 42 km distance, with 37.5% of early buyers choosing the full marathon against a 16.85% average across the series. Metric.vn recorded VND 228.7 billion of pickleball product sales on four platforms in the first quarter of 2025, close to the VND 271.9 billion for all of 2024.' },
+      { label: 'Business impact', text: 'Health, wellness and athleisure create opportunities for brands to connect sports performance with everyday lifestyles. Strategies should reflect the distinct needs of performance-driven and lifestyle-driven consumers so that credibility with one group does not cost relevance with the other.' },
+    ],
+    visualKind: 'fashion-m5-13-athleisure', visualHeading: 'Two athleisure customers, two sets of priorities',
+    visualIntro: 'Compare performance-driven and lifestyle-driven customers on priorities, products, proof and risk.',
+    imageAlt: 'Casemate comparison of performance-driven and lifestyle-driven athleisure customers',
+    keyTerms: [
+      { term: 'Athleisure', definition: 'Performance-inspired clothing designed for everyday wear.' },
+      { term: 'Functional innovation', definition: 'Improvements in moisture management, flexibility, cushioning, breathability and comfort.' },
+      { term: 'Wellness positioning', definition: 'Linking a product to active living, comfort, movement and well-being.' },
+      { term: 'Specialised community', definition: 'A group such as runners or gym users that a brand engages through products and events.' },
+    ],
+    recap: [
+      'Fitness and wellness interest supports sportswear and athleisure demand.',
+      'Performance-driven and lifestyle-driven customers weigh different things.',
+      'Connect functional benefits with everyday relevance.',
+      'Keep product credibility while broadening the audience.',
+    ],
+    chapterRecap: 'Health, wellness, and athleisure create opportunities for brands to connect sports performance with everyday lifestyles. Successful strategies should reflect the distinct needs of performance-driven and lifestyle-driven consumers.',
+    deepDiveTitle: 'Why credibility has to come before reach',
+    body: <F5DeepDive paragraphs={[
+      'A brand that wins serious runners earns trust that carries into everyday wear. A brand that starts from the everyday look has to work harder to be believed on performance, and serious users spot weak claims quickly.',
+      'The safer path is to keep the technical core credible, with tested features and honest claims, and then extend styling and occasions around it. Communities and events are where that credibility is built and seen.' ,
+    ]} evidence="The customer types are described qualitatively in the supplied material. The Vietnamese figures come from event organisers and a platform data provider, describe specific events and sports, and are not measures of national demand for athleisure." />,
+    sources: citeF5('bofStateOfFashion', 'vnRunningHue', 'vnexpressHaiPhong', 'vnSportsEconomy'),
+  }),
+  f5Chapter({
+    title: 'Personalization, Identity, and Brand Engagement', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how personalisation and identity-based engagement build relationships and why privacy and trust set the limits.',
+    mateIntro: 'A recommendation that fits feels like good service. One that follows you around the internet feels like surveillance. The technology can be the same, and what separates them is trust.',
+    keyInsight: 'Brand engagement becomes more effective when consumers feel understood without feeling pressured. Personalization should improve product relevance while preserving customer choice, privacy, and trust.',
+    statTiles: [
+      { value: '6', label: 'Engagement activities', subtitle: 'Recommendations to participation', description: 'Recommendations, communities, creator partnerships, storytelling, privacy-conscious marketing and participation.' },
+      { value: '55%', label: 'Refer to micro-influencer content before buying', subtitle: 'YouNet research on TikTok Shop users', description: 'Creator content shapes decisions, with 51% of Gen Z also influenced by social trends.' },
+      { value: '1 Jan 2026', label: 'Vietnam’s Personal Data Protection Law took effect', subtitle: 'Law 91/2025/QH15', description: 'Targeted advertising needs consent, and users must be able to opt out of tracking.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the survey shares are YouNet findings about TikTok Shop users, and the law summary is from a secondary English source, so confirm obligations with the official text.',
+    narrative: [
+      { label: 'What it is', text: 'Fashion and lifestyle products often communicate personal identity, cultural affiliation, interests and social aspirations, and consumers may choose brands because their design, values or communities reflect how they see themselves or want to be seen. Digital platforms have widened opportunities for personalised discovery and engagement, but consumers may also worry about intrusive advertising, excessive data collection or communications that feel irrelevant.' },
+      { label: 'Why it is happening', text: 'Data and social platforms make it easy to tailor recommendations and to find audiences, while the same tools create fatigue and privacy concerns. Trust and transparency therefore decide whether personalisation builds a relationship or erodes it.' },
+      { label: 'Real-world example', text: 'Brands use relevant purchase history and preferences to suggest suitable products; build communities around sports, fashion interests, wellness and shared activities; work with credible creators whose audiences match their target consumers; communicate design philosophy, cultural relevance and lifestyle associations; explain data use clearly and offer choices about personalisation; and encourage reviews, product feedback, community events and user-generated content.' },
+      { label: 'Vietnam example', text: 'YouNet reported that 55% of Gen Z shoppers on TikTok Shop refer to micro-influencer content before buying and 51% are influenced by social media trends. At the same time, Vietnam’s Personal Data Protection Law, in force since 1 January 2026, requires consent for advertising that uses personal data and lets users opt out of behavioural tracking, so personalisation has to be permission-based. Canifa describes joining online and offline customer data into one view for segmentation.' },
+      { label: 'Business impact', text: 'Personalisation and identity-based engagement can strengthen customer relationships when they provide genuine relevance and value. Brands should combine meaningful experiences with transparent communication and responsible data practices.' },
+    ],
+    visualKind: 'fashion-m5-14-identity', visualHeading: 'Engagement that feels understood, not pressured',
+    visualIntro: 'See six engagement activities and the trust test each one has to pass.',
+    imageAlt: 'Casemate mind map of six engagement activities with a trust test for each',
+    keyTerms: [
+      { term: 'Personalisation', definition: 'Tailoring recommendations and messages to a customer’s preferences and history.' },
+      { term: 'Brand community', definition: 'A group of customers connected through a brand’s activities, events or shared interests.' },
+      { term: 'User-generated content', definition: 'Reviews, photos and posts that customers create about a product.' },
+      { term: 'Consent', definition: 'Clear, specific permission from a customer to use their personal data for a stated purpose.' },
+    ],
+    recap: [
+      'Products communicate identity, affiliation and aspiration.',
+      'Personalisation can help or irritate depending on trust.',
+      'Creators, communities and storytelling build engagement.',
+      'Preserve choice, privacy and transparency.',
+    ],
+    chapterRecap: 'Personalization and identity-based engagement can strengthen customer relationships when they provide genuine relevance and value. Brands should combine meaningful experiences with transparent communication and responsible data practices.',
+    deepDiveTitle: 'Why permission is part of the product',
+    body: <F5DeepDive paragraphs={[
+      'A customer who agrees to share data expects something useful in return: better recommendations, early access or a smoother experience. If the exchange feels one-sided, consent is withdrawn and the relationship suffers.' ,
+      'Treating privacy as part of the customer experience, with plain explanations and real choices, makes personalisation sustainable. It also keeps a business on the right side of data rules that are becoming stricter.',
+    ]} evidence="The engagement activities are described qualitatively in the supplied material. The survey percentages come from YouNet research on TikTok Shop users, and the law is summarised from a secondary English source; confirm legal obligations with the official Vietnamese text and advisers." />,
+    sources: citeF5('bofStateOfFashion', 'younetEciPlatforms', 'vnPdpl', 'canifaCleverTap'),
+  }),
+];
+
+const quiz = f5Quiz('fashion-m5-l1', [
+  { chapter: '1', objective: 'Explain lifestyle-led demand', question: 'What should brands understand rather than relying only on product categories?', application: 'A brand sorts products into sportswear, casual and workwear. What should it check instead?', correct: 'How consumers use products in their daily lives', wrong: ['Which category has the most stores', 'Which supplier is cheapest', 'Which colours were popular last decade'], explanation: 'Products that combine style, functionality and versatility appeal to multiple lifestyle needs. Review Chapter 1.' },
+  { chapter: '1', objective: 'Define category convergence', question: 'What does category convergence mean?', application: 'A jacket is designed for the gym, the office and the weekend. What does this show?', correct: 'Sportswear, fashion and lifestyle elements are combined in products for everyday use', wrong: ['Different brands share one factory', 'Stores combine into one network', 'Prices converge across segments'], explanation: 'The boundaries between fashion, sportswear and everyday apparel keep overlapping. Review Chapter 1.' },
+  { chapter: '1', objective: 'Recognise sources of consumer insight', question: 'How can businesses identify changing preferences?', application: 'A team wants evidence of shifting demand. What can it use?', correct: 'Customer surveys, sales data and trend research', wrong: ['Competitor logos only', 'Store opening hours only', 'The previous year’s ranges only'], explanation: 'Consumer insight draws on surveys, sales data and trend research. Review Chapter 1.' },
+  { chapter: '2', objective: 'Separate value from price', question: 'Is value the same as the lowest price?', application: 'A shopper rejects the cheapest jacket as poor quality. What does this show?', correct: 'No; value rests on quality, functionality, durability, design, service or experience', wrong: ['Yes; the lowest price always wins', 'Yes; discounts define value', 'No; quality never matters to shoppers'], explanation: 'Brands need to communicate why products are worth the cost. Review Chapter 2.' },
+  { chapter: '2', objective: 'Manage promotions', question: 'What is the risk of excessive discounting?', application: 'A retailer runs deep sales every month. What happens to customers?', correct: 'It can weaken perceived value and encourage customers to postpone purchases', wrong: ['It always builds loyalty', 'It always raises margins', 'It has no effect on demand'], explanation: 'Promotions may lift short-term demand but weaken perceived value. Review Chapter 2.' },
+  { chapter: '3', objective: 'Identify athleisure customer types', question: 'How do performance-driven and lifestyle-driven customers differ?', application: 'One buyer checks technical fabric and fit, another looks at style and versatility. Which is which?', correct: 'Performance-driven customers prioritise functionality, fit and durability; lifestyle-driven customers weigh appearance, versatility, comfort and identity', wrong: ['They have identical priorities', 'Both buy only on price', 'Neither cares about comfort'], explanation: 'Needs differ within the athleisure category. Review Chapter 3.' },
+  { chapter: '3', objective: 'State the athleisure opportunity', question: 'Where does the opportunity in wellness and athleisure lie?', application: 'A brand wants a broader customer base without losing credibility. What should it do?', correct: 'Connect functional benefits with lifestyle relevance', wrong: ['Drop all technical features', 'Focus only on gym equipment', 'Stop serving casual occasions'], explanation: 'Understanding both performance requirements and everyday use serves broader needs. Review Chapter 3.' },
+  { chapter: '4', objective: 'Define effective engagement', question: 'When does brand engagement become more effective?', application: 'A brand wants personalisation customers welcome. What is the aim?', correct: 'When consumers feel understood without feeling pressured', wrong: ['When messages are sent as often as possible', 'When customers cannot opt out', 'When data use is hidden'], explanation: 'Personalisation should improve relevance while preserving choice, privacy and trust. Review Chapter 4.' },
+  { chapter: '4', objective: 'Identify privacy-conscious practice', question: 'What does privacy-conscious marketing involve?', application: 'A retailer is rewriting its data policy. What should it include?', correct: 'Clear explanation of data use and appropriate choices about personalisation', wrong: ['Collecting as much data as possible', 'Removing all customer feedback', 'Using data without explanation'], explanation: 'Trust and transparency make personalisation sustainable. Review Chapter 4.' },
+  { chapter: '4', objective: 'Choose credible creators', question: 'Which creators should a brand partner with?', application: 'A brand is selecting influencers. What is the key test?', correct: 'Credible creators whose audiences align with the brand’s target consumers', wrong: ['Whoever has the most followers', 'Whoever charges the lowest fee', 'Any creator in any category'], explanation: 'Audience alignment and credibility matter more than reach. Review Chapter 4.' },
+]);
+
+export const LESSON_5_1: FashionM5LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can explain how lifestyles blur fashion, sportswear and everyday apparel, how value differs from price, how athleisure serves performance and lifestyle customers, and where personalisation must respect privacy.',
+    keyTakeaways: [
+      'Understand how products are used in daily life, not only their category.',
+      'Value is not the lowest price; it is the benefit received for the price paid.',
+      'Performance-driven and lifestyle-driven athleisure customers need different proofs.',
+      'Personalisation should improve relevance while preserving choice and privacy.',
+      'Test every assumption about preferences against surveys and sales data.',
+    ],
+    businessImplications: 'Design portfolios around occasions and use cases, make value visible through quality and clear information, keep technical credibility while widening everyday appeal, and make personalisation permission-based.',
+    remember: 'Follow how customers live, make value visible and earn permission before personalising.',
+    nextLesson: 'Technology & Innovation Trends',
+  },
+};

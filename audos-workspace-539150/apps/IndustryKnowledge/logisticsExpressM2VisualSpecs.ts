@@ -1,0 +1,310 @@
+import type { LogisticsExpressChapterVisual } from './logisticsExpressVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Express & Last-Mile Delivery Module 02, keyed by visualKind. */
+export const LOGISTICS_EXPRESS_M2_VISUALS: Record<string, LogisticsExpressChapterVisual> = {
+  'logistics-express-m2-1': {
+    heading: 'One platform order passes through several handoffs from shipper to final courier',
+    intro: 'A platform order may involve a merchant, collection driver, two hubs, trunk carrier, destination depot and final courier. Each handoff carries the same delivery promise.',
+    spec: {
+      layout: 'flow', title: '01 How Does the Express Delivery Value Chain Work?', kicker: '',
+      steps: [
+        { label: 'Shipper', detail: 'Merchant prepares the platform order', owner: 'Merchant' },
+        { label: 'Collection', detail: 'Parcel picked up from the merchant', owner: 'Collection driver' },
+        { label: 'Origin sort hub', detail: 'First hub sorts by destination', owner: 'Hub' },
+        { label: 'Trunk transport', detail: 'Moves parcels between hubs', owner: 'Trunk carrier' },
+        { label: 'Destination depot', detail: 'Second hub hands volume to the local depot', owner: 'Depot' },
+        { label: 'Final delivery', detail: 'Handover to the recipient', kind: 'outcome', owner: 'Final courier' },
+      ],
+      note: 'Owned facilities, franchisees, contractors and marketplace integrations may coexist in one domestic journey.',
+      takeaway: 'Every stage shares one delivery promise, so a delay or data error at one handoff can propagate through the network.',
+    },
+  },
+  'logistics-express-m2-2': {
+    heading: 'Merchants, platforms, carriers, partners and recipients each hold part of the parcel journey',
+    intro: 'The chapter connects the roles of merchants, platforms, carriers, postal operators, transport partners, pickup networks, technology and recipients around one delivery promise.',
+    spec: {
+      layout: 'ecosystem', title: '02 Who Participates in an End-to-End Parcel Journey?', kicker: '',
+      center: { label: 'The delivery promise', detail: 'Shared by every participant in the journey' },
+      actors: [
+        { label: 'Merchants', relation: 'Create orders and pay for delivery', flows: ['information', 'money'] },
+        { label: 'Platforms', relation: 'Pass order data to carriers', flows: ['information'] },
+        { label: 'Carriers and postal operators', relation: 'Run collection, hubs and delivery', flows: ['service', 'product'] },
+        { label: 'Transport partners', relation: 'Provide line haul between facilities', flows: ['product', 'service'] },
+        { label: 'Pickup networks', relation: 'First-mile collection and alternate handover', flows: ['service'] },
+        { label: 'Recipients', relation: 'Receive the parcel and confirm handover', flows: ['product', 'information'] },
+      ],
+      note: 'Technology links them through scans and tracking. Owned facilities, franchisees, contractors and marketplace integrations may coexist in one journey.',
+      takeaway: 'Every participant shares one delivery promise, so a delay or data error at one handoff can propagate through the network.',
+    },
+  },
+  'logistics-express-m2-3': {
+    heading: 'Parcel, shipment data and money move together but are different objects',
+    intro: 'Physical parcels move with shipment data, scans, customer messages and financial records. COD collected on behalf of a merchant is a liability or settlement flow, not automatically delivery-company revenue.',
+    spec: {
+      layout: 'table', title: '03 How Do Parcels, Data, Payments and Cash Flow?', kicker: '',
+      headers: ['Object', 'Type of flow', 'How it is treated'],
+      rows: [
+        { label: 'Order data and label', a: 'Information', b: 'Creates the shipment record for the parcel' },
+        { label: 'Parcel scan and tracking event', a: 'Information', b: 'Records handling and feeds customer messages' },
+        { label: 'Service fee', a: 'Money', b: 'Operator revenue for applicable services' },
+        { label: 'COD collected', a: 'Money collected on behalf of the merchant', b: 'Liability or settlement flow, not revenue' },
+        { label: 'Merchant remittance', a: 'Money', b: 'Paid after agreed reconciliation' },
+        { label: 'Exception record', a: 'Information and risk', b: 'Sets failed-delivery treatment and dispute ownership' },
+      ],
+      note: 'Define cash custody, reconciliation, remittance timing, failed-delivery treatment, access controls and dispute ownership.',
+      takeaway: 'Shipment, customer order, parcel, delivery stop, service revenue and COD cash are different operational and financial objects.',
+    },
+  },
+  'logistics-express-m2-4': {
+    heading: 'Onboarding turns order data into a labelled parcel ready for a scheduled pickup',
+    intro: 'Onboarding means creating a shipment, validating sender and recipient information, selecting service, labelling and transferring parcels into the network. A high-volume merchant closes a pickup manifest before a scheduled collection.',
+    spec: {
+      layout: 'flow', title: '04 How Are Merchants and Shipments Onboarded?', kicker: '',
+      steps: [
+        { label: 'Order data', detail: 'Shipment created from the merchant order', owner: 'Merchant' },
+        { label: 'Sender and recipient check', detail: 'Validate contact and address information', owner: 'Merchant tool' },
+        { label: 'Service selection', detail: 'Choose the service promise', owner: 'Merchant' },
+        { label: 'Label', detail: 'Ties the parcel to its shipment record', owner: 'Merchant tool' },
+        { label: 'Pickup window', detail: 'Manifest closed; parcels go on a scheduled vehicle', kind: 'outcome', owner: 'Carrier' },
+      ],
+      note: 'Merchant tools should support local address conventions, phone-based contact, COD requirements and return instructions.',
+      takeaway: 'Clean shipment data and predictable collection prevent downstream sorting, routing and delivery exceptions.',
+    },
+  },
+  'logistics-express-m2-5': {
+    heading: 'Address, packaging and consolidation checks decide whether a parcel enters the network cleanly',
+    intro: 'Validating the address and packaging before collection lets ready parcels be consolidated into a scheduled vehicle. Problems left unchecked resurface later as sorting, routing and delivery exceptions.',
+    spec: {
+      layout: 'decision', title: '05 How Do Pickup Scheduling and First-Mile Collection Work?', kicker: '',
+      root: { label: 'Parcel awaiting first-mile collection', detail: 'Checked before the pickup window' },
+      question: 'Are the address and packaging ready for collection?',
+      branches: [
+        { condition: 'Validated and packed', outcome: 'Collection consolidation', detail: 'Joins the manifest for a scheduled vehicle', tone: 'positive' },
+        { condition: 'Address cannot be validated', outcome: 'Resolve with the sender first', detail: 'Local address conventions and phone contact help', tone: 'caution' },
+        { condition: 'Collected unchecked', outcome: 'Downstream exceptions', detail: 'Sorting, routing and delivery problems later', tone: 'negative' },
+      ],
+      takeaway: 'Clean shipment data and predictable collection prevent downstream sorting, routing and delivery exceptions.',
+    },
+  },
+  'logistics-express-m2-6': {
+    heading: 'Network capacity is built from a volume forecast before parcels arrive',
+    intro: 'Parcels are forecast by origin, destination, day and service, then sortation, vehicles, departures, depot labor and couriers are allocated. A campaign plan adds temporary shifts and trunk departures.',
+    spec: {
+      layout: 'driverTree', title: '06 How Are Labels, Shipment Data and Network Capacity Prepared?', kicker: '',
+      root: { label: 'Capacity ready before volume arrives', detail: 'Without idle assets in quieter periods' },
+      drivers: [
+        { label: 'Volume forecast', detail: 'The starting input', children: [{ label: 'Origin and destination' }, { label: 'Day and service' }] },
+        { label: 'Hub capacity', detail: 'Sortation allocated to expected flows' },
+        { label: 'Line-haul schedule', detail: 'Vehicles and departures between facilities' },
+        { label: 'Labor plan', detail: 'Depot labor and couriers' },
+        { label: 'Peak capacity', detail: 'Temporary shifts and extra trunk departures' },
+      ],
+      note: 'Service priority protects cutoffs for time-definite shipments. Marketplace calendars and regional parcel patterns should inform daily hub and interprovincial plans.',
+      takeaway: 'Capacity must be positioned before volume arrives while avoiding idle assets in quieter periods.',
+    },
+  },
+  'logistics-express-m2-7': {
+    heading: 'Readable parcels go to automated sort, exceptions go to a manual lane, then both meet the departure',
+    intro: 'Hubs receive, scan, sort by destination, handle exceptions, load vehicles and move parcels on schedule. An unreadable label goes to an exception lane rather than contaminating automated destination sortation.',
+    spec: {
+      layout: 'pathway', title: '07 How Do Sorting Centers, Hubs and Depots Operate?', kicker: '',
+      trunk: [{ label: 'Inbound scan', detail: 'Parcel received and identified' }],
+      optionsLabel: 'Sort path depends on the label — alternatives, not steps',
+      options: [
+        { label: 'Automated sort', detail: 'Readable label, routed by destination' },
+        { label: 'Manual exception', detail: 'Unreadable label handled in an exception lane' },
+      ],
+      afterLabel: 'Both paths rejoin',
+      after: [
+        { label: 'Load plan', detail: 'Parcels loaded for the right vehicle' },
+        { label: 'Departure synchronization', detail: 'Sort cutoffs matched to road schedules' },
+      ],
+      note: 'Hub KPI: throughput counts only when parcels are routed accurately. Interprovincial reliability also depends on destination intake capacity.',
+      takeaway: 'Throughput matters only when parcels are routed accurately and connect to the right departure.',
+    },
+  },
+  'logistics-express-m2-8': {
+    heading: 'Line haul ends at the destination depot, where arrivals become courier stop sequences',
+    intro: 'The destination depot sorts arrivals by delivery zone, driver and promise, resolves exceptions, sequences stops and loads parcels for retrieval.',
+    spec: {
+      layout: 'flow', title: '08 How Does Line-Haul Transport Connect the Network?', kicker: '',
+      steps: [
+        { label: 'Arrival scan', detail: 'Line-haul arrivals recorded at the depot', owner: 'Destination depot' },
+        { label: 'Zone sort', detail: 'By delivery zone, driver and promise', owner: 'Depot team' },
+        { label: 'Address exception', detail: 'Unclear addresses resolved before dispatch', kind: 'decision', owner: 'Depot team' },
+        { label: 'Stop sequence', detail: 'Stops ordered for the courier route', owner: 'Route planner' },
+        { label: 'Loaded for retrieval', detail: 'Parcels loaded in route order', kind: 'outcome', owner: 'Courier' },
+      ],
+      note: 'Traffic, alleys, apartment access and motorcycle payload constrain route and loading decisions.',
+      takeaway: 'The destination depot converts network flow into executable routes; poor sequencing can erase upstream time gains.',
+    },
+  },
+  'logistics-express-m2-9': {
+    heading: "A route is rebalanced when its parcels exceed the courier's vehicle or time capacity",
+    intro: 'Before dispatch, each route allocation is checked against what one courier and vehicle can carry and complete. A route is rebalanced when parcel volume exceeds a courier’s vehicle or time capacity.',
+    spec: {
+      layout: 'decision', title: '09 How Are Tracking, Routing and Operational Exceptions Managed?', kicker: '',
+      root: { label: 'Route allocation', detail: 'Parcels assigned to one courier' },
+      question: 'Readiness check: does the volume fit the vehicle and the courier’s time?',
+      branches: [
+        { condition: 'Fits vehicle and time', outcome: 'Load and dispatch', detail: 'Vehicle loaded in stop order', tone: 'positive' },
+        { condition: 'Payload or access is tight', outcome: 'Adjust vehicle loading', detail: 'Motorcycle payload, alleys and apartment access', tone: 'caution' },
+        { condition: 'Exceeds capacity', outcome: 'Rebalance the route', detail: 'Move parcels to another courier route', tone: 'negative' },
+      ],
+      takeaway: 'The destination depot converts network flow into executable routes; poor allocation and loading can erase upstream time gains.',
+    },
+  },
+  'logistics-express-m2-10': {
+    heading: 'Dispatch ends with notice, verification and a closed milestone, or an exception code',
+    intro: 'Handover at a doorstep, office, reception, locker or pickup point needs recipient verification, proof and exception management. A courier records an authorized location with a compliant photograph and time stamp, then closes the shipment milestone.',
+    spec: {
+      layout: 'flow', title: '10 How Are Parcels Dispatched for Last-Mile Delivery?', kicker: '',
+      steps: [
+        { label: 'Recipient notice', detail: 'Accurate communication before arrival', owner: 'Carrier' },
+        { label: 'Arrival', detail: 'Phone contact and local navigation', owner: 'Courier' },
+        { label: 'Verification', detail: 'Recipient or authorized location confirmed', kind: 'decision', owner: 'Courier' },
+        { label: 'Proof recorded', detail: 'Compliant photograph and time stamp', owner: 'Courier' },
+        { label: 'Milestone closed', detail: 'Shipment record completed', kind: 'outcome', owner: 'Carrier' },
+      ],
+      loop: 'If verification fails, the courier records an exception code instead of closing the milestone.',
+      note: 'Phone contact and flexible local navigation help execution, but proof and privacy controls remain essential.',
+      takeaway: 'The most visible customer moment depends on accurate communication, secure handover and trustworthy completion records.',
+    },
+  },
+  'logistics-express-m2-11': {
+    heading: 'Proof of delivery depends on where and to whom the parcel is handed over',
+    intro: 'Route execution ends at a doorstep, office, reception, locker or pickup point. Each handover needs a trustworthy completion record, and disputed records lead to customer escalation.',
+    spec: {
+      layout: 'taxonomy', title: '11 How Do Customer Handover and Proof of Delivery Work?', kicker: '',
+      root: 'Proof of delivery', rootDetail: 'Record confirming handover to a recipient or authorized location',
+      groups: [
+        { label: 'To the recipient', detail: 'Verified in person', items: ['Doorstep', 'Office', 'Reception'] },
+        { label: 'Authorized location', detail: 'Compliant photograph and time stamp' },
+        { label: 'Locker or pickup point', detail: 'Handover away from the doorstep' },
+        { label: 'Customer escalation', detail: 'When the completion record is questioned' },
+      ],
+      note: 'Proof and privacy controls remain essential even when phone contact and flexible navigation help route execution.',
+      takeaway: 'The most visible customer moment depends on accurate communication, secure handover and trustworthy completion records.',
+    },
+  },
+  'logistics-express-m2-12': {
+    heading: 'After a failed attempt, the recorded cause decides between redelivery, redirection, holding or return',
+    intro: 'Recipient absence, address issues, refusal and access constraints lead to redelivery, holding, alternate collection or return. A recipient redirecting an eligible parcel to a pickup point avoids a second residential attempt.',
+    spec: {
+      layout: 'pathway', title: '12 How Are Failed Delivery, Redelivery, RTO and Returns Managed?', kicker: '',
+      trunk: [
+        { label: 'Failed attempt', detail: 'Absence, address issue, refusal or access constraint' },
+        { label: 'Failure cause', detail: 'Recorded with a scan' },
+      ],
+      optionsLabel: 'Disposition options — alternatives, not steps',
+      options: [
+        { label: 'Redelivery', detail: 'Another attempt at the address' },
+        { label: 'Redirection', detail: 'Eligible parcel sent to a pickup point' },
+        { label: 'Holding', detail: 'Kept for alternate collection' },
+        { label: 'Return to sender', detail: 'RTO back to the merchant' },
+      ],
+      afterLabel: 'Feeds prevention',
+      after: [{ label: 'Exception analytics', detail: 'Causes analysed to prevent repeat failures' }],
+      note: 'Consumer returns are a separate merchant-return flow. COD refusal, contact failures and return-to-seller flows require explicit fees, scans and reconciliation.',
+      takeaway: 'Failed attempts and returns create extra handling and travel, making prevention and clear disposition rules essential.',
+    },
+  },
+  'logistics-express-m2-13': {
+    heading: 'End-to-end output is limited by the scarcest of physical, human and digital resources',
+    intro: 'Physical, human and digital inputs are transformed into delivered or returned parcels and service outcomes. A hub can have spare conveyor capacity while the final-mile depot lacks couriers, limiting end-to-end output.',
+    spec: {
+      layout: 'driverTree', title: '13 What Resources Are Required to Run a Parcel Network?', kicker: '',
+      root: { label: 'End-to-end output', detail: 'Delivered parcels, service outcomes and customer confidence' },
+      formula: 'Output is capped by the least available resource',
+      drivers: [
+        { label: 'Vehicles and hubs', detail: 'Physical inputs', children: [{ label: 'Conveyor capacity' }, { label: 'Delivery vehicles' }] },
+        { label: 'Couriers and sorters', detail: 'Human inputs', children: [{ label: 'Final-mile couriers' }, { label: 'Hub sorters' }] },
+        { label: 'Tracking data', detail: 'Digital inputs', children: [{ label: 'Scan quality' }] },
+      ],
+      note: 'Measure completion, timeliness, safety, scan quality and complaints alongside parcel count.',
+      takeaway: 'Productivity reflects coordination of assets, people and information, not the fleet or parcel count alone.',
+    },
+  },
+  'logistics-express-m2-14': {
+    heading: 'Last-mile stops, vehicle use and exceptions are where cost per parcel is decided',
+    intro: 'Labor, transport, facilities, technology, claims and support are compared with charges by parcel, weight, dimensions, zone and service. BCG reports last mile at 50–60% of total delivery cost in its study markets.',
+    spec: {
+      layout: 'table', title: '14 Where Are Delivery Costs, Risks and Service Failures Generated?', kicker: '',
+      headers: ['Where cost arises', 'Measure', 'Why it matters'],
+      rows: [
+        { label: 'Last-mile delivery', a: 'Cost per parcel', b: '50–60% of total delivery cost in BCG study markets' },
+        { label: 'Residential stops', a: 'Parcels per stop', b: '1–2 per stop in BCG context; low density raises unit cost' },
+        { label: 'Vehicles and transport', a: 'Vehicle utilization', b: 'Unused capacity still carries cost' },
+        { label: 'Claims and support', a: 'Exception cost', b: 'Service failures add cost beyond the route' },
+        { label: 'Charges', a: 'Parcel, weight, dimensions, zone and service', b: 'Must cover route, network and exception cost' },
+      ],
+      note: 'BCG figures are study findings for Europe and North America, not universal accounting.',
+      takeaway: 'Density and delivery success determine whether parcel revenue covers route, network and exception cost.',
+    },
+  },
+  'logistics-express-m2-15': {
+    heading: 'Value for merchants and recipients rests on stop density, first-attempt success and price mix',
+    intro: 'Charges by parcel, weight, dimensions, zone and service must cover route and exception cost. More stops per route and higher first-attempt success make that possible.',
+    spec: {
+      layout: 'driverTree', title: '15 How Do Express Operators Create Value for Merchants and Recipients?', kicker: '',
+      root: { label: 'Sustainable delivery value', detail: 'Revenue that covers route, network and exception cost' },
+      drivers: [
+        { label: 'Stops per route', detail: 'Density spreads route cost over more deliveries' },
+        { label: 'First-attempt success', detail: 'Share completed on the first visit under a defined method and period' },
+        { label: 'Price and mix', detail: 'Charges by parcel, weight, dimensions, zone and service' },
+        { label: 'Out-of-home drops', detail: '30–40% lower drop cost than doorstep, carrier estimates in BCG study' },
+      ],
+      note: 'BCG study context: 1–2 residential parcels per stop. Figures are study findings, not universal accounting.',
+      takeaway: 'Density and delivery success determine whether parcel revenue covers route, network and exception cost.',
+    },
+  },
+  'logistics-express-m2-16': {
+    heading: 'An international express parcel crosses a gateway and customs before local handover',
+    intro: 'International collection, gateways, security, customs declarations, duties and taxes, line haul and destination-country delivery all sit in one journey. An express document moves through an origin gateway and air network before customs and local courier handover.',
+    spec: {
+      layout: 'flow', title: '16 How Do International Express Networks Operate?', kicker: '',
+      steps: [
+        { label: 'International pickup', detail: 'Collection with compliant shipment data', owner: 'Origin courier' },
+        { label: 'Gateway', detail: 'Origin gateway and security', owner: 'Express network' },
+        { label: 'Air and road', detail: 'International line haul', owner: 'Express network' },
+        { label: 'Customs', detail: 'Declarations, duties and taxes', kind: 'decision', owner: 'Customs authority' },
+        { label: 'Destination handoff', detail: 'Local courier delivers in the destination country', kind: 'outcome', owner: 'Destination partner' },
+      ],
+      loop: 'End-to-end tracking links every handoff for the shipper and recipient.',
+      note: 'Exporters and cross-border sellers need documentation, customs visibility and accountable destination partners.',
+      takeaway: 'Cross-border reliability depends on compliant data and coordinated handoffs as much as transport speed.',
+    },
+  },
+  'logistics-express-m2-17': {
+    heading: "Shared order data links each interface in Vietnam's parcel value chain",
+    intro: 'Platforms, merchants, sorting centers, provincial depots, couriers, payments, recipients and return facilities meet at defined interfaces. Order APIs can improve labels, forecasts, pickup manifests, tracking and return instructions across participants.',
+    spec: {
+      layout: 'table', title: "17 How Does Vietnam's Parcel Delivery Value Chain Work?", kicker: '',
+      headers: ['Interface', 'Who it connects', 'What shared data improves'],
+      rows: [
+        { label: 'Marketplace integration', a: 'Platforms and merchants', b: 'Labels and pickup manifests' },
+        { label: 'Interprovincial line haul', a: 'Sorting centers and provincial depots', b: 'Forecasts for departures and intake' },
+        { label: 'Pickup and lockers', a: 'Couriers and recipients', b: 'Tracking at collection points' },
+        { label: 'Payments', a: 'Couriers, merchants and recipients', b: 'Reconciliation of collected cash' },
+        { label: 'Returns', a: 'Recipients and return facilities', b: 'Return instructions' },
+      ],
+      note: 'The Ministry route assessment shows why operator comparisons need matched parcel, route, time and quality definitions.',
+      takeaway: 'Vietnam can convert demand growth into sustainable service through stronger data exchange, density and local execution.',
+    },
+  },
+  'logistics-express-m2-18': {
+    heading: 'Data exchange, density and local execution turn demand into competitive service',
+    intro: 'Vietnam’s competitiveness depends on how well merchant pickup, urban routing and returns are integrated across platforms, depots and couriers.',
+    spec: {
+      layout: 'driverTree', title: '18 How Do Urban, Rural and Infrastructure Conditions Affect Competitiveness?', kicker: '',
+      root: { label: 'Sustainable service from demand growth', detail: 'Competitiveness in Vietnam' },
+      drivers: [
+        { label: 'Data exchange', detail: 'Order APIs between platforms and carriers', children: [{ label: 'Merchant pickup', detail: 'Accurate pickup manifests' }] },
+        { label: 'Density', detail: 'Enough stops per route area', children: [{ label: 'Urban routing', detail: 'Productive city routes' }] },
+        { label: 'Local execution', detail: 'Couriers, depots and return facilities', children: [{ label: 'Returns integration', detail: 'Clear return instructions' }] },
+      ],
+      note: 'Compare operators only with matched parcel, route, time and quality definitions, as the Ministry route assessment shows.',
+      takeaway: 'Vietnam can convert demand growth into sustainable service through stronger data exchange, density and local execution.',
+    },
+  },
+};

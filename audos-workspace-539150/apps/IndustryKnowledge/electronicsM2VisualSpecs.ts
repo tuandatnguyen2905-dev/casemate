@@ -1,0 +1,327 @@
+import type { VisualSpec } from './fashionVisualKit';
+
+export interface ElectronicsChapterVisual { heading: string; intro: string; spec: VisualSpec }
+
+/** Chapter-specific Learning Visuals for Consumer Electronics & Semiconductors Module 02, keyed by visualKind. */
+export const ELECTRONICS_M2_VISUALS: Record<string, ElectronicsChapterVisual> = {
+  'electronics-m2-11-chain': {
+    heading: 'Five connected activities from research to the end user',
+    intro: 'Semiconductor activities supply chips and enabling components, while electronics activities combine them with hardware, software, branding, distribution and support.',
+    spec: {
+      layout: 'flow', title: 'Structure of the Integrated Value Chain', kicker: '',
+      steps: [
+        { label: 'R&D and design', detail: 'Research, IP, product and chip design', owner: 'Upstream' },
+        { label: 'Materials and equipment', detail: 'Specialized inputs and production systems', owner: 'Upstream' },
+        { label: 'Semiconductor production', detail: 'Wafers, then packaged and tested chips', owner: 'Midstream' },
+        { label: 'Electronics manufacturing', detail: 'Components integrated into finished devices', owner: 'Midstream' },
+        { label: 'Commercialization', detail: 'Sell, support, update, repair and retire', kind: 'outcome', owner: 'Downstream' },
+      ],
+      loop: 'Specifications, forecasts, quality data, financing and customer feedback flow in both directions and shape capacity and design.',
+      note: 'Vietnam is strong in electronics manufacturing and export networks and is developing selected chip design and back-end capability.',
+      takeaway: 'Value creation is distributed across the chain, but firms controlling critical IP, advanced manufacturing, trusted brands or customer ecosystems can capture a disproportionate share.',
+    },
+  },
+  'electronics-m2-12-models': {
+    heading: 'What each business model is responsible for and what it relies on',
+    intro: 'The chain contains specialized firms as well as vertically integrated companies, each performing a different role.',
+    spec: {
+      layout: 'table', title: 'Industry Participants and Business Models', kicker: '',
+      headers: ['Business model', 'Core responsibility', 'Relies on'],
+      rows: [
+        { label: 'IDM', a: 'Designs and manufactures chips', b: 'Its own fabrication capacity' },
+        { label: 'Fabless', a: 'Designs chips', b: 'External foundries and OSAT providers' },
+        { label: 'Pure-play foundry', a: 'Manufactures customer designs', b: 'Customer orders; concentration risk' },
+        { label: 'OSAT', a: 'Assembles, packages and tests chips', b: 'Qualification by chip customers' },
+        { label: 'Brand owner / OEM', a: 'Defines the product and proposition', b: 'ODM or EMS partners, distributors, retailers' },
+        { label: 'ODM / EMS', a: 'Design and manufacturing support', b: 'Brand specifications and orders' },
+      ],
+      note: 'Specialization adds expertise but creates dependencies; scarce IP, few manufacturing alternatives and qualification needs shift bargaining power.',
+      takeaway: "A company's position in the chain determines its investment needs, operating responsibilities, negotiating power and exposure to customers, suppliers and technology cycles.",
+    },
+  },
+  'electronics-m2-21-design': {
+    heading: 'Upstream design steps that lock in much of later cost and performance',
+    intro: 'Upstream teams translate market needs and engineering possibilities into concepts, specifications, chip architectures and validated prototypes.',
+    spec: {
+      layout: 'flow', title: 'Research, Product Design, and Semiconductor IP', kicker: '',
+      steps: [
+        { label: 'Market and technology research', detail: 'Finds the need and what is feasible' },
+        { label: 'Product architecture', detail: 'Balances performance, power, size and cost' },
+        { label: 'Chip design and verification', detail: 'Can reuse semiconductor IP blocks' },
+        { label: 'Prototyping and validation', detail: 'Tests against application requirements' },
+        { label: 'Design for manufacturing', detail: 'Fits production capability and cost targets' },
+        { label: 'Volume production commitment', kind: 'outcome' },
+      ],
+      loop: 'Coordination with manufacturing reduces redesign, delay and yield risk before volume.',
+      note: 'Vietnam can deepen value capture through chip design, verification, product engineering and design-for-manufacturing expertise.',
+      takeaway: 'Strong coordination between design and manufacturing can improve differentiation and reduce delay, redesign, cost and yield risk.',
+    },
+  },
+  'electronics-m2-22-materials': {
+    heading: 'The input families that chip and device production depend on',
+    intro: 'Production depends on highly controlled materials, specialized equipment and a broad set of components; input quality affects yield, cost and delivery.',
+    spec: {
+      layout: 'taxonomy', title: 'Raw Materials, Specialized Materials, and Production Equipment', kicker: '',
+      root: 'Production inputs', rootDetail: 'Input families, each needing qualified suppliers',
+      groups: [
+        { label: 'Semiconductor materials', items: ['Silicon wafers', 'Photoresists', 'Specialty gases', 'High-purity chemicals'] },
+        { label: 'Manufacturing equipment', items: ['Lithography', 'Deposition and etching', 'Inspection and metrology'] },
+        { label: 'Electronic components', items: ['Printed circuit boards', 'Sensors', 'Passive components', 'Connectors'] },
+        { label: 'Battery and display inputs', items: ['Batteries', 'Displays', 'Glass'] },
+        { label: 'Structural materials', items: ['Metals', 'Plastics', 'Engineered materials'] },
+        { label: 'Supplier qualification', detail: 'Lengthy, so it creates high entry barriers' },
+      ],
+      note: "Vietnam's network depends substantially on imported advanced equipment, semiconductor inputs and components, so supplier visibility matters.",
+      takeaway: 'Specialized expertise and lengthy qualification create high entry barriers for critical suppliers, while concentrated supply can spread disruption through the ecosystem.',
+    },
+  },
+  'electronics-m2-23-procurement': {
+    heading: 'How the number of qualified suppliers changes the sourcing response',
+    intro: 'Procurement coordinates specifications, supplier selection, contracts, capacity, quality, delivery and inventory across several tiers and countries.',
+    spec: {
+      layout: 'decision', title: 'Supplier Networks and Procurement Management', kicker: '',
+      root: { label: 'Critical input for a launch', detail: 'Specialized chip, equipment or component' },
+      question: 'How many qualified alternatives exist, and how long does validation take?',
+      branches: [
+        { condition: 'Several qualified suppliers', outcome: 'Competitive strategic sourcing', detail: 'Judge total value, not unit price alone', tone: 'positive' },
+        { condition: 'Second source technically feasible', outcome: 'Dual source with shared forecasts', detail: 'Coordinate engineering changes', tone: 'caution' },
+        { condition: 'Few alternatives, long validation', outcome: 'Capacity agreements and strategic stock', detail: 'Switching is not immediate after a shortage', tone: 'caution' },
+        { condition: 'Unmanaged single point of failure', outcome: 'Low price creates little value', detail: 'Late or unqualified input halts production', tone: 'negative' },
+      ],
+      note: 'Vietnamese manufacturers need to balance imported input dependence with practical local supplier development.',
+      takeaway: 'Procurement is strategic: a low unit price creates little value if an input arrives late, fails qualification or exposes production to an unmanaged single point of failure.',
+    },
+  },
+  'electronics-m2-31-fab': {
+    heading: 'The repeated process steps that turn a design into chips on a wafer',
+    intro: 'Wafer fabrication converts verified designs into physical integrated circuits through repeated, tightly controlled process steps.',
+    spec: {
+      layout: 'flow', title: 'Semiconductor Wafer Fabrication', kicker: '',
+      steps: [
+        { label: 'Wafer preparation', detail: 'Silicon or other suitable substrate' },
+        { label: 'Lithography', detail: 'Transfers circuit patterns to the wafer' },
+        { label: 'Deposition and etching', detail: 'Builds and shapes layers' },
+        { label: 'Doping and treatment', detail: 'Sets electrical properties; cleaning' },
+        { label: 'Inspection and metrology', detail: 'Catches deviations early', kind: 'decision' },
+        { label: 'Yield', detail: 'Share of functional chips per wafer', kind: 'outcome' },
+      ],
+      loop: 'Steps repeat many times under process control; utilization decides how well capacity becomes output.',
+      note: "The OECD's 2025 assessment reports design and assembly, packaging and testing activity in Vietnam but no operational wafer-fabrication plant. Mature processes still serve analog, power and many consumer uses.",
+      takeaway: 'Fabrication competitiveness combines process capability, scale, equipment access, yield, utilization and discipline; the smallest node is not right for every application.',
+    },
+  },
+  'electronics-m2-32-packaging': {
+    heading: 'From fabricated die to tested chip, with a choice of package approach',
+    intro: 'After fabrication, dies are separated, attached, interconnected, packaged and tested; the package protects the die, carries signals and removes heat.',
+    spec: {
+      layout: 'pathway', title: 'Chip Assembly, Packaging, and Testing', kicker: '',
+      trunk: [
+        { label: 'Wafer dicing', detail: 'Separates individual dies' },
+        { label: 'Die attachment and interconnection', detail: 'Creates electrical pathways' },
+      ],
+      optionsLabel: 'Package integration approach — alternatives',
+      options: [
+        { label: 'Conventional package', detail: 'Protects one die and supports heat dissipation' },
+        { label: 'Advanced packaging', detail: 'Combines chiplets, memory and logic dies', items: ['Higher bandwidth', 'AI and high-performance computing'] },
+      ],
+      afterLabel: 'Then every package is tested',
+      after: [
+        { label: 'Electrical testing', detail: 'Functional checks' },
+        { label: 'Reliability testing', detail: 'Thermal, environmental and operating conditions', kind: 'outcome' },
+      ],
+      note: "The OECD's 2025 assessment identifies seven semiconductor assembly, packaging and testing facilities in Vietnam.",
+      takeaway: 'Packaging and testing are increasingly sources of performance and differentiation rather than merely final manufacturing steps.',
+    },
+  },
+  'electronics-m2-33-assembly': {
+    heading: 'How components, firmware and tests come together on a device line',
+    intro: 'Device manufacturing combines chips, boards, displays, batteries, sensors, mechanical parts, firmware and software into usable products.',
+    spec: {
+      layout: 'flow', title: 'Electronic Component Manufacturing and Final Device Assembly', kicker: '',
+      steps: [
+        { label: 'Printed circuit board assembly', detail: 'Chips and parts mounted on boards' },
+        { label: 'Module integration', detail: 'Subassemblies such as cameras and radios' },
+        { label: 'Final assembly', detail: 'Display, battery and housing' },
+        { label: 'Firmware and software installation', detail: 'Configuration and calibration' },
+        { label: 'Functional testing', detail: 'End-of-line checks', kind: 'decision' },
+        { label: 'Traceability record', detail: 'Ties each unit to parts and process', kind: 'outcome' },
+      ],
+      note: 'Responsibility may sit with brand owners, OEMs, ODMs or EMS providers. Vietnam trade scale is not the same as domestic technology ownership.',
+      takeaway: 'Device assembly is a synchronization problem: a shortage or defect in one inexpensive component can delay an entire high-value product.',
+    },
+  },
+  'electronics-m2-34-quality': {
+    heading: 'Where quality systems stop added volume from destroying value',
+    intro: 'Product failures can start in materials, design, software, process variation, handling or component interaction, so quality spans the whole line.',
+    spec: {
+      layout: 'driverTree', title: 'Quality Assurance, Reliability, and Production Optimization', kicker: '',
+      root: { label: 'Value from added volume', detail: 'Only if quality improves alongside productivity' },
+      drivers: [
+        { label: 'Defects and rework', detail: 'Caught before they spread', children: [{ label: 'Incoming quality control' }, { label: 'Automated inspection' }] },
+        { label: 'Batch losses', detail: 'Small variation becoming a large batch', children: [{ label: 'Process monitoring' }, { label: 'Statistical control' }] },
+        { label: 'Unplanned downtime', detail: 'Lost output and throughput', children: [{ label: 'Predictive maintenance' }, { label: 'Equipment data' }] },
+        { label: 'Warranty claims', detail: 'Field failures and customer confidence', children: [{ label: 'Reliability evaluation' }, { label: 'Root-cause analysis' }] },
+      ],
+      note: 'Corrective and preventive action and continuous improvement close the loop. Vietnamese factories can compete through automation, traceability and data-driven quality.',
+      takeaway: 'Quality and productivity must improve together; added volume destroys value when defects, rework, warranty claims or downtime rise with it.',
+    },
+  },
+  'electronics-m2-41-distribution': {
+    heading: 'Different routes to market for devices and for chips',
+    intro: 'Downstream networks connect manufacturers with distributors, retailers, operators, business customers and end users, with different support needs.',
+    spec: {
+      layout: 'taxonomy', title: 'Distribution, Sales, and Market Access', kicker: '',
+      root: 'Routes to market', rootDetail: 'Channel types, chosen by customer and product complexity',
+      groups: [
+        { label: 'Consumer device channels', items: ['Wholesale', 'Stores', 'E-commerce platforms', 'Authorized dealers', 'Telecom operators', 'Direct channels'] },
+        { label: 'Semiconductor channels', items: ['Direct sales', 'Specialist distributors', 'Representatives'] },
+        { label: 'What device retailers add', items: ['Demonstrations', 'Financing', 'Delivery and returns'] },
+        { label: 'What chip distributors add', items: ['Inventory', 'Documentation', 'Application support', 'Smaller order quantities'] },
+        { label: 'Across all channels', items: ['Logistics and fulfillment', 'Market-access compliance'] },
+      ],
+      note: "Vietnam's factories connect with international logistics, customs and multinational customers while also serving domestic retail and digital channels.",
+      takeaway: 'Market access depends on availability, fulfillment, channel relationships, technical support and compliance, not simply manufacturing a product.',
+    },
+  },
+  'electronics-m2-42-marketing': {
+    heading: 'Consumer marketing builds trust; chip marketing proves technical fit',
+    intro: 'Consumer electronics firms differentiate through positioning, experience and reputation, while semiconductor suppliers emphasize technical and commercial suitability.',
+    spec: {
+      layout: 'compare', title: 'Branding, Marketing, and Customer Acquisition', kicker: '',
+      leftTitle: 'Consumer electronics marketing', rightTitle: 'Semiconductor marketing',
+      rows: [
+        { label: 'Main activities', a: 'Positioning, launches, demos, digital content', b: 'Documentation, benchmarks, reference designs' },
+        { label: 'Influencers', a: 'Media, creators, reviews, retail activation', b: 'Developer tools and engineering support' },
+        { label: 'What buyers need', a: 'Trust, design, usability, ecosystem fit', b: 'Proof of performance, reliability, capacity' },
+        { label: 'Winning moment', a: 'Purchase at launch or in store', b: 'Design win after months of qualification' },
+        { label: 'Lasting value', a: 'Relationship management and service', b: 'Support and long-term availability' },
+      ],
+      note: 'Vietnamese suppliers need clear capability evidence, responsive technical communication and reliable delivery histories.',
+      takeaway: 'Marketing creates value when it converts technical capability into evidence-backed reasons to buy for a clearly defined customer.',
+    },
+  },
+  'electronics-m2-43-service': {
+    heading: 'Lifecycle support from purchase to responsible retirement',
+    intro: 'Devices need support, software, repair and responsible retirement, while chip customers need change notices, supply continuity and time to redesign.',
+    spec: {
+      layout: 'flow', title: 'After-Sales Services, Software, and Product Lifecycle Management', kicker: '',
+      steps: [
+        { label: 'Warranty and support', detail: 'Diagnostics and customer help' },
+        { label: 'Software support', detail: 'Security and operating-system updates' },
+        { label: 'Repair and spare parts', detail: 'Preserve value after purchase' },
+        { label: 'Lifecycle notice', detail: 'Chips: end-of-life notice and last-time buy', kind: 'decision' },
+        { label: 'End-of-life management', detail: 'Refurbish, take back, recycle or dispose', kind: 'outcome' },
+      ],
+      note: 'Industrial or automotive chip customers may depend on components for longer than devices stay in service. Vietnamese service networks can build repair, spare-parts and take-back capability.',
+      takeaway: 'Lifecycle support affects loyalty, reliability, regulatory exposure, repeat business, repairability and the practical useful life of products.',
+    },
+  },
+  'electronics-m2-51-inputs': {
+    heading: 'Which inputs feed which outputs, and what flows back upstream',
+    intro: 'The chain transforms materials, technology, labor, capital, energy and information into chips, modules, devices, services and knowledge.',
+    spec: {
+      layout: 'table', title: 'Key Inputs and Outputs Across the Value Chain', kicker: '',
+      headers: ['Category', 'Examples in the chapter', 'Role in the chain'],
+      rows: [
+        { label: 'Material inputs', a: 'Wafers, chemicals, metals, glass, batteries', b: 'Become chips, modules and devices' },
+        { label: 'Technology inputs', a: 'Chip designs, IP, software, recipes', b: 'Define what gets made and how' },
+        { label: 'Operational inputs', a: 'Facilities, equipment, water, energy, people', b: 'Carry out production' },
+        { label: 'Financial inputs', a: 'Working capital, research investment', b: 'Fund capacity and development' },
+        { label: 'Intermediate and final outputs', a: 'Wafers, packaged chips, modules, devices', b: 'Feed the next stage or the customer' },
+        { label: 'Information outputs', a: 'Quality results, field failures, production data', b: 'Flow upstream to improve designs' },
+      ],
+      note: 'Vietnam combines imported technology and components with workforce, facilities and production execution to create output.',
+      takeaway: 'Input availability is not enough; value comes from the expertise, processes, coordination and learning that turn resources into reliable outputs.',
+    },
+  },
+  'electronics-m2-52-value': {
+    heading: 'Each participant carries different costs and captures value differently',
+    intro: 'Value creation improves performance or experience; value capture is the share a company retains. Large production contribution does not guarantee high margins.',
+    spec: {
+      layout: 'table', title: 'Value Creation, Value Capture, and Cost Structure', kicker: '',
+      headers: ['Participant', 'Main cost burden', 'How it can capture value'],
+      rows: [
+        { label: 'Design firms', a: 'Engineering, IP, verification, software', b: 'Proprietary technology and scarce skills' },
+        { label: 'Fabs', a: 'Facilities, equipment, utilities, depreciation', b: 'High yield, scale, hard-to-copy process' },
+        { label: 'Packaging and assembly', a: 'Equipment, materials, labor, control', b: 'Superior execution; price pressure if standardized' },
+        { label: 'Brands', a: 'Product, marketing, inventory, warranty', b: 'Software, ecosystem, customer relationships' },
+      ],
+      note: "Vietnam's upgrading opportunity is to add supplier capability, engineering, design, testing and commercial relationships to manufacturing scale.",
+      takeaway: 'The stage with the most output or capital does not necessarily retain the most value; differentiation, scarcity, scale, customer access and bargaining power shape profitability.',
+    },
+  },
+  'electronics-m2-53-efficiency': {
+    heading: 'The connected measures behind cost per functional output',
+    intro: 'Operational efficiency is how well labor, equipment, materials, energy, water, time and capital produce reliable output; the right measures vary by activity.',
+    spec: {
+      layout: 'driverTree', title: 'Productivity, Yield, and Operational Efficiency', kicker: '',
+      root: { label: 'Operating efficiency', detail: 'Reliable output per unit of resources' },
+      drivers: [
+        { label: 'Yield', detail: 'Higher wafer yield lowers cost per functional chip', children: [{ label: 'Defect rate' }, { label: 'Rework rate' }] },
+        { label: 'Utilization', detail: 'Expensive fab assets kept productive', children: [{ label: 'Equipment use' }, { label: 'Maintenance performance' }] },
+        { label: 'Cycle time', detail: 'Speed through the line', children: [{ label: 'Line balance' }, { label: 'Product transitions' }] },
+        { label: 'Delivery and inventory', detail: 'Fulfillment reliability', children: [{ label: 'On-time delivery' }, { label: 'Inventory turnover' }] },
+        { label: 'Resource efficiency', detail: 'Inputs used per output', children: [{ label: 'Energy use' }, { label: 'Water use' }] },
+      ],
+      note: 'Optimize the true system constraint; maximizing one local metric can shift inventory, defects or delay to another stage.',
+      takeaway: 'Efficiency gains can raise profitability without equivalent sales growth, but must not sacrifice reliability, safety, quality, resilience or flexibility.',
+    },
+  },
+  'electronics-m2-61-global': {
+    heading: 'The specialists coordinated across countries to make one device',
+    intro: 'Different locations have built strengths in design, equipment, materials, fabrication, packaging and testing, components, assembly and market access.',
+    spec: {
+      layout: 'ecosystem', title: 'Global Value Chain Structure and Geographic Specialization', kicker: '',
+      center: { label: 'Internationally coordinated network', detail: 'One device can cross several countries' },
+      actors: [
+        { label: 'Design firms', relation: 'Semiconductor and device design', flows: ['information'] },
+        { label: 'Foundries and IDMs', relation: 'Wafer fabrication', flows: ['product'] },
+        { label: 'Materials and equipment', relation: 'Specialized inputs and tools', flows: ['product'] },
+        { label: 'OSAT providers', relation: 'Packaging and testing', flows: ['service', 'product'] },
+        { label: 'Device manufacturers', relation: 'Electronics manufacturing and assembly', flows: ['product'] },
+        { label: 'Logistics, brands and retail', relation: 'Move and sell to customer markets', flows: ['product', 'money'] },
+      ],
+      note: 'Capabilities build through knowledge, clusters, infrastructure and workforce, and cannot always be duplicated quickly. Vietnam participates mainly through manufacturing, exports, suppliers and selected chip activities.',
+      takeaway: 'Geographic specialization improves efficiency and access to expertise, but concentration of critical capability creates interdependence and systemic disruption risk.',
+    },
+  },
+  'electronics-m2-62-vietnam': {
+    heading: "What Vietnam's trade scale shows, and what it does not prove",
+    intro: 'Vietnam has a significant export-oriented electronics role supported by foreign investment, but participation alone does not prove domestic ownership of IP or high value capture.',
+    spec: {
+      layout: 'compare', title: 'Vietnam’s Position in the Global Value Chain', kicker: '',
+      leftTitle: 'Measured scale', rightTitle: 'What it does not show',
+      rows: [
+        { label: 'Exports (2025)', a: 'US$107.7 billion electronics, computers and components', b: 'Domestic value added or company revenue' },
+        { label: 'Imports (2025)', a: 'US$150.7 billion in the same category', b: 'Technological independence' },
+        { label: 'Chip design', a: 'About 50 chip-design firms (OECD)', b: 'Domestic ownership of product decisions' },
+        { label: 'Back-end', a: 'Seven assembly, packaging and testing facilities', b: 'A complete semiconductor ecosystem' },
+        { label: 'Wafer fabrication', a: 'No operational plant in the cited assessment', b: 'That front-end capability exists' },
+      ],
+      note: 'Export and import figures: National Statistics Office of Vietnam. Design and back-end counts: OECD 2025 assessment.',
+      takeaway: 'Vietnam can build on manufacturing scale, but durable upgrading depends on local suppliers, engineers, design and testing capability, research links and relevant specialization.',
+    },
+  },
+  'electronics-m2-63-upgrading': {
+    heading: 'Selective upgrading routes that build on existing assembly experience',
+    intro: 'Upgrading means developing more complex, differentiated or productive activities; it does not require localizing every input or rebuilding the whole chain in one country.',
+    spec: {
+      layout: 'pathway', title: 'Upgrading the Local Value Chain and Reducing Dependency Risks', kicker: '',
+      trunk: [
+        { label: 'Assembly experience', detail: 'Existing manufacturing platform' },
+        { label: 'Map critical dependencies', detail: 'Visibility of imported inputs' },
+      ],
+      optionsLabel: 'Upgrading routes — choose by feasibility and demand, not all at once',
+      options: [
+        { label: 'Domestic supplier development', detail: 'Meet international standards' },
+        { label: 'Design capability building', detail: 'Chip design and verification' },
+        { label: 'Advanced manufacturing investment', detail: 'Automated testing, high reliability' },
+        { label: 'Technology partnerships', detail: 'Investment that transfers capability' },
+        { label: 'Workforce development', detail: 'University and industry links' },
+        { label: 'Sustainable manufacturing', detail: 'More efficient resource use' },
+      ],
+      note: 'Full self-sufficiency would be expensive and technically difficult; resilience comes from qualified alternatives, contingency plans and durable skills.',
+      takeaway: 'Successful upgrading balances domestic capability with continued global integration and focuses on segments where skills, infrastructure, demand and partnerships support competitiveness.',
+    },
+  },
+};

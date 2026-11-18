@@ -1,0 +1,386 @@
+// Consumer Finance Module 05, lessons 1 to 5 (apps/IndustryKnowledge/consumerFinanceModule05.tsx).
+// Excerpts are verbatim from the chapter fields in the source file and re-checked by decks.test.ts.
+// The source states no forecasts, figures or legal thresholds in this module, so none appear on cards.
+
+import type { FlashcardDeckContent } from '../models';
+import { defineLessonDeck } from './factory';
+
+const COMMON = {
+  industryId: 'banking-consumer-finance',
+  industryLabel: 'Consumer Finance',
+  moduleId: 'cf-m05',
+  moduleLabel: 'Module 05',
+  moduleKey: 'CONSUMER_FINANCE_MODULE05',
+  file: 'apps/IndustryKnowledge/consumerFinanceModule05.tsx',
+  readAtSha256: '750b5b0ac37b7b1e18ac1644a4c59c7ed8d000dd79404d7822602fd9164da8f2',
+  readAt: '2026-11-08',
+  chapterMarker: "\ni('",
+  contentStatus: 'Draft / Ready for Review',
+  mappingNotes: ['The lesson has 3 chapters at read time. No review hold exists for Consumer Finance in reviewHolds.ts.'],
+};
+
+export const CF_M05_L1_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'consumer-finance-consumer-trends',
+  title: 'Consumer Finance: Consumer Trends',
+  description: 'Changing household borrowing needs, expectations of digital credit, and financial literacy and wellbeing.',
+  lessonId: 'cf-m5-l1',
+  lessonTitle: 'Consumer Trends',
+  startMarker: "['Consumer Trends',[",
+  endMarker: "['Technology & Innovation Trends',[",
+  chapterIdPrefix: 'cf-m5-l1',
+  chapters: [
+    { title: 'How Are Household Borrowing Needs Changing?', sourceTitle: 'How Are Household Borrowing Needs Changing?', citations: ['worldBankFindex', 'oecdConsumer', 'ifcResponsible'] },
+    { title: 'What Do Customers Expect from Digital Credit?', sourceTitle: 'What Do Customers Expect from Digital Credit?', citations: ['oecdConsumer', 'vnElectronic', 'vnData'] },
+    { title: 'Why Do Financial Literacy and Wellbeing Matter?', sourceTitle: 'Why Do Financial Literacy and Wellbeing Matter?', citations: ['oecdConsumer', 'worldBankFindex', 'ifcResponsible'] },
+  ],
+  cards: [
+    {
+      id: 'cf51-demand-needs-and-capacity',
+      ch: 1,
+      front: 'What do rising demand for access and flexibility require before growth is sustainable, and what can increased borrowing signal?',
+      back: 'Genuine need and repayment capacity. Increased borrowing can indicate convenience, unmet need or stress, and should not be treated as wellbeing, so segment needs and capacity.',
+      explanation: 'Households use loans, cards and instalments for purchases, timing gaps and emergencies under changing economic conditions.',
+      example: 'A customer compares an instalment plan and a personal loan against budget, total cost and repayment flexibility.',
+      terms: ['Cash-flow gap', 'Financial resilience'],
+      refs: [
+        [1, 'Demand increasingly values access and flexibility, but sustainable growth requires genuine need and repayment capacity.'],
+        [1, 'Segment needs and capacity; increased borrowing can indicate convenience, unmet need or stress and should not be treated as wellbeing.'],
+        [1, 'A customer compares an instalment plan and personal loan against budget, total cost and repayment flexibility.'],
+      ],
+    },
+    {
+      id: 'cf51-digital-credit-expectations',
+      ch: 2,
+      front: 'What do customers expect from digital credit, and what does informed choice still require?',
+      back: 'Convenient discovery and account management, but informed choice still needs clear obligations and accessible help: accessible language, durable disclosures, comprehension-oriented design and human support when needed.',
+      explanation: 'A coherent journey explains amount, cost, schedule and status, preserves records and lets customers resolve questions or errors.',
+      example: 'An application displays payment amount, total repayment, fees and due dates before valid acceptance.',
+      terms: ['Digital disclosure', 'Mobile-first journey'],
+      refs: [
+        [2, 'Customers expect convenient discovery and account management, but informed choice still requires clear obligations and accessible help.'],
+        [2, 'Use accessible language, durable disclosures, comprehension-oriented design and human support when needed.'],
+        [2, 'A coherent journey explains amount, cost, schedule and status, preserves records and lets customers resolve questions or errors.'],
+        [2, 'An application displays payment amount, total repayment, fees and due dates before valid acceptance.'],
+      ],
+    },
+    {
+      id: 'cf51-access-is-not-wellbeing',
+      ch: 3,
+      front: 'Why does digital access to credit not ensure positive financial outcomes, and which outcomes should be kept separate?',
+      back: 'Access does not ensure informed decisions or good outcomes. Keep formal access, product use, manageable repayment and improved wellbeing as separate outcomes.',
+      explanation: 'A customer can have access and use a product yet still struggle to repay, so access alone says little about wellbeing.',
+      example: 'A provider reports how many customers took up a product separately from how many are repaying without difficulty.',
+      terms: ['Customer outcome', 'Repayment understanding'],
+      refs: [
+        [3, 'Digital access does not ensure informed decisions or positive financial outcomes.'],
+        [3, 'Keep formal access, product use, manageable repayment and improved wellbeing as separate outcomes.'],
+      ],
+    },
+    {
+      id: 'cf51-support-before-and-after-agreement',
+      ch: 3,
+      front: 'How can a provider support a customer\u2019s financial wellbeing before the credit agreement and after it?',
+      back: 'Before agreement, support comparison and understanding of the credit. After it, monitor for difficulty and route customers to proportionate support.',
+      explanation: 'Digital access does not by itself produce informed decisions, so understanding is supported before the customer commits, and difficulty is watched for afterwards so that support matches the problem.',
+      example: 'A budgeting prompt helps a customer compare monthly payment with essential expenditure before borrowing.',
+      terms: ['Financial education', 'Early support', 'Budget'],
+      refs: [
+        [3, 'Providers support comparison and understanding before agreement, then monitor difficulty and route customers to proportionate support.'],
+        [3, 'A budgeting prompt helps a customer compare monthly payment with essential expenditure before borrowing.'],
+      ],
+    },
+  ],
+});
+
+export const CF_M05_L2_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'consumer-finance-technology-innovation',
+  title: 'Consumer Finance: Technology & Innovation Trends',
+  description: 'Conditions for AI in credit decisions, the trade-offs of alternative data, and how embedded finance and automation reshape operations.',
+  lessonId: 'cf-m5-l2',
+  lessonTitle: 'Technology & Innovation Trends',
+  startMarker: "['Technology & Innovation Trends',[",
+  endMarker: "['Market & Channel Trends',[",
+  chapterIdPrefix: 'cf-m5-l2',
+  chapters: [
+    { title: 'How Is AI Changing Credit Decisioning?', sourceTitle: 'How Is AI Changing Credit Decisioning?', citations: ['nistAI', 'vnData', 'bisCredit', 'oecdConsumer'] },
+    { title: 'What Can Alternative Data Add\u2014and What Can Go Wrong?', sourceTitle: 'What Can Alternative Data Add\u2014and What Can Go Wrong?', citations: ['nistAI', 'vnData', 'oecdConsumer'] },
+    { title: 'How Are Embedded Finance and Automation Reshaping Operations?', sourceTitle: 'How Are Embedded Finance and Automation Reshaping Operations?', citations: ['vnCreditLaw', 'vnElectronic', 'vnData', 'vnCyber', 'nistCSF'] },
+  ],
+  cards: [
+    {
+      id: 'cf52-ai-conditions',
+      ch: 1,
+      front: 'Under what conditions can AI improve credit decisioning, and what should be confirmed before use?',
+      back: 'AI improves speed and consistency only with valid data, testing, monitoring, explainability and accountable oversight. Confirm lawful purpose and data, validate by relevant cohorts, monitor drift and outcomes, and retain accountable review.',
+      explanation: 'Models support eligibility, fraud and portfolio monitoring under a defined purpose, with cutoffs, overrides and review.',
+      example: 'A validated model flags an application for additional review rather than automatically rejecting every alert.',
+      terms: ['Explainability', 'Model drift', 'Fairness'],
+      refs: [
+        [1, 'AI can improve speed and consistency only with valid data, testing, monitoring, explainability and accountable oversight.'],
+        [1, 'Confirm lawful purpose and data, validate by relevant cohorts, monitor drift and outcomes and retain accountable review.'],
+        [1, 'A validated model flags an application for additional review rather than automatically rejecting every alert.'],
+      ],
+    },
+    {
+      id: 'cf52-alternative-data-trade-offs',
+      ch: 2,
+      front: 'What can alternative data add, what can go wrong, and what should be tested before using it?',
+      back: 'It can add evidence for underserved customers, but can also introduce poor quality, hidden proxies and unfair outcomes. Test necessity, permission, representativeness, predictive value and stability before use, and monitor decisions by cohort.',
+      explanation: 'Monitoring decisions by cohort after launch catches hidden proxies and uneven outcomes that testing before use did not reveal.',
+      example: 'A mobile-behaviour signal is rejected when it lacks a defensible connection to repayment and produces uneven outcomes.',
+      terms: ['Alternative data', 'Data relevance', 'Bias'],
+      refs: [
+        [2, 'Alternative data can add evidence for underserved customers but can also introduce poor quality, hidden proxies and unfair outcomes.'],
+        [2, 'Teams test necessity, permission, representativeness, predictive value and stability before use and monitor decisions by cohort.'],
+        [2, 'A mobile-behaviour signal is rejected when it lacks a defensible connection to repayment and produces uneven outcomes.'],
+      ],
+    },
+    {
+      id: 'cf52-alternative-data-controls',
+      ch: 2,
+      front: 'Once alternative data is in use for credit decisions, which controls should surround it?',
+      back: 'Keep the data permitted, relevant and accurate, with controls on access, retention, fairness, explanation and appeal.',
+      explanation: 'Explanation and appeal let a customer understand and challenge a decision influenced by data that is less familiar than a conventional credit file.',
+      example: 'A customer declined partly because of an alternative-data signal is told what was used and can ask for a human review.',
+      terms: ['Human appeal', 'Security'],
+      refs: [
+        [2, 'Use permitted, relevant and accurate data with access, retention, fairness, explanation and appeal controls.'],
+      ],
+    },
+    {
+      id: 'cf52-connected-journeys-stay-clear',
+      ch: 3,
+      front: 'When do connected, API-driven credit journeys improve access, and what do automated workflows link?',
+      back: 'Only when the lender, data use, terms and obligations remain clear. APIs and automated workflows connect partner discovery to verification, decision, agreement, servicing and payments under monitored interfaces.',
+      explanation: 'Automation does not remove the lender\u2019s responsibilities: it still checks which current licensing, electronic-transaction, data, cyber and outsourcing requirements apply, and oversees partners and incidents.',
+      example: 'A retailer integrates an authorised lender\u2019s offer and clearly presents identity, total cost and agreement terms.',
+      terms: ['Embedded lending', 'API integration', 'Partner risk'],
+      refs: [
+        [3, 'Connected journeys improve access only when the lender, data use, terms and obligations remain clear.'],
+        [3, 'APIs and automated workflows connect partner discovery to verification, decision, agreement, servicing and payments under monitored interfaces.'],
+      ],
+    },
+  ],
+});
+
+export const CF_M05_L3_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'consumer-finance-market-channel-trends',
+  title: 'Consumer Finance: Market & Channel Trends',
+  description: 'Omnichannel journeys, transparent embedded credit, and how partnership acquisition quality is measured.',
+  lessonId: 'cf-m5-l3',
+  lessonTitle: 'Market & Channel Trends',
+  startMarker: "['Market & Channel Trends',[",
+  endMarker: "['Regulatory & Sustainability Trends',[",
+  chapterIdPrefix: 'cf-m5-l3',
+  chapters: [
+    { title: 'What Does Omnichannel Consumer Finance Mean?', sourceTitle: 'What Does Omnichannel Consumer Finance Mean?', citations: ['oecdConsumer', 'vnElectronic', 'vnData'] },
+    { title: 'How Is Embedded Credit Changing Distribution?', sourceTitle: 'How Is Embedded Credit Changing Distribution?', citations: ['vnCreditLaw', 'vnElectronic', 'vnData', 'oecdConsumer'] },
+    { title: 'How Should Partnership Acquisition Quality Be Measured?', sourceTitle: 'How Should Partnership Acquisition Quality Be Measured?', citations: ['vnCreditLaw', 'oecdConsumer', 'vnData'] },
+  ],
+  cards: [
+    {
+      id: 'cf53-omnichannel-coherence',
+      ch: 1,
+      front: 'What does competitive distribution depend on in omnichannel consumer finance, and what must stay consistent?',
+      back: 'One coherent journey rather than the number of touchpoints. Identity, pricing, eligibility, consent, status, service and complaint records must stay consistent across channels.',
+      explanation: 'Customers move among discovery, application, support and repayment channels, so the record has to follow them.',
+      example: 'A customer discovers a product online, gets contact-centre help and manages approved repayments in an app.',
+      terms: ['Omnichannel', 'Consistent terms'],
+      refs: [
+        [1, 'Competitive distribution depends on one coherent journey rather than the number of touchpoints.'],
+        [1, 'Keep identity, pricing, eligibility, consent, status, service and complaint records consistent across channels.'],
+        [1, 'A customer discovers a product online, gets contact-centre help and manages approved repayments in an app.'],
+      ],
+    },
+    {
+      id: 'cf53-embedded-credit-transparency',
+      ch: 2,
+      front: 'What must embedded credit not obscure when it moves financing closer to a purchase?',
+      back: 'The provider\u2019s identity, the total cost and who is responsible for the decision. Partners present the offer while an authorised provider verifies, decides, contracts and services the account.',
+      explanation: 'Monitor presentation, consent, data, fraud, approval messaging, service and complaints.',
+      example: 'A checkout journey names the lender and shows amount, schedule and total payable before application completion.',
+      terms: ['Checkout offer', 'Lender disclosure', 'Customer consent'],
+      refs: [
+        [2, 'Embedded credit moves financing closer to a purchase but must not obscure provider identity, total cost or decision responsibility.'],
+        [2, 'A checkout journey names the lender and shows amount, schedule and total payable before application completion.'],
+      ],
+    },
+    {
+      id: 'cf53-partnership-acquisition-quality',
+      ch: 3,
+      front: 'How should the value of a partnership be judged, and what should partner cohorts be compared on?',
+      back: 'By customer quality, transparent presentation, clear responsibility and sustainable economics. Follow partner cohorts from application through repayment and compare conversion with fraud, CAC, delinquency, service and repeat use.',
+      explanation: 'Conversion is only the first result; fraud, delinquency, service demand and repeat use arrive later and decide whether a partner is worth what it costs to acquire customers through it.',
+      example: 'A high-volume retailer is deprioritised after weak first-payment performance and complaints outweigh acquisition gains.',
+      terms: ['Partner due diligence', 'Acquisition cost', 'Retention'],
+      refs: [
+        [3, 'Partnership value depends on customer quality, transparent presentation, clear responsibility and sustainable economics.'],
+        [3, 'Providers follow partner cohorts from application through repayment and compare conversion with fraud, CAC, delinquency, service and repeat use.'],
+        [3, 'A high-volume retailer is deprioritized after weak first-payment performance and complaints outweigh acquisition gains.'],
+      ],
+    },
+    {
+      id: 'cf53-monitor-partner-risks',
+      ch: 3,
+      front: 'Beyond partner cohort results, which aspects of an acquisition partnership should a provider keep monitoring?',
+      back: 'Partner concentration, incentives, marketing, data handling, fraud, customer service and downstream cohort quality.',
+      explanation: 'Incentives and marketing shape which customers a partner brings in, and relying heavily on one partner leaves the provider exposed if that partner\u2019s quality slips.',
+      example: 'When one retailer comes to supply most new accounts, a provider reviews how the retailer\u2019s staff are rewarded and how the offer is advertised.',
+      terms: ['Partner due diligence', 'Fraud', 'Complaint'],
+      refs: [
+        [3, 'Monitor partner concentration, incentive, marketing, data, fraud, customer service and downstream cohort quality.'],
+      ],
+    },
+  ],
+});
+
+export const CF_M05_L4_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'consumer-finance-regulatory-sustainability',
+  title: 'Consumer Finance: Regulatory & Sustainability Trends',
+  description: 'Consumer protection across the lifecycle, data privacy and cyber resilience, and sustainable inclusion.',
+  lessonId: 'cf-m5-l4',
+  lessonTitle: 'Regulatory & Sustainability Trends',
+  startMarker: "['Regulatory & Sustainability Trends',[",
+  endMarker: "['Growth Outlook & Strategic Opportunities',[",
+  chapterIdPrefix: 'cf-m5-l4',
+  chapters: [
+    { title: 'How Are Consumer Protection and Financial Regulation Evolving?', sourceTitle: 'How Are Consumer Protection and Financial Regulation Evolving?', citations: ['vnCreditLaw', 'oecdConsumer', 'sbvInstitutions'] },
+    { title: 'Why Are Data Privacy and Cyber Resilience Strategic?', sourceTitle: 'Why Are Data Privacy and Cyber Resilience Strategic?', citations: ['vnData', 'vnCyber', 'nistCSF'] },
+    { title: 'What Makes Inclusion and Responsible Finance Sustainable?', sourceTitle: 'What Makes Inclusion and Responsible Finance Sustainable?', citations: ['worldBankFindex', 'ifcResponsible', 'oecdConsumer'] },
+  ],
+  cards: [
+    {
+      id: 'cf54-protection-at-every-stage',
+      ch: 1,
+      front: 'Why do consumer protection and compliance influence every lifecycle stage, and how should requirements be mapped?',
+      back: 'They are fundamental to legitimacy and apply to institution, product, advertising, decision, agreement, service, complaint and recovery activities. Map current institution, lending and activity-specific requirements, and do not treat guidance as law.',
+      explanation: 'Requirements differ by activity and by status, so each one is traced to its current source rather than assumed to cover the whole lifecycle.',
+      example: 'A provider checks its advertising, agreement, complaint and collection processes separately, because different requirements may apply to each.',
+      terms: ['Lending permission', 'Collection conduct', 'Redress'],
+      refs: [
+        [1, 'Protection and compliance are fundamental to legitimacy and influence every lifecycle stage.'],
+        [1, 'Requirements apply to institution, product, advertising, decision, agreement, service, complaint and recovery activities.'],
+        [1, 'Map current institution, lending and activity-specific requirements; do not treat guidance as law.'],
+      ],
+    },
+    {
+      id: 'cf54-disclosure-before-agreement',
+      ch: 1,
+      front: 'When a provider reviews a digital credit journey, what should it check comes before the agreement is completed?',
+      back: 'That disclosures have been shown and valid consent obtained before the customer completes the agreement.',
+      explanation: 'The order of screens decides whether the customer agrees knowing the terms or only sees them afterwards.',
+      example: 'A provider reviews a digital journey so disclosures and valid consent precede agreement completion.',
+      terms: ['Product disclosure', 'Customer consent'],
+      refs: [
+        [1, 'A provider reviews a digital journey so disclosures and valid consent precede agreement completion.'],
+      ],
+    },
+    {
+      id: 'cf54-data-stewardship-product-promise',
+      ch: 2,
+      front: 'Why is data stewardship part of the product promise in consumer finance?',
+      back: 'Consumer finance depends on sensitive identity, income, credit and payment information. Organisations govern purpose, access, retention, security, vendors, incidents and recovery across customer and account systems.',
+      explanation: 'Apply current personal-data and cyber requirements according to role, data, system and activity.',
+      example: 'A lender limits partner access to required fields and rehearses its response to a service-provider breach.',
+      terms: ['Personal data', 'Purpose limitation', 'Incident response'],
+      refs: [
+        [2, 'Consumer Finance depends on sensitive identity, income, credit and payment information, making data stewardship part of the product promise.'],
+        [2, 'Organizations govern purpose, access, retention, security, vendors, incidents and recovery across customer and account systems.'],
+        [2, 'A lender limits partner access to required fields and rehearses response to a service-provider breach.'],
+      ],
+    },
+    {
+      id: 'cf54-sustainable-inclusion-outcomes',
+      ch: 3,
+      front: 'When does inclusion create lasting value, and which outcomes should be distinguished?',
+      back: 'When suitable access does not compromise longer-term financial wellbeing. Distinguish formal access, use, suitable credit, manageable repayment and wellbeing as separate outcomes.',
+      explanation: 'Accessible journeys combine conservative design, clear cost, capacity assessment, support and fair treatment throughout repayment.',
+      example: 'A provider pairs simplified application evidence with conservative limits and early-arrears support.',
+      terms: ['Accessible product', 'Affordability', 'Customer wellbeing'],
+      refs: [
+        [3, 'Inclusion creates value when suitable access does not compromise longer-term financial wellbeing.'],
+        [3, 'Distinguish formal access, use, suitable credit, manageable repayment and wellbeing as separate outcomes.'],
+        [3, 'A provider pairs simplified application evidence with conservative limits and early-arrears support.'],
+      ],
+    },
+  ],
+});
+
+export const CF_M05_L5_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'consumer-finance-growth-outlook',
+  title: 'Consumer Finance: Growth Outlook & Strategic Opportunities',
+  description: 'Where responsible growth can come from, how to test opportunity scenarios, and which capabilities will define future winners.',
+  lessonId: 'cf-m5-l5',
+  lessonTitle: 'Growth Outlook & Strategic Opportunities',
+  startMarker: "['Growth Outlook & Strategic Opportunities',[",
+  endMarker: '\n];const topics=',
+  chapterIdPrefix: 'cf-m5-l5',
+  chapters: [
+    { title: 'Where Could Responsible Consumer Finance Growth Come From?', sourceTitle: 'Where Could Responsible Consumer Finance Growth Come From?', citations: ['worldBankFindex', 'ifcResponsible', 'vnCreditLaw', 'cic'] },
+    { title: 'How Should Opportunity Scenarios Be Tested?', sourceTitle: 'How Should Opportunity Scenarios Be Tested?', citations: ['bisCredit', 'oecdConsumer', 'ifcResponsible'] },
+    { title: 'Which Capabilities Will Define Future Winners?', sourceTitle: 'Which Capabilities Will Define Future Winners?', citations: ['bisCredit', 'nistAI', 'nistCSF', 'vnData', 'oecdConsumer'] },
+  ],
+  cards: [
+    {
+      id: 'cf55-growth-without-relaxing-underwriting',
+      ch: 1,
+      front: 'What kind of growth opportunity is strongest in responsible consumer finance, and what should be tested before scaling it?',
+      back: 'One that improves access, experience and risk assessment together, rather than relaxing underwriting for volume. Before scaling, test funding, permission, target need, customer capacity, partner, operations and stop-or-scale triggers.',
+      explanation: 'Growth combines digital adoption, formal inclusion, better information, integrated commerce and reliable operations under economic uncertainty.',
+      example: 'A lender expands a digital product only after validating demand, affordability, fraud, operations and credit performance.',
+      terms: ['Digital credit', 'Formal access', 'Fraud prevention'],
+      refs: [
+        [1, 'The strongest opportunities improve access, experience and risk assessment together rather than relaxing underwriting for volume.'],
+        [1, 'Test funding, permission, target need, customer capacity, partner, operations and stop-or-scale triggers.'],
+        [1, 'A lender expands a digital product only after validating demand, affordability, fraud, operations and credit performance.'],
+      ],
+    },
+    {
+      id: 'cf55-test-opportunity-scenarios',
+      ch: 2,
+      front: 'When is an opportunity actionable, and what should a scenario test define?',
+      back: 'When demand, economics and downside can be tested with explicit assumptions. Define a target cohort, pilot size, funding plan, expected conversion and loss, customer guardrails and decision triggers.',
+      explanation: 'Because the guardrails are set before launch, a pilot with strong applications can still be paused when early delinquency breaches the stress case.',
+      example: 'A pilot pauses when early delinquency exceeds the stress threshold even though applications are strong.',
+      terms: ['Base case', 'Stress case', 'Cohort pilot'],
+      refs: [
+        [2, 'An opportunity is actionable only when demand, economics and downside can be tested with explicit assumptions.'],
+        [2, 'Teams define a target cohort, pilot size, funding plan, expected conversion and loss, customer guardrails and decision triggers.'],
+        [2, 'A pilot pauses when early delinquency exceeds the stress threshold even though applications are strong.'],
+      ],
+    },
+    {
+      id: 'cf55-label-forecast-vs-outturn',
+      ch: 2,
+      front: 'In an opportunity case, how should forecasts, targets and guidance be kept apart from actual results?',
+      back: 'Label forecast, target and guidance separately from outturn, and base the decision on observed cohort evidence.',
+      explanation: 'A forecast or target is an assumption about the future; presenting it as outturn would make an untested opportunity look proven.',
+      example: 'A growth plan shows a pilot cohort\u2019s target conversion in one column and its observed repayment results in another, each clearly labelled.',
+      terms: ['Cohort pilot', 'Early warning'],
+      refs: [
+        [2, 'Use observed cohort evidence and label forecast, target and guidance separately from outturn.'],
+      ],
+    },
+    {
+      id: 'cf55-future-winner-capabilities',
+      ch: 3,
+      front: 'What combination of capabilities gives long-term advantage in consumer finance?',
+      back: 'Responsible credit growth, efficient operations, strong data and customer-centred products, aligned across product, funding, risk appetite, technology, channels and trust with accountable owners and quality metrics.',
+      explanation: 'Prioritise secure architecture, validated models, fair conduct, partner controls, quality metrics and sustainable economics.',
+      example: 'A provider invests in digital servicing and analytics while strengthening affordability and personal-data governance.',
+      terms: ['Risk-adjusted growth', 'Funding discipline', 'Partnership governance'],
+      refs: [
+        [3, 'Long-term advantage combines responsible credit growth, efficient operations, strong data and customer-centered products.'],
+        [3, 'Leaders align product, funding, risk appetite, technology, channels and trust with accountable owners and quality metrics.'],
+        [3, 'Prioritize secure architecture, validated models, fair conduct, partner controls, quality metrics and sustainable economics.'],
+      ],
+    },
+  ],
+});
+
+export const CONSUMER_FINANCE_M05_DECKS: FlashcardDeckContent[] = [CF_M05_L1_DECK, CF_M05_L2_DECK, CF_M05_L3_DECK, CF_M05_L4_DECK, CF_M05_L5_DECK];

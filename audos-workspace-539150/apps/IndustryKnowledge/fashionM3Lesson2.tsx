@@ -1,0 +1,202 @@
+import { F3DeepDive, citeF3, f3Chapter, f3Quiz } from './fashionM3Core';
+import type { FashionM3LessonBundle } from './fashionM3Core';
+
+const LESSON = '2. Products, Services & Segmentation';
+
+const deck = [
+  f3Chapter({
+    title: 'Apparel, Footwear, and Accessories', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how the three core product categories are organised and why assortment decisions drive sales, basket size and inventory outcomes.',
+    mateIntro: 'A clothes shop is really three businesses sharing one floor: what you wear, what you walk in and what you add on. Getting that mix right is half of the job.',
+    keyInsight: 'Product assortment and category management directly influence customer acquisition, average transaction value, and inventory performance. Coordinated product offerings can encourage cross-category purchases, while poorly aligned assortments may create excess inventory or fail to satisfy target customers.',
+    statTiles: [
+      { value: '3', label: 'Core categories', description: 'Apparel, footwear and accessories form the foundation of the product offering.' },
+      { value: 'Cross-category', label: 'The basket lever', description: 'Bundling related products, such as footwear with socks, raises basket size.' },
+      { value: 'Seasonal', label: 'The timing driver', description: 'Weather, holidays, fashion cycles and sporting seasons shape collections and stock allocation.' },
+    ],
+    statsNote: 'Counts describe the category framework used in this lesson; the supplied material gives no measured sales split between categories.',
+    narrative: [
+      { label: 'What it is', text: 'Apparel, footwear and accessories form the core product categories of Fashion, Sports & Lifestyle Retail. Apparel spans everyday clothing, formalwear, casualwear, sportswear and specialised garments; footwear ranges from casual and athletic to formal and outdoor shoes; and accessories include bags, belts, hats, jewellery, eyewear and other complementary products.' },
+      { label: 'Why it is happening', text: 'Retailers organise these categories by customer need, price position, seasonality, style preference and functionality because the mix determines what sells together. Coordinated offers encourage cross-category purchases, while a poorly aligned range leaves excess inventory or fails the target customer.' },
+      { label: 'Real-world example', text: 'Apparel covers casualwear, denim, formalwear, outerwear and seasonal collections for different occasions; footwear covers running, training, sneakers, sandals, formal shoes and hiking boots; and accessories such as bags, caps and socks add breadth and extra purchases. Retailers bundle related items and adjust collections and stock to weather, holidays, fashion cycles and sporting seasons. Zara emphasises fashion-led apparel assortments, while Skechers offers footwear across casual, performance and comfort categories.' },
+      { label: 'Vietnam example', text: 'Fashion and accessories was the largest online category in Vietnam in the first half of 2025, with about US$2.4 billion of gross merchandise value on e-commerce platforms, ahead of beauty at US$1.4 billion. Zara, which has been in Vietnam since 2016 and had 8 stores in 2024, shows a fashion-led apparel assortment concentrated in large malls in Hanoi and Ho Chi Minh City.' },
+      { label: 'Business impact', text: 'The assortment is the first commercial decision a retailer makes, and it shapes how many customers it wins, how much each one spends and how much stock is left over. Balancing variety, relevance, pricing and availability is what keeps the three categories working together rather than competing for the same shelf and budget.' },
+    ],
+    visualKind: 'fashion-m3-21-core-categories', visualHeading: 'The three core categories and how they are run',
+    visualIntro: 'See what each category covers and how retailers organise and combine them.',
+    imageAlt: 'Casemate table of apparel, footwear and accessories and how retailers organise them',
+    keyTerms: [
+      { term: 'Assortment', definition: 'The range of products, sizes, colours and price points a retailer offers.' },
+      { term: 'Category management', definition: 'Planning a product category as a unit: its range, space, pricing and stock.' },
+      { term: 'Basket size', definition: 'The value or number of items in a single customer transaction.' },
+      { term: 'Seasonal merchandising', definition: 'Timing collections and stock to weather, holidays, fashion cycles and sporting seasons.' },
+    ],
+    recap: [
+      'Apparel, footwear and accessories are the foundation of the industry’s product offering.',
+      'Related products are bundled and collections timed to seasons to raise basket size.',
+      'A poorly aligned assortment creates excess inventory or misses the target customer.',
+      'Good category management balances variety, relevance, pricing and availability.',
+    ],
+    chapterRecap: 'Apparel, footwear, and accessories provide the foundation for the industry’s product offering. Effective category management requires balancing variety, product relevance, pricing, and inventory availability to meet different consumer needs.',
+    deepDiveTitle: 'Why accessories matter more than their size suggests',
+    body: <F3DeepDive paragraphs={[
+      'Accessories are small in price and large in effect. A pair of socks next to running shoes, or a cap beside a jacket, costs the retailer little to display and adds to the value of the transaction without needing another customer through the door.',
+      'The same logic works in reverse for the range. An assortment with strong apparel and no complementary items leaves basket size to chance, while one with too many options in every category ties up cash in stock that will have to be marked down.',
+    ]} evidence="The supplied material describes the categories and bundling qualitatively and gives no sales-mix figures. The Vietnam category value comes from a first-half 2025 e-commerce report and covers online sales only." />,
+    sources: citeF3('deloitteRetail', 'bofStateOfFashion', 'cimigoEcommerce'),
+  }),
+  f3Chapter({
+    title: 'Sports, Outdoor, and Performance Products', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how technical performance creates differentiation and pricing power, and what a brand needs to back its claims.',
+    mateIntro: 'A running shoe and a fashion trainer can look similar and be priced very differently. The gap is what the brand can prove about how the product performs.',
+    keyInsight: 'Functional performance can create product differentiation and justify premium pricing when customers perceive meaningful benefits. However, brands must substantiate performance claims and balance technical innovation with affordability, product usability, and changing consumer expectations.',
+    statTiles: [
+      { value: '4', label: 'Performance product groups', description: 'Performance apparel, athletic footwear, outdoor equipment and protective gear.' },
+      { value: 'Tested', label: 'What supports a premium', description: 'Claims about durability, comfort, materials and safety need evidence to hold a higher price.' },
+      { value: 'By sport', label: 'How ranges are split', description: 'Ranges target runners, gym users, cyclists, hikers, team-sport participants and recreational athletes.' },
+    ],
+    statsNote: 'Counts describe the product framework used in this lesson; the supplied material gives no measured price premiums.',
+    narrative: [
+      { label: 'What it is', text: 'Sports, outdoor and performance products support physical activity, specialised environments and measurable functional requirements. Categories include athletic footwear, technical apparel, training equipment, hiking products, outdoor accessories and protective gear, and they place more emphasis on technical specification, comfort, durability, safety and activity-specific performance than purely fashion-oriented products.' },
+      { label: 'Why it is happening', text: 'Performance gives a brand something concrete to differentiate on, and customers will pay more when they perceive a real benefit. The constraint is that the benefit has to be substantiated and balanced against affordability, usability and what consumers now expect.' },
+      { label: 'Real-world example', text: 'Performance apparel uses moisture management, insulation, breathability, stretch and weather resistance; athletic footwear is judged on cushioning, traction, stability, fit and weight; outdoor equipment includes backpacks, tents, hiking footwear and technical clothing; and companies test durability, comfort, material performance and relevant safety characteristics. ASICS focuses strongly on running and sports performance, while The North Face serves outdoor and adventure-oriented consumers.' },
+      { label: 'Vietnam example', text: 'Demand for sport is visible online: in the third quarter of 2025 the sports and travel category grew 43.73% year on year across four Vietnamese e-commerce platforms. Vietnam is also a production base for the category, since factories in Vietnam made about 50% of Nike Brand footwear in fiscal 2024 and about 39% of Adidas footwear in 2024.' },
+      { label: 'Business impact', text: 'Technical credibility is an asset that takes time to build and little time to lose. Companies that align innovation with real customer needs can sustain demand and price, while those that overstate performance or ignore affordability put both the claim and the brand at risk.' },
+    ],
+    visualKind: 'fashion-m3-22-performance', visualHeading: 'Where performance claims come from',
+    visualIntro: 'Match each product group to the features that matter and the evidence that has to back them.',
+    imageAlt: 'Casemate table of performance product groups, their features and the evidence behind claims',
+    keyTerms: [
+      { term: 'Technical apparel', definition: 'Clothing engineered for moisture management, insulation, breathability or weather protection.' },
+      { term: 'Performance claim', definition: 'A statement that a product delivers a measurable functional benefit, such as cushioning or durability.' },
+      { term: 'Sport-specific segmentation', definition: 'Targeting ranges at defined users such as runners, hikers or cyclists.' },
+      { term: 'Premium pricing', definition: 'Setting a higher price because customers perceive a meaningful extra benefit.' },
+    ],
+    recap: [
+      'Performance products emphasise technical specification, durability, safety and activity-specific function.',
+      'Real performance benefits can justify premium pricing.',
+      'Claims must be substantiated and balanced with affordability and usability.',
+      'Innovation has to match real customer needs to sustain demand.',
+    ],
+    chapterRecap: 'Sports, outdoor, and performance products compete through functionality, technical credibility, and activity-specific relevance. Companies must align product innovation with real customer needs to create differentiation and sustain demand.',
+    deepDiveTitle: 'Why a performance claim is also a liability',
+    body: <F3DeepDive paragraphs={[
+      'A performance claim makes a promise that a customer can test in use. If a shoe is marketed for running and fails in the first few weeks, the cost is not only a return but a lost reputation in the segment the brand most wants to win.',
+      'That is why testing, material specification and safety characteristics sit inside the commercial model, not beside it. Premium pricing is only defensible while the evidence behind the product stays ahead of what customers experience.',
+    ]} evidence="The supplied material describes performance features and testing qualitatively and gives no measured price premiums. The Vietnam growth rate is a quarterly marketplace figure across four platforms and is not a measure of total sporting-goods retail." />,
+    sources: citeF3('bofStateOfFashion', 'metricEcommerce', 'nikeAnnual', 'adidasReport'),
+  }),
+  f3Chapter({
+    title: 'Lifestyle, Athleisure, and Fashion-Lifestyle Products', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how lifestyle and athleisure products widen the market beyond sport and what keeps the positioning coherent.',
+    mateIntro: 'Leggings at the gym, leggings on a flight, leggings at brunch. Athleisure is what happens when one product is expected to do three jobs.',
+    keyInsight: 'Lifestyle positioning expands the potential market for sportswear and fashion brands beyond specialized activities. Commercial success depends on combining product functionality with recognizable design, cultural relevance, and a consistent brand identity.',
+    statTiles: [
+      { value: 'Beyond sport', label: 'Market boundary', description: 'Products are used well outside their original sporting context.' },
+      { value: '3', label: 'Value ingredients', subtitle: 'Function, design, culture', description: 'Commercial success needs functionality, recognisable design and cultural relevance together.' },
+      { value: 'Many uses', label: 'Occasion range', description: 'Exercise, travel, leisure and everyday wear can all be served by one product.' },
+    ],
+    statsNote: 'Counts describe the framework used in this lesson; the supplied material gives no measured size for the athleisure segment.',
+    narrative: [
+      { label: 'What it is', text: 'Lifestyle and athleisure products combine fashion, comfort, casualwear and sports-inspired design. They are widely used beyond their sporting origin, for everyday activities, travel, leisure and personal expression, which blurs the boundary between sportswear and fashion and lets brands serve consumers who value versatility and appearance alongside comfort.' },
+      { label: 'Why it is happening', text: 'Brands extend into lifestyle because it widens the market beyond specialised activities. The risk is dilution: the positioning only holds if function, recognisable design and cultural relevance stay linked to a consistent brand identity.' },
+      { label: 'Real-world example', text: 'Athleisure apparel includes leggings, joggers, hoodies, sports bras and versatile tops; lifestyle footwear combines comfort, styling and everyday use; collaborations with designers, artists, celebrities and cultural partners create distinctive collections; and campaigns link products with fitness, travel, wellness, streetwear and daily routines. Lululemon combines technical athletic apparel with everyday lifestyle positioning, while New Balance serves both performance and lifestyle footwear markets.' },
+      { label: 'Vietnam example', text: 'In the third quarter of 2025, women’s fashion sales grew 35.73% and children’s fashion 113.4% year on year across four Vietnamese marketplaces, and analysts linked the trend to shoppers favouring products that express style and identity. Uniqlo’s “LifeWear” approach to high-quality basics shows the comfort-led end of the same space in Vietnamese stores.' },
+      { label: 'Business impact', text: 'Growth depends on relevant design, cultural resonance and the ability to serve several occasions without weakening the brand. A lifestyle push that loses the technical credibility of the core sports range, or that feels generic, gives up the differentiation that justified the extension.' },
+    ],
+    visualKind: 'fashion-m3-23-athleisure', visualHeading: 'How a sports product becomes an everyday product',
+    visualIntro: 'Follow the four steps that take a performance origin into everyday, multi-occasion use.',
+    imageAlt: 'Casemate flow showing how athleisure products move from sport to everyday wear',
+    keyTerms: [
+      { term: 'Athleisure', definition: 'Apparel designed for exercise that is also worn as everyday clothing.' },
+      { term: 'Lifestyle positioning', definition: 'Marketing a product as part of a way of living, not only for one activity.' },
+      { term: 'Collaboration', definition: 'A co-branded collection made with a designer, artist, celebrity or cultural partner.' },
+      { term: 'Brand identity', definition: 'The consistent set of values, design and voice that makes a brand recognisable.' },
+    ],
+    recap: [
+      'Athleisure blends fashion, comfort and sports-inspired design for everyday use.',
+      'Lifestyle positioning widens the market beyond specialised activities.',
+      'Success needs functionality, recognisable design, cultural relevance and consistent identity.',
+      'Growth depends on serving several occasions without weakening the brand.',
+    ],
+    chapterRecap: 'Lifestyle and athleisure products connect functional benefits with fashion and identity. Their growth opportunities depend on relevant product design, cultural resonance, and the ability to serve multiple usage occasions without weakening brand positioning.',
+    deepDiveTitle: 'The risk of stretching a sports brand',
+    body: <F3DeepDive paragraphs={[
+      'Extending from sport into everyday wear multiplies the occasions a product can serve, but it also changes who the brand competes with. A sports brand moving into fashion meets fashion retailers, and a fashion brand moving into performance meets technical specialists.',
+      'The brands that manage it keep a recognisable core, usually a credible performance heritage, and let lifestyle products borrow its authority rather than replace it. The ones that stretch too far lose the specialist credibility that made the extension attractive in the first place.',
+    ]} evidence="The supplied material describes athleisure qualitatively and gives no market-size figures. Vietnam growth rates are quarterly marketplace figures reported by Metric.vn and cover four platforms only." />,
+    sources: citeF3('bofStateOfFashion', 'metricEcommerce', 'deloitteRetail'),
+  }),
+  f3Chapter({
+    title: 'Premium, Luxury, and Value-Oriented Segments', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Compare price tiers and explain why each one needs a coherent value proposition, cost model and distribution approach.',
+    mateIntro: 'The same shopping mall can hold a bargain basics shop, a mid-market chain, a premium sportswear store and a luxury boutique. Each is playing a different game with the same product types.',
+    keyInsight: 'Price positioning must be supported by a coherent value proposition. Premium and luxury products depend on perceived differentiation and brand desirability, while value-oriented businesses generally rely more heavily on cost efficiency, high sales volumes, accessible pricing, and inventory productivity.',
+    statTiles: [
+      { value: '4', label: 'Price tiers', subtitle: 'Value, mid-market, premium, luxury', description: 'Each differs in target customer, distribution, product economics and expected service.' },
+      { value: 'Coherent', label: 'The test', description: 'Price positioning must be supported by a value proposition customers recognise.' },
+      { value: 'Opposite', label: 'Economics at each end', description: 'Value relies on volume and efficiency; luxury relies on desirability and exclusivity.' },
+    ],
+    statsNote: 'Counts describe the tier framework used in this lesson; the supplied material gives no measured price gaps or market shares by tier.',
+    narrative: [
+      { label: 'What it is', text: 'Fashion, Sports & Lifestyle Retail serves customers across several price and positioning tiers. Value-oriented brands emphasise affordability and accessibility, mid-market brands balance quality and price, premium brands offer stronger differentiation or perceived quality, and luxury brands emphasise exclusivity, craftsmanship, heritage, design and prestige.' },
+      { label: 'Why it is happening', text: 'Tiers differ in target customer, distribution, product economics and service expectations, so a business has to decide which one it is built for. Premium and luxury products rest on perceived differentiation and desirability, while value businesses rest on cost efficiency, volume, accessible pricing and inventory productivity.' },
+      { label: 'Real-world example', text: 'Primark illustrates value-oriented retail with affordable basics and broad availability, and H&M illustrates mid-market fashion with variety and frequent assortment updates. On illustrates premium performance-oriented positioning built on technical performance, and Prada illustrates luxury built on craftsmanship, heritage and controlled brand presentation. Brands build pricing architecture with entry-price, core and premium tiers, and distribution can be selective for exclusivity or extensive for reach.' },
+      { label: 'Vietnam example', text: 'Several tiers sit side by side in Vietnamese malls. Vietnamese financial press describes Zara as an affordable-premium, trend-led brand and Uniqlo as a basics-led brand with stable pricing and few discounts, and H&M had reached 13 stores by mid-2025 with plans for more than 20. Each shows a different answer to the same question of what the price promises.' },
+      { label: 'Business impact', text: 'Costs, product benefits, customer experience and communication all have to match the tier the business intends to serve. A premium price on a mid-market cost base, or a value price on a premium service model, produces margins that do not hold.' },
+    ],
+    visualKind: 'fashion-m3-24-tiers', visualHeading: 'Four price tiers, four value propositions',
+    visualIntro: 'Compare what defines each tier and the example the lesson uses for it.',
+    imageAlt: 'Casemate table of value, mid-market, premium and luxury tiers with examples',
+    keyTerms: [
+      { term: 'Value proposition', definition: 'The combination of product, price and experience that a customer believes they are getting.' },
+      { term: 'Pricing architecture', definition: 'The layering of entry-price, core and premium products within one range.' },
+      { term: 'Selective distribution', definition: 'Limiting where a product is sold to protect exclusivity and presentation.' },
+      { term: 'Inventory productivity', definition: 'How efficiently stock turns into sales without needing markdowns.' },
+    ],
+    recap: [
+      'Value, mid-market, premium and luxury tiers differ in customer, distribution and economics.',
+      'Premium and luxury depend on perceived differentiation and desirability.',
+      'Value businesses depend on cost efficiency, volume and inventory productivity.',
+      'Costs, benefits, experience and communication must all fit the chosen tier.',
+    ],
+    chapterRecap: 'Market segmentation by price and positioning determines how products are designed, priced, marketed, and distributed. Businesses must align their costs, product benefits, customer experience, and brand communication with the segment they intend to serve.',
+    deepDiveTitle: 'Why a tier is a cost model as well as a price point',
+    body: <F3DeepDive paragraphs={[
+      'A tier is often read as a price label, but it also describes how the business is built. A value retailer needs low unit costs, quick stock turn and high volume to earn a margin on a small price; a luxury house needs exclusive distribution, craftsmanship and tightly managed presentation to justify a large one.',
+      'Problems appear when the two get mixed. Discounting a premium product to move volume weakens the desirability it was priced on, and pushing a value brand upmarket without changing its cost base can leave it with neither the volume nor the margin.',
+    ]} evidence="The supplied material names Primark, H&M, On and Prada as tier examples without figures. Descriptions of Zara and Uniqlo positioning in Vietnam come from Vietnamese press analysis and are not measured price indices." />,
+    sources: citeF3('bofStateOfFashion', 'deloitteRetail', 'hmVietnam', 'fastRetailingVn'),
+  }),
+];
+
+const quiz = f3Quiz('fashion-m3-l2', [
+  { chapter: '1', objective: 'Name the core categories', question: 'Which categories form the core of the product offering in this industry?', application: 'A store sells shirts and shoes but no bags, caps or belts. Which core category is thin?', correct: 'Apparel, footwear and accessories', wrong: ['Only apparel and footwear', 'Only footwear and sporting equipment', 'Only accessories and gifts'], explanation: 'Apparel, footwear and accessories form the core product categories. Review Chapter 1.' },
+  { chapter: '1', objective: 'Explain category management', question: 'What does effective category management balance?', application: 'A retailer has huge variety but constant markdowns. What was out of balance?', correct: 'Variety, product relevance, pricing and inventory availability', wrong: ['Only the number of store employees', 'Only the cost of store fit-out', 'Only the size of the marketing budget'], explanation: 'Effective category management balances variety, relevance, pricing and availability. Review Chapter 1.' },
+  { chapter: '1', objective: 'Use bundling', question: 'Why do retailers bundle related products such as footwear and socks?', application: 'A shop wants to raise average basket value without new customers. Which tactic fits?', correct: 'To increase basket size through cross-category purchases', wrong: ['To reduce the number of suppliers needed', 'To remove the need for seasonal planning', 'To avoid showing prices to customers'], explanation: 'Bundling related products can raise basket size. Review Chapter 1.' },
+  { chapter: '2', objective: 'Describe performance products', question: 'What do sports, outdoor and performance products emphasise?', application: 'A running shoe is judged on cushioning, traction and weight. What type of product is it?', correct: 'Technical specification, comfort, durability, safety and activity-specific performance', wrong: ['Only fashion trends and seasonal colours', 'Only the lowest possible price', 'Only logo size and brand visibility'], explanation: 'Performance categories place greater emphasis on technical specifications, comfort, durability, safety and performance. Review Chapter 2.' },
+  { chapter: '2', objective: 'Link performance to price', question: 'When can functional performance justify premium pricing?', application: 'A brand charges more for a technical jacket. What must be true?', correct: 'When customers perceive meaningful benefits and the claims are substantiated', wrong: ['Whenever the product is made of synthetic fabric', 'Whenever competitors charge more', 'Whenever the brand has a large store network'], explanation: 'Performance can justify premium pricing when customers perceive meaningful benefits, and brands must substantiate claims. Review Chapter 2.' },
+  { chapter: '2', objective: 'Segment performance ranges', question: 'How can performance ranges be segmented?', application: 'A brand makes separate lines for runners, hikers and cyclists. What approach is that?', correct: 'By sport or activity, such as runners, gym users, cyclists and hikers', wrong: ['Only by customer age', 'Only by the colour of the product', 'Only by the store where it is sold'], explanation: 'Product ranges may target runners, gym users, cyclists, hikers, team-sport participants and recreational athletes. Review Chapter 2.' },
+  { chapter: '3', objective: 'Define athleisure', question: 'What does athleisure combine?', application: 'Leggings are worn at the gym, on trips and at work. What explains their reach?', correct: 'Fashion, comfort, casualwear and sports-inspired design for everyday use', wrong: ['Formalwear and luxury tailoring only', 'Protective gear and safety equipment only', 'Outdoor camping equipment only'], explanation: 'Lifestyle and athleisure products blend fashion, comfort, casualwear and sports-inspired design for use beyond sport. Review Chapter 3.' },
+  { chapter: '3', objective: 'Identify lifestyle success factors', question: 'What does commercial success in lifestyle positioning depend on?', application: 'A sports brand extends into everyday wear. What must it keep consistent?', correct: 'Functionality combined with recognisable design, cultural relevance and consistent brand identity', wrong: ['Technical specifications alone', 'The lowest price in the category', 'Selling only through one store format'], explanation: 'Success depends on combining functionality with recognisable design, cultural relevance and consistent brand identity. Review Chapter 3.' },
+  { chapter: '4', objective: 'Compare price tiers', question: 'How do value-oriented and luxury businesses differ in what they rely on?', application: 'One retailer wins on volume and low prices; another on exclusivity. Which relies on what?', correct: 'Value relies on cost efficiency, volume and inventory productivity; luxury relies on desirability and exclusivity', wrong: ['Both rely mainly on exclusivity', 'Both rely mainly on price promotion', 'Value relies on craftsmanship; luxury on volume'], explanation: 'Premium and luxury depend on perceived differentiation and desirability, while value businesses rely on cost efficiency, volume, accessible pricing and inventory productivity. Review Chapter 4.' },
+  { chapter: '4', objective: 'Define pricing architecture', question: 'What is a pricing architecture?', application: 'A brand offers entry-level, core and premium products in one range. What is it using?', correct: 'Product tiers of entry-price, core and premium items serving different budgets', wrong: ['A single price applied to every product', 'A list of distributors by country', 'A schedule of annual store openings'], explanation: 'Brands develop product tiers, entry-price items, core collections and premium offerings to serve different purchasing needs. Review Chapter 4.' },
+]);
+
+export const LESSON_3_2: FashionM3LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can map the product categories, performance and lifestyle segments, and price tiers of Fashion, Sports & Lifestyle Retail, and explain how each shapes assortment and economics.',
+    keyTakeaways: [
+      'Apparel, footwear and accessories are the core categories, managed together to lift basket size.',
+      'Performance products earn premium prices only when claims are substantiated and customers see the benefit.',
+      'Lifestyle and athleisure widen the market by combining function with design and cultural relevance.',
+      'Value, mid-market, premium and luxury tiers need different cost models and distribution.',
+      'A price tier must be backed by a coherent value proposition.',
+    ],
+    businessImplications: 'When assessing a retailer’s range, ask which tier it is built for and whether its costs, claims and distribution fit that tier; a mismatch shows up first as markdowns.',
+    remember: 'The product range and the price tier must tell the same story.',
+    nextLesson: 'Customer Segments & Needs',
+  },
+};

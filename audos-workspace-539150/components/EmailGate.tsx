@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import {
   ArrowRight,
   X,
@@ -32,22 +32,13 @@ import {
 import { useSpaceRuntime } from '../SpaceRuntimeContext';
 import type { DesktopThemeTokens } from '../types';
 import { isValidEmailFormat, INVALID_EMAIL_MESSAGE } from '../lib/emailValidation';
+import { applyCasemateFavicons } from '../lib/siteFavicon';
 import BrandSplash from './BrandSplash';
 import BrandLogoMark from './BrandLogoMark';
-import {
-  beginSocialOAuth,
-  completeSocialOAuthCallback,
-  isFacebookLoginConfigured,
-  isGoogleLoginConfigured,
-  isLinkedInLoginConfigured,
-  SOCIAL_OAUTH_SUCCESS_PATH,
-  WORKSPACE_SESSION_MAX_AGE_SECONDS,
-  persistWorkspaceSessionCookie,
-  renewWorkspaceSession,
-} from '../lib/authAccount';
-import { prefetchCasemateEntitlement } from '../lib/proAccess';
+import AcquisitionSourceQuestion from './AcquisitionSourceQuestion';
 import { formatVnd, PRICING_PLANS } from '../lib/pricing';
 import { getCompanyLogoUrl } from '../data/companyLogos';
+import { normalizeManualProgramStatus } from '../lib/programRecruitmentWindow';
 const mujiProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAMAAADWtUEnAAAAwFBMVEUAAACFABp+ABh6AAqBABmBABmCABmDABmDABl9ABd+ABeqAAD/AACCABhxACeJABNVAAB+ABh+ABg/AAB9ABiNACN+ABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABfBVYjAAAAQHRSTlMA/PsI05JPM7KLdQMBbgYQA1QqBMsMqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADGDN5QAAA4FJREFUeNrtmYuO4yAMRe3wDAklSWf2/z91fQ19jdTR7kpDIm3cKgFClSNjG+MSnXLKKaccUua3na8j87cT/0cxkGIu2inSwrcNm/a8mM/H9KIPnn/1o1IGHkQ4k9AstnYcFbTYXmbyGOIRj4kmctoNbTjV4R9V4MAiA0cyMwWuHUfGolUBMfIMKAMegI/hnwaELqyRt6tahgb4nQYVUH7ZR4PKxBtdKP0d4NAREO+8UDwyYKKl+chBAZ204Q5HBGSFuYoTD0p4PECLoGIoI9wcExDRzWuMc38EGHoDSnyRvUT0aPMxAbEvOPERjusxAZUNPuL8QQHb6vL6HlBk2guQ1T/EgTm8XWLaU4OsEQY7snmnwc+cUvZmN8Cax7ClN4DJaya2F6Bteatkha+Akjo3DYbap3EfwEvNE+SFr3FQJrwCmr28uGZat0S0AepBoD5IoZpom7cDYFKAQM2Lm61hl1bjDKGagNPEgkt/QN9srGmQQsvCmvPcbKB2o+kPqEsY6abBosbYBOcBHJ7u3VDndQEsLXxgs0M4zriLDZra0jOfDbTACOrxCme6QjXs9DjVjW50Tl6T5S6KCuh6ea8o1VngxIyO9pXWKa7Ok4nLfiWHBWWEEIqWE3CRbwhBWXvKBLnVQHCVrqhsalj04DFVWxfkDDTLLEzsVt0y4blcg7LVPM9an1mM2UIxy0y9dfdsiRL3Uq0XFR3Y/PNjy6GV24JXKd35cqvKaAzcchTfUBFvkKsEohjFIZBtqYS+ulzAh20Dn4xdRG4VZUM8sRbHvgTDdJz9ansDSjQUnFE+jkeD5faIxKPhAVuGKvMO6EuJvQF146oLPLAeP93qxSjJfgE0jyWe+y4xYvLH8CFL/CFxWCkij3PToI1tiT/N6kYRt5ne/rxZ/lWXuFwFcExig+N0A9SsxtE1whxThEl23kMM38UuAihRJeEkP5TZc5RMZgSg3K02LQxh6gq4SqoXs+yurAcjl8UGR8lYNklzom7CTuMhfMeyutHU1QiTMLFHQlrDjNqgKEpzfKGzHIXc8jpi2EdeewLOtDFOxBKfPWKc41+wweRd0LTKOhMQukkr66Nec98lLn4lk0Pwl9VfqAR5uY8JT0LM4YqGtxJ/ok8xubi62D/Reg1sNcGa7vnMblnC3QqRac34B2lBavOCalrVQ6/mcT3llFNOOeUf5DctfSLOH5X2CwAAAABJRU5ErkJggg==';
 const cpGroupProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAMAAADWtUEnAAAAwFBMVEUAAAAAqVIAqFIAplEAp1EAtFgAp1EAplEA/wAAqVMAqVIAf38Avz8AmU0A/38AfwAAfz8AmjkA//8AmWYAVVUAzGYAf1IAsk4AvHoAjTgAjE8AqjoAn08AzDMA/1UAsVMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8WZGXAAAAQHRSTlMA9gpvjf1PLAHRrgIEDgICBAcBBQMFBw4ECQkKIAUDKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg3rUdQAAA0xJREFUeNrtWdmO2zAMpKhbtnxks9m7/f+/7IycYFv0uZAKmEDgIy+DIWdIyiJnnHHGGf9RpBZjQtNt+n7YdBoL3h3Penuvdd/uiAdiD/A0uJLNEbm4EPF+FBaBIxTjictZBJHiKYgsY/An1XnjQv3t3RZt9iXKCGm+JM3eNSSLzrM+4dd0bI2PI2R5mYu3Iq+S/mB1SRL9CAhVLPDBYt4vpFNipQ+mD03PQFgGoFBNXnVJNUeIeZJsgRmoAe0Z2EPvMpwPECrOO16CNzUBruHbZcqlt5IXKeZVfkiE/aHgFFYIoOJghpp2XG+9LeZqCvrIlR5dqFwCnQjXMNfBdJbJihK0UHAAY0BWeUGui8/Z53qRin/nvk0kotiegKio8QWGrfjBAYP1hgLJri9AqiJSybAaQCJ7Lb2Zr5w8S+mskg1V9ynUriYKJEPIrEP0YaT5tkrJkjq7jEEPdnBkKgIVd5uYa6EHGligy71t0DUY3iVdlMJoDEaUZeBlCIAf6WCQFKIUW/FhvB4H4J6OdM6KujOK+5h+fAF03qcBAFqmWOHSF9EZCi65qZdsOqlDAIytIZvCId/RYt5EXo5eN3e3mcMHF6QSQz42ERQeZmtb4Ij5J/qMYFrY+ncSBZSAHud925k8bzBjg7qtd6tLj267cq373ups5KCD8dV0HwgFQ0xqyQZflZ04KtcnjPyiidPM2nniL+hyrZspMVqfAWg6Thnan91XksCV5P70lQDwI905my7aptfOWydmBH2goN/k/TEecKDuv9ZdQWG53qW6EeB9gU9ox94NsLovAFUAap5I3Futx8mRcggrQxxyLWy74X6iheVYj9YBQWeVbe0Nb5J0ZePNNn4fzjzFgNbi3iRFbssDxG55oAWHLs4VHsOhlUTKJNreKgmq78Gi4mLguRvH/lycjUpNyx5cVx0vEpy1QPb3YaVGQI8BjNZL11khOEwvkYSJWhTcxPvX9hAtmLT60jfFL2DKgccQASjAo207PYoaeNRqu6uDLqKhJRpMhgCcYA1JJ2Yb5xEknGgrEeWGlCIAjyfVgFpllGjOvEcJEciUNH7qzhId55PO+hgQrH2gGu+DU5IJczU1m9ZBP4edccYZZ5zxD+IXKTEa7pUGshgAAAAASUVORK5CYII=';
 const maerskProgramLogo = 'data:image/png;base64,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';
@@ -55,61 +46,29 @@ const fastRetailingProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA
 const knaufProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAMAAADWtUEnAAAAwFBMVEUAAAAApOwAnuQApOwAqPkApOwAoukApOwApe4A//8AoekAf/8Avv8Al9UAmukAAP8Af38As/4AnuYAqqoAi80ApNYAVaoAnuYAf7wAneYAkbYAf9QAjeIAzP8AAH8AP38AVf8AZpkAbbYAZswAmZkAttoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA57sK+AAAAQHRSTlMA/PxRCM5uLq8BjwIEDBABAv9wAwsNA4wGKgcGCQUCBAMFBwUFBwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyxVYGgAABAZJREFUeNrtWdl23CgQLVqsQiD1areTzJbM///i1AZx5jXNOXpQPRiBZHOpqnspMMBhhx122I4skR1u+A2z9l7tfbfxhWqMOZkJrvsEmCEYsoBP+4wvTOg/YyqkvXrwYk4n477vNQffYaYUjHt1IOKK5MEZke7UNkcAL5CTJYOVfjKjeYCps1m1xKqEtupr29r+eoTKnEhl7E79xypzIpUpE1lZuFkRuqWHAGmD56SGq7C/PnyBMHUboFVXUhmUmQIwn405uzyxLFr4Bp4GZlgwTc9GbIIum/zauJu0bGcP5fUq40kGXUlBQ419bgu8ycACll6dZFgXdFuR/fgQpe2vr68HKCqTZT6XCZYhVlukN8e+qpSr4y68oC039j8i/8Ko7aipzBp0RwaZD3Xx4WheAjgzJgWospmF/R5ujgZcRJtvA1jy0HnUgYnmNZyUlSe2kK40FC8C9w91XGf/XdtRMn2Tv39XBybLsaLQBga4ajUxzzRc4Ss7zENnf+D4hrTYlAeqjGcH2lbbEARmQ4R/mTZmmsWvtjms1RhdBYZYU5mWga22IWReYvmNs9LUKACDfA/K/qqkeS//fBkBctF5dLakfRI4URkPmotAiejedUF1ldfCfvocLT5GAHxrEkFg7CLz0ZCN5pPwzQKw6IK2XmNssWvQiIoog/59ysC6pr9I/ATuFIW2wu9pMwJQ5BmI7bym4uR7RvtylqxUywgenP1v9MDqmkPenCTdjdu7ZYBdntfSagzTzY+Q6Wp6hHgfKBxJiuOJQV+FFRGewpyPTypz+qkyU0DDUu31AJ+ydiVxUfELLc4RhMyet2rstiOgksVqO+rQmlVVnrqdWPXXRwP4BldNRf4wNlluKtNI854fOa+DVIYyLcr0KoOzUoUws+dMjE6+UFlutcyjk2aMBxfdgrX508oRz6saUiwvP2WIyCEOeyRZwgxp7IkmQeyO4SpVapVJI0mx5A+42OOIi8Py8villvGDTv2YNE4c0La6rBlXlNhfpYhoPpybysCmKlOGnmhWuGumSe3kVfQqcAQp9uxaF6YQ5UNekAth5pCHwfcmW/fcFrsncf7Ncq5hLNOsHhPXefhUPrNut1pmDEl6LQONLEFScuEH3YFxAVdrFaA/k4DLCYTksKnNKBLzwc2UpEezOslBrmBu0ZOXCFZYfzjuQ42ft7Y6+N4kw9OjTQnPwNhevA3+cvGcUVPr43u6TuA+ujr7SNu3i/TZtr97E9ot7rdaPlikoJ2clmGXbwsaSUSih0X6zEhLTym199pHhHJbg7+Q6fJhl/cma0pp/d+9yT4vdq59B9rp5aLWGlg07hbgPOos8sITjdzj7NUWW6stcNhvKc7xf8jDDjtsh/YfgYEmL5LUlmUAAAAASUVORK5CYII=';
 const shopeeProgramLogo = 'data:image/png;base64,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';
 const jtiProgramLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAAA8CAMAAADWtUEnAAAAwFBMVEUAAAAAsoYAt4kA//8BqHwAf38DtIYA/wAAt4cAqqoHtXoAqlUAt4kFtIcA/38Ar4MAxJMCqoYAtokBtYgAnHMA/6oAmZkAAP8AbUgfn18AzJkFwI0AxZQ/fz9VqlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTdX1oAAAAQHRSTlMA+68BDwIpAVMDDQPSFQL8/xSUcAkDBQEHCAUttgQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfwL6DwAAAblJREFUeNrtmddywyAQRZcuEMioxOn5/88MCNW4PyRLZrgPLrJmdOYgVrAGKCkpKfnvUSm54rEznzITaAZjDDciU3/OkhQrIUNGDb2fAH0HA7au0wiVj8FLV/9yjnPu3CuCMbUm8L20/DROuPFweDFo9SNFzmO5Cx2Ww38+xJ9mDefn+YjlBAdQXDBGDrs3QrEAzVo/5nQyhC5fKzkG2eDGF32Lx6vl5ptOxAKMl3brKFsZ5mgjjs0KWGshRM3wAOPVuh++9NZgnOYK06AyYrnjqGD5AUINdI9TAAtgASyABbAA/hpgWO+0oPIFDHzV32/qHjFIW4TWx/2Atoq/5QloiCedgwajdXQDsEmb0/4j6HtC6SVcBawSYFp8I3XedoDNDpDKZU4IpjHghNgAHkgPZgEMJaWHDBpFTG0MOnheDQZ9Ar0V+C4jJk3+7DygYbcc7z7QgOwvbohpayaDXbsZUOeAYetjmvqxYxoAD2MRrrc9L409urH4TssTO+rbFWGWQzP/mFoelnqLVoSv179U7bzvDM4z7I5ZQm0QmKW+uQ4aN+A9w26niU+2poaMk/HfgyUlJSWP5Bt/1BMNwIEiFwAAAABJRU5ErkJggg==';
-import CompanyLogoGrid from './CompanyLogoGrid';
-import LandingInfoPage, { SocialIconLinks } from './LandingInfoPage';
-import LandingFeaturePages, { type LandingFeaturePage } from './features/LandingFeaturePages';
+import type { LandingFeaturePage } from './features/LandingFeaturePages';
+import { applyPublicSeo, PUBLIC_PAGE_SEO } from '../lib/publicSeo';
+
+const CompanyLogoGrid = lazy(() => import('./CompanyLogoGrid'));
+const LandingInfoPage = lazy(() => import('./LandingInfoPage'));
+const LandingFeaturePages = lazy(() => import('./features/LandingFeaturePages'));
+const SocialIconLinks = lazy(() => import('./SocialIconLinks'));
+
+const SOCIAL_OAUTH_SUCCESS_PATH = '/#fit-assessment';
+const WORKSPACE_SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
+
+function prefetchEntitlement(sessionId: string) {
+  void import('../lib/proAccess').then(({ prefetchCasemateEntitlement }) => {
+    void prefetchCasemateEntitlement(sessionId);
+  });
+}
 
 // Version marker for auto-upgrade detection
 // Increment this when making breaking changes that stale copies need
-export const EMAIL_GATE_VERSION = 146; // v146: temporarily marks every social sign-in method as Coming soon and keeps email OTP as the only active sign-in path. v145: Google OAuth preserves the current app path in returnUrl so shared-host and preview sign-in are accepted as safe. v144: keeps the configured Google button active in draft and published surfaces while retaining the platform-owned canonical account handoff. v143: Google uses the platform-owned OAuth callback, validates the canonical session, and restores it from the HttpOnly cookie before entering the app. v142: removes phone/SMS sign-in, isolates email draft state for responsive typing, and serves the hero as prioritized WebP with a PNG fallback. v141: the application calendar shows every active dated program in a seamless infinite marquee. v140: all landing program data now comes from the unified programs catalog. v139: OAuth state/PKCE is persisted server-side for 10 minutes; invalid or consumed callbacks return to the login modal. v138: "Programs Expecting to Open" marquee now falls back to apply_url when career_url is absent, and caps the visible set at 8 programs (data then sourced from the wider legacy program catalog). v137: OAuth sessions receive a seven-day browser cookie and immediate sliding server renewal. v136: the emailed-code screen sits on the light gate surface with near-black heading ink. v135: opens Product directly into the trial, adds explicit sample submissions with feedback CTAs, and uses canonical VND pricing. v134: adds trial tab navigation, brand typography, pricing conversion cards, and deterministic case grading. v131: removes Case Arena navigation and the inline preview-before-signup block.  v129: adds Case Arena navigation plus larger, linked program cards with industries, function tracks, and featured Knauf/JTI programs. v125: embeds program logos as data URLs so the space compiler does not require a PNG module loader. v124: adds normalized local logos for every company in the current 30-day program window. v123: restores logo-first ordering, guaranteed logo motion, uniform logo sizing, program-type cards, and the 30-day display window. v122: corrects the live application calendar cards, exact brand accents, date windows, and landing-section order. v121: adds full-color uniform logo and live-program marquees with database-driven application windows. v119: adds durable company marks, live program windows, VND pricing, product navigation, and full-page company information views. v118: adds early social proof with a responsive, monochrome company-logo grid. v117: verified OTP, OAuth, and phone sessions eagerly prefetch the shared Pro entitlement cache. v116: Facebook sign-in is greyed out and inert while Facebook OAuth is unavailable; LinkedIn uses the white Google-style button. v115: successful Google/Facebook/LinkedIn callbacks enter #fit-assessment directly instead of restoring the public root first. v113: Facebook now returns to /auth/callback/facebook, the route this gate consumes so callback failures remain visible. v110: email sign-in reverted to OTP-only — password fields, sign-up tabs and the reset flow are removed; Google & Facebook remain on the server-verified OAuth callback flow. v109: Google/Facebook use production OAuth authorization-code callbacks with fixed redirect URIs and server-side code exchange; Facebook is active whenever its App ID is configured. v108: social sign-in is server-verified — Google/Facebook send provider tokens to casemate-auth-v1 before a session exists. v107: multi-method sign-in — email+password, Google/Facebook OAuth, and phone/SMS OTP
+export const EMAIL_GATE_VERSION = 147; // v147: the email sign-in panel asks the optional "Bạn biết Casemate từ đâu?" question (stored as acq_source_reported once the session exists). v146: temporarily marks every social sign-in method as Coming soon and keeps email OTP as the only active sign-in path. v145: Google OAuth preserves the current app path in returnUrl so shared-host and preview sign-in are accepted as safe. v144: keeps the configured Google button active in draft and published surfaces while retaining the platform-owned canonical account handoff. v143: Google uses the platform-owned OAuth callback, validates the canonical session, and restores it from the HttpOnly cookie before entering the app. v142: removes phone/SMS sign-in, isolates email draft state for responsive typing, and serves the hero as prioritized WebP with a PNG fallback. v141: the application calendar shows every active dated program in a seamless infinite marquee. v140: all landing program data now comes from the unified programs catalog. v139: OAuth state/PKCE is persisted server-side for 10 minutes; invalid or consumed callbacks return to the login modal. v138: "Programs Expecting to Open" marquee now falls back to apply_url when career_url is absent, and caps the visible set at 8 programs (data then sourced from the wider legacy program catalog). v137: OAuth sessions receive a seven-day browser cookie and immediate sliding server renewal. v136: the emailed-code screen sits on the light gate surface with near-black heading ink. v135: opens Product directly into the trial, adds explicit sample submissions with feedback CTAs, and uses canonical VND pricing. v134: adds trial tab navigation, brand typography, pricing conversion cards, and deterministic case grading. v131: removes Case Arena navigation and the inline preview-before-signup block.  v129: adds Case Arena navigation plus larger, linked program cards with industries, function tracks, and featured Knauf/JTI programs. v125: embeds program logos as data URLs so the space compiler does not require a PNG module loader. v124: adds normalized local logos for every company in the current 30-day program window. v123: restores logo-first ordering, guaranteed logo motion, uniform logo sizing, program-type cards, and the 30-day display window. v122: corrects the live application calendar cards, exact brand accents, date windows, and landing-section order. v121: adds full-color uniform logo and live-program marquees with database-driven application windows. v119: adds durable company marks, live program windows, VND pricing, product navigation, and full-page company information views. v118: adds early social proof with a responsive, monochrome company-logo grid. v117: verified OTP, OAuth, and phone sessions eagerly prefetch the shared Pro entitlement cache. v116: Facebook sign-in is greyed out and inert while Facebook OAuth is unavailable; LinkedIn uses the white Google-style button. v115: successful Google/Facebook/LinkedIn callbacks enter #fit-assessment directly instead of restoring the public root first. v113: Facebook now returns to /auth/callback/facebook, the route this gate consumes so callback failures remain visible. v110: email sign-in reverted to OTP-only — password fields, sign-up tabs and the reset flow are removed; Google & Facebook remain on the server-verified OAuth callback flow. v109: Google/Facebook use production OAuth authorization-code callbacks with fixed redirect URIs and server-side code exchange; Facebook is active whenever its App ID is configured. v108: social sign-in is server-verified — Google/Facebook send provider tokens to casemate-auth-v1 before a session exists. v107: multi-method sign-in — email+password, Google/Facebook OAuth, and phone/SMS OTP
 
 type ProductTrialPage = 'landing' | 'fit-assessment' | 'case-drill' | 'case-pool' | 'aptitude-test' | 'case-arena';
 type PublicLandingPage = 'landing' | LandingFeaturePage;
-
-const LANDING_PRODUCT_ITEMS = [
-  {
-    id: 'fit-assessment',
-    page: 'fit-assessment' as const,
-    group: 'Direction' as const,
-    icon: Compass,
-    name: 'Fit Assessment',
-    description: 'Discover the industries, functions, and programs that fit you.',
-  },
-  {
-    id: 'case-drill',
-    page: 'case-drill' as const,
-    group: 'Practice' as const,
-    icon: Dumbbell,
-    name: 'Case Drill',
-    description: 'Work through a guided, interview-style business case.',
-  },
-  {
-    id: 'case-pool',
-    page: 'case-pool' as const,
-    group: 'Practice' as const,
-    icon: Grid2X2,
-    name: 'Case Pool',
-    description: 'Browse realistic cases across industries and difficulty levels.',
-  },
-  {
-    id: 'aptitude-test',
-    page: 'aptitude-test' as const,
-    group: 'Practice' as const,
-    icon: BrainCircuit,
-    name: 'Aptitude Test',
-    description: 'Test your numerical, logical, and pattern reasoning skills.',
-  },
-  {
-    id: 'case-arena',
-    page: 'case-arena' as const,
-    group: 'Compete' as const,
-    icon: Trophy,
-    name: 'Case Arena',
-    description: 'Compete with peers, receive scores, and climb the leaderboard.',
-  },
-] as const;
-
-const PRODUCT_GROUPS = ['Direction', 'Practice', 'Compete'] as const;
 
 type LandingProgramRow = {
   id: number;
@@ -123,6 +82,7 @@ type LandingProgramRow = {
   version?: number | null;
   career_url?: string | null;
   apply_url?: string | null;
+  display_status?: string | null;
 };
 
 type LandingProgram = {
@@ -132,6 +92,7 @@ type LandingProgram = {
   programType: string;
   openDate: Date;
   openDateLabel: string;
+  statusLabel?: string;
   industry?: string;
   tracks?: readonly string[];
   link?: string;
@@ -151,14 +112,14 @@ type LandingCompanyBrand = {
 };
 
 const LANDING_COMPANY_BRANDS: LandingCompanyBrand[] = [
-  { aliases: ['Shopee'], color: '#EE4D2D', logoUrl: shopeeProgramLogo },
+  { aliases: ['Shopee'], color: '#EE4D2D', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto,e_trim,c_fit,w_160,h_80/https://logo.clearbit.com/shopee.com' },
   { aliases: ['Central Retail'], color: '#E01A22', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/2200a6c5-0680-4e68-b49b-421bee1e01bc.png' },
   { aliases: ['Techcombank'], color: '#D0021B', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/techcombank.com.vn' },
   { aliases: ['JTI', 'Japan Tobacco'], color: '#003087', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/8bb64456-402c-43b0-9a0e-5e726cd5f00b.png' },
   { aliases: ['MUJI'], color: '#7F0019', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/4868f81a-38da-431d-b548-3250ced09973.png' },
-  { aliases: ['C.P. Group', 'C.P Group', 'CP Group', 'C.P. Vietnam'], color: '#E31837', logoUrl: cpGroupProgramLogo },
-  { aliases: ['Maersk'], color: '#42B0D5', logoUrl: maerskProgramLogo },
-  { aliases: ['Fast Retailing'], color: '#E40521', logoUrl: fastRetailingProgramLogo },
+  { aliases: ['C.P. Group', 'C.P Group', 'CP Group', 'C.P. Vietnam'], color: '#E31837', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto,e_trim,c_fit,w_160,h_80/https://logo.clearbit.com/cpgroupglobal.com' },
+  { aliases: ['Maersk'], color: '#42B0D5', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto,e_trim,c_fit,w_160,h_80/https://logo.clearbit.com/maersk.com' },
+  { aliases: ['Fast Retailing'], color: '#E40521', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto,e_trim,c_fit,w_160,h_80/https://logo.clearbit.com/fastretailing.com' },
   { aliases: ['Knauf'], color: '#009FE3', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/c6a02e60-2376-47eb-9ee2-4fbb4a2f9125.png' },
   { aliases: ["L'Oréal", 'Loreal'], color: '#A50034', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/loreal.com' },
   { aliases: ['Unilever'], color: '#1F36C7', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/4b442312-ddbc-4fbf-9e04-35354ffc752d.png' },
@@ -168,7 +129,7 @@ const LANDING_COMPANY_BRANDS: LandingCompanyBrand[] = [
   { aliases: ['AB InBev'], color: '#F5A800', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/105908bd-9e37-412c-a0c9-efa1290c8774.png', darkText: true },
   { aliases: ['Home Credit'], color: '#E31837', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/homecredit.vn' },
   { aliases: ['Carlsberg'], color: '#006835', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/7812e23e-7533-41d0-a660-4c9df8968b07.png' },
-  { aliases: ['P&G', 'Procter & Gamble'], color: '#003087', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/pg.com' },
+  { aliases: ['P&G', 'Procter & Gamble'], color: '#003087', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/ef4ef2fe-299a-4738-9bf1-181ee79bb9c6.png' },
   { aliases: ['Deloitte'], color: '#86BC25', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/general/e761e5b4-2159-48f3-95af-a840f2a14331.png' },
   { aliases: ['EY'], color: '#FFE600', logoUrl: 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim,w_160,h_80,c_pad,b_white/https://logo.clearbit.com/ey.com', darkText: true },
   { aliases: ['Suntory PepsiCo', 'PepsiCo'], color: '#0078C8', logoUrl: 'https://storage.googleapis.com/audos-images/attachments/c6ce26d1-7466-4b72-962d-b7bf7a471c88/2f5be2a7-b927-47d1-94db-786ad4cbba03.jpg' },
@@ -355,8 +316,15 @@ function landingOpenDateInWindow(value?: string | null, now = new Date()): Date 
 
 function landingCalendarProgram(row: LandingProgramRow): LandingProgram | null {
   if (row.active === false) return null;
-  const openDate = landingOpenDateInWindow(row.open_date);
-  if (!openDate) return null;
+  const manualStatus = normalizeManualProgramStatus(row.display_status);
+  if (manualStatus === 'closed') return null;
+  const windowOpenDate = landingOpenDateInWindow(row.open_date);
+  if (!windowOpenDate && !manualStatus) return null;
+  const now = new Date();
+  const openDate = windowOpenDate || new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const statusLabel = manualStatus === 'open'
+    ? 'Open now'
+    : manualStatus === 'opening_soon' && !(windowOpenDate && windowOpenDate > now) ? 'Opening soon' : undefined;
 
   const fallbackName = splitLandingProgramName(row.rubric_program_name || row.program_name || '');
   const company = row.company?.trim() || fallbackName.company;
@@ -370,22 +338,29 @@ function landingCalendarProgram(row: LandingProgramRow): LandingProgram | null {
     programType: inferLandingProgramType(row),
     openDate,
     openDateLabel: `${String(openDate.getDate()).padStart(2, '0')}/${String(openDate.getMonth() + 1).padStart(2, '0')}`,
+    statusLabel,
     link: row.career_url?.trim() || row.apply_url?.trim() || '',
   };
 }
 
+function optimizedProgramLogoUrl(url: string) {
+  if (url.startsWith('data:') || url.includes('res.cloudinary.com/')) return url;
+  return `https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto,e_trim,c_fit,w_256,h_128/${url}`;
+}
+
 function LandingProgramLogo({ company, duplicate = false }: { company: string; duplicate?: boolean }) {
   const brand = landingCompanyBrand(company);
+  const logoUrl = brand.logoUrl ? optimizedProgramLogoUrl(brand.logoUrl) : undefined;
   const initials = (
     <span className="absolute inset-0 flex items-center justify-center rounded-lg text-[10px] font-black" style={{ backgroundColor: brand.color, color: brand.darkText ? '#111827' : '#ffffff' }} aria-label={duplicate ? undefined : `${company} initials`}>
       {landingCompanyInitials(company)}
     </span>
   );
-  if (brand.logoUrl) {
+  if (logoUrl) {
     return (
       <div className="rounded-lg" style={{ width: 128, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', backgroundColor: '#ffffff' }}>
         {initials}
-        <img src={brand.logoUrl} alt={duplicate ? '' : company} className="rounded-lg" style={{ maxWidth: '100%', maxHeight: '100%', width: '100%', height: '100%', objectFit: 'contain', position: 'relative', backgroundColor: '#ffffff' }} onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} loading="lazy" decoding="async" />
+        <img src={logoUrl} alt={duplicate ? '' : company} width={128} height={64} className="rounded-lg" style={{ maxWidth: '100%', maxHeight: '100%', width: '100%', height: '100%', objectFit: 'contain', position: 'relative', backgroundColor: '#ffffff' }} onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} loading="lazy" decoding="async" />
       </div>
     );
   }
@@ -397,9 +372,9 @@ function LandingProgramCard({ item, duplicate = false }: { item: LandingProgram;
   const tracks = landingProgramTracks(item);
   const industry = landingProgramIndustry(item);
   const card = (
-    <article className={`flex min-h-[320px] w-full flex-col rounded-2xl border border-t-4 border-[#e5e7eb] bg-white p-5 shadow-[0_18px_48px_-30px_rgba(15,23,42,0.45)] transition ${item.link ? 'group-hover:border-[#cc0000]' : ''}`} style={{ borderTopColor: brand.color }}>
+    <article className={`flex min-h-[320px] w-full flex-col rounded-2xl border border-t-4 border-[#e5e7eb] bg-white p-5 shadow-[0_18px_48px_-30px_rgba(15,23,42,0.45)] ${item.link ? 'group-hover:border-[#cc0000]' : ''}`} style={{ borderTopColor: brand.color }}>
       <div className="flex h-20 items-center"><LandingProgramLogo company={item.company} duplicate={duplicate} /></div>
-      <h3 className="mt-4 text-base font-extrabold leading-6 text-[#111827]">{item.company} — {item.program} · Opens: {item.openDateLabel}</h3>
+      <h3 className="mt-4 text-base font-extrabold leading-6 text-[#111827]">{item.company} — {item.program} · {item.statusLabel || `Opens: ${item.openDateLabel}`}</h3>
       <p className="mt-1 text-[11px] font-semibold text-[#6b7280]">{industry}</p>
       <p className="mt-3 text-[11px] leading-5 text-[#4b5563]" aria-label={`Available functions: ${tracks.join(', ')}`}>
         <span className="font-extrabold text-[#111827]">Functions:</span> {tracks.join(', ')}
@@ -409,7 +384,7 @@ function LandingProgramCard({ item, duplicate = false }: { item: LandingProgram;
       </span>
     </article>
   );
-  const sharedClass = 'group block w-[280px] shrink-0 snap-start rounded-2xl transition duration-200';
+  const sharedClass = 'group block w-[280px] shrink-0 snap-start rounded-2xl transition-transform duration-200';
   if (!item.link) return <div className={sharedClass} aria-hidden={duplicate || undefined}>{card}</div>;
   return (
     <a
@@ -433,16 +408,96 @@ function LandingProgramSequence({ items, duplicate = false }: { items: LandingPr
   );
 }
 
+function DeferredCompanyLogoGrid() {
+  const [ready, setReady] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node || typeof IntersectionObserver === 'undefined') {
+      setReady(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setReady(true);
+      observer.disconnect();
+    }, { rootMargin: '600px 0px' });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} className="min-h-24">
+      {ready && <Suspense fallback={null}><CompanyLogoGrid /></Suspense>}
+    </div>
+  );
+}
+
+function DeferredSocialIconLinks() {
+  const [ready, setReady] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node || typeof IntersectionObserver === 'undefined') {
+      setReady(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setReady(true);
+      observer.disconnect();
+    }, { rootMargin: '400px 0px' });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} className="min-h-11">
+      {ready && <Suspense fallback={null}><SocialIconLinks /></Suspense>}
+    </div>
+  );
+}
+
+function DeferredLandingLivePrograms(props: { onStart: () => void }) {
+  const [ready, setReady] = useState(false);
+  const placeholderRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const node = placeholderRef.current;
+    if (!node || typeof IntersectionObserver === 'undefined') {
+      setReady(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setReady(true);
+      observer.disconnect();
+    }, { rootMargin: '600px 0px' });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  if (ready) return <LandingLivePrograms {...props} />;
+  return (
+    <section ref={placeholderRef} className="border-y border-[#e5e7eb] bg-white" aria-labelledby="landing-programs-placeholder-title">
+      <div className="mx-auto max-w-6xl px-4 py-16 text-center sm:px-6 sm:py-24">
+        <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#cc0000]">UPCOMING APPLICATION CALENDAR</p>
+        <h2 id="landing-programs-placeholder-title" className="mt-4 text-3xl font-extrabold tracking-tight text-[#111827] sm:text-5xl">Programs Opening for Applications</h2>
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[#6b7280]">Programs opening within the next 15 days or opened within the last 60 days — use the arrows to browse the current list.</p>
+      </div>
+    </section>
+  );
+}
+
 function LandingLivePrograms(_props: { onStart: () => void }) {
   const useWorkspaceDB = (window as any).useWorkspaceDB as WorkspaceDbHook;
   const programListRef = useRef<HTMLDivElement | null>(null);
   const { data, loading } = useWorkspaceDB<LandingProgramRow>('programs', {
     shared: true,
-    columns: ['id', 'program_id', 'program_name', 'company', 'rubric_program_name', 'program_type', 'open_date', 'active', 'career_url', 'apply_url'],
-    filters: [
-      { column: 'active', operator: 'eq', value: true },
-      { column: 'open_date', operator: 'neq', value: '' },
-    ],
+    columns: ['id', 'program_id', 'program_name', 'company', 'rubric_program_name', 'program_type', 'open_date', 'active', 'career_url', 'apply_url', 'display_status'],
+    filters: [{ column: 'active', operator: 'eq', value: true }],
     limit: 500,
   });
   const programs = (data || [])
@@ -492,7 +547,7 @@ function LandingLivePrograms(_props: { onStart: () => void }) {
             </div>
             <div
               ref={programListRef}
-              className="-mx-4 mt-6 flex snap-x snap-mandatory overflow-x-auto scroll-smooth px-4 pb-3 sm:-mx-6 sm:px-6"
+              className="-mx-4 mt-6 flex snap-x snap-mandatory overflow-x-auto scroll-smooth px-4 pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-6 sm:px-6"
               role="region"
               aria-label="Programs expected to open for applications"
             >
@@ -651,7 +706,7 @@ function EmailLoginForm({
           if (error) onClearError();
         }}
         placeholder="Enter your email"
-        className="w-full rounded-xl px-4 py-3 text-sm transition-all focus:outline-none"
+        className="w-full rounded-xl px-4 py-3 text-sm transition-transform focus:outline-none"
         style={{
           backgroundColor: sectionBackground,
           border: `2px solid ${error ? dangerColor : borderColor}`,
@@ -673,7 +728,7 @@ function EmailLoginForm({
       <button
         type="submit"
         disabled={disabled}
-        className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all hover:scale-[1.02] sm:text-base"
+        className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-transform hover:scale-[1.02] sm:text-base"
         style={{
           backgroundColor: disabled ? colorWithAlpha(primaryColor, 0.35) : primaryColor,
           color: disabled ? colorWithAlpha(onPrimary, 0.45) : onPrimary,
@@ -1103,6 +1158,18 @@ function ProductTrialPages({
     </div>
   );
 }
+function publicPageFromLocation(): PublicLandingPage {
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  const pathMatch = Object.entries(PUBLIC_PAGE_SEO).find(([key, value]) => !['privacy', 'terms', 'acceptable-use'].includes(key) && value.path === path)?.[0];
+  if (pathMatch) return pathMatch as PublicLandingPage;
+  const hash = window.location.hash.replace(/^#/, '');
+  return hash === 'fit-assessment' || hash === 'practice-tool' ? hash : 'landing';
+}
+
+if (typeof document !== 'undefined') {
+  applyCasemateFavicons();
+}
+
 export default function EmailGate({
   spaceId,
   branding,
@@ -1113,22 +1180,52 @@ export default function EmailGate({
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [step, setStep] = useState<GateStep>('loading');
+  // Paint the public landing immediately. Session discovery runs in the
+  // background and promotes a valid returning session when it resolves.
+  const [step, setStep] = useState<GateStep>('email');
   const [otpEnabled, setOtpEnabled] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [pendingSessionId, setPendingSessionId] = useState<string | null>(null);
   const [marketingConsent, setMarketingConsent] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [entered, setEntered] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(() => new URLSearchParams(window.location.search).get('login') === '1');
   const [navOverLight, setNavOverLight] = useState(false);
-  const [currentPage, setCurrentPage] = useState<PublicLandingPage>('landing');
+  const [currentPage, setCurrentPage] = useState<PublicLandingPage>(() => publicPageFromLocation());
   const [infoPage, setInfoPage] = useState<'about' | 'contact' | 'privacy' | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [cvDragOver, setCvDragOver] = useState(false);
+  const [deferredStage, setDeferredStage] = useState(0);
 
   // Email OTP and social authentication state.
   const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | 'linkedin' | null>(null);
   const socialCallbackStartedRef = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    let idleHandle: number | undefined;
+    let timerHandle: number | undefined;
+    const requestIdle = typeof (window as any).requestIdleCallback === 'function'
+      ? (window as any).requestIdleCallback.bind(window) as (callback: () => void, options: { timeout: number }) => number
+      : undefined;
+    const cancelIdle = typeof (window as any).cancelIdleCallback === 'function'
+      ? (window as any).cancelIdleCallback.bind(window) as (handle: number) => void
+      : undefined;
+    const scheduleStage = (stage: 1 | 2 | 3) => {
+      const reveal = () => {
+        if (cancelled) return;
+        setDeferredStage(stage);
+        if (stage === 1) scheduleStage(2);
+        else if (stage === 2) scheduleStage(3);
+      };
+      if (requestIdle) idleHandle = requestIdle(reveal, { timeout: 900 });
+      else timerHandle = window.setTimeout(reveal, 250);
+    };
+    scheduleStage(1);
+    return () => {
+      cancelled = true;
+      if (idleHandle !== undefined) cancelIdle?.(idleHandle);
+      if (timerHandle !== undefined) window.clearTimeout(timerHandle);
+    };
+  }, []);
 
   // Get workspaceId from window context
   const workspaceId = (window as any).__WORKSPACE_ID__ || null;
@@ -1142,7 +1239,30 @@ export default function EmailGate({
   const socialProviders: string[] = Array.isArray(rawSocialProviders) ? rawSocialProviders : [];
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('login') !== '1') return;
+    url.searchParams.delete('login');
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  }, []);
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    applyPublicSeo(currentPage);
+    applyCasemateFavicons();
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [currentPage]);
+
+  useEffect(() => {
     storeAttribution();
+    // Public marketing pages do not need session discovery before first paint.
+    // Keep the existing authentication check for the landing/sign-in route,
+    // while allowing crawlable public routes to render immediately.
+    if (publicPageFromLocation() !== 'landing') {
+      setStep('email');
+      return;
+    }
     checkExistingSession();
   }, [spaceId]);
 
@@ -1163,42 +1283,33 @@ export default function EmailGate({
     }
   }, [resendCooldown]);
 
-  // Keep public feature previews addressable and browser-history friendly.
+  // Real paths are crawlable; the old hash URLs remain working fallbacks.
   useEffect(() => {
-    const syncFeatureHash = () => {
-      const hash = window.location.hash.replace(/^#/, '');
-      setCurrentPage(hash === 'fit-assessment' || hash === 'practice-tool' || hash === 'case-arena' ? hash : 'landing');
+    const syncPublicRoute = () => setCurrentPage(publicPageFromLocation());
+    syncPublicRoute();
+    window.addEventListener('popstate', syncPublicRoute);
+    window.addEventListener('hashchange', syncPublicRoute);
+    return () => {
+      window.removeEventListener('popstate', syncPublicRoute);
+      window.removeEventListener('hashchange', syncPublicRoute);
     };
-    syncFeatureHash();
-    window.addEventListener('hashchange', syncFeatureHash);
-    return () => window.removeEventListener('hashchange', syncFeatureHash);
   }, []);
 
-  // Landing hero entrance animation (client-only; defaults visible if JS is slow)
-  useEffect(() => {
-    const t = setTimeout(() => setEntered(true), 60);
-    return () => clearTimeout(t);
-  }, []);
-
-  // Adaptive floating header: the bar never paints a box of its own — only its
-  // ink flips, white while it sits over the dark hero and brand red / near-black
-  // once a light section is underneath it. The landing page scrolls inside
-  // `.eg-root` (not the window), so the listener attaches to that container.
-  // Re-runs on step change since eg-root only exists on the main landing screen.
+  // Adaptive floating header: sample the surface directly beneath the bar so
+  // restored positions, anchor jumps, and every light section get the readable
+  // light-nav treatment. The landing page scrolls inside `.eg-root`, and the
+  // effect must reattach whenever navigation recreates that container.
   useEffect(() => {
     const root = document.querySelector('.eg-root') as HTMLElement | null;
-    if (!root) return;
-    // Flip near the bar’s vertical midpoint so the ink changes exactly as the
-    // dark/light boundary passes behind it.
-    const FLIP_AT = 40;
+    if (!root || currentPage !== 'landing') return;
     const sync = () => {
-      const hero = document.getElementById('hero');
-      if (!hero) {
-        setNavOverLight(root.scrollTop > FLIP_AT);
-        return;
-      }
-      const heroBottom = hero.getBoundingClientRect().bottom - root.getBoundingClientRect().top;
-      setNavOverLight(heroBottom <= FLIP_AT);
+      const rootRect = root.getBoundingClientRect();
+      const sampleX = rootRect.left + rootRect.width / 2;
+      const sampleY = rootRect.top + 40;
+      const darkSurfaceUnderNav = document
+        .elementsFromPoint(sampleX, sampleY)
+        .some((element) => !!element.closest('#hero, footer'));
+      setNavOverLight(!darkSurfaceUnderNav);
     };
     root.addEventListener('scroll', sync, { passive: true });
     window.addEventListener('resize', sync);
@@ -1207,7 +1318,7 @@ export default function EmailGate({
       root.removeEventListener('scroll', sync);
       window.removeEventListener('resize', sync);
     };
-  }, [step]);
+  }, [step, currentPage]);
 
   const checkExistingSession = async () => {
     // `?as=visitor` preview must never adopt either local storage or the
@@ -1287,7 +1398,7 @@ export default function EmailGate({
           }));
         } catch (e) {}
         if (restoredEmail) setEmail(restoredEmail);
-        void prefetchCasemateEntitlement(canonicalId);
+        prefetchEntitlement(canonicalId);
         setSessionId(canonicalId);
         setStep('complete');
         return true;
@@ -1425,7 +1536,7 @@ export default function EmailGate({
             }));
           } catch (e) {}
 
-          if (wsSessionId) void prefetchCasemateEntitlement(wsSessionId);
+          if (wsSessionId) prefetchEntitlement(wsSessionId);
           setSessionId(wsSessionId);
           completeGateEntry();
           setLoading(false);
@@ -1595,7 +1706,7 @@ export default function EmailGate({
       metadata: verifiedMetadata,
     };
     localStorage.setItem(sessionKey, JSON.stringify(session));
-    void prefetchCasemateEntitlement(pendingSessionId!);
+    prefetchEntitlement(pendingSessionId!);
 
     try {
       window.dispatchEvent(new CustomEvent('audos:session-established', {
@@ -1810,6 +1921,7 @@ export default function EmailGate({
     // cannot reach this browser. Touch the same idempotent registration from
     // here before entering the app; this establishes the real browser session
     // and starts the seven-day sliding lifetime for every OAuth provider.
+    const { renewWorkspaceSession, persistWorkspaceSessionCookie } = await import('../lib/authAccount');
     const renewed = emailValue
       ? await renewWorkspaceSession(spaceId, wsSessionId, emailValue).catch(() => null)
       : null;
@@ -1837,7 +1949,7 @@ export default function EmailGate({
       },
     };
     localStorage.setItem(sessionKey, JSON.stringify(session));
-    void prefetchCasemateEntitlement(effectiveSessionId);
+    prefetchEntitlement(effectiveSessionId);
     try {
       window.dispatchEvent(new CustomEvent('audos:session-established', {
         detail: { workspaceSessionId: effectiveSessionId, email: emailValue, authMethod: method },
@@ -1866,7 +1978,8 @@ export default function EmailGate({
     setError('');
     setSocialLoading(provider);
 
-    void completeSocialOAuthCallback(provider)
+    void import('../lib/authAccount')
+      .then(({ completeSocialOAuthCallback }) => completeSocialOAuthCallback(provider))
       .then(async ({ result, returnTo }) => {
         let safeReturnTo = '/';
         try {
@@ -1919,19 +2032,26 @@ export default function EmailGate({
    *  current preview origin. */
   const runSocialSignIn = async (provider: 'google' | 'facebook' | 'linkedin') => {
     if (socialLoading || loading) return;
-    const configured = provider === 'google'
-      ? isGoogleLoginConfigured()
-      : provider === 'facebook'
-        ? isFacebookLoginConfigured()
-        : isLinkedInLoginConfigured();
-    if (!configured) {
-      const label = provider === 'google' ? 'Google' : provider === 'facebook' ? 'Facebook' : 'LinkedIn';
-      setError(`${label} sign-in is not activated yet. Please use email for now.`);
-      return;
-    }
     setError('');
     setSocialLoading(provider);
     try {
+      const {
+        beginSocialOAuth,
+        isFacebookLoginConfigured,
+        isGoogleLoginConfigured,
+        isLinkedInLoginConfigured,
+      } = await import('../lib/authAccount');
+      const configured = provider === 'google'
+        ? isGoogleLoginConfigured()
+        : provider === 'facebook'
+          ? isFacebookLoginConfigured()
+          : isLinkedInLoginConfigured();
+      if (!configured) {
+        const label = provider === 'google' ? 'Google' : provider === 'facebook' ? 'Facebook' : 'LinkedIn';
+        setError(`${label} sign-in is not activated yet. Please use email for now.`);
+        setSocialLoading(null);
+        return;
+      }
       const appReturnTo = new URL(SOCIAL_OAUTH_SUCCESS_PATH, window.location.origin);
       appReturnTo.searchParams.delete('as');
       await beginSocialOAuth(provider, appReturnTo.toString());
@@ -1946,14 +2066,7 @@ export default function EmailGate({
   };
 
   const handleGoogleLogin = () => {
-    if (socialLoading || loading) return;
-    if (!isGoogleLoginConfigured()) {
-      setError('Google sign-in is not activated yet. Please use email for now.');
-      return;
-    }
-    setError('');
-    setSocialLoading('google');
-    handleSocialLogin('google');
+    void runSocialSignIn('google');
   };
 
   const handleLinkedInLogin = () => {
@@ -2247,10 +2360,14 @@ export default function EmailGate({
   const heroHasVideo = typeof heroVideoUrl === 'string' && heroVideoUrl.trim().length > 0;
   // Static hero image — sharp abstract red light streaks on near-black,
   // rendered eagerly above the fold with no autoplay video.
-  const heroImageUrl =
+  const heroImageSourceUrl =
     'https://storage.googleapis.com/audos-images/generated-images/agent/workspace-539150/img-1789529370697-nsmyb9.png';
-  const heroImageWebpUrl =
-    'https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto:good,w_1920/https://storage.googleapis.com/audos-images/generated-images/agent/workspace-539150/img-1789529370697-nsmyb9.png';
+  const heroImageUrl =
+    `https://res.cloudinary.com/asfzhhej/image/fetch/f_jpg,q_auto:good,w_1280/${heroImageSourceUrl}`;
+  const heroImageCdn = 'https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto:good';
+  const heroImageWebpSrcSet = [640, 960, 1280, 1536]
+    .map((width) => `${heroImageCdn},w_${width}/${heroImageSourceUrl} ${width}w`)
+    .join(', ');
   // Near-black ink for section headings (consultancy-grade hierarchy): the
   // brand red stays an accent (rules, icons, CTAs) instead of coloring whole
   // headlines.
@@ -2269,15 +2386,33 @@ export default function EmailGate({
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  const onCanonicalDomain = window.location.hostname === 'www.casemateaud.com' || window.location.hostname === 'casemateaud.com';
   const openProductFeature = (page: LandingFeaturePage) => {
     setCurrentPage(page);
-    window.history.pushState({}, '', `${window.location.pathname}${window.location.search}#${page}`);
+    const browserPath = onCanonicalDomain
+      ? PUBLIC_PAGE_SEO[page].path
+      : `${window.location.pathname}${window.location.search}#${page}`;
+    window.history.pushState({}, '', browserPath);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  const openLegalPage = (target: 'terms' | 'acceptable-use' | 'privacy') => {
+    if (target === 'privacy') {
+      setInfoPage('privacy');
+      return;
+    }
+    const nextUrl = onCanonicalDomain
+      ? PUBLIC_PAGE_SEO[target].path
+      : `${window.location.pathname}${window.location.search}#${target}`;
+    window.history.pushState({}, '', nextUrl);
+    window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   const openLandingSection = (section?: 'cv-drop' | 'programs-open' | 'pricing') => {
     setCurrentPage('landing');
-    window.history.pushState({}, '', `${window.location.pathname}${window.location.search}`);
+    const browserPath = onCanonicalDomain ? '/' : `${window.location.pathname}${window.location.search}`;
+    window.history.pushState({}, '', browserPath);
     window.setTimeout(() => {
       if (section) scrollToSection(section);
       else document.querySelector('.eg-root')?.scrollTo({ top: 0, behavior: 'auto' });
@@ -2370,7 +2505,7 @@ export default function EmailGate({
               setError('');
             }}
             placeholder="Enter your email"
-            className="w-full px-4 py-4 text-base rounded-2xl focus:outline-none transition-all"
+            className="w-full px-4 py-4 text-base rounded-2xl focus:outline-none transition-transform"
             style={{
               backgroundColor: sectionBackground,
               border: `2px solid ${error ? '#DC2626' : borderColor}`,
@@ -2419,7 +2554,7 @@ export default function EmailGate({
           type="submit"
           onMouseDown={(event) => event.preventDefault()}
           disabled={loading || !email}
-          className="w-full py-4 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
+          className="w-full py-4 rounded-2xl font-bold text-base transition-transform flex items-center justify-center gap-2 hover:scale-[1.02]"
           style={{
             backgroundColor: loading || !email
               ? colorWithAlpha(primaryColor, 0.35)
@@ -2456,7 +2591,7 @@ export default function EmailGate({
                 type="button"
                 onClick={() => handleSocialLogin(provider)}
                 disabled={loading}
-                className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold transition-all hover:-translate-y-0.5"
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-bold transition-transform hover:-translate-y-0.5"
                 style={{
                   backgroundColor: panelColor,
                   border: `2px solid ${borderColor}`,
@@ -2551,7 +2686,7 @@ export default function EmailGate({
           type="button"
           onClick={handleGoogleLogin}
           disabled={!googleConfigured || !!socialLoading || loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all hover:-translate-y-0.5"
+          className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-transform hover:-translate-y-0.5"
           style={socialButtonStyle(googleConfigured && !socialLoading && !loading)}
           data-testid="button-google-login"
         >
@@ -2563,7 +2698,7 @@ export default function EmailGate({
           type="button"
           onClick={handleLinkedInLogin}
           disabled={!linkedinConfigured || !!socialLoading || loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all hover:-translate-y-0.5"
+          className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-transform hover:-translate-y-0.5"
           style={socialButtonStyle(linkedinConfigured && !socialLoading && !loading)}
           data-testid="button-linkedin-login"
         >
@@ -2591,6 +2726,16 @@ export default function EmailGate({
         onClearError={() => setError('')}
       />
 
+      <AcquisitionSourceQuestion
+        textPrimary={textPrimary}
+        textMuted={textMuted}
+        borderColor={borderColor}
+        primaryColor={primaryColor}
+        onPrimary={onPrimary}
+        sectionBackground={sectionBackground}
+        disabled={loading}
+      />
+
       {gdprEnabled && (
         <div
           className="mt-4 space-y-2 rounded-lg px-3 py-2 text-xs"
@@ -2601,7 +2746,13 @@ export default function EmailGate({
         >
           <p>
             By signing in, you agree to our{' '}
-            <a href="https://www.casemateaud.com/privacy-policy" className="font-medium underline" style={{ color: textPrimary }}>
+            <a href="https://www.casemateaud.com/terms" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: textPrimary }}>
+              Terms of Service
+            </a>,{' '}
+            <a href="https://www.casemateaud.com/acceptable-use" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: textPrimary }}>
+              Acceptable Use Policy
+            </a>{' '}and{' '}
+            <a href="https://www.casemateaud.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: textPrimary }}>
               Privacy Policy
             </a>.
           </p>
@@ -2616,6 +2767,15 @@ export default function EmailGate({
             <span>I want to receive marketing emails and updates (optional)</span>
           </label>
         </div>
+      )}
+
+      {!gdprEnabled && (
+        <p className="mt-4 text-center text-xs leading-5" style={{ color: textMuted }}>
+          By signing in, you agree to our{' '}
+          <a href="https://www.casemateaud.com/terms" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: textPrimary }}>Terms of Service</a>,{' '}
+          <a href="https://www.casemateaud.com/acceptable-use" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: textPrimary }}>Acceptable Use Policy</a>{' '}and{' '}
+          <a href="https://www.casemateaud.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="font-medium underline" style={{ color: textPrimary }}>Privacy Policy</a>.
+        </p>
       )}
 
       <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-medium" style={{ color: textSubtle }}>
@@ -2672,14 +2832,23 @@ export default function EmailGate({
     </div>
   );
 
-  // Checking for a saved session, then handing a verified one to the shell.
-  // Both are waits rather than screens, and they are what the customer sits
-  // through on a cold open: draw the brand mark for them instead of nothing,
-  // which is also what lets the pre-hydration splash hand over to an identical
-  // splash rather than to a blank page.
-  if (step === 'loading' || step === 'complete') {
-    return <BrandSplash />;
+  // Session discovery must not hide the product behind loading copy. Paint
+  // existing brand content immediately while authentication resolves.
+  if (step === 'loading') {
+    return (
+      <main className="min-h-screen bg-white px-5 py-16 text-[#111827]" style={{ fontFamily: bodyFontStack }}>
+        <div className="mx-auto max-w-4xl rounded-3xl border border-[#e5e7eb] bg-[#f9fafb] p-8 shadow-sm sm:p-12">
+          <BrandLogoMark size={42} style={{ color: primaryColor }} />
+          <h1 className="mt-6 text-4xl font-black tracking-tight sm:text-5xl" style={{ fontFamily: headingFontStack }}>{brandName}</h1>
+          <p className="mt-5 max-w-2xl text-base leading-8 text-[#6b7280]">{tagline}</p>
+          <div className="mt-8 h-2 w-40 overflow-hidden rounded-full bg-[#fee2e2]" role="status" aria-label="Preparing secure sign-in">
+            <span className="block h-full w-2/3 animate-pulse rounded-full" style={{ backgroundColor: primaryColor }} />
+          </div>
+        </div>
+      </main>
+    );
   }
+  if (step === 'complete') return <BrandSplash />;
 
   // OTP Code verification screen
   if (step === 'code') {
@@ -2720,7 +2889,7 @@ export default function EmailGate({
                     setError('');
                   }}
                   placeholder="0000"
-                  className="w-full rounded-xl px-4 py-3 text-center font-mono text-xl tracking-[0.35em] transition-all focus:outline-none sm:text-2xl sm:tracking-[0.5em]"
+                  className="w-full rounded-xl px-4 py-3 text-center font-mono text-xl tracking-[0.35em] transition-transform focus:outline-none sm:text-2xl sm:tracking-[0.5em]"
                   style={{
                     backgroundColor: panelColor,
                     border: `2px solid ${error ? '#DC2626' : borderColor}`,
@@ -2740,7 +2909,7 @@ export default function EmailGate({
               <button
                 type="submit"
                 disabled={loading || code.length !== 4}
-                className="w-full py-3.5 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
+                className="w-full py-3.5 rounded-2xl font-bold text-base transition-transform flex items-center justify-center gap-2 hover:scale-[1.02]"
                 style={{
                   backgroundColor: loading || code.length !== 4 ? colorWithAlpha(primaryColor, 0.3) : primaryColor,
                   color: onPrimary,
@@ -2800,17 +2969,21 @@ export default function EmailGate({
       */}
       {/* AUDOS:LANDING_SHELL:START */}
       {currentPage !== 'landing' ? (
-        <LandingFeaturePages
-          page={currentPage}
-          onHome={openLandingSection}
-          onNavigate={openProductFeature}
-          onSignUp={openLogin}
-          brandName={brandName}
-          headingFontStack={headingFontStack}
-          bodyFontStack={bodyFontStack}
-        />
+        <Suspense fallback={null}>
+          <LandingFeaturePages
+            page={currentPage}
+            onHome={openLandingSection}
+            onNavigate={openProductFeature}
+            onSignUp={openLogin}
+            onOpenLegal={openLegalPage}
+            brandName={brandName}
+            headingFontStack={headingFontStack}
+            bodyFontStack={bodyFontStack}
+          />
+        </Suspense>
       ) : (
     <div className="eg-root h-screen overflow-x-hidden overflow-y-auto" style={{ height: '100dvh', WebkitOverflowScrolling: 'touch', fontFamily: bodyFontStack, backgroundColor: pageBackground }}>
+  <style>{`.eg-root > section:not(#hero), .eg-root > footer { content-visibility: auto; contain-intrinsic-size: auto 800px; }`}</style>
   {/* Adaptive navbar: it never paints a bar of its own. It floats over whatever
       section is underneath (the negative margin pulls the hero up behind it) and
       only swaps its ink — white over the dark hero, near-black ink once a light
@@ -2828,34 +3001,51 @@ export default function EmailGate({
       // (the negative margin above depends on it) without ever showing a border.
       borderBottom: '1px solid transparent',
       boxShadow: 'none',
-      transition: 'background-color 0.35s ease, backdrop-filter 0.35s ease',
     }}
   >
     <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:gap-6 sm:px-6 sm:py-5">
       <div className="flex items-center gap-3">
-        <BrandLogoMark size={30} style={{ color: navInk, transition: 'color 0.35s ease' }} />
-        <span className="max-w-[45vw] truncate text-sm sm:max-w-none sm:text-base" style={{ fontFamily: headingFontStack, color: navInk, fontWeight: 700, letterSpacing: '-0.01em', transition: 'color 0.35s ease' }}>{brandName}</span>
+        <BrandLogoMark size={30} style={{ color: navInk }} />
+        <span className="max-w-[45vw] truncate text-sm sm:max-w-none sm:text-base" style={{ fontFamily: headingFontStack, color: navInk, fontWeight: 700, letterSpacing: '-0.01em' }}>{brandName}</span>
       </div>
       <div className="ml-auto hidden items-center gap-5 lg:flex" aria-label="Page sections">
-        <button type="button" onClick={() => scrollToSection('cv-drop')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Try Now</button>
-        <button type="button" onClick={() => scrollToSection('programs-open')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Programs Open</button>
-        <button type="button" onClick={() => openProductFeature('fit-assessment')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Fit Assessment</button>
-        <button type="button" onClick={() => openProductFeature('practice-tool')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Practice Tool</button>
-        <button type="button" onClick={() => openProductFeature('case-arena')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Case Arena</button>
-        <button type="button" onClick={() => scrollToSection('pricing')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'color 0.35s ease, opacity 0.2s ease' }}>Pricing</button>
+        <button type="button" onClick={() => scrollToSection('cv-drop')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'opacity 0.2s ease' }}>Try Now</button>
+        <button type="button" onClick={() => scrollToSection('programs-open')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'opacity 0.2s ease' }}>Programs Open</button>
+        <div className="group relative">
+          <button type="button" className="flex items-center gap-1.5 text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'opacity 0.2s ease' }} aria-haspopup="true">Practice Tool <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" /></button>
+          <div className="invisible absolute left-1/2 top-full z-[100] w-[min(44rem,calc(100vw-2rem))] -translate-x-1/2 pt-7 opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-5 text-[#111827] shadow-2xl">
+              <div className="border-b border-[#f1f5f9] pb-4"><p className="text-xs font-black uppercase tracking-[0.18em] text-[#cc0000]">Practice Tool</p><p className="mt-1 text-sm text-[#64748b]">Choose the preparation area you want to work on.</p></div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {[
+                  { page: 'fit-assessment' as const, href: '/fit-assessment', icon: Target, label: 'Fit Assessment', text: 'Find your best-fit industry, function and program path.' },
+                  { page: 'practice-tool' as const, href: '/practice-tool', icon: LineChart, label: 'Case Drill', text: 'Build structure, calculation and problem-solving speed.' },
+                  { page: 'domain-knowledge' as const, href: '/domain-knowledge', icon: BookOpen, label: 'Domain Knowledge', text: 'Learn industry models, key terms and commercial context.' },
+                  { page: 'aptitude-test' as const, href: '/aptitude-test', icon: GraduationCap, label: 'Aptitude Test', text: 'Practise numerical, logical and verbal screening questions.' },
+                ].map((item) => <a key={item.page} href={item.href} onClick={(event) => { event.preventDefault(); openProductFeature(item.page); }} className="group/item flex gap-3 rounded-xl p-4 hover:bg-[#fff5f5]"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#fee2e2] text-[#cc0000]"><item.icon className="h-5 w-5" /></span><span><span className="block font-extrabold text-[#111827]">{item.label}</span><span className="mt-1 block text-xs leading-5 text-[#64748b]">{item.text}</span></span></a>)}
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="/about" onClick={(event) => { event.preventDefault(); openProductFeature('about'); }} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'opacity 0.2s ease' }}>About Us</a>
+        <button type="button" onClick={() => scrollToSection('pricing')} className="text-sm hover:opacity-60" style={{ color: navLinkInk, fontWeight: 600, transition: 'opacity 0.2s ease' }}>Pricing</button>
       </div>
       <details className="group relative ml-auto lg:hidden">
         <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-xl border border-white/30" style={{ color: navLinkInk }} aria-label="Open navigation menu"><Menu className="h-5 w-5" /></summary>
         <nav className="absolute right-0 top-12 z-[90] w-72 rounded-2xl border border-[#e5e7eb] bg-white p-2 text-[#111827] shadow-2xl" aria-label="Mobile page navigation">
           <button type="button" onClick={() => scrollToSection('cv-drop')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Try Now</button>
           <button type="button" onClick={() => scrollToSection('programs-open')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Programs Open</button>
-          <button type="button" onClick={() => openProductFeature('fit-assessment')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Fit Assessment</button>
-          <button type="button" onClick={() => openProductFeature('practice-tool')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Practice Tool</button>
-          <button type="button" onClick={() => openProductFeature('case-arena')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Case Arena</button>
+          <p className="px-3 pb-1 pt-3 text-[10px] font-black uppercase tracking-[0.16em] text-[#cc0000]">Practice Tool</p>
+          <a href="/fit-assessment" onClick={(event) => { event.preventDefault(); openProductFeature('fit-assessment'); }} className="block rounded-xl px-3 py-2.5 pl-5 text-sm font-bold hover:bg-[#fff5f5]">Fit Assessment</a>
+          <a href="/practice-tool" onClick={(event) => { event.preventDefault(); openProductFeature('practice-tool'); }} className="block rounded-xl px-3 py-2.5 pl-5 text-sm font-bold hover:bg-[#fff5f5]">Case Drill</a>
+          <a href="/domain-knowledge" onClick={(event) => { event.preventDefault(); openProductFeature('domain-knowledge'); }} className="block rounded-xl px-3 py-2.5 pl-5 text-sm font-bold hover:bg-[#fff5f5]">Domain Knowledge</a>
+          <a href="/aptitude-test" onClick={(event) => { event.preventDefault(); openProductFeature('aptitude-test'); }} className="block rounded-xl px-3 py-2.5 pl-5 text-sm font-bold hover:bg-[#fff5f5]">Aptitude Test</a>
+          <div className="my-2 border-t border-[#f1f5f9]" />
+          <a href="/about" onClick={(event) => { event.preventDefault(); openProductFeature('about'); }} className="block rounded-xl px-3 py-2.5 text-sm font-bold hover:bg-[#fff5f5]">About Us</a>
           <button type="button" onClick={() => scrollToSection('pricing')} className="block w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold hover:bg-[#fff5f5]">Pricing</button>
         </nav>
       </details>
-      <button onClick={openLogin} className="shrink-0 rounded-xl bg-[#cc0000] px-3.5 py-2 text-xs hover:-translate-y-0.5 hover:bg-[#b91c1c] sm:rounded-full sm:px-5 sm:py-2.5 sm:text-sm" style={{ color: '#ffffff', fontWeight: 700, transition: 'background-color 0.35s ease, transform 0.2s ease' }}>
+      <button onClick={openLogin} className="shrink-0 rounded-xl bg-[#cc0000] px-3.5 py-2 text-xs hover:-translate-y-0.5 hover:bg-[#b91c1c] sm:rounded-full sm:px-5 sm:py-2.5 sm:text-sm" style={{ color: '#ffffff', fontWeight: 700, transition: 'transform 0.2s ease' }}>
         Start free
       </button>
     </div>
@@ -2863,7 +3053,7 @@ export default function EmailGate({
 
   <section id="hero" className="relative flex items-center overflow-hidden" style={{ minHeight: '84svh', backgroundColor: '#0f172a' }}>
     <picture className="absolute inset-0 block h-full w-full">
-      <source srcSet={heroImageWebpUrl} type="image/webp" />
+      <source srcSet={heroImageWebpSrcSet} sizes="100vw" type="image/webp" />
       <img
         src={heroImageUrl}
         alt=""
@@ -2879,14 +3069,14 @@ export default function EmailGate({
     <div aria-hidden="true" className="absolute inset-x-0 top-0 h-32" style={{ background: 'linear-gradient(180deg, rgba(2,6,23,0.55) 0%, rgba(2,6,23,0) 100%)', pointerEvents: 'none' }} />
     <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-40" style={{ background: 'linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,0.4) 100%)', pointerEvents: 'none' }} />
     <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 md:py-12">
-      <div className={`max-w-3xl transition-all duration-700 ${entered ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'}`}>
+      <div className="max-w-3xl">
         <div>
           <div className="flex items-center gap-3">
             <span aria-hidden="true" style={{ width: 44, height: 3, backgroundColor: primaryColor, flexShrink: 0 }} />
-            <span className="break-words text-[11px] uppercase leading-snug sm:text-xs" style={{ color: 'rgba(255,255,255,0.88)', letterSpacing: '0.16em', fontWeight: 700 }}>For Vietnamese Economics &amp; STEM students targeting Internship/Management Trainee/ Graduate Program</span>
+            <span className="break-words text-[11px] uppercase leading-snug sm:text-xs" style={{ color: 'rgba(255,255,255,0.88)', letterSpacing: '0.16em', fontWeight: 700 }}>For Vietnamese Economics &amp; STEM students preparing for Graduate, Internship &amp; Rotational Programs</span>
           </div>
           <h1 className="mt-7 text-lg leading-snug sm:mt-8 sm:text-5xl md:text-6xl" style={{ fontFamily: headingFontStack, color: '#ffffff', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.05 }}>
-            <span className="block text-xl sm:text-3xl md:text-4xl">Start to become</span>
+            <span className="block text-xl sm:text-3xl md:text-4xl">Start to Be</span>
             <span className="mt-1 block sm:mt-2" style={{ fontSize: '1.55em' }}>Future Leaders</span>
           </h1>
         </div>
@@ -2931,7 +3121,7 @@ export default function EmailGate({
         </div>
 
         <label
-          className="mt-7 flex w-full cursor-pointer flex-col items-center rounded-2xl px-5 py-9 text-center transition-all sm:py-11"
+          className="mt-7 flex w-full cursor-pointer flex-col items-center rounded-2xl px-5 py-9 text-center sm:py-11"
           style={{
             border: `2px dashed ${cvDragOver ? primaryColor : colorWithAlpha(headingInk, 0.2)}`,
             backgroundColor: cvDragOver ? colorWithAlpha(primaryColor, 0.06) : '#f8fafc',
@@ -3008,12 +3198,14 @@ export default function EmailGate({
         <h2 id="user-companies-title" className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl" style={{ color: headingInk, fontFamily: headingFontStack }}>Our Users Come From 50+ Companies</h2>
         <p className="mx-auto mt-4 max-w-xl text-base leading-7" style={{ color: textMuted }}>A growing community with experience across leading consumer, consulting, technology, media, and financial-services organizations.</p>
       </div>
-      <CompanyLogoGrid />
+      <DeferredCompanyLogoGrid />
     </div>
   </section>
 
-  <LandingLivePrograms onStart={openLogin} />
+  <DeferredLandingLivePrograms onStart={openLogin} />
 
+  {deferredStage >= 1 && (
+    <>
   <section id="toolkit" className="relative" style={{ backgroundColor: sectionBackground, borderTop: `1px solid ${colorWithAlpha(borderColor, 0.5)}` }}>
     <EdgeRail side="left" icons={[Target, LineChart]} />
     <EdgeRail side="right" icons={[BookOpen, GraduationCap]} />
@@ -3047,7 +3239,11 @@ export default function EmailGate({
       </div>
     </div>
   </section>
+    </>
+  )}
 
+  {deferredStage >= 2 && (
+    <>
   <section id="pricing" className="relative">
     <EdgeRail side="left" icons={[Layers, BookOpen]} />
     <EdgeRail side="right" icons={[Target, LineChart]} />
@@ -3068,24 +3264,30 @@ export default function EmailGate({
               <div className="mt-4 flex flex-wrap items-end gap-2"><span className="text-4xl font-extrabold tracking-tight" style={{ color: headingInk }}>{formatVnd(plan.vnd)}</span><span className="pb-1 text-xs font-semibold" style={{ color: textMuted }}>{interval}</span></div>
               <p className="mt-2 text-xs font-bold" style={{ color: primaryColor }}>{detail}</p>
               <ul className="mt-7 flex-1 space-y-3">{['Fit Assessment', 'Case Drill', 'Case Pool', 'Aptitude Test', 'Domain Knowledge'].map((app) => <li key={app} className="flex items-center gap-2.5 text-sm font-semibold" style={{ color: textMuted }}><Check size={16} strokeWidth={2.8} color={primaryColor} />{app}</li>)}</ul>
-              <button type="button" onClick={openLogin} className="mt-8 w-full rounded-full py-3.5 text-sm font-extrabold transition hover:-translate-y-0.5" style={{ backgroundColor: primaryColor, color: onPrimary }}>Choose this plan</button>
+              <button type="button" onClick={openLogin} className="mt-8 w-full rounded-full py-3.5 text-sm font-extrabold transition-transform hover:-translate-y-0.5" style={{ backgroundColor: primaryColor, color: onPrimary }}>Choose this plan</button>
             </article>
           );
         })}
       </div>
     </div>
   </section>
+    </>
+  )}
 
+  {deferredStage >= 3 && (
+    <>
   <footer className="bg-black text-white">
     <div className="mx-auto max-w-6xl px-6 py-12 sm:py-16">
       <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
         <div><div className="flex items-center gap-3"><BrandMark size={28} blockColor="#ffffff" /><span className="font-extrabold">{brandName}</span></div><p className="mt-3 text-sm text-white/55">Direction first. Prep second.</p></div>
-        <nav className="flex flex-wrap gap-x-7 gap-y-4 text-sm font-semibold" aria-label="Company information"><button type="button" onClick={() => setInfoPage('about')} className="text-white/70 hover:text-white">About Us</button><button type="button" onClick={() => setInfoPage('contact')} className="text-white/70 hover:text-white">Contact Us</button><button type="button" onClick={() => setInfoPage('privacy')} className="text-white/70 hover:text-white">Privacy Policy</button></nav>
-        <div className="space-y-4"><a href="mailto:support@casemateaud.com" className="block text-sm font-semibold text-white/70 hover:text-white">support@casemateaud.com</a><SocialIconLinks /></div>
+        <nav className="flex flex-wrap gap-x-7 gap-y-4 text-sm font-semibold" aria-label="Public pages"><a href="/fit-assessment" onClick={(event) => { event.preventDefault(); openProductFeature('fit-assessment'); }} className="text-white/70 hover:text-white">Fit Assessment</a><a href="/practice-tool" onClick={(event) => { event.preventDefault(); openProductFeature('practice-tool'); }} className="text-white/70 hover:text-white">Case Drill</a><a href="/domain-knowledge" onClick={(event) => { event.preventDefault(); openProductFeature('domain-knowledge'); }} className="text-white/70 hover:text-white">Domain Knowledge</a><a href="/aptitude-test" onClick={(event) => { event.preventDefault(); openProductFeature('aptitude-test'); }} className="text-white/70 hover:text-white">Aptitude Test</a><a href="/about" onClick={(event) => { event.preventDefault(); openProductFeature('about'); }} className="text-white/70 hover:text-white">About Us</a><button type="button" onClick={() => setInfoPage('contact')} className="text-white/70 hover:text-white">Contact Us</button><button type="button" onClick={() => setInfoPage('privacy')} className="text-white/70 hover:text-white">Privacy Policy</button><a href="/terms" onClick={(event) => { event.preventDefault(); openLegalPage('terms'); }} className="text-white/70 hover:text-white">Terms of Service</a><a href="/acceptable-use" onClick={(event) => { event.preventDefault(); openLegalPage('acceptable-use'); }} className="text-white/70 hover:text-white">Acceptable Use Policy</a></nav>
+        <div className="space-y-4"><a href="mailto:support@casemateaud.com" className="block text-sm font-semibold text-white/70 hover:text-white">support@casemateaud.com</a><DeferredSocialIconLinks /></div>
       </div>
       <p className="mt-12 border-t border-white/15 pt-6 text-xs text-white/40">© 2025 Casemate. All rights reserved.</p>
     </div>
   </footer>
+    </>
+  )}
 </div>
       )}
       {/* AUDOS:LANDING_SHELL:END */}
@@ -3130,7 +3332,11 @@ export default function EmailGate({
         </div>
       )}
 
-      {infoPage && <LandingInfoPage page={infoPage} onClose={() => setInfoPage(null)} onNavigate={setInfoPage} />}
+      {infoPage && (
+        <Suspense fallback={null}>
+          <LandingInfoPage page={infoPage} onClose={() => setInfoPage(null)} onNavigate={setInfoPage} onOpenLegal={openLegalPage} />
+        </Suspense>
+      )}
     </>
   );
 }

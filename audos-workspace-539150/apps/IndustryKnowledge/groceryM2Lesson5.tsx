@@ -1,0 +1,202 @@
+import { G2DeepDive, citeG2, g2Chapter, g2Quiz } from './groceryM2Core';
+import type { GroceryM2LessonBundle } from './groceryM2Core';
+
+const LESSON = '5. Inputs, Outputs & Value Creation';
+
+const deck = [
+  g2Chapter({
+    title: 'Key Inputs Across the Retail Value Chain', chapterTitle: LESSON, readingTime: '6',
+    objective: 'List the physical, financial, human, technological and informational inputs of retail and explain why combining them matters more than adding to them.',
+    mateIntro: 'A store is a bundle of resources: goods, buildings, cash, people, systems and knowledge. Two retailers with the same bundle can perform very differently depending on how well they combine it.',
+    keyInsight: 'Retail productivity depends on combining resources effectively rather than simply increasing investment. Better forecasting, supplier coordination, workforce planning, and asset utilization can improve performance without proportionately increasing operating costs.',
+    statTiles: [
+      { value: '6', label: 'Retail input groups', subtitle: 'Merchandise to market information', description: 'Merchandise, physical infrastructure, financial resources, human resources, technology and data, and supplier and market information.' },
+      { value: '~4,600', label: 'WinCommerce outlets at the end of 2025', subtitle: 'Added about 800 in 2025', description: 'A large physical network of supermarkets and minimarts, roughly 70% of new openings in rural areas.' },
+      { value: '2,559', label: 'Bach Hoa Xanh stores at the end of 2025', subtitle: '789 opened in the year', description: 'Company-reported store network and the capital and teams it requires.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the outlet counts are company figures reported by VCCI and Mobile World Group and measure physical inputs only.',
+    narrative: [
+      { label: 'What it is', text: 'Retail operations depend on physical, financial, human, technological and informational inputs. Physical inputs include merchandise, packaging, storage facilities, transport capacity and retail space, while other essential resources include employees, working capital, supplier relationships, operating systems and customer data. The balance varies by format: fresh-food retailers need stronger cold-chain infrastructure and frequent replenishment, whereas general merchandise retailers may need more assortment coordination, product-information management and long-distance sourcing.' },
+      { label: 'Why it is happening', text: 'All retailers draw on the same kinds of resources, so the difference is in how well they use them. Better planning and coordination can raise performance without raising cost in proportion.' },
+      { label: 'Real-world example', text: 'Merchandise inputs are food, beverages, personal-care products, household supplies and general merchandise; physical infrastructure includes stores, warehouses, distribution centres, refrigeration systems and vehicles; and financial resources cover working capital, supplier credit, inventory financing and operating budgets. Human resources range from procurement teams to warehouse workers, store staff, merchandisers and delivery personnel, technology and data include POS systems, inventory platforms, forecasting tools and customer systems, and supplier and market information covers product specifications, sales trends, pricing data and regulatory requirements.' },
+      { label: 'Vietnam example', text: 'WinCommerce, with about 4,600 outlets and roughly 800 added in 2025, and Bach Hoa Xanh, with 2,559 stores after opening 789 in 2025, illustrate how much physical, financial and human input is needed to run a network. Mobile World Group links Bach Hoa Xanh’s second consecutive profitable year to store-cost optimisation, lower wastage and warehouse-logistics cost control, which are examples of using the same inputs better.' },
+      { label: 'Business impact', text: 'Retail value creation begins with the coordinated use of merchandise, infrastructure, capital, people, technology and information. The quality of these inputs influences the efficiency and resilience of the entire chain.' },
+    ],
+    visualKind: 'grocery-m2-51-inputs', visualHeading: 'Six inputs a retailer has to combine',
+    visualIntro: 'See six input groups around the retail business and what each provides.',
+    imageAlt: 'Casemate orbit mind map of six retail input groups and what each provides',
+    keyTerms: [
+      { term: 'Working capital', definition: 'Cash tied up in stock, receivables and payables in running the business day to day.' },
+      { term: 'Asset utilisation', definition: 'How fully stores, warehouses and vehicles are used.' },
+      { term: 'Supplier credit', definition: 'Time a supplier allows a retailer to pay for goods.' },
+      { term: 'Market information', definition: 'Data on product specifications, sales trends, prices and regulation.' },
+    ],
+    recap: [
+      'Retail relies on physical, financial, human, technological and informational inputs.',
+      'The balance differs between fresh-food and general merchandise formats.',
+      'Combining inputs effectively matters more than adding to them.',
+      'Forecasting, supplier coordination, workforce planning and asset use lift performance.',
+    ],
+    chapterRecap: 'Retail value creation begins with the coordinated use of merchandise, infrastructure, capital, people, technology, and information. The quality of these inputs influences the efficiency and resilience of the entire chain.',
+    deepDiveTitle: 'Why more capital does not always mean more productivity',
+    body: <G2DeepDive paragraphs={[
+      'Adding stores or warehouses without improving forecasting and supplier coordination multiplies the same problems: stock in the wrong place, staff who are idle at some hours and overstretched at others. Investment helps only if the way resources are combined also improves.' ,
+      'Measures such as sales per square metre, stock turnover, labour hours per order and warehouse utilisation show whether new inputs are being used well, and where to fix coordination before adding more.',
+    ]} evidence="The input groups are described qualitatively in the supplied material. The outlet counts are company figures reported by VCCI and Mobile World Group; the efficiency levers are those the company named in its own 2025 summary." />,
+    sources: citeG2('vcciDomestic', 'mwgBusiness2025', 'hanoitimesModern'),
+  }),
+  g2Chapter({
+    title: 'Key Outputs and Performance Measures', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Define the commercial and operational outputs of retail and explain why sales alone are a poor measure of value.',
+    mateIntro: 'A shop can sell more every year and still lose money if the stock piles up, delivery costs climb or half the fruit is thrown away. Outputs have to be read together.',
+    keyInsight: 'High sales do not necessarily indicate strong value creation if they are accompanied by excessive inventory, low margins, high fulfillment costs, or significant product waste. Balanced performance measures reveal whether growth is commercially sustainable.',
+    statTiles: [
+      { value: '7', label: 'Output and performance measures', subtitle: 'Revenue to waste', description: 'Revenue and volume, gross margin, inventory turnover, availability, fulfilment, customer outcomes, and waste and sustainability.' },
+      { value: 'VND 46.9T', label: 'Bach Hoa Xanh revenue in 2025', subtitle: '+14%, over VND 128 billion a day', description: 'A record, helped by 789 new stores.' },
+      { value: '2', label: 'Consecutive years of profit at Bach Hoa Xanh', subtitle: 'Company-reported', description: 'The company did not publish the chain’s margin or profit figures.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; revenue and profit status are from Mobile World Group and a news report of its results, and revenue alone does not show how sustainable the growth is.',
+    narrative: [
+      { label: 'What it is', text: 'The immediate outputs of retail activity include products sold, orders fulfilled, revenue generated and services delivered. Operational outputs also include accurate inventory records, reliable delivery performance, customer information and waste-management outcomes. Retailers evaluate these through financial, operational, customer and sustainability indicators, and performance should be judged across the business and not through sales growth alone.' },
+      { label: 'Why it is happening', text: 'Growth can be bought through discounts, extra stock or costly delivery, and those choices show up elsewhere in the results. A balanced set of measures shows whether the growth is paying for itself.' },
+      { label: 'Real-world example', text: 'Retailers measure sales by store, product category, channel and customer segment; evaluate revenue after the cost of merchandise sold; and track how efficiently inventory is converted into sales. They watch product availability and the frequency of stockouts, order accuracy, delivery reliability and fulfilment cost, satisfaction, repeat purchases, complaints and loyalty, and spoilage, shrinkage, packaging use and unsold inventory.' },
+      { label: 'Vietnam example', text: 'Mobile World Group reported Bach Hoa Xanh revenue of about VND 46.9 trillion in 2025, up 14% and above VND 128 billion a day, from 2,559 stores, with a second consecutive year of profit. It also pointed to better fresh-food quality, lower wastage and warehouse cost control as drivers, so the result is read alongside operating measures and not on revenue alone.' },
+      { label: 'Business impact', text: 'Retail outputs include both commercial results and operational outcomes. A balanced set of performance indicators helps retailers identify inefficiencies and make better strategic decisions.' },
+    ],
+    visualKind: 'grocery-m2-52-outputs', visualHeading: 'Seven outputs to judge a retailer by',
+    visualIntro: 'See seven output measures and the question each one answers.',
+    imageAlt: 'Casemate mind map of seven retail outputs and the question each answers',
+    keyTerms: [
+      { term: 'Gross margin', definition: 'Revenue left after the cost of the merchandise sold.' },
+      { term: 'Inventory turnover', definition: 'How many times stock is sold and replaced in a period.' },
+      { term: 'Stockout rate', definition: 'How often a product is unavailable when a customer wants it.' },
+      { term: 'Shrinkage', definition: 'Stock lost through spoilage, damage or theft.' },
+    ],
+    recap: [
+      'Outputs include sales, orders, revenue, services, inventory accuracy and waste outcomes.',
+      'Judge performance across financial, operational, customer and sustainability indicators.',
+      'High sales can hide excess stock, thin margins, costly fulfilment or waste.',
+      'Balanced measures show if growth is sustainable.',
+    ],
+    chapterRecap: 'Retail outputs include both commercial results and operational outcomes. A balanced set of performance indicators helps retailers identify inefficiencies and make better strategic decisions.',
+    deepDiveTitle: 'Why a dashboard needs at least one measure of waste',
+    body: <G2DeepDive paragraphs={[
+      'Sales and margin look healthy even when a store throws away a tenth of its fresh stock, because the loss sits in a different line. Without a waste measure, the cost of poor ordering never reaches the people who can fix it.' ,
+      'Pairing growth with turnover, availability and waste by category shows whether the extra sales are coming from better trading or from simply moving more product, some of which is lost.',
+    ]} evidence="The output measures are described qualitatively in the supplied material. The Bach Hoa Xanh results are company-reported or reported by VnExpress; the company did not disclose margin or profit amounts." />,
+    sources: citeG2('mwgBusiness2025', 'vnexpressBhx', 'nhsvMwg'),
+  }),
+  g2Chapter({
+    title: 'Value Creation and Value Capture', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Distinguish value created for customers from value captured by the retailer and show why both must be sustainable.',
+    mateIntro: 'A retailer can give customers wonderful value and go out of business, or squeeze every cent and lose its customers. The art is to create enough value to win people and capture enough to keep going.',
+    keyInsight: 'Retailers must create sufficient value for customers while capturing enough economic return to cover operating costs and reinvest in the business. Competitive pricing alone is insufficient if the operating model cannot generate sustainable returns.',
+    statTiles: [
+      { value: '7', label: 'Value-creation levers', subtitle: 'Aggregation to waste reduction', description: 'Assortment aggregation, convenience, price and cost optimisation, private label, services, data-driven optimisation and waste reduction.' },
+      { value: '415', label: 'New WinMart+ stores by the end of August 2025', subtitle: 'Company-reported', description: 'About 75% in rural areas, and the company said all new stores were profitable from the outset.' },
+      { value: '~75%', label: 'Share of those new stores in rural areas', subtitle: 'Where modern shopping demand is growing', description: 'Central Vietnam took nearly half of the new openings.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the store figures and profitability claim are company statements reported by a government portal and have not been independently verified.',
+    narrative: [
+      { label: 'What it is', text: 'Value creation occurs when retailers make products more accessible, affordable, convenient, reliable or relevant to consumers. They aggregate assortments, simplify purchasing, maintain availability, communicate product information and connect dispersed suppliers with concentrated consumer demand. Value capture is the portion of that value retailers keep through gross margins, operating profit, private-label sales, service fees and other revenue, while suppliers, logistics providers, employees, platforms and consumers also receive value.' },
+      { label: 'Why it is happening', text: 'Customers choose retailers that make shopping easier and cheaper, but the business must still earn enough to pay for stores, staff, stock and investment. The retailer’s model succeeds only when the two are balanced.' },
+      { label: 'Real-world example', text: 'Retailers bring multiple brands and categories together in one destination, reduce the time and effort needed to find and buy products, negotiate purchasing terms and manage operating expenses, and offer retailer-owned products to differentiate and potentially raise margin. They add delivery, installation or product support where relevant, use sales and customer insight to improve assortment, pricing and replenishment, and lower losses from spoilage, damage, markdowns and unsold stock.' },
+      { label: 'Vietnam example', text: 'WinCommerce reported opening 415 new stores by the end of August 2025, about 75% of them in rural areas where demand for modern shopping is growing, and said all new stores were profitable from the outset. It also sells its own WinEco vegetables and MEATDeli meat, which differentiate the offer. The move into villages and communes creates value for shoppers who previously had little access to organised retail.' },
+      { label: 'Business impact', text: 'Retailers create value by improving the connection between supply and demand, then capture a portion of that value through their business model. Sustainable performance requires customer benefits, operational efficiency and commercially viable margins to reinforce one another.' },
+    ],
+    visualKind: 'grocery-m2-53-value', visualHeading: 'Value created for customers, value captured by the retailer',
+    visualIntro: 'Compare six sources of value created for customers with how the retailer captures return.',
+    imageAlt: 'Casemate comparison of value created for customers and value captured by the retailer',
+    keyTerms: [
+      { term: 'Value creation', definition: 'Making products more accessible, affordable, convenient, reliable or relevant for customers.' },
+      { term: 'Value capture', definition: 'The share of that value a retailer keeps as margin, profit or fees.' },
+      { term: 'Assortment aggregation', definition: 'Bringing many brands and categories together in one place.' },
+      { term: 'Reinvestment', definition: 'Using returns to improve stores, systems and supply chains.' },
+    ],
+    recap: [
+      'Retailers create value by aggregating assortments, adding convenience and connecting suppliers to demand.',
+      'They capture value through margin, profit, private label and fees.',
+      'Suppliers, logistics firms, staff, platforms and consumers also share the value.',
+      'Competitive pricing alone is not enough without sustainable returns.',
+    ],
+    chapterRecap: 'Retailers create value by improving the connection between supply and demand, then capture a portion of that value through their business model. Sustainable performance requires customer benefits, operational efficiency, and commercially viable margins to reinforce one another.',
+    deepDiveTitle: 'Why the cheapest shop is not always the best business',
+    body: <G2DeepDive paragraphs={[
+      'A retailer that sets prices below what its costs allow may win customers for a while, but cannot afford to keep shelves stocked, stores clean or systems up to date. Customers notice the decline and the value they received turns out to be short-lived.' ,
+      'Sustainable models find several ways to fund low prices: purchasing scale, own brands, efficient logistics, lower waste and data-driven ranges. These create value for customers and keep returns healthy at the same time.',
+    ]} evidence="The levers are described qualitatively in the supplied material. The WinCommerce store counts and profitability statement are company-reported and have not been independently verified." />,
+    sources: citeG2('winCommerceExpansion', 'hanoitimesModern', 'winEcoFarms'),
+  }),
+  g2Chapter({
+    title: 'Cost Structure, Margins, and Value Distribution', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Use total-cost analysis to compare products and suppliers and show where value is created, lost or captured in the chain.',
+    mateIntro: 'A cheap price on an invoice is only the start of what a product costs. Freight, storage, spoilage, financing and markdowns all add up before it is sold, and the real cost may be higher than a dearer product that sells cleanly.',
+    keyInsight: 'The lowest purchase price does not always produce the lowest total cost. Retailers must consider transport, storage, handling, quality losses, financing, and unsold inventory when assessing the economics of a product or supplier relationship.',
+    statTiles: [
+      { value: '6', label: 'Cost and margin disciplines', subtitle: 'COGS to total cost analysis', description: 'Cost of goods sold, gross margin management, operating expense control, supplier terms, markdown management and total cost analysis.' },
+      { value: '~1.7%', label: 'Implied net margin of Bach Hoa Xanh, 2025', subtitle: 'Analyst profit estimate divided by reported revenue', description: 'Profit near VND 800 billion on revenue of about VND 46.9 trillion; a calculation, not a company figure.' },
+      { value: '16–17%', label: 'Vietnam’s logistics cost as a share of GDP, 2024', subtitle: 'Ministry portal', description: 'A national cost burden that adds to transport and storage costs in the chain.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the implied margin is my calculation from a broker’s estimate and a company revenue figure, because the company did not publish the chain’s profit or margin.',
+    narrative: [
+      { label: 'What it is', text: 'The retail value chain distributes costs and economic returns across suppliers, intermediaries, logistics providers, retailers and supporting service companies. Retailers face merchandise purchasing costs alongside labour, rent, utilities, transport, technology, marketing and inventory losses. The balance differs by category and format: fresh food may involve significant spoilage and handling, while general merchandise may carry higher storage costs, longer inventory cycles and greater exposure to markdowns and obsolescence.' },
+      { label: 'Why it is happening', text: 'Thin margins mean small cost differences matter, and many costs sit outside the invoice price. Comparing options on total cost reveals which products and suppliers actually earn their place.' },
+      { label: 'Real-world example', text: 'Retailers measure the cost of merchandise sold in each reporting period, balance selling prices, purchasing costs, discounts and product mix, and manage labour, rent, utilities, technology and marketing costs. They evaluate payment terms, delivery conditions and commercial incentives, reduce prices strategically to clear seasonal, slow-moving or short-dated stock, and compare suppliers and logistics options on the full cost of procurement and distribution.' },
+      { label: 'Vietnam example', text: 'Mobile World Group did not publish Bach Hoa Xanh’s margin, but a broker estimates 2025 profit near VND 800 billion on revenue of about VND 46.9 trillion, which implies a net margin under 2%. With Vietnam’s logistics costs at 16–17% of GDP, against 8% in Singapore and 11% in Japan, transport and storage are material, and the company named store cost, wastage and warehouse-logistics control as profit drivers.' },
+      { label: 'Business impact', text: 'Value distribution depends on both commercial terms and operational efficiency. Retailers need to evaluate total cost and margin contribution across the chain to identify where value is created, lost or captured.' },
+    ],
+    visualKind: 'grocery-m2-54-costs', visualHeading: 'Total cost, step by step',
+    visualIntro: 'Follow six cost steps from purchase price to markdowns and see what to check at each.',
+    imageAlt: 'Casemate flow of six cost steps from purchase price to markdowns and unsold stock',
+    keyTerms: [
+      { term: 'Cost of goods sold (COGS)', definition: 'The cost of the merchandise sold in a period.' },
+      { term: 'Total cost analysis', definition: 'Comparing options on the full cost of procurement, handling, storage and losses.' },
+      { term: 'Markdown', definition: 'A planned price reduction to clear slow-moving, seasonal or short-dated stock.' },
+      { term: 'Operating expense', definition: 'Running costs such as labour, rent, utilities, technology and marketing.' },
+    ],
+    recap: [
+      'Costs and returns are spread across suppliers, intermediaries, logistics providers and retailers.',
+      'Fresh food faces spoilage; general merchandise faces storage cost and obsolescence.',
+      'Lowest purchase price is not always lowest total cost.',
+      'Evaluate total cost and margin contribution across the chain.',
+    ],
+    chapterRecap: 'Value distribution depends on both commercial terms and operational efficiency. Retailers need to evaluate total cost and margin contribution across the chain to identify where value is created, lost, or captured.',
+    deepDiveTitle: 'Why a small margin makes waste so costly',
+    body: <G2DeepDive paragraphs={[
+      'When a retailer keeps a couple of cents of profit on each dollar of sales, throwing away goods that cost one dollar requires fifty dollars of sales to recover. That is why waste, shrinkage and markdowns matter more than they may appear.' ,
+      'Total-cost thinking turns these hidden losses into numbers by product and supplier, which makes it possible to change the choice of product, pack size, order frequency or supplier before the loss occurs.',
+    ]} evidence="The cost disciplines are described qualitatively in the supplied material. The implied margin is a calculation from a broker’s profit estimate and a company revenue figure, and the logistics comparison is from the Ministry of Industry and Trade’s logistics portal." />,
+    sources: citeG2('nhsvMwg', 'mwgBusiness2025', 'logisticsCostPortal'),
+  }),
+];
+
+const quiz = g2Quiz('grocery-m2-l5', [
+  { chapter: '1', objective: 'List retail inputs', question: 'Which of these are key inputs to retail operations?', application: 'A retailer lists its resources. Which belong?', correct: 'Merchandise, infrastructure, financial resources, people, technology and data, and market information', wrong: ['Only products', 'Only stores', 'Only advertising'], explanation: 'Physical, financial, human, technological and informational inputs all matter. Review Chapter 1.' },
+  { chapter: '1', objective: 'Explain productivity', question: 'What does retail productivity depend on?', application: 'A retailer doubles its stores but results do not improve. What may be missing?', correct: 'Combining resources effectively, not simply increasing investment', wrong: ['Only adding investment', 'Only cutting staff', 'Only raising prices'], explanation: 'Forecasting, coordination, workforce planning and asset use improve performance. Review Chapter 1.' },
+  { chapter: '1', objective: 'Contrast formats', question: 'How do input needs differ between fresh-food and general merchandise retailers?', application: 'Two formats invest differently. What explains it?', correct: 'Fresh food needs stronger cold chain and frequent replenishment; general merchandise needs assortment coordination, product information and long-distance sourcing', wrong: ['They need identical inputs', 'Fresh food needs no storage', 'General merchandise needs cold chain only'], explanation: 'The balance of inputs varies by format. Review Chapter 1.' },
+  { chapter: '2', objective: 'List outputs', question: 'Which of these is an operational output of retail?', application: 'A retailer keeps accurate stock records and reliable delivery. Which type of output is this?', correct: 'Accurate inventory records and reliable delivery performance', wrong: ['Only revenue', 'Only advertising spend', 'Only rent'], explanation: 'Outputs include commercial and operational results. Review Chapter 2.' },
+  { chapter: '2', objective: 'Challenge sales as a measure', question: 'Do high sales always indicate strong value creation?', application: 'Sales rise but stock and waste rise faster. What does this show?', correct: 'No; they may come with excessive inventory, low margins, high fulfilment cost or waste', wrong: ['Yes; always', 'Yes; if prices fall', 'No; sales never matter'], explanation: 'Balanced measures reveal whether growth is sustainable. Review Chapter 2.' },
+  { chapter: '3', objective: 'Define value capture', question: 'What is value capture?', application: 'A retailer earns margin and private-label income. What is this called?', correct: 'The portion of created value that retailers retain through margins, profit, private-label sales and fees', wrong: ['The value given to suppliers only', 'The value of the stock', 'The value of the store building'], explanation: 'Value is shared with suppliers, logistics, employees, platforms and consumers. Review Chapter 3.' },
+  { chapter: '3', objective: 'State the balance', question: 'Why is competitive pricing alone insufficient?', application: 'A retailer cuts prices to win customers. What may fail?', correct: 'The operating model must also generate sustainable returns to cover costs and reinvest', wrong: ['Prices do not matter', 'Customers never notice price', 'Costs fall automatically'], explanation: 'Value for customers must be matched by sustainable capture. Review Chapter 3.' },
+  { chapter: '4', objective: 'Define total cost', question: 'Does the lowest purchase price always produce the lowest total cost?', application: 'A cheap supplier causes spoilage and late delivery. What does this show?', correct: 'No; transport, storage, handling, quality losses, financing and unsold stock must be counted', wrong: ['Yes; always', 'Yes; if the supplier is large', 'No; costs beyond price are irrelevant'], explanation: 'Total cost analysis compares the full cost of procurement and distribution. Review Chapter 4.' },
+  { chapter: '4', objective: 'Recognise category cost differences', question: 'How do cost pressures differ between fresh food and general merchandise?', application: 'A store sells vegetables and homeware. Which has spoilage risk?', correct: 'Fresh food faces spoilage and handling; general merchandise faces storage cost, longer cycles and obsolescence', wrong: ['They face identical pressures', 'Homeware spoils faster', 'Neither has cost pressure'], explanation: 'Costs depend on category and format. Review Chapter 4.' },
+  { chapter: '4', objective: 'Define markdown management', question: 'What is markdown management for?', application: 'A store cuts prices on short-dated goods. What is the purpose?', correct: 'To clear seasonal, slow-moving or short-dated inventory strategically', wrong: ['To raise margins on all products', 'To avoid selling stock', 'To reduce store hours'], explanation: 'Markdowns protect value that would otherwise be lost to waste. Review Chapter 4.' },
+]);
+
+export const LESSON_G2_5: GroceryM2LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can list the inputs and outputs of retail, judge performance on balanced measures, separate value creation from value capture and compare options on total cost.',
+    keyTakeaways: [
+      'Productivity comes from combining inputs effectively, not just adding investment.',
+      'High sales do not prove value creation; read outputs together.',
+      'Create enough value for customers and capture enough return to reinvest.',
+      'The lowest purchase price is not always the lowest total cost.',
+      'Waste, shrinkage and markdowns matter more when margins are thin.',
+    ],
+    businessImplications: 'Track balanced measures including availability and waste, use total-cost comparisons for suppliers and products, and fund low prices through scale, own brands, efficient logistics and lower waste.',
+    remember: 'Combine inputs well, read outputs together and count the whole cost.',
+    nextLesson: 'Global vs. Local Value Chain',
+  },
+};

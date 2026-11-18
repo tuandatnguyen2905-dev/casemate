@@ -1,0 +1,318 @@
+import type { VisualSpec } from './fashionVisualKit';
+
+export interface ElectronicsChapterVisual { heading: string; intro: string; spec: VisualSpec }
+
+/** Chapter-specific Learning Visuals for Consumer Electronics & Semiconductors Module 03, keyed by visualKind. */
+export const ELECTRONICS_M3_VISUALS: Record<string, ElectronicsChapterVisual> = {
+  'electronics-m3-11-ce': {
+    heading: 'Which consumer electronics model fits depends on where a firm’s advantage sits',
+    intro: 'Companies choose among integrated ecosystems, brand outsourcing, high-volume manufacturing, value products and direct-to-consumer selling according to their position and economics.',
+    spec: {
+      layout: 'decision', title: 'Consumer Electronics Business Models', kicker: '',
+      root: { label: 'Consumer electronics company', detail: 'Different roles need different technology, investment and customer capabilities' },
+      question: 'What does the firm control best: ecosystem, brand, factories, cost or the customer?',
+      branches: [
+        { condition: 'Devices, software and services together', outcome: 'Integrated ecosystem', detail: 'Captures recurring value across connected products' },
+        { condition: 'Brand and design, without own factories', outcome: 'Brand outsourcing', detail: 'Depends on contract manufacturers for production' },
+        { condition: 'Factories and process skill', outcome: 'High-volume manufacturing', detail: 'Builds for brand owners at scale' },
+        { condition: 'Low cost and lean operations', outcome: 'Value products', detail: 'Competes on affordability and reach' },
+        { condition: 'Direct access to buyers', outcome: 'DTC', detail: 'Owns the customer relationship and data' },
+      ],
+      note: 'Weigh control of IP, assets, customer access, recurring value and dependency risk together.',
+      takeaway: 'Hardware advantage increasingly combines brand, software, distribution and relationships.',
+    },
+  },
+  'electronics-m3-12-semi': {
+    heading: 'Semiconductor models split between owning production and staying asset-light',
+    intro: 'IDM, fabless, foundry, OSAT, IP licensing and design-service firms hold different positions in the chain. Each trades control against capital intensity and manufacturing risk.',
+    spec: {
+      layout: 'taxonomy', title: 'Semiconductor Business Models', kicker: '',
+      root: 'Semiconductor business models', rootDetail: 'Grouped by what the firm owns — categories, not a sequence',
+      groups: [
+        { label: 'Owns design and fabs', detail: 'Most control, highest capital intensity', items: ['IDM'] },
+        { label: 'Owns production for others', detail: 'Specialised manufacturing assets and utilisation risk', items: ['Foundry', 'OSAT'] },
+        { label: 'Designs without fabs', detail: 'Relies on external manufacturing', items: ['Fabless'] },
+        { label: 'Sells know-how', detail: 'Lowest asset base; value sits in IP and engineering', items: ['IP licensing', 'Design services'] },
+      ],
+      note: 'Business models allocate investment and bargaining power differently.',
+      takeaway: 'Semiconductor models trade control, capital intensity, specialization and manufacturing risk.',
+    },
+  },
+  'electronics-m3-13-hybrid': {
+    heading: 'Differentiation comes from integrating several layers, not one component',
+    intro: 'Hybrid models link custom silicon, hardware-software design, AI devices, cloud-device services and supplier partnerships into one system.',
+    spec: {
+      layout: 'driverTree', title: 'Hybrid Models and Cross-Industry Integration', kicker: '',
+      root: { label: 'System-level differentiation', detail: 'Chips, hardware, software and services working together' },
+      drivers: [
+        { label: 'Chip layer', detail: 'Silicon designed for the product', children: [{ label: 'Custom silicon' }] },
+        { label: 'Device layer', detail: 'Hardware and software built together', children: [{ label: 'Hardware-software' }, { label: 'AI devices' }] },
+        { label: 'Service layer', detail: 'Devices connected to cloud services', children: [{ label: 'Cloud-device' }] },
+        { label: 'Partner layer', detail: 'Capabilities the firm does not hold itself', children: [{ label: 'Supplier partnerships' }] },
+      ],
+      note: 'Evaluate control of IP, customer access and dependency risk across every layer.',
+      takeaway: 'System-level integration across chips, hardware, software and services creates differentiation.',
+    },
+  },
+  'electronics-m3-21-products': {
+    heading: 'Six device categories, each with its own positioning and economics',
+    intro: 'Consumer electronics spans mobile, computing, entertainment, smart home, appliances and accessories. A strategy that works in one category does not transfer automatically.',
+    spec: {
+      layout: 'taxonomy', title: 'Consumer Electronics Product Categories', kicker: '',
+      root: 'Consumer electronics products', rootDetail: 'Categories analysed separately, not as steps',
+      groups: [
+        { label: 'Mobile', detail: 'Personal, carried everywhere' },
+        { label: 'Computing', detail: 'Work, study and creation' },
+        { label: 'Entertainment', detail: 'Viewing, listening and play' },
+        { label: 'Smart home', detail: 'Connected control of the home' },
+        { label: 'Appliances', detail: 'Household functions' },
+        { label: 'Accessories', detail: 'Complements to other devices' },
+      ],
+      note: 'Compare firms within a category rather than across the whole device market.',
+      takeaway: 'Each device category needs category-specific positioning and economics.',
+    },
+  },
+  'electronics-m3-22-chips': {
+    heading: 'Chip categories grouped by the job they do inside a system',
+    intro: 'Logic, memory, analog, microcontrollers, sensors, power and connectivity chips serve different functions. Their value depends on the application they are built into.',
+    spec: {
+      layout: 'taxonomy', title: 'Semiconductor Product Categories and Applications', kicker: '',
+      root: 'Semiconductor products', rootDetail: 'Categories by system function',
+      groups: [
+        { label: 'Compute and control', detail: 'Process instructions and run devices', items: ['Logic', 'Microcontrollers'] },
+        { label: 'Store data', detail: 'Hold programs and information', items: ['Memory'] },
+        { label: 'Sense and convert', detail: 'Link electronics to real-world signals', items: ['Analog', 'Sensors'] },
+        { label: 'Supply energy', detail: 'Manage and deliver power', items: ['Power'] },
+        { label: 'Communicate', detail: 'Connect devices and systems', items: ['Connectivity'] },
+      ],
+      note: 'The same category can serve very different applications with different reliability needs.',
+      takeaway: 'Chip value depends on application, performance, reliability and system fit.',
+    },
+  },
+  'electronics-m3-23-bundles': {
+    heading: 'One device sale can branch into several service and platform bundles',
+    intro: 'Products gain value when compatible software, support and services are added. Firms segment their platforms through device services, connected platforms, gaming ecosystems, development platforms and long-life solutions.',
+    spec: {
+      layout: 'pathway', title: 'Product-Service Bundling and Platform Segmentation', kicker: '',
+      trunk: [
+        { label: 'Device', detail: 'The hardware product' },
+        { label: 'Compatible software and support', detail: 'What makes the device part of a platform' },
+      ],
+      optionsLabel: 'Bundle and platform types — alternatives, not steps',
+      options: [
+        { label: 'Device services', detail: 'Services sold with or after the device' },
+        { label: 'Connected platforms', detail: 'Devices linked through shared services' },
+        { label: 'Gaming ecosystems', detail: 'Hardware plus games and online play' },
+        { label: 'Development platforms', detail: 'Tools that let others build on the product' },
+        { label: 'Long-life solutions', detail: 'Products supported over extended use' },
+      ],
+      note: 'Customer and ecosystem fit determine whether a bundle is sustainable.',
+      takeaway: 'Products gain value through compatible software, support and services.',
+    },
+  },
+  'electronics-m3-31-consumers': {
+    heading: 'Each consumer segment weighs benefits against total ownership cost differently',
+    intro: 'Budget, mainstream, premium-ecosystem, gaming/creative, professional and smart-home buyers want different things. The offer has to match one segment’s benefits and ownership cost.',
+    spec: {
+      layout: 'table', title: 'Consumer Electronics Customer Segments', kicker: '',
+      headers: ['Segment', 'Benefit that matters most', 'Ownership-cost focus'],
+      rows: [
+        { label: 'Budget', a: 'Essential functions', b: 'Lowest purchase price' },
+        { label: 'Mainstream', a: 'Balanced features', b: 'Value for money' },
+        { label: 'Premium ecosystem', a: 'Integration across devices', b: 'Ecosystem services and accessories' },
+        { label: 'Gaming/creative', a: 'High performance', b: 'Performance-driven upgrades' },
+        { label: 'Professional', a: 'Reliability and support', b: 'Downtime and support cost' },
+        { label: 'Smart-home', a: 'Connected convenience', b: 'Compatibility over time' },
+      ],
+      takeaway: 'Match benefits and total ownership cost to a specific segment.',
+    },
+  },
+  'electronics-m3-32-buyers': {
+    heading: 'A chip supplier serves several business buyer groups at once',
+    intro: 'Semiconductor buyers include device OEMs, cloud and data-center operators, automotive, industrial and telecom customers, and other chip firms. Each buys through technical and relationship-driven processes.',
+    spec: {
+      layout: 'ecosystem', title: 'Semiconductor Customers and Business Buyers', kicker: '',
+      center: { label: 'Semiconductor supplier', detail: 'Sells chips, support and supply commitments' },
+      actors: [
+        { label: 'Device OEMs', relation: 'Design chips into consumer products', flows: ['money', 'information'] },
+        { label: 'Cloud/data centers', relation: 'Buy for computing infrastructure', flows: ['money', 'information'] },
+        { label: 'Automotive', relation: 'Need long-life, qualified parts', flows: ['money', 'risk'] },
+        { label: 'Industrial', relation: 'Buy for equipment and controls', flows: ['money', 'service'] },
+        { label: 'Telecom', relation: 'Buy for network equipment', flows: ['money', 'product'] },
+        { label: 'Chip firms', relation: 'Buy components, IP or services from peers', flows: ['product', 'money'] },
+      ],
+      note: 'Each buyer group has its own technical requirements and relationship expectations.',
+      takeaway: 'Semiconductor purchasing is technical, strategic and relationship-driven.',
+    },
+  },
+  'electronics-m3-33-criteria': {
+    heading: 'What buyers see at purchase versus what surfaces later',
+    intro: 'Buyers weigh price/TCO, performance, trust, compatibility, reliability and supply continuity. Some of these are visible on a specification sheet; others appear only after switching or supply problems arise.',
+    spec: {
+      layout: 'compare', title: 'Customer Decision Criteria and Purchasing Behavior', kicker: '',
+      leftTitle: 'Visible at purchase', rightTitle: 'Hidden risk that appears later',
+      rows: [
+        { label: 'Price/TCO', a: 'Purchase price', b: 'Running, repair and switching cost' },
+        { label: 'Performance', a: 'Published specifications', b: 'Performance in real use' },
+        { label: 'Trust', a: 'Brand reputation', b: 'Support behaviour after sale' },
+        { label: 'Compatibility', a: 'Listed standards and connections', b: 'Lock-in and switching effort' },
+        { label: 'Reliability', a: 'Warranty terms', b: 'Failure and replacement risk' },
+        { label: 'Supply continuity', a: 'Current availability', b: 'Future supply interruptions' },
+      ],
+      takeaway: 'Visible specifications and hidden switching or supply risks jointly shape decisions.',
+    },
+  },
+  'electronics-m3-41-ce-revenue': {
+    heading: 'Consumer electronics revenue falls into one-time, recurring and lifecycle streams',
+    intro: 'Hardware is only the first sale. Accessories, subscriptions, warranties, repair and refurbishment, and enterprise services add value over the product’s life.',
+    spec: {
+      layout: 'taxonomy', title: 'Consumer Electronics Revenue Streams', kicker: '',
+      root: 'Consumer electronics revenue', rootDetail: 'Stream types — a firm may earn several at once',
+      groups: [
+        { label: 'One-time sales', detail: 'Earned when products are bought', items: ['Hardware', 'Accessories'] },
+        { label: 'Recurring revenue', detail: 'Earned while the product is in use', items: ['Subscriptions', 'Enterprise services'] },
+        { label: 'Lifecycle services', detail: 'Protect or extend product life', items: ['Warranties', 'Repair/refurbishment'] },
+      ],
+      note: 'Business models allocate investment and bargaining power differently across these streams.',
+      takeaway: 'Services and complements extend value beyond one hardware sale.',
+    },
+  },
+  'electronics-m3-42-semi-revenue': {
+    heading: 'Each semiconductor revenue stream rests on owning a different asset',
+    intro: 'Chip sales, foundry fees, OSAT fees, IP royalties, engineering services and tools are earned at different stages of the value chain. What a firm owns decides which stream it can earn.',
+    spec: {
+      layout: 'table', title: 'Semiconductor Revenue Streams', kicker: '',
+      headers: ['Revenue stream', 'Earned by', 'Rests on ownership of'],
+      rows: [
+        { label: 'Chip sales', a: 'Chip vendors', b: 'Chip designs and products' },
+        { label: 'Foundry fees', a: 'Foundries', b: 'Wafer fabrication capacity' },
+        { label: 'OSAT fees', a: 'Assembly and test providers', b: 'Packaging and test lines' },
+        { label: 'IP royalties', a: 'IP licensors', b: 'Licensable design IP' },
+        { label: 'Engineering services', a: 'Design-service firms', b: 'Engineering skills' },
+        { label: 'Tools', a: 'Tool suppliers', b: 'Design or production tools' },
+      ],
+      takeaway: 'Revenue reflects the value-chain stage and ownership of IP or production assets.',
+    },
+  },
+  'electronics-m3-43-costs': {
+    heading: 'Profit depends on investment, unit cost, go-to-market and after-sale costs together',
+    intro: 'R&D, bill of materials, capacity, yield and quality, marketing, inventory and warranty costs all bear on profitability. They only pay off when scale, pricing and demand line up.',
+    spec: {
+      layout: 'driverTree', title: 'Cost Structure, Profitability and Investment Requirements', kicker: '',
+      root: { label: 'Profitability', detail: 'Revenue minus the costs below' },
+      drivers: [
+        { label: 'Upfront investment', detail: 'Spent before units sell', children: [{ label: 'R&D' }, { label: 'Capacity' }] },
+        { label: 'Unit cost', detail: 'Cost of each good unit', children: [{ label: 'BOM' }, { label: 'Yield/quality' }] },
+        { label: 'Go-to-market', detail: 'Cost of reaching buyers', children: [{ label: 'Marketing' }, { label: 'Inventory' }] },
+        { label: 'After-sale cost', detail: 'Obligations once sold', children: [{ label: 'Warranty' }] },
+      ],
+      note: 'High fixed investment needs enough volume and price to recover it.',
+      takeaway: 'Profit requires alignment among investment, scale, pricing, efficiency and demand.',
+    },
+  },
+  'electronics-m3-51-ce-channels': {
+    heading: 'Channels differ in how much customer control they leave the brand',
+    intro: 'Devices reach buyers through DTC, authorized retail, marketplaces, telecom operators, distributors and enterprise sales. Omnichannel strategies coordinate several of them.',
+    spec: {
+      layout: 'table', title: 'Consumer Electronics Distribution Channels', kicker: '',
+      headers: ['Channel', 'Customer control for the brand', 'Main contribution'],
+      rows: [
+        { label: 'DTC', a: 'Direct', b: 'Relationship and customer data' },
+        { label: 'Authorized retail', a: 'Shared with retailer', b: 'Demonstration and availability' },
+        { label: 'Marketplaces', a: 'Limited', b: 'Reach and discovery' },
+        { label: 'Telecom', a: 'Shared with operator', b: 'Devices sold with connectivity' },
+        { label: 'Distributors', a: 'Indirect', b: 'Access to smaller resellers' },
+        { label: 'Enterprise', a: 'Direct or via partners', b: 'Business deployment and service' },
+      ],
+      note: 'Omnichannel coordinates several of these channels into one customer journey.',
+      takeaway: 'Distribution shapes discovery, availability, service and customer control.',
+    },
+  },
+  'electronics-m3-52-semi-sales': {
+    heading: 'Semiconductor selling is a path from engagement to a design win and supply',
+    intro: 'Suppliers engage OEMs, support them with technical sales and reference designs, win a place in the customer’s design, then secure supply agreements. Distributors extend reach.',
+    spec: {
+      layout: 'flow', title: 'Semiconductor Sales and Customer Acquisition', kicker: '',
+      steps: [
+        { label: 'OEM engagement', detail: 'Understand the customer’s product plans', owner: 'Supplier sales' },
+        { label: 'Technical sales', detail: 'Engineers match chips to requirements', owner: 'Field engineering' },
+        { label: 'Reference designs', detail: 'Proven designs lower adoption effort', owner: 'Supplier engineering' },
+        { label: 'Design-in', detail: 'Customer selects the chip for its product', kind: 'decision', owner: 'Customer' },
+        { label: 'Supply agreements', detail: 'Volume and continuity commitments', kind: 'outcome', owner: 'Both parties' },
+      ],
+      loop: 'Long-term support keeps the supplier in the customer’s next design.',
+      note: 'Distributors extend reach and supply to customers the supplier does not serve directly.',
+      takeaway: 'Semiconductor suppliers compete for design wins and long-term support relationships.',
+    },
+  },
+  'electronics-m3-53-economics': {
+    heading: 'Six channel factors trade cost to serve against access and control',
+    intro: 'Margins, inventory, localization, channel conflict, authorization and delivery each add cost or risk. Managing them protects availability, information and the customer relationship.',
+    spec: {
+      layout: 'table', title: 'Channel Economics and Market Access', kicker: '',
+      headers: ['Factor', 'What it costs or risks', 'What managing it protects'],
+      rows: [
+        { label: 'Margins', a: 'Share of price paid to partners', b: 'Partner motivation' },
+        { label: 'Inventory', a: 'Stock carried in the channel', b: 'Product availability' },
+        { label: 'Localization', a: 'Adapting products and service', b: 'Local relevance' },
+        { label: 'Conflict', a: 'Channels chasing the same sale', b: 'Partner trust' },
+        { label: 'Authorization', a: 'Limits on who may sell', b: 'Authenticity and service quality' },
+        { label: 'Delivery', a: 'Fulfilment cost', b: 'Customer experience' },
+      ],
+      takeaway: 'Optimize total cost to serve, information access, availability and relationship control.',
+    },
+  },
+  'electronics-m3-61-core': {
+    heading: 'A device brand sits at the centre of many specialised participants',
+    intro: 'IP developers, chip makers, component suppliers, ODM/EMS producers, brands, channels, software providers and customers each add a capability. Performance depends on how well they work together.',
+    spec: {
+      layout: 'ecosystem', title: 'Core Industry Participants', kicker: '',
+      center: { label: 'Brands', detail: 'Define and sell the end product' },
+      actors: [
+        { label: 'IP developers', relation: 'License designs and architectures', flows: ['information', 'money'] },
+        { label: 'Chip makers', relation: 'Supply processors and other chips', flows: ['product', 'money'] },
+        { label: 'Components', relation: 'Supply parts built into devices', flows: ['product', 'money'] },
+        { label: 'ODM/EMS', relation: 'Design or assemble devices for brands', flows: ['product', 'service'] },
+        { label: 'Software', relation: 'Provide operating systems and apps', flows: ['service', 'information'] },
+        { label: 'Channels', relation: 'Reach buyers and handle service', flows: ['product', 'money'] },
+        { label: 'Customers', relation: 'Pay and give feedback', flows: ['money', 'information'] },
+      ],
+      note: 'Some firms hold several of these roles; others specialise in one.',
+      takeaway: 'Competitive performance depends on internal capability and partner quality.',
+    },
+  },
+  'electronics-m3-62-partners': {
+    heading: 'Every capability gained through a partner needs matching governance',
+    intro: 'Joint development, foundry partnerships, contract manufacturing and licensing give access to specialised capability. Quality coordination, risk management and IP governance keep that dependence under control.',
+    spec: {
+      layout: 'compare', title: 'Strategic Partnerships, Collaboration and Governance', kicker: '',
+      leftTitle: 'Capability accessed', rightTitle: 'Governance it requires',
+      rows: [
+        { label: 'Joint development', a: 'Shared engineering and R&D', b: 'IP governance: who owns results' },
+        { label: 'Foundry partnerships', a: 'Fabrication without an own fab', b: 'Risk management of capacity dependence' },
+        { label: 'Contract manufacturing', a: 'Production scale', b: 'Quality coordination' },
+        { label: 'Licensing', a: 'Use of another firm’s technology', b: 'Rights and usage terms' },
+      ],
+      note: 'Governance covers dependence and rights, not just contract price.',
+      takeaway: 'Partnerships access specialized capability but require governance of dependence and rights.',
+    },
+  },
+  'electronics-m3-63-stakeholders': {
+    heading: 'What each external stakeholder shapes for the industry',
+    intro: 'Government, standards bodies, universities, investors, recyclers, the workforce and industry associations sit outside the firm. Together they influence where and how the industry can operate.',
+    spec: {
+      layout: 'table', title: 'Regulation, Sustainability and External Stakeholders', kicker: '',
+      headers: ['Stakeholder', 'What it shapes', 'How'],
+      rows: [
+        { label: 'Government', a: 'Location and feasibility', b: 'Policy, rules and permits' },
+        { label: 'Standards', a: 'Legitimacy and market access', b: 'Technical and safety requirements' },
+        { label: 'Universities', a: 'Talent', b: 'Training and research' },
+        { label: 'Investors', a: 'Feasibility', b: 'Capital for facilities and R&D' },
+        { label: 'Recycling', a: 'Resource use', b: 'End-of-life recovery' },
+        { label: 'Workforce', a: 'Talent', b: 'Available skills' },
+        { label: 'Associations', a: 'Legitimacy', b: 'Industry coordination' },
+      ],
+      takeaway: 'External stakeholders shape location, feasibility, talent, resource use and legitimacy.',
+    },
+  },
+};

@@ -1,0 +1,175 @@
+import type { ViMatchActivity } from './cbViPracticeTypes';
+
+// Vietnamese text for the authored Commercial Banking Module 01 Match & Sort activities
+// (apps/InteractiveLearning/matchSort/content/commercialBankingM01.ts), keyed by activityId. Item, pair and
+// category ids, correct pairs, categories and sequence order all come from the English activity.
+
+const PAIR_INSTRUCTIONS_VI = 'Chọn một mục ở cột bên trái, sau đó chọn mục ở cột bên phải khớp với nó. Trên máy tính, bạn cũng có thể kéo một mục bên trái thả vào mục tương ứng. Ghép đủ mọi mục rồi kiểm tra đáp án.';
+const SORT_INSTRUCTIONS_VI = 'Chọn một mục, sau đó chọn nhóm mà mục đó thuộc về. Trên máy tính, bạn cũng có thể kéo một mục vào một nhóm. Bạn có thể chuyển các mục giữa các nhóm cho đến khi kiểm tra.';
+
+export const CB_VI_MATCH_SORT_M01: Record<string, ViMatchActivity> = {
+  'cb-m01-match-banking-mechanics': {
+    enTitle: 'Banking mechanics: terms and definitions',
+    title: 'Cơ chế ngân hàng: thuật ngữ và định nghĩa',
+    learningObjective: 'Định nghĩa các cơ chế làm ngân hàng thương mại khác biệt với một doanh nghiệp thông thường: trung gian tài chính, tạo tín dụng, chuyển hóa thanh khoản và kỳ hạn, an toàn vốn và rút tiền hàng loạt.',
+    instructions: PAIR_INSTRUCTIONS_VI,
+    promptLabel: 'Thuật ngữ',
+    answerLabel: 'Định nghĩa',
+    summary: 'Ngân hàng thương mại là một trung gian được cấp phép, chuyển hóa tiền gửi thành tín dụng và dịch vụ thanh toán. Chính sự lệch pha giữa nguồn vốn và tài sản tạo ra giá trị cho ngân hàng cũng khiến niềm tin, vốn và thanh khoản trở nên thiết yếu.',
+    items: {
+      intermediation: 'Trung gian tài chính',
+      'credit-creation': 'Tạo tín dụng',
+      'liquidity-transformation': 'Chuyển hóa thanh khoản',
+      'maturity-transformation': 'Chuyển hóa kỳ hạn',
+      'capital-adequacy': 'An toàn vốn',
+      'bank-run': 'Rút tiền hàng loạt (bank run)',
+      'def-intermediation': 'Huy động vốn từ người tiết kiệm và phân bổ cho người đi vay, đồng thời quản lý rủi ro phát sinh.',
+      'def-credit-creation': 'Việc tạo ra tiền gửi khi ngân hàng cấp một khoản vay, trong giới hạn của các quy định quản lý.',
+      'def-liquidity-transformation': 'Cung cấp nguồn vốn có thể rút ra bất cứ lúc nào trong khi nắm giữ những tài sản không thể chuyển thành tiền mặt ngay lập tức.',
+      'def-maturity-transformation': 'Dùng các khoản nợ ngắn hạn để tài trợ cho tài sản dài hạn hơn.',
+      'def-capital-adequacy': 'Duy trì vốn theo quy định có khả năng hấp thụ tổn thất tương xứng với tài sản có rủi ro.',
+      'def-bank-run': 'Làn sóng rút tiền nhanh chóng do mất niềm tin.',
+    },
+    notes: {
+      'pair-intermediation': { explanation: 'Ngân hàng đứng giữa rất nhiều người gửi tiền và những người vay mà họ không thể tự thẩm định: ngân hàng gom tiền gửi, đánh giá người vay và gánh chịu rủi ro ở giữa.', hint: 'Hãy nghĩ về vai trò của ngân hàng giữa hàng nghìn người gửi tiền và một doanh nghiệp cần khoản vay lớn.' },
+      'pair-credit-creation': { explanation: 'Phê duyệt một khoản vay ghi nhận nghĩa vụ của người vay như một tài sản và ghi có một khoản tiền gửi tương ứng. Sức mua được tạo ra cùng với một khoản nợ, và vốn, thanh khoản cùng chính sách giới hạn mức độ của quá trình này.', hint: 'Thuật ngữ này nói về những gì một khoản vay mới bổ sung vào lượng tiền trong hệ thống, không phải việc chuyển tiền tiết kiệm sẵn có.' },
+      'pair-liquidity-transformation': { explanation: 'Người gửi tiền có thể rút tiền nhanh trong khi các khoản vay mà tiền gửi đó tài trợ được hoàn trả chậm. Khách hàng coi trọng khả năng rút tiền đó, và đó là lý do ngân hàng nắm giữ tài sản thanh khoản để đáp ứng dòng tiền ra.', hint: 'So sánh tốc độ khách hàng có thể rút tiền với tốc độ ngân hàng có thể chuyển tài sản thành tiền mặt. Thời hạn khoản vay là một ý khác.' },
+      'pair-maturity-transformation': { explanation: 'Huy động ngắn hạn và cho vay dài hạn giúp người tiết kiệm tiếp cận tiền trong ngắn hạn và người vay có nguồn tài trợ dài hạn. Điều đó tạo ra giá trị nhưng cũng tạo ra sự mong manh, vì vậy phải đi kèm các yêu cầu thanh khoản và hoạt động giám sát việc chấp nhận rủi ro.', hint: 'Tập trung vào khung thời gian: nguồn vốn của ngân hàng kéo dài bao lâu so với các khoản vay.' },
+      'pair-capital-adequacy': { explanation: 'Vốn nằm dưới người gửi tiền và hấp thụ tổn thất. Một ngân hàng có thể có rất nhiều tiền gửi mà vẫn thiếu vốn để mở rộng cho vay rủi ro hơn: nguồn vốn huy động và khả năng chịu lỗ là hai câu hỏi khác nhau.', hint: 'Tiền gửi tài trợ cho tài sản nhưng vẫn là khoản nợ khách hàng. Định nghĩa nào mô tả lớp đệm hấp thụ tổn thất?' },
+      'pair-bank-run': { explanation: 'Tiền gửi có thể rời đi nhanh hơn tốc độ thu hồi khoản vay, nên một cú sốc niềm tin có thể biến thành khủng hoảng thanh khoản chỉ trong vài giờ. Niềm tin là một đầu vào vận hành của ngân hàng.', hint: 'Thuật ngữ này gọi tên một sự kiện do hành vi của người gửi tiền gây ra, không phải một quy định hay một tỷ lệ.' },
+    },
+  },
+  'cb-m01-match-products-needs': {
+    enTitle: 'Banking products and the needs they solve',
+    title: 'Sản phẩm ngân hàng và những nhu cầu chúng giải quyết',
+    learningObjective: 'Gắn các sản phẩm tiền gửi, tín dụng, thanh toán, tài trợ thương mại và ngân quỹ với nhu cầu khách hàng mà mỗi sản phẩm giải quyết.',
+    instructions: PAIR_INSTRUCTIONS_VI,
+    promptLabel: 'Sản phẩm',
+    answerLabel: 'Nhu cầu khách hàng',
+    summary: 'Sản phẩm ngân hàng vận hành như một mối quan hệ: tiền gửi cung cấp vốn cho ngân hàng, cho vay sử dụng bảng cân đối, còn dịch vụ thanh toán, tài trợ thương mại và ngân quỹ làm sâu sắc mối quan hệ và thu nhập phí.',
+    items: {
+      'current-account': 'Tài khoản thanh toán',
+      overdraft: 'Thấu chi',
+      'letter-of-credit': 'Thư tín dụng (L/C)',
+      'cash-management': 'Quản lý dòng tiền',
+      'fx-treasury': 'Dịch vụ ngoại hối và ngân quỹ',
+      'need-transactions': 'Nhận tiền và thực hiện thanh toán, rút tiền thường xuyên.',
+      'need-timing-gap': 'Cho phép số dư tài khoản xuống dưới 0, trong hạn mức đã được phê duyệt, để bù đắp một khoảng chênh lệch thời gian ngắn.',
+      'need-trade-payment': 'Hỗ trợ thanh toán giữa các bên trong một giao dịch thương mại bằng cam kết của ngân hàng.',
+      'need-cash-cycle': 'Thu tiền, giữ tiền, dự báo và chi trả dòng tiền của doanh nghiệp.',
+      'need-currency': 'Quản lý rủi ro tiền tệ và thanh khoản cho khách hàng kinh doanh xuyên biên giới.',
+    },
+    notes: {
+      'pair-current-account': { explanation: 'Tài khoản thanh toán là loại tiền gửi giao dịch được thiết kế cho việc thanh toán và rút tiền thường xuyên. Số dư cũng là nguồn vốn của ngân hàng, vì đó là khoản tiền gửi ngân hàng nợ khách hàng.', hint: 'Nhu cầu nào liên quan đến việc chuyển tiền hằng ngày thay vì vay vốn hay quản lý rủi ro?' },
+      'pair-overdraft': { explanation: 'Thấu chi là tín dụng gắn với tài khoản. Nó bù đắp các khoảng chênh lệch như phải trả nhà cung cấp trước khi tiền của khách hàng về.', hint: 'Sản phẩm này là tín dụng gắn với một tài khoản thay vì một khoản vay riêng.' },
+      'pair-letter-of-credit': { explanation: 'Thư tín dụng là cam kết của ngân hàng hỗ trợ thanh toán trong thương mại, giảm rủi ro thanh toán và rủi ro thực hiện hợp đồng giữa người mua và người bán.', hint: 'Sản phẩm này tồn tại vì người mua và người bán trong thương mại có thể không tin tưởng nhau sẽ thanh toán hoặc giao hàng.' },
+      'pair-cash-management': { explanation: 'Quản lý dòng tiền xử lý thu hộ, chi lương và thanh toán nhà cung cấp. Ngân hàng thấy được dòng tiền đều đặn, điều có thể hỗ trợ số dư ổn định, thu nhập phí và thẩm định tín dụng tốt hơn.', hint: 'Hãy nghĩ đến dịch vụ một doanh nghiệp dùng để vận hành toàn bộ chu kỳ dòng tiền, không phải một khoản vay hay một lần thanh toán.' },
+      'pair-fx-treasury': { explanation: 'Công cụ ngân quỹ và ngoại hối giúp khách hàng kiểm soát tiền tệ và thanh khoản. Các ngân hàng doanh nghiệp thường kết hợp chúng với cho vay vốn lưu động, quản lý dòng tiền và tài trợ thương mại.', hint: 'Nhu cầu nào chỉ phát sinh khi khách hàng giao dịch bằng nhiều hơn một loại tiền tệ?' },
+    },
+  },
+  'cb-m01-sort-balance-sheet': {
+    enTitle: 'Asset, liability or income?',
+    title: 'Tài sản, nợ phải trả hay thu nhập?',
+    learningObjective: 'Phân loại các khoản mục ngân hàng thường gặp thành tài sản, nợ phải trả hoặc thu nhập, và giải thích vì sao tiền gửi là nguồn vốn chứ không phải doanh thu.',
+    instructions: SORT_INSTRUCTIONS_VI,
+    summary: 'Tiền gửi là nợ phải trả và khoản cho vay là tài sản; chỉ thu nhập tạo ra theo thời gian mới là doanh thu. Hãy phân loại một con số trước khi so sánh nó.',
+    categories: {
+      asset: { label: 'Tài sản', description: 'Thứ ngân hàng sở hữu hoặc được nợ, ghi nhận trên bảng cân đối tại một thời điểm.' },
+      liability: { label: 'Nợ phải trả', description: 'Thứ ngân hàng nợ khách hàng hoặc người cho vay, ghi nhận trên bảng cân đối tại một thời điểm.' },
+      income: { label: 'Thu nhập', description: 'Được tạo ra trong một kỳ từ việc sử dụng và phục vụ các số dư. Không phải khoản mục trên bảng cân đối.' },
+    },
+    items: {
+      'loans-to-customers': 'Cho vay khách hàng',
+      'securities-held': 'Chứng khoán ngân hàng nắm giữ',
+      'cash-held': 'Tiền mặt ngân hàng nắm giữ',
+      'customer-deposits': 'Tiền gửi thanh toán và tiết kiệm của khách hàng',
+      borrowings: 'Khoản vay từ các tổ chức cho vay khác',
+      'new-loan-deposit': 'Khoản tiền gửi được ghi có cho người vay khi khoản vay được phê duyệt',
+      'net-interest-income': 'Thu nhập lãi thuần',
+      'payment-fees': 'Phí từ dịch vụ thanh toán và giao dịch',
+    },
+    notes: {
+      'loans-to-customers': { explanation: 'Khoản vay là nghĩa vụ hoàn trả của người vay đối với ngân hàng, nên đó là tài sản của ngân hàng và là cách sử dụng vốn chính của ngân hàng.', hint: 'Hãy hỏi ai nợ ai: sau khi khoản vay được cấp, người vay nợ ngân hàng.' },
+      'securities-held': { explanation: 'Chứng khoán là khoản đầu tư ngân hàng sở hữu. Cùng với khoản cho vay và tiền mặt, chúng tạo nên tổng tài sản — một thước đo quy mô, không phải lợi nhuận.', hint: 'Đây là các khoản đầu tư ngân hàng sở hữu, được nắm giữ bên cạnh các khoản cho vay.' },
+      'cash-held': { explanation: 'Tiền mặt là một phần của tổng tài sản, và những khoản nắm giữ có tính thanh khoản như vậy giúp ngân hàng đáp ứng nhu cầu rút tiền.', hint: 'Đây là thứ ngân hàng giữ sẵn để đáp ứng nhu cầu rút tiền.' },
+      'customer-deposits': { explanation: 'Tiền gửi là khoản tiền ngân hàng nợ khách hàng. Nó tài trợ cho tài sản của ngân hàng, nhưng không phải doanh thu và có thể bị rút ra.', hint: 'Khách hàng có thể đòi lại số tiền này, vậy đó là tiền của ai?' },
+      borrowings: { explanation: 'Tài sản của ngân hàng được tài trợ chủ yếu bằng tiền gửi và vốn vay. Các khoản vay phải được hoàn trả cho những bên đã cung cấp.', hint: 'Đây là nguồn vốn ngân hàng phải hoàn trả cho bên đã cung cấp.' },
+      'new-loan-deposit': { explanation: 'Phê duyệt một khoản vay đồng thời ghi nhận nghĩa vụ của người vay và một khoản tiền gửi tương ứng mà ngân hàng nợ người vay. Bảng cân đối phình to, nhưng chưa có lợi nhuận nào được tạo ra.', hint: 'Phê duyệt một khoản vay tạo ra hai bút toán cùng lúc. Đây là bút toán ngân hàng nợ người vay.' },
+      'net-interest-income': { explanation: 'Thu nhập lãi kiếm được trừ chi phí lãi phải trả trong một kỳ. Đây là dòng doanh thu chính và đến từ việc sử dụng số dư theo thời gian, không phải từ bản thân các số dư.', hint: 'Con số này được đo trong một kỳ, không phải tại một thời điểm.' },
+      'payment-fees': { explanation: 'Phí là doanh thu ngoài lãi kiếm được từ việc phục vụ khách hàng, chẳng hạn qua dịch vụ thanh toán và quản lý dòng tiền.', hint: 'Khoản này được tạo ra nhờ cung cấp một dịch vụ trong một kỳ.' },
+    },
+    misplaced: {
+      'loans-to-customers': {
+        liability: 'Khoản vay không phải là tiền ngân hàng nợ. Người vay nợ ngân hàng, nên khoản vay nằm ở phía đối diện với tiền gửi trên bảng cân đối.',
+        income: 'Khoản vay là một số dư tại một thời điểm. Chỉ tiền lãi kiếm được từ nó theo thời gian mới là thu nhập.',
+      },
+      'customer-deposits': {
+        income: 'Một lỗi thường gặp. Tiền gửi cung cấp vốn cho ngân hàng nhưng vẫn là khoản nợ khách hàng; tự việc nhận tiền gửi không mang lại thu nhập nào cho ngân hàng.',
+        asset: 'Tiền mặt đến được ngân hàng nắm giữ, nhưng số dư tiền gửi ghi nhận khoản ngân hàng hiện đang nợ khách hàng.',
+      },
+      'new-loan-deposit': {
+        income: 'Tạo ra tiền gửi thông qua cho vay làm bảng cân đối phình to nhưng chưa mang lại thu nhập nào. Lợi nhuận chỉ đến nếu lãi và phí vượt quá chi phí vốn, chi phí hoạt động và tổn thất tín dụng.',
+        asset: 'Khoản vay là thứ người vay nợ ngân hàng. Khoản tiền gửi được tạo ra cùng với nó là thứ ngân hàng nợ người vay.',
+      },
+      'net-interest-income': {
+        asset: 'Thu nhập lãi thuần được tạo ra trong một kỳ. Tài sản là các số dư được đo tại một thời điểm.',
+      },
+    },
+  },
+  'cb-m01-sort-customer-segments': {
+    enTitle: 'Which customer segment?',
+    title: 'Thuộc phân khúc khách hàng nào?',
+    learningObjective: 'Phân biệt khách hàng cá nhân, SME và doanh nghiệp lớn theo nhu cầu, thông tin và mô hình phục vụ mà ngân hàng dùng cho mỗi nhóm.',
+    instructions: `${SORT_INSTRUCTIONS_VI} Phân khúc nào cũng có thể gửi tiền, vay vốn và giao dịch, nên mỗi mục mô tả điểm khác biệt giữa các phân khúc.`,
+    summary: 'Hãy phân khúc khách hàng trước khi chọn sản phẩm, kênh phân phối hay công cụ quản lý rủi ro: mảng bán lẻ có khối lượng lớn và chuẩn hóa, mảng SME kết hợp dữ liệu với đánh giá dựa trên mối quan hệ, còn ngân hàng doanh nghiệp được thiết kế riêng.',
+    categories: {
+      retail: { label: 'Cá nhân', description: 'Cá nhân và hộ gia đình.' },
+      sme: { label: 'SME', description: 'Doanh nghiệp nhỏ và vừa.' },
+      corporate: { label: 'Doanh nghiệp lớn & định chế', description: 'Các tổ chức và định chế lớn.' },
+    },
+    items: {
+      'retail-products': 'Tài khoản, thẻ và cho vay mua nhà cho cá nhân',
+      'retail-standardised': 'Sản phẩm khối lượng lớn, chuẩn hóa',
+      'sme-owner': 'Báo cáo tài chính kém chính thức và phụ thuộc nhiều vào chủ doanh nghiệp',
+      'sme-judgement': 'Dữ liệu tài chính kết hợp với đánh giá dựa trên mối quan hệ',
+      'sme-working-capital': 'Quyết định vốn lưu động nhanh',
+      'corp-structure': 'Báo cáo kiểm toán, nhiều pháp nhân và đội ngũ ngân quỹ chuyên trách',
+      'corp-tailored': 'Hạn mức thiết kế riêng, các cam kết tài chính (covenant) và đội ngũ chuyên trách',
+    },
+    notes: {
+      'retail-products': { explanation: 'Ngân hàng bán lẻ phục vụ cá nhân và hộ gia đình bằng tài khoản, thẻ, cho vay mua nhà và tài chính cá nhân.', hint: 'Ai thường cần một khoản vay mua nhà và một chiếc thẻ cá nhân?' },
+      'retail-standardised': { explanation: 'Phục vụ rất nhiều cá nhân và hộ gia đình có nhu cầu tương tự phù hợp với sản phẩm chuẩn hóa, giúp giữ chi phí phục vụ ở mức thấp.', hint: 'Phân khúc nào có nhiều khách hàng với nhu cầu giống nhau nhất?' },
+      'sme-owner': { explanation: 'Một doanh nghiệp nhỏ hơn có thể thiếu báo cáo chính thức và phụ thuộc vào chủ doanh nghiệp, nên ngân hàng không thể chỉ dựa vào báo cáo kiểm toán.', hint: 'Hãy nghĩ đến một cửa hàng gia đình thay vì một tập đoàn đa quốc gia.' },
+      'sme-judgement': { explanation: 'Cả chuẩn hóa hoàn toàn lẫn thiết kế riêng hoàn toàn đều không phù hợp, vì vậy ngân hàng SME kết hợp dữ liệu sẵn có với hiểu biết của chuyên viên quan hệ khách hàng về doanh nghiệp.', hint: 'Cách tiếp cận này nằm giữa chấm điểm chuẩn hóa và thiết kế cấu trúc riêng hoàn toàn.' },
+      'sme-working-capital': { explanation: 'Các doanh nghiệp nhỏ hơn thường cần quyết định vốn lưu động nhanh. Áp dụng quy trình dành cho doanh nghiệp lớn với họ sẽ làm tăng chi phí phục vụ.', hint: 'Phân khúc nào chịu thiệt nhiều nhất khi bị áp dụng một quy trình tín dụng chậm và thiết kế riêng?' },
+      'corp-structure': { explanation: 'Các tổ chức lớn có báo cáo chính thức và cấu trúc tập đoàn phức tạp, đòi hỏi đánh giá chuyên sâu.', hint: 'Khách hàng nào có đội ngũ tài chính và ngân quỹ riêng?' },
+      'corp-tailored': { explanation: 'Ngân hàng doanh nghiệp sử dụng cấu trúc tín dụng và các cam kết tài chính thiết kế riêng, được điều phối bởi chuyên viên quan hệ khách hàng và các đội ngũ chuyên trách.', hint: 'Mô hình phục vụ này được thiết kế riêng thay vì chuẩn hóa.' },
+    },
+    misplaced: {
+      'sme-owner': { corporate: 'Các tổ chức lớn thường có báo cáo kiểm toán và đội ngũ tài chính chuyên trách. Sự phụ thuộc vào một chủ doanh nghiệp là dấu hiệu của một doanh nghiệp nhỏ hơn.' },
+      'corp-structure': { sme: 'Báo cáo kiểm toán cho nhiều pháp nhân và một đội ngũ ngân quỹ nội bộ mô tả một tổ chức lớn, không phải một doanh nghiệp nhỏ hơn.' },
+    },
+  },
+  'cb-m01-seq-loan-lifecycle': {
+    enTitle: 'From loan decision to loan outcome',
+    title: 'Từ quyết định cho vay đến kết quả của khoản vay',
+    learningObjective: 'Sắp xếp các giai đoạn của một khoản vay ngân hàng và giải thích vì sao mỗi giai đoạn phụ thuộc vào giai đoạn trước đó.',
+    instructions: 'Sắp xếp các giai đoạn theo thứ tự từ đầu đến cuối. Dùng nút Lên và Xuống, nhấn Alt cùng các phím mũi tên, hoặc kéo một giai đoạn trên máy tính. Kiểm tra khi bạn đã sẵn sàng.',
+    summary: 'Cho vay tạo ra một khoản tiền gửi và một khoản nợ cùng lúc, nên bảng cân đối tăng lên trước khi có bất kỳ lợi nhuận nào. Lợi nhuận phụ thuộc vào cách khoản vay vận hành sau khi được sử dụng và hoàn trả.',
+    sequenceEvidence: 'Chương học mô tả một khoản vay theo thứ tự: ngân hàng thẩm định người vay, sau đó ghi nhận khoản cho vay như một tài sản và ghi có tiền gửi cho người vay; người vay sau đó đầu tư và giao dịch qua hạ tầng ngân hàng, và lợi nhuận chỉ đến nếu lãi và phí vượt quá chi phí vốn, chi phí hoạt động và tổn thất tín dụng. Khoản cho vay và khoản tiền gửi tương ứng được ghi nhận cùng lúc, nên ở đây chúng là một giai đoạn duy nhất.',
+    items: {
+      assess: 'Ngân hàng thẩm định khả năng trả nợ của người vay',
+      'approve-record': 'Khoản vay được phê duyệt: một khoản cho vay (tài sản) và một khoản tiền gửi tương ứng được ghi nhận cùng lúc',
+      spend: 'Người vay thanh toán cho nhà cung cấp hoặc đầu tư bằng khoản tiền gửi mới',
+      repay: 'Người vay hoàn trả gốc và lãi trong suốt thời hạn khoản vay',
+      outcome: 'Lợi nhuận của ngân hàng được đánh giá so với chi phí vốn, chi phí hoạt động và tổn thất tín dụng',
+    },
+    notes: {
+      assess: { explanation: 'Cho vay bắt đầu bằng thẩm định: ngân hàng đánh giá người vay trước khi cam kết sử dụng bảng cân đối của mình.', hint: 'Chưa thể ghi nhận hay chi tiêu gì cho đến khi ngân hàng quyết định có cho vay hay không.' },
+      'approve-record': { explanation: 'Việc phê duyệt tạo ra nghĩa vụ của người vay và một khoản tiền gửi mà ngân hàng nợ người vay ngay tại cùng một thời điểm. Đây là cách cho vay tạo ra tiền gửi.', hint: 'Giai đoạn này cần một quyết định tín dụng chấp thuận trước, và nó tạo ra số tiền người vay sẽ sử dụng.' },
+      spend: { explanation: 'Khoản tiền gửi mới mang lại sức mua cho người vay, và hạ tầng thanh toán của ngân hàng đưa nó đi khắp nền kinh tế.', hint: 'Tiền chỉ có thể được chi tiêu sau khi đã được ghi có cho người vay.' },
+      repay: { explanation: 'Các khoản hoàn trả làm giảm dư nợ theo thời gian, và tiền lãi kiếm được là thu nhập từ mối quan hệ.', hint: 'Việc hoàn trả diễn ra sau khi tiền được sử dụng và kéo dài suốt thời hạn khoản vay.' },
+      outcome: { explanation: 'Bảng cân đối lớn hơn không phải là lợi nhuận. Lợi nhuận chỉ tồn tại nếu lãi và phí vượt quá chi phí vốn, chi phí hoạt động và mọi tổn thất tín dụng, điều chỉ có thể đánh giá khi khoản vay vận hành.', hint: 'Đánh giá này phụ thuộc vào kết quả thực tế của khoản vay, nên không thể đến sớm.' },
+    },
+  },
+};

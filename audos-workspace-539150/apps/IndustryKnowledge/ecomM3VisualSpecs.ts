@@ -1,0 +1,321 @@
+import type { ChapterVisual } from './chapterVisualText';
+
+/** Chapter-specific Learning Visuals for E-commerce & Online Marketplaces Module 03, keyed by visualKind. */
+export const ECOM_M3_VISUALS: Record<string, ChapterVisual> = {
+  'ecom-m3-11-b2c': {
+    heading: 'Who owns the shopper relationship after checkout',
+    intro: 'Both models sell to individual consumers. Watch the rows on control and funding: D2C gains the relationship but must pay for what intermediaries otherwise supply.',
+    spec: {
+      layout: 'compare', title: 'Business-to-Consumer (B2C) and Direct-to-Consumer (D2C)', kicker: '',
+      leftTitle: 'B2C: describes the buyer', rightTitle: 'D2C: describes the brand relationship',
+      rows: [
+        { label: 'Who sells', a: 'Traditional, digital-native or multichannel businesses selling to individual consumers', b: 'The brand itself, through channels it controls' },
+        { label: 'Where it sells', a: 'Websites, apps or marketplaces', b: 'An owned store, often alongside marketplaces for reach' },
+        { label: 'Control and data', a: 'Varies by retailer and channel', b: 'More control of presentation, communication and first-party data' },
+        { label: 'What must be funded', a: 'Retail operations, pricing, orders and service', b: 'Marketing, technology, fulfillment and customer service' },
+        { label: 'Illustration', a: 'Amazon Retail, large-scale B2C retailing', b: 'Nike’s brand-owned digital channels' },
+      ],
+      note: 'Brands may still use marketplaces, payment providers and logistics partners; owned and marketplace channels work together when each has a clear role.',
+      takeaway: 'D2C is a form of B2C that trades intermediary reach for control, and control brings operating responsibility.',
+    },
+  },
+  'ecom-m3-12-marketplace': {
+    heading: 'What a marketplace operator balances without owning the stock',
+    intro: 'The operator links buyers and third-party sellers through shared infrastructure. Notice that every link carries trust work, not only transactions.',
+    spec: {
+      layout: 'ecosystem', title: 'Marketplace and Platform-Based Models', kicker: '',
+      center: { label: 'Marketplace operator', detail: 'Shared discovery, transaction, payment, advertising and sometimes fulfillment infrastructure' },
+      actors: [
+        { label: 'Buyers', relation: 'Bring demand that attracts sellers; they judge the platform by seller conduct and dispute outcomes', flows: ['money', 'information'] },
+        { label: 'Third-party sellers', relation: 'Onboarded merchants add variety; rankings and fees shape their visibility and economics', flows: ['product', 'money'] },
+        { label: 'Payment and fulfillment services', relation: 'Checkout, payment, tracking and optional warehousing and delivery reduce friction', flows: ['money', 'service'] },
+        { label: 'Listing and dispute governance', relation: 'Rules, rankings, reviews and enforcement decide which supply appears', flows: ['oversight'] },
+      ],
+      note: 'Shopee, Lazada and Amazon Marketplace onboard merchants, facilitate transactions, govern listings and may offer fulfillment. Scale amplifies counterfeits, quality problems, competition and dependence.',
+      takeaway: 'Selection scales without buying inventory, but liquidity lasts only while governance keeps both sides confident.',
+    },
+  },
+  'ecom-m3-13-hybrid': {
+    heading: 'Where commerce reaches past the single checkout',
+    intro: 'Each extension changes how customers engage or how the business earns. Look closely at the hybrid group, which combines several models and their conflicts.',
+    spec: {
+      layout: 'taxonomy', title: 'Social Commerce, Subscription and Hybrid Models', kicker: '',
+      root: 'Extensions of the commerce model', rootDetail: 'Business models are not mutually exclusive',
+      groups: [
+        { label: 'Social commerce', detail: 'Shopping embedded in content and communities', items: ['Creator video and feeds', 'Integrated checkout', 'TikTok Shop as an example'] },
+        { label: 'Subscription commerce', detail: 'Recurring fees for products, memberships or benefits', items: ['Replenishment', 'Membership benefits', 'Amazon Prime as an example'] },
+        { label: 'Content-led commerce', detail: 'Content supports the purchase decision', items: ['Reviews', 'Tutorials', 'Livestreams', 'Creator recommendations'] },
+        { label: 'Hybrid platform', detail: 'Several models operated together', items: ['Retail', 'Marketplace', 'Advertising', 'Membership', 'Fulfillment'] },
+      ],
+      note: 'Combining models adds conflict: advertising may favor paying sellers, owned retail may compete with marketplace merchants, and memberships create service costs.',
+      takeaway: 'Hybrid strength comes from services that complement each other, not from piling up ways to monetize.',
+    },
+  },
+  'ecom-m3-21-offerings': {
+    heading: 'What the customer receives decides the operation behind the storefront',
+    intro: 'One storefront can sell parcels, downloads and appointments. Follow each branch to see the different obligation the business takes on.',
+    spec: {
+      layout: 'decision', title: 'Physical Goods, Digital Goods and Services', kicker: '',
+      root: { label: 'An offer listed online', detail: 'The same storefront can hide very different obligations' },
+      question: 'What does the customer actually receive?',
+      branches: [
+        { condition: 'A tangible item', outcome: 'Physical fulfillment', detail: 'Inventory, storage, shipping and returns, as in fashion; logistics constraints apply' },
+        { condition: 'An electronic product', outcome: 'Digital delivery', detail: 'Low marginal distribution cost, but licensing, IP and technical support, as with e-books and software' },
+        { condition: 'A booked service', outcome: 'Provider scheduling', detail: 'Travel, education or appointments depend on provider availability and delivery quality, sometimes offline' },
+        { condition: 'A product with support', outcome: 'Hybrid coordination', detail: 'Devices bundled with subscriptions or maintenance need product and support aligned' },
+      ],
+      note: 'A Vietnamese storefront selling household goods, digital courses and appointment-based services needs different fulfillment and support rules for each.',
+      takeaway: 'Category expansion works only when the operating system reflects what is actually being delivered.',
+    },
+  },
+  'ecom-m3-22-verticals': {
+    heading: 'Winning on breadth or on category expertise',
+    intro: 'A specialist cannot match a general marketplace on variety. Compare where each earns its advantage and where each is exposed.',
+    spec: {
+      layout: 'compare', title: 'Product Categories and Vertical Specialization', kicker: '',
+      leftTitle: 'Generalist platform, such as Amazon', rightTitle: 'Vertical specialist, such as ASOS in fashion',
+      rows: [
+        { label: 'Assortment', a: 'Many categories and varied demand', b: 'Depth in one field, such as fashion, electronics or beauty' },
+        { label: 'Source of advantage', a: 'Breadth, convenience and scale', b: 'Expertise, product relevance, trust and tailored service' },
+        { label: 'Distinctive services', a: 'Shared infrastructure across categories', b: 'Authentication, sizing, technical specifications or installation' },
+        { label: 'Main exposure', a: 'Must keep matching rivals on breadth and convenience', b: 'Narrower addressable market; seasonality, obsolescence and preference change' },
+      ],
+      note: 'Expert information, supplier relationships and tailored service can create a moat that broad infrastructure alone does not.',
+      takeaway: 'A specialist must make category decisions easier and safer than a generalist can, or its narrower market is not worth the risk.',
+    },
+  },
+  'ecom-m3-23-bundles': {
+    heading: 'When a bundled service earns its place and when it hides a subsidy',
+    intro: 'Delivery upgrades, protection, finance, seller tools and memberships can all extend a sale. Test each one against what customers value and what it costs to deliver.',
+    spec: {
+      layout: 'decision', title: 'Service Bundling and Value-Added Offerings', kicker: '',
+      root: { label: 'Product plus value-added service', detail: 'Delivery upgrades, protection and support, financial options, seller services or membership' },
+      question: 'Do customers value the service enough to cover its cost, and can it be priced, run and supported clearly?',
+      branches: [
+        { condition: 'Valued and simple to run', outcome: 'Durable differentiation', detail: 'Competes beyond product price and can raise customer lifetime value', tone: 'positive' },
+        { condition: 'Valued but complex', outcome: 'Operating burden', detail: 'Pricing, operations and support grow harder than the benefit justifies', tone: 'caution' },
+        { condition: 'Not valued at its cost', outcome: 'Hidden subsidy', detail: 'Attractive inside the bundle, but no customer would pay for it separately', tone: 'negative' },
+      ],
+      note: 'A Vietnamese electronics seller may combine delivery, installation, warranty and permitted payment options; usage, willingness to pay and support burden show whether it works.',
+      takeaway: 'Bundles matter most when prices are easy to compare, but only services that pay their way build lasting value.',
+    },
+  },
+  'ecom-m3-31-consumers': {
+    heading: 'Why the same household shops differently by category',
+    intro: 'A shopper may chase vouchers for essentials yet demand authenticity for beauty. Read each need together with the features that serve it.',
+    spec: {
+      layout: 'taxonomy', title: 'Individual Consumers and Household Shoppers', kicker: '',
+      root: 'Individual and household shoppers', rootDetail: 'They vary by category, frequency, income, life stage and digital familiarity',
+      groups: [
+        { label: 'Affordability', detail: 'Price-sensitive shoppers', items: ['Vouchers', 'Price comparison', 'Shipping offers'] },
+        { label: 'Ease', detail: 'Convenience seekers', items: ['Simple navigation', 'Saved payment', 'Tracking and delivery choice'] },
+        { label: 'Confidence', detail: 'Trust in higher-risk categories', items: ['Verified reviews', 'Accurate descriptions', 'Transparent returns'] },
+        { label: 'Relevance', detail: 'Personalized discovery', items: ['Recommendations from permitted signals', 'Appropriate data protection'] },
+        { label: 'Frequency', detail: 'Repeat purchasing', items: ['Lists', 'Reminders', 'Subscription and reorder'] },
+      ],
+      note: 'A promotion can change behavior temporarily without showing what the customer values once the incentive ends.',
+      takeaway: 'Discounts serve only one need; segmenting by need, category and frequency avoids subsidizing every customer equally.',
+    },
+  },
+  'ecom-m3-32-sellers': {
+    heading: 'From shared marketplace access to seller tools sized for each merchant',
+    intro: 'Every seller starts with the same access to demand. See how needs split by merchant size and maturity, then rejoin around growth and operational support.',
+    spec: {
+      layout: 'pathway', title: 'Business Sellers, SMEs and Enterprise Merchants', kicker: '',
+      trunk: [
+        { label: 'Marketplace access', detail: 'Shared customer demand and infrastructure through a seller center', kind: 'stage' },
+      ],
+      optionsLabel: 'Needs differ by size and maturity',
+      options: [
+        { label: 'Household sellers and entrepreneurs', detail: 'Start with templates, training and platform fulfillment' },
+        { label: 'SMEs', detail: 'Affordable infrastructure and reach without building their own' },
+        { label: 'Established brands and large retailers', detail: 'ERP integration, bulk catalogs, stock synchronization, reporting and brand control' },
+      ],
+      afterLabel: 'Services every seller relies on',
+      after: [
+        { label: 'Growth services', detail: 'Advertising, campaigns and performance analytics', kind: 'stage' },
+        { label: 'Operational support', detail: 'Reconciliation, fulfillment and dispute handling', kind: 'stage' },
+        { label: 'Seller retention', detail: 'Merchants stay while services remain useful, transparent and commercially sustainable', kind: 'outcome' },
+      ],
+      note: 'Seller tools shape listing accuracy, stock and dispatch, the same outcomes buyers experience.',
+      takeaway: 'Sellers are partners and platform users, so their profitability must coexist with standards and platform revenue.',
+    },
+  },
+  'ecom-m3-33-institutional': {
+    heading: 'Institutional buying runs on approvals, not a quick checkout',
+    intro: 'An office, hotel or industrial buyer follows a procurement process. Follow the steps where qualification, terms and records replace consumer promotions.',
+    spec: {
+      layout: 'flow', title: 'Institutional Buyers and Specialized Customer Groups', kicker: '',
+      steps: [
+        { label: 'Supplier qualification', detail: 'Verify credentials, specifications and certifications', kind: 'stage' },
+        { label: 'Negotiated account pricing', detail: 'Terms agreed for this buyer rather than a public retail price', kind: 'stage' },
+        { label: 'Bulk order', detail: 'Recurring quantities, often from a specialized assortment', kind: 'stage' },
+        { label: 'Approval workflow', detail: 'Defined authorization steps before the purchase goes ahead', kind: 'decision' },
+        { label: 'Scheduled delivery', detail: 'Dependable schedules for offices, hotels or industrial operations', kind: 'stage' },
+        { label: 'Invoice, terms and records', detail: 'Invoices and payment terms recorded in procurement systems', kind: 'outcome' },
+      ],
+      loop: 'Qualified suppliers and agreed prices support repeat orders, which is how larger recurring demand can form.',
+      note: 'Alibaba.com connects business buyers and suppliers; procurement platforms can support offices, hotels or industrial operations.',
+      takeaway: 'B2B capability changes account, price, payment and record workflows, not just pack quantities.',
+    },
+  },
+  'ecom-m3-41-revenue': {
+    heading: 'Each income stream rewards a different behavior on the platform',
+    intro: 'Product margin, commissions, seller fees, advertising, memberships and fulfillment can coexist. Read what each stream monetizes, then ask what it could weaken.',
+    spec: {
+      layout: 'table', title: 'Core Revenue Streams', kicker: '',
+      headers: ['Revenue stream', 'How it is charged', 'What it monetizes'],
+      rows: [
+        { label: 'Product sales', a: 'Owned inventory sold above cost', b: 'Retail margin' },
+        { label: 'Commission', a: 'Fee linked to completed transaction value', b: 'Marketplace transactions' },
+        { label: 'Seller fees', a: 'Access, tools or optional premium services', b: 'Merchant services' },
+        { label: 'Advertising', a: 'Sponsored listings and paid placement', b: 'Attention and visibility' },
+        { label: 'Membership', a: 'Recurring fee for delivery or premium benefits', b: 'Loyalty' },
+        { label: 'Fulfillment services', a: 'Paid fulfillment offered to sellers', b: 'Logistics capability' },
+      ],
+      note: 'Excessive sponsored placement can reduce relevance and excessive fees can reduce seller participation; judge each stream on profit, customer value, operations and trust.',
+      takeaway: 'Diversified revenue builds resilience only if no stream erodes the ecosystem that produces it.',
+    },
+  },
+  'ecom-m3-42-costs': {
+    heading: 'Avoiding inventory moves cost rather than removing it',
+    intro: 'Retailers carry unsold stock; marketplaces carry technology, trust and seller support. Check which model bears more of each cost block.',
+    spec: {
+      layout: 'table', title: 'Cost Structure and Major Operating Expenses', kicker: '',
+      headers: ['Cost block', 'What it includes', 'Who carries more'],
+      rows: [
+        { label: 'Goods', a: 'Purchasing, production and unsold stock', b: 'Inventory-led retailers' },
+        { label: 'Customer acquisition', a: 'Ad spend, promotions and incentives', b: 'Every demand-facing model' },
+        { label: 'Technology', a: 'Software, cloud and platform allocation', b: 'Marketplace operators' },
+        { label: 'Fulfillment', a: 'Warehousing, packaging and delivery', b: 'Sellers of physical goods' },
+        { label: 'Payments and risk', a: 'Payment fees and chargebacks', b: 'Transaction operators' },
+        { label: 'Returns and support', a: 'Refunds, returns handling and customer service', b: 'Every customer-facing model' },
+      ],
+      note: 'Some costs vary with each order; others are fixed or semi-fixed within a capacity range. A Vietnamese marketplace seller still pays commission, ads, fulfillment and returns out of product margin.',
+      takeaway: 'High sales volume does not prove profit; the business model decides which fixed and variable costs dominate.',
+    },
+  },
+  'ecom-m3-43-unit': {
+    heading: 'Growth is healthy only if each extra order adds retained value',
+    intro: 'Unit economics tests revenue and cost per order, customer and seller. Trace how each driver feeds contribution over time.',
+    spec: {
+      layout: 'driverTree', title: 'Profitability, Unit Economics and Monetization Trade-Offs', kicker: '',
+      root: { label: 'Sustainable contribution over time', detail: 'Viable for buyer, seller and platform alike' },
+      formula: 'Contribution margin = revenue − relevant variable costs',
+      drivers: [
+        { label: 'Order economics', detail: 'Average order value (AOV) and margin, less returns and cancellations' },
+        { label: 'Relationship value', detail: 'LTV and repeat purchase across the customer relationship' },
+        { label: 'Acquisition efficiency', detail: 'CAC read against later purchasing and retention' },
+        { label: 'Promotion incrementality', detail: 'Vouchers and shipping support judged by incremental contribution, not gross campaign GMV' },
+        { label: 'Seller viability', detail: 'Commission, ads, membership and service fees must leave sellers a workable margin' },
+      ],
+      note: 'Investing ahead of profit can build density or capability, but the path to better economics must be explicit; no benchmark is claimed.',
+      takeaway: 'Without evidence that repeat, cost or monetization improves, loss-making growth is simply more loss.',
+    },
+  },
+  'ecom-m3-51-owned': {
+    heading: 'Giving the brand site and the marketplace listing different jobs',
+    intro: 'Owned channels give control; marketplaces give existing demand. See how one product range is split across channel roles, then held together by shared rules.',
+    spec: {
+      layout: 'pathway', title: 'Owned Digital Channels and Third-Party Marketplaces', kicker: '',
+      trunk: [
+        { label: 'One brand’s product range', detail: 'Full range, loyalty offers and products suited to acquisition', kind: 'stage' },
+      ],
+      optionsLabel: 'Assign each channel a role',
+      options: [
+        { label: 'Owned website or app', detail: 'Full range, exclusive offers and loyalty; the brand must generate traffic and run operations' },
+        { label: 'Third-party marketplaces', detail: 'Selected products for reach on Shopee, Lazada or Amazon; adds commission, ads, rules and competition' },
+      ],
+      afterLabel: 'Coordinate before expanding',
+      after: [
+        { label: 'Align price and promotions', detail: 'Avoid conflicting offers between channels', kind: 'stage' },
+        { label: 'Synchronize inventory', detail: 'One stock position across storefronts', kind: 'stage' },
+        { label: 'Share customer data and service standards', detail: 'The customer meets a consistent business, not inconsistency', kind: 'outcome' },
+      ],
+      note: 'Evaluate channels by strategic role, customer access, cost, data, control and profitability, not as interchangeable sales sources.',
+      takeaway: 'A channel portfolio delivers both control and reach only when price, stock, data and service stay coordinated.',
+    },
+  },
+  'ecom-m3-52-social': {
+    heading: 'Following a livestream view through to repeat margin',
+    intro: 'Content can shorten the path from discovery to purchase, but people drop out at every step. Notice which measure belongs to each stage.',
+    spec: {
+      layout: 'flow', title: 'Social Commerce, Mobile Commerce and Livestream Shopping', kicker: '',
+      steps: [
+        { label: 'Creator or livestream content', detail: 'Influencers, affiliates and real-time demonstrations create interest', kind: 'stage' },
+        { label: 'Click-through', detail: 'Viewers follow a commerce link or product tag; measure clicks', kind: 'stage' },
+        { label: 'Mobile checkout', detail: 'Navigation, payment and tracking on phones; measure conversion and AOV', kind: 'stage' },
+        { label: 'Fulfillment of content-driven demand', detail: 'Stock, delivery and service must keep up with what content creates', kind: 'stage' },
+        { label: 'Repeat purchase', detail: 'Customer quality shows in retention; read CAC against repeat', kind: 'stage' },
+        { label: 'Incremental contribution', detail: 'Sales that would not otherwise happen, after returns and costs', kind: 'outcome' },
+      ],
+      note: 'TikTok Shop connects creator content with buying. High views or engagement do not automatically become sales, repeat purchases or positive margins.',
+      takeaway: 'Judge social and mobile channels by conversion, incremental sales, customer quality, repeat and contribution, not reach.',
+    },
+  },
+  'ecom-m3-53-omnichannel': {
+    heading: 'What turns several storefronts into one customer journey',
+    intro: 'Several storefronts make a business multichannel. See how a shared core of stock, order and customer records lets every touchpoint serve the same customer.',
+    spec: {
+      layout: 'ecosystem', title: 'Omnichannel Retail and Integrated Customer Journeys', kicker: '',
+      center: { label: 'Shared inventory, order and customer records', detail: 'Stock accuracy, order routing, identity, pricing and policy working together' },
+      actors: [
+        { label: 'Physical stores', relation: 'Pickup, ship-from-store and eligible returns once stock connects', flows: ['product', 'information'] },
+        { label: 'Owned app and website', relation: 'Show real availability and offer pickup or home delivery', flows: ['information', 'money'] },
+        { label: 'Marketplace and social touchpoints', relation: 'Discovery and purchase drawing on the same stock', flows: ['information', 'money'] },
+        { label: 'Warehouses', relation: 'Stock visible alongside stores and sites', flows: ['product'] },
+        { label: 'Customer service', relation: 'Sees the same order and resolves issues across touchpoints', flows: ['service', 'information'] },
+      ],
+      note: 'Promotions, loyalty and returns must follow consistent rules; a new touchpoint without integration adds places where information can disagree.',
+      takeaway: 'Omnichannel is an operating model built on reliable shared data, not a list of storefronts.',
+    },
+  },
+  'ecom-m3-61-core': {
+    heading: 'Platform health rests on three groups staying willing to take part',
+    intro: 'Buyers bring demand, sellers bring supply and the operator coordinates both. Look at the measures under each driver that warn when the balance is weakening.',
+    spec: {
+      layout: 'driverTree', title: 'Core Platform Participants: Buyers, Sellers and Operators', kicker: '',
+      root: { label: 'Platform competitiveness', detail: 'Value for buyers, sellers and the operator at once' },
+      drivers: [
+        { label: 'Buyer demand', detail: 'Search, purchase and feedback; buyers want value and reliability', children: [{ label: 'Conversion' }, { label: 'Satisfaction' }] },
+        { label: 'Seller participation', detail: 'Assortment, price, stock and service; sellers want profitable access and predictable policy', children: [{ label: 'Seller retention' }, { label: 'Order reliability' }] },
+        { label: 'Trustworthy conditions', detail: 'Operator rules, moderation, complaints and fraud action', children: [{ label: 'Dispute rate' }] },
+      ],
+      note: 'Optimizing one group at the expense of the others can reduce participation, service or trust.',
+      takeaway: 'Ecosystem management covers retention, trust and policy predictability, not merely checkout uptime.',
+    },
+  },
+  'ecom-m3-62-partners': {
+    heading: 'Specialist partners that add capability and dependency together',
+    intro: 'Payment, logistics, cloud, marketing and outsourcing partners let a business scale without building everything. Read each link as both a capability and a risk.',
+    spec: {
+      layout: 'ecosystem', title: 'Enabling Partners and Digital Infrastructure Providers', kicker: '',
+      center: { label: 'E-commerce business', detail: 'Decides what to build, outsource or partner' },
+      actors: [
+        { label: 'Payment providers and banks', relation: 'Authorize and settle payments', flows: ['money'] },
+        { label: 'Carriers and warehouses', relation: 'Store and deliver orders', flows: ['product'] },
+        { label: 'Cloud, technology and cybersecurity vendors', relation: 'Host and secure commerce tools', flows: ['information', 'risk'] },
+        { label: 'Marketing agencies', relation: 'Acquire demand for the business', flows: ['information'] },
+        { label: 'Outsourced operations teams', relation: 'Process catalogs or customer service', flows: ['service'] },
+      ],
+      note: 'Dependency risks cover availability, security, performance and price; selection, integration, service levels and contingency plans keep them manageable.',
+      takeaway: 'Outsourcing changes risk rather than removing it, so weigh switching difficulty and failure impact, not just price.',
+    },
+  },
+  'ecom-m3-63-wider': {
+    heading: 'Beyond buyers and sellers: who shapes legitimacy, finance, skills and impact',
+    intro: 'Commerce operates inside rules, finance, labor markets and communities. Group the wider stakeholders by the long-term outcome each one influences.',
+    spec: {
+      layout: 'taxonomy', title: 'Regulators, Financial Institutions and Wider Stakeholders', kicker: '',
+      root: 'Wider e-commerce stakeholders', rootDetail: 'They shape operating conditions beyond buyer and seller metrics',
+      groups: [
+        { label: 'Legitimacy', items: ['Regulators: platform and seller duties', 'Tax authorities', 'Consumer advocates: unsafe or unfair practice'] },
+        { label: 'Finance', items: ['Banks: payment and finance', 'Investors: funding for infrastructure'] },
+        { label: 'Capability', items: ['Employees and digital skills', 'Associations and training'] },
+        { label: 'Impact', items: ['Communities: logistics jobs and delivery activity', 'Environment: packaging, waste and emissions'] },
+      ],
+      note: 'Vietnamese platforms operate under the verified e-commerce framework; regulatory areas run from consumer rights to cross-border trade.',
+      takeaway: 'Legitimacy builds through consistent compliance and responsible execution, and can be lost faster than it is built.',
+    },
+  },
+};

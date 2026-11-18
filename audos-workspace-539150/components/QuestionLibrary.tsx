@@ -8,12 +8,11 @@ import {
   ChevronRight,
   Lightbulb,
   ListTree,
-  Plus,
+  RefreshCw,
   Search,
   Shuffle,
   Sparkles,
   Target,
-  Trash2,
 } from 'lucide-react';
 import { useSpaceRuntime } from '../SpaceRuntimeContext';
 import { tw } from '../lib/colors';
@@ -33,9 +32,74 @@ import type {
   LibrarySkill,
 } from '../lib/skillQuestionLibrary';
 import { restoreArchivedHardQuestion } from '../lib/hardCaseDrillQuestions';
+import { difficultyFilterLevelsFor, displayDifficultyOf } from '../lib/difficultyTiers';
 import StructuresWorkspace from '../apps/CaseDrill/StructuresWorkspace';
+import CaseResultView from './CaseResultView';
+import { MARKET_SIZING_REVEAL_NOTICE, getMarketSizingBankCase } from '../lib/marketSizingBank';
+import { formatNumbersInText } from '../lib/numberDisplay';
+import { formatCanonicalNumber, gradeNumericQuantity, numericUnitSpec, toleranceRuleText } from '../lib/numericUnits';
+import { clarifyUnitLabel, clarifyUnitText, sameUnitText } from '../lib/unitLabels';
+import CalculationCaseExperience from './CalculationCaseExperience';
+import CreativityCaseExperience from './CreativityCaseExperience';
+import CalculationAnswerBuilder, { CalculationResultSummaryView } from './CalculationAnswerBuilder';
+import FormattedNumberInput from './FormattedNumberInput';
+import { scoreLibraryCalculation } from '../lib/calculationLibraryScoring';
+import type { CalculationWorkedItem } from '../lib/calculationWorkedAnswers';
+import {
+  createCalculationAnswerPayload,
+  serializeCalculationAnswer,
+  type CalculationAnswerPayload,
+  type CalculationFinalAnswerSpec,
+  type CalculationResultSummary,
+} from '../lib/calculationAnswerModel';
+import { gradeCaseExercise } from '../lib/caseScoringClient';
+import { deriveOverallScore, isEasyCalculation, normalizeEasyCalculationScoring, type HonestScoreResult } from '../lib/caseScoringRubrics';
+import { objectiveScoreResult } from '../lib/gradingResult';
+import { gradeObjectiveOnServer, useFounderAnswerKeySync } from '../lib/libraryAnswerKeys';
+import { buildFeedbackPriorities } from '../lib/feedbackPresentation';
+import {
+  buildReasoningFeedback,
+  chooseNextAction,
+  choiceFeedback,
+  hasLearnerResponse,
+  libraryQuestionEvidence,
+  libraryQuestionWorkedAnswer,
+  marketSizingBankWorkedAnswer,
+  normalizeAttemptHistory,
+  numericFeedback,
+  resultOutcome,
+  retryAction,
+  workedAnswerReferenceText,
+  type AttemptHistoryEntry,
+  type WorkedAnswerModel,
+} from '../lib/caseResultModel';
+import { trackMove, trackStepError, trackStepView, useActiveTimeThreshold } from '../lib/engagementTracking';
+import { scoreBand } from '../lib/scorePresentation';
+import { openCasePoolCase, sourceFullCase } from './SolveFullCaseCta';
+import MarketSizingAnswerBuilder, {
+  MarketSizingAttemptSummary,
+  calculateMarketSizingResult,
+  createInitialMarketSizingDraft,
+  marketSizingGradableText,
+  normalizeMarketSizingDraft,
+  type MarketSizingAnswerDraft,
+} from './MarketSizingAnswerBuilder';
+import MarketSizingWorkedAnswer, { MarketSizingAttemptFeedback } from './MarketSizingWorkedAnswer';
+import { marketSizingWorkedAnswerModel, marketSizingWorkedModelForQuestion, parseComponentValue } from '../lib/marketSizingWorkedModels';
+import {
+  CREATIVITY_CATEGORY_DESCRIPTIONS,
+  CREATIVITY_CATEGORY_LABELS,
+  type CreativityCategory,
+} from '../lib/creativityCycle2';
+import {
+  MARKET_SIZING_FORMAT_DESCRIPTIONS,
+  MARKET_SIZING_FORMAT_LABELS,
+  type MarketSizingFormat,
+} from '../lib/marketSizingCycle3';
 
 const PAGE_SIZE = 20;
+const ENGAGEMENT_APP_ID = 'case-drill';
+const ENGAGEMENT_MODE = 'library';
 const DIFFICULTY_LABELS: Record<LibraryDifficulty, string> = {
   easy: 'Easy',
   medium: 'Medium',
@@ -76,16 +140,37 @@ function createLibraryEventId(): string {
   return `${hex.slice(0, 4).join('')}-${hex.slice(4, 6).join('')}-${hex.slice(6, 8).join('')}-${hex.slice(8, 10).join('')}-${hex.slice(10).join('')}`;
 }
 
-function capitaliseLineStarts(value: string): string {
-  return String(value || '')
+function capitaliseLineStarts(value: string, formatNumbers = false): string {
+  const capitalised = clarifyUnitText(String(value || ''))
     .replace(/\u2014/g, '-')
     .split('\n')
     .map((line) => line.replace(/^([^A-Za-zÀ-ỹ]*)([a-zà-ỹ])/, (_, prefix, first) => `${prefix}${first.toUpperCase()}`))
     .join('\n');
+  return formatNumbers ? formatNumbersInText(capitalised) : capitalised;
 }
+
+// Market Sizing views shadow `capitaliseLineStarts` locally so every rendered line also gets display-only thousands separators.
+const capitaliseWithNumbers = capitaliseLineStarts;
 
 function normalise(value: string): string {
   return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').trim();
+}
+
+/** A saved choice may use older unit wording ("VND 7.13bn"); it reopens as the current option it names. */
+function currentOptionFor(options: string[] | undefined, saved: string): string {
+  const list = options || [];
+  // Attempts saved before the month labels were spelled out ("M3" -> "Month 3") still reopen on the option they chose.
+  const spelledOut = saved.replace(/\bM([1-4])\b/g, 'Month $1');
+  return list.find((option) => sameUnitText(option, saved))
+    || list.find((option) => sameUnitText(option, spelledOut))
+    || saved;
+}
+
+function equivalentScaleHint(unitLabel: string): string {
+  if (!unitLabel) return '';
+  const spec = numericUnitSpec(unitLabel);
+  if (spec.scale <= 1 || !['currency', 'count', 'number'].includes(spec.kind)) return '';
+  return `Unit: ${unitLabel} · 1.5 or ${formatCanonicalNumber(1.5 * spec.scale)}${spec.currency ? ` ${spec.currency}` : ''} are both accepted`;
 }
 
 function isQuestionCompleted(questionId: string): boolean {
@@ -99,144 +184,178 @@ function difficultyClass(difficulty: LibraryDifficulty): string {
   return 'bg-[var(--space-semantic-warning-100)] text-[var(--space-neutral-800)]';
 }
 
-type MarketSizingOperator = '×' | '+' | '−' | '÷';
-
-interface MarketSizingFactor {
-  id: string;
-  label: string;
-  value: string;
-  operator: MarketSizingOperator;
+interface DrillLibraryAnswerSnapshot {
+  schemaVersion: 1 | 2;
+  kind: 'choice' | 'calculation' | 'market-sizing' | 'text';
+  candidateAnswer: string;
+  selectedOption: string;
+  answer: string;
+  working: string;
+  calculationAnswer: CalculationAnswerPayload;
+  marketSizingDraft?: MarketSizingAnswerDraft;
+  /** Legacy v1 fields are read only so old attempts reopen without errors. */
+  marketSizingFactors?: Array<Record<string, unknown>>;
+  marketSizingManualResult?: string;
+  marketSizingNotes?: Record<string, unknown>;
+  /** Up to five earlier graded attempts at this question, newest first. */
+  previousAttempts?: Array<{ score: number; scale: number; completedOn?: string }>;
 }
 
-function initialMarketSizingFactors(): MarketSizingFactor[] {
-  return [
-    { id: 'factor-1', label: '', value: '', operator: '×' },
-    { id: 'factor-2', label: '', value: '', operator: '×' },
-    { id: 'factor-3', label: '', value: '', operator: '×' },
-  ];
+interface DrillLibraryAttempt {
+  id: number;
+  session_id: string;
+  question_id: string;
+  skill?: string;
+  difficulty?: string;
+  answer_json: DrillLibraryAnswerSnapshot | string;
+  score: number;
+  scoring_json: HonestScoreResult | string;
+  status: string;
+  completed_on?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
-function parseMarketSizingValue(value: string): number | null {
-  const normalized = value.trim().replace(/,/g, '');
-  if (!normalized) return null;
-  const parsed = Number(normalized);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-function calculateMarketSizingResult(factors: MarketSizingFactor[]): number | null {
-  const terms: Array<{ value: number; operator: MarketSizingOperator }> = [];
-  factors.forEach((factor) => {
-    const value = parseMarketSizingValue(factor.value);
-    if (value !== null) terms.push({ value, operator: factor.operator });
-  });
-  if (terms.length === 0) return null;
-
-  // Follow standard arithmetic precedence: multiplication and division are
-  // evaluated within each term before addition or subtraction.
-  let total = 0;
-  let currentTerm = terms[0].value;
-  for (let index = 1; index < terms.length; index += 1) {
-    const { value, operator } = terms[index];
-    if (operator === '×') currentTerm *= value;
-    else if (operator === '÷') {
-      if (value === 0) return null;
-      currentTerm /= value;
-    } else {
-      total += currentTerm;
-      currentTerm = operator === '+' ? value : -value;
-    }
+function parseSavedObject<T>(value: T | string | null | undefined): T | null {
+  if (value && typeof value === 'object') return value as T;
+  if (typeof value !== 'string') return null;
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === 'object' ? parsed as T : null;
+  } catch {
+    return null;
   }
-  const result = total + currentTerm;
-  return Number.isFinite(result) ? result : null;
 }
 
-function formatMarketSizingResult(value: number): string {
-  return value.toLocaleString(undefined, { maximumFractionDigits: 6 });
+function formatCompletedDate(value?: string): string {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-function SolutionPanel({ question, isCorrect }: { question: LibraryQuestion; isCorrect: boolean | null }) {
-  return (
-    <section className="mt-4 overflow-hidden rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)]" data-testid="question-library-solution">
-      <div className="flex items-center gap-3 border-b border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-5 py-4">
-        <span className={`flex h-9 w-9 items-center justify-center rounded-full ${isCorrect === false ? 'bg-[color-mix(in_srgb,var(--space-semantic-warning)_14%,transparent)] text-[var(--space-semantic-warning)]' : 'bg-[color-mix(in_srgb,var(--space-semantic-success)_14%,transparent)] text-[var(--space-semantic-success)]'}`}>
-          <CheckCircle2 className="h-5 w-5" />
-        </span>
-        <div>
-          <p className="text-sm font-bold text-[var(--space-text-primary)]">
-            {question.skill === 'creativity'
-              ? 'One Possible Approach'
-              : isCorrect === null
-                ? 'Model Answer Revealed'
-                : isCorrect
-                  ? 'Correct Answer'
-                  : 'Review The Worked Solution'}
-          </p>
-          <p className="text-xs text-[var(--space-text-muted)]">
-            {question.skill === 'creativity'
-              ? 'Creativity questions can be tackled in many valid ways - use this as a structured example, not the only answer.'
-              : 'Use The Explanation To Check Your Logic, Not Only The Final Answer.'}
-          </p>
-        </div>
-      </div>
-      <div className="space-y-4 px-5 py-5 sm:px-7">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Answer</p>
-          <p className="mt-1.5 whitespace-pre-wrap text-base font-bold leading-7 text-[var(--space-text-primary)]">{capitaliseLineStarts(question.correctAnswer)}</p>
-        </div>
-        {question.stepByStepSolution?.length ? (
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Step-By-Step Solution</p>
-            <ol className="mt-2 space-y-2">
-              {question.stepByStepSolution.map((step, index) => <li key={index} className="flex gap-2 text-sm leading-6 text-[var(--space-text-secondary)]"><span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--space-surface-accent-soft)] text-[10px] font-bold text-[var(--space-text-brand)]">{index + 1}</span><span>{capitaliseLineStarts(step)}</span></li>)}
-            </ol>
-          </div>
-        ) : null}
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Explanation</p>
-          <p className="mt-1.5 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]">{capitaliseLineStarts(question.explanation)}</p>
-        </div>
-        {question.calibrationStatus === 'revised-v1' && question.alternativeConclusions?.length ? (
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Also Acceptable</p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-[var(--space-text-secondary)]">
-              {question.alternativeConclusions.map((answer) => <li key={answer}>{capitaliseLineStarts(answer)}</li>)}
-            </ul>
-          </div>
-        ) : null}
-        {question.calibrationStatus === 'revised-v1' && question.scoringRubric?.length ? (
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">Scoring Rubric</p>
-            <div className="mt-2 grid gap-2 sm:grid-cols-3">
-              {question.scoringRubric.map((item) => (
-                <div key={item.criterion} className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3">
-                  <p className="text-xs font-bold text-[var(--space-text-primary)]">{item.criterion} · {item.points} pts</p>
-                  <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">{capitaliseLineStarts(item.description)}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
-        {question.keyInsight ? <div className="rounded-xl bg-[var(--space-surface-accent-soft)] p-3 text-sm leading-6 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-brand)]">Key Insight:</span> {capitaliseLineStarts(question.keyInsight)}</div> : null}
-        {question.commonMistake ? <div className="text-sm leading-6 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-primary)]">Common Mistake:</span> {capitaliseLineStarts(question.commonMistake)}</div> : null}
-        {question.learningObjective ? <div className="text-sm leading-6 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-primary)]">Learning Objective:</span> {capitaliseLineStarts(question.learningObjective)}</div> : null}
-      </div>
-    </section>
-  );
+function scoringScale(scoring: HonestScoreResult | null): number {
+  return Number(scoring?.scale) === 10 ? 10 : 5;
 }
 
-export default function QuestionLibrary() {
+/** Score shown on a library row. Saved Easy Calculations that stored a Commercial interpretation score are recomputed from the four Easy criteria. */
+function attemptScoreFor(question: LibraryQuestion, attempt: DrillLibraryAttempt | undefined): number {
+  const stored = Number(attempt?.score) || 0;
+  const scoring = parseSavedObject<HonestScoreResult>(attempt?.scoring_json);
+  if (scoring && Array.isArray(scoring.criteria) && isEasyCalculation(question.skill, question.difficulty)) {
+    return Math.round(normalizeEasyCalculationScoring(scoring).overallScore);
+  }
+  return stored;
+}
+
+function calculationFinalAnswerSpecs(question: LibraryQuestion): CalculationFinalAnswerSpec[] {
+  if (question.calculationNumericChecks?.length) {
+    return question.calculationNumericChecks.map((check, index) => ({ id: `final-${index + 1}`, label: check.label, unit: check.unit, tolerance: check.tolerance }));
+  }
+  const parts = String(question.correctAnswer || '').split(';').map((part) => part.trim()).filter(Boolean);
+  return (parts.length ? parts : [question.correctAnswer]).map((part, index) => {
+    const currency = part.match(/\b(VND|USD)\s+(billion|million|thousand)?/i);
+    const count = part.match(/\b(sales|units|packs|bottles|orders|buyers|customers|people|subscriber-months|subscribers|years)\b/i);
+    // The result quantity wins over incidental percentages in surrounding copy:
+    // “VND 4.8bn below the 10% plan” is currency; “500 sales (15%)” is sales.
+    const unit = currency
+      ? `${currency[1].toUpperCase()}${currency[2] ? ` ${currency[2].toLowerCase()}` : ''}`
+      : count
+        ? count[1]
+        : /percentage[ -]?points?|\bpp\b/i.test(part)
+          ? 'percentage points'
+          : /%|\bpercent/i.test(part)
+            ? '%'
+            : index === 0 ? question.answerUnit : undefined;
+    const resultId = `final-${index + 1}`;
+    const finalFormula = question.calculationResultFormulas?.[resultId]?.slice(-1)[0] || '';
+    const displayedDecimals = (finalFormula.split('=').pop() || '').match(/\.(\d+)/)?.[1]?.length || 0;
+    const inferredTolerance = count ? 0 : displayedDecimals ? 0.5 * (10 ** -displayedDecimals) : 0;
+    return {
+      id: resultId,
+      label: question.calculationResultNames?.[index] || (index === 0 ? `${question.title} Result` : `${question.title} Comparison`),
+      unit,
+      tolerance: index === 0 && question.numericTolerance != null ? question.numericTolerance : inferredTolerance,
+    };
+  });
+}
+
+function calculationWorkedResults(question: LibraryQuestion): CalculationResultSummary[] {
+  const specs = calculationFinalAnswerSpecs(question);
+  const parts = String(question.correctAnswer || '').split(';').map((part) => part.trim()).filter(Boolean);
+  return specs.map((spec, index) => ({
+    id: spec.id,
+    label: spec.label,
+    value: parts[index] || (index === 0 ? question.correctAnswer : 'See the worked explanation'),
+    unit: spec.unit,
+    formulas: question.calculationResultFormulas?.[spec.id] || [],
+  }));
+}
+
+function calculationWorkedItems(question: LibraryQuestion): CalculationWorkedItem[] {
+  return calculationWorkedResults(question).map((result) => {
+    const needsUnit = Boolean(result.unit) && !result.value.toLowerCase().includes(String(result.unit).toLowerCase());
+    return {
+      id: result.id,
+      label: result.label,
+      answer: needsUnit ? `${result.value} ${result.unit}` : result.value,
+      formula: result.formulas.join('  |  '),
+      steps: question.calculationWorkedSteps?.[result.id] || [],
+    };
+  });
+}
+
+function workedInputLines(question: LibraryQuestion): string[] {
+  const exhibits = question.exhibits?.length ? question.exhibits : question.exhibit ? [question.exhibit] : [];
+  const lines: string[] = [];
+  exhibits.forEach((exhibit) => {
+    if (exhibit.columns?.length && exhibit.rows?.length) {
+      exhibit.rows.slice(0, 6).forEach((row) => lines.push(row.map((cell, index) => `${exhibit.columns?.[index] || 'Value'}: ${cell}`).join(' · ')));
+    } else if (exhibit.labels?.length && exhibit.values?.length) {
+      exhibit.labels.slice(0, 6).forEach((label, index) => lines.push(`${label}: ${exhibit.values?.[index]}${exhibit.unit ? ` ${exhibit.unit}` : ''}`));
+    } else if (exhibit.categories?.length && exhibit.series?.length) {
+      exhibit.series.slice(0, 3).forEach((series) => lines.push(`${series.name}: ${exhibit.categories?.map((category, index) => `${category} ${series.displayValues?.[index] ?? series.values[index]}`).join(' · ')}`));
+    }
+  });
+  return lines.slice(0, 8);
+}
+
+/** The worked answer for a library question. The grader receives the same text, so the score and the worked answer share one source. */
+function libraryWorkedAnswerFor(question: LibraryQuestion): WorkedAnswerModel | null {
+  const sizingModel = marketSizingWorkedModelForQuestion(question);
+  if (sizingModel) return sizingModel.contentRepair ? null : marketSizingWorkedAnswerModel(sizingModel);
+  if (question.marketSizingBank) return marketSizingBankWorkedAnswer(getMarketSizingBankCase(question.sourceCaseId), MARKET_SIZING_REVEAL_NOTICE);
+  return libraryQuestionWorkedAnswer(question, question.skill === 'calculations'
+    ? { calculations: calculationWorkedItems(question), inputLines: workedInputLines(question) }
+    : {});
+}
+
+const COMPACT_TABLE_KINDS = ['table', 'financial-table', 'market-sizing-table', 'sensitivity-table', 'kpi-scorecard'];
+
+function isCompactSingleChart(question: LibraryQuestion): boolean {
+  if (question.skill === 'structures' || question.skill === 'creativity' || question.structuredAnswer) return false;
+  if (question.sourceCaseId?.startsWith('CM-')) return false;
+  const exhibits = question.exhibits?.length ? question.exhibits : question.exhibit ? [question.exhibit] : [];
+  return exhibits.length === 1 && !COMPACT_TABLE_KINDS.includes(exhibits[0].kind);
+}
+
+export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLayoutChange?: (compact: boolean) => void } = {}) {
   const { sessionId, visitorId, spaceId, trackEvent } = useSpaceRuntime();
   const [skill, setSkill] = useState<LibrarySkill>('charts');
   const [difficulty, setDifficulty] = useState<LibraryDifficulty | 'all'>('all');
+  const [creativityCategory, setCreativityCategory] = useState<CreativityCategory | 'all'>('all');
+  const [marketSizingFormat, setMarketSizingFormat] = useState<MarketSizingFormat | 'all'>('all');
   const [query, setQuery] = useState('');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [active, setActive] = useState<LibraryQuestion | null>(null);
   const [selectedOption, setSelectedOption] = useState('');
   const [answer, setAnswer] = useState('');
   const [working, setWorking] = useState('');
-  const [marketSizingFactors, setMarketSizingFactors] = useState<MarketSizingFactor[]>(initialMarketSizingFactors);
-  const [marketSizingManualResult, setMarketSizingManualResult] = useState('');
+  const [calculationAnswer, setCalculationAnswer] = useState<CalculationAnswerPayload>(() => createCalculationAnswerPayload([{ id: 'final-1', label: 'Final result' }], 1));
+  const [marketSizingDraft, setMarketSizingDraft] = useState<MarketSizingAnswerDraft>(createInitialMarketSizingDraft);
   const [submitted, setSubmitted] = useState(false);
+  const [grading, setGrading] = useState(false);
+  const [scoreResult, setScoreResult] = useState<HonestScoreResult | null>(null);
   const [validationError, setValidationError] = useState('');
   const [journey, setJourney] = useState('all');
   const [drillType, setDrillType] = useState('all');
@@ -246,9 +365,41 @@ export default function QuestionLibrary() {
   const [completion, setCompletion] = useState<'all' | 'completed' | 'not-completed'>('all');
   const [recommendedOnly, setRecommendedOnly] = useState(false);
   const [completionVersion, setCompletionVersion] = useState(0);
+  const [confirmRedo, setConfirmRedo] = useState(false);
+  const [shownCompletedOn, setShownCompletedOn] = useState('');
+  const [attemptHistory, setAttemptHistory] = useState<AttemptHistoryEntry[]>([]);
   const libraryOpenedTrackedRef = useRef(false);
   const submittedAttemptRef = useRef(false);
   const explanationViewedRef = useRef(false);
+  const [trackedItemId, setTrackedItemId] = useState<string | null>(null);
+  const lastTrackedItemIdRef = useRef<string | null>(null);
+  const trackedItemOpenedAtRef = useRef(0);
+  const solvingTrackedItemRef = useRef<string | null>(null);
+
+  const {
+    data: attemptRows,
+    loading: attemptsLoading,
+    error: attemptsError,
+    refresh: refreshAttempts,
+  } = window.useWorkspaceDB<DrillLibraryAttempt>('drill_library_attempts', {
+    filters: [{ column: 'session_id', operator: 'eq', value: sessionId || '__no_session__' }],
+    orderBy: { column: 'completed_on', direction: 'desc' },
+    limit: 1000,
+  });
+
+  const attemptByQuestion = useMemo(() => {
+    const byQuestion = new Map<string, DrillLibraryAttempt>();
+    (attemptRows || []).forEach((row) => {
+      if (row.status !== 'completed' || !row.question_id || byQuestion.has(row.question_id)) return;
+      byQuestion.set(row.question_id, row);
+    });
+    return byQuestion;
+  }, [attemptRows]);
+
+  const isCompleted = useCallback((questionId: string) => (
+    attemptByQuestion.has(questionId) || isQuestionCompleted(questionId)
+  ), [attemptByQuestion, completionVersion]);
+  const listScore = (question: LibraryQuestion) => attemptScoreFor(question, attemptByQuestion.get(question.id));
 
   const libraryUserKey = useMemo(() => {
     try {
@@ -309,12 +460,73 @@ export default function QuestionLibrary() {
     void emitLibraryEvent('drill_library_opened', 'open', {});
   }, [sessionId, emitLibraryEvent]);
 
+  const trackChooseCase = (item: Pick<LibraryQuestion, 'id' | 'skill' | 'difficulty'>, viaNextButton = false) => {
+    const previousItemId = lastTrackedItemIdRef.current;
+    if (previousItemId && previousItemId !== item.id && !viaNextButton) {
+      trackMove(ENGAGEMENT_APP_ID, 'self_exit_choose_other', {
+        mode: ENGAGEMENT_MODE,
+        properties: { from_item_id: previousItemId, to_item_id: item.id },
+      });
+    }
+    lastTrackedItemIdRef.current = item.id;
+    trackedItemOpenedAtRef.current = Date.now();
+    setTrackedItemId(item.id);
+    trackStepView(ENGAGEMENT_APP_ID, 'choose_case', {
+      mode: ENGAGEMENT_MODE,
+      dedupeKey: item.id,
+      properties: { question_id: item.id, skill: item.skill, difficulty: item.difficulty },
+    });
+  };
+
+  const trackSolving = (trigger: 'active_2min' | 'answer_typed', activeSeconds: number | null = null) => {
+    if (!active || !trackedItemId || solvingTrackedItemRef.current === trackedItemId) return;
+    solvingTrackedItemRef.current = trackedItemId;
+    trackStepView(ENGAGEMENT_APP_ID, 'solving_case', {
+      mode: ENGAGEMENT_MODE,
+      dedupeKey: trackedItemId,
+      properties: {
+        question_id: trackedItemId,
+        trigger,
+        active_seconds: activeSeconds,
+        seconds_since_open: Math.round((Date.now() - trackedItemOpenedAtRef.current) / 1000),
+      },
+    });
+  };
+
+  const trackAnswer = (itemId: string, scoring?: HonestScoreResult | null) => {
+    trackStepView(ENGAGEMENT_APP_ID, 'answer', {
+      mode: ENGAGEMENT_MODE,
+      dedupeKey: itemId,
+      properties: {
+        question_id: itemId,
+        score: scoring && Number.isFinite(Number(scoring.overallScore)) ? Math.round(Number(scoring.overallScore)) : null,
+        score_scale: scoring ? scoringScale(scoring) : null,
+      },
+    });
+  };
+
+  const trackLibraryError = (stepName: 'choose_case' | 'answer', error: unknown, itemId?: string | null) => {
+    trackStepError(ENGAGEMENT_APP_ID, stepName, error, { mode: ENGAGEMENT_MODE, properties: { question_id: itemId ?? null } });
+  };
+
+  useActiveTimeThreshold(Boolean(active) && !submitted && Boolean(trackedItemId), trackedItemId, (activeSeconds) => trackSolving('active_2min', activeSeconds));
+
+  useEffect(() => {
+    if (attemptsError) trackLibraryError('choose_case', attemptsError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attemptsError]);
+
   const libraryErrors = useMemo(() => validateQuestionLibrary(), []);
+  useEffect(() => {
+    if (libraryErrors.length > 0) console.warn('[Question Library] content audit findings (not shown to learners):', libraryErrors);
+  }, [libraryErrors]);
+  const answerKeySyncQuestions = useMemo(() => [...ALL_LIBRARY_QUESTIONS, ...ALL_LIBRARY_QUESTIONS.map(restoreArchivedHardQuestion)], []);
+  const answerKeySyncStatus = useFounderAnswerKeySync(sessionId, spaceId, answerKeySyncQuestions);
   const marketSizingCalculation = useMemo(
-    () => calculateMarketSizingResult(marketSizingFactors),
-    [marketSizingFactors],
+    () => calculateMarketSizingResult(marketSizingDraft.components),
+    [marketSizingDraft.components],
   );
-  const marketSizingResult = marketSizingCalculation === null ? marketSizingManualResult : String(marketSizingCalculation);
+  const marketSizingResult = marketSizingCalculation.result === null ? marketSizingDraft.manualResult : String(marketSizingCalculation.result);
   const skillMeta = SKILL_META.find((item) => item.id === skill) || SKILL_META[0];
   const questions = QUESTION_LIBRARY[skill];
   const visibleQuestions = useMemo(
@@ -324,8 +536,12 @@ export default function QuestionLibrary() {
     [questions],
   );
   const difficultyQuestions = useMemo(
-    () => difficulty === 'all' ? visibleQuestions : visibleQuestions.filter((question) => question.difficulty === difficulty),
-    [visibleQuestions, difficulty],
+    () => visibleQuestions.filter((question) => {
+      if (skill === 'creativity') return creativityCategory === 'all' || question.creativityCategory === creativityCategory;
+      if (skill === 'market-sizing' && marketSizingFormat !== 'all' && question.marketSizingFormat !== marketSizingFormat) return false;
+      return difficulty === 'all' || displayDifficultyOf(question) === difficulty;
+    }),
+    [visibleQuestions, skill, difficulty, creativityCategory, marketSizingFormat],
   );
   const filterOptions = useMemo(() => ({
     journeyIds: [...new Set(difficultyQuestions.map((question) => question.journeyId).filter(Boolean))] as string[],
@@ -338,7 +554,7 @@ export default function QuestionLibrary() {
     // Preserve explicit next-drill chains (used by Expert and the new Hard set)
     // whenever the learner has completed the source drill.
     ALL_LIBRARY_QUESTIONS.forEach((question) => {
-      if (isQuestionCompleted(question.id) && question.recommendedNextDrillId) ids.add(question.recommendedNextDrillId);
+      if (isCompleted(question.id) && question.recommendedNextDrillId) ids.add(question.recommendedNextDrillId);
     });
     // Every difficulty also receives progress-aware fallbacks: the first
     // incomplete drill in each drill type. This keeps recommendations useful
@@ -346,17 +562,22 @@ export default function QuestionLibrary() {
     const representedTypes = new Set<string>();
     difficultyQuestions.forEach((question) => {
       const type = question.drillType || question.skill;
-      if (!isQuestionCompleted(question.id) && !representedTypes.has(type)) {
+      if (!isCompleted(question.id) && !representedTypes.has(type)) {
         representedTypes.add(type);
         ids.add(question.id);
       }
     });
     return ids;
-  }, [difficultyQuestions, completionVersion]);
+  }, [difficultyQuestions, isCompleted]);
   const matches = useMemo(() => {
     const needle = normalise(query);
     const filtered = visibleQuestions.filter((question) => {
-      if (difficulty !== 'all' && question.difficulty !== difficulty) return false;
+      if (skill === 'creativity') {
+        if (creativityCategory !== 'all' && question.creativityCategory !== creativityCategory) return false;
+      } else {
+        if (difficulty !== 'all' && displayDifficultyOf(question) !== difficulty) return false;
+        if (skill === 'market-sizing' && marketSizingFormat !== 'all' && question.marketSizingFormat !== marketSizingFormat) return false;
+      }
       if (journey === 'journeys-only' && !question.journeyId) return false;
       if (journey === 'standalone' && question.journeyId) return false;
       if (journey !== 'all' && journey !== 'journeys-only' && journey !== 'standalone' && question.journeyId !== journey) return false;
@@ -365,15 +586,17 @@ export default function QuestionLibrary() {
       if (businessProblem !== 'all' && question.businessProblem !== businessProblem) return false;
       if (estimatedTime === 'under-10' && (!question.estimatedMinutes || question.estimatedMinutes >= 10)) return false;
       if (estimatedTime === '10-plus' && (!question.estimatedMinutes || question.estimatedMinutes < 10)) return false;
-      const completed = isQuestionCompleted(question.id);
+      const completed = isCompleted(question.id);
       if (completion === 'completed' && !completed) return false;
       if (completion === 'not-completed' && completed) return false;
       if (recommendedOnly && !recommendedIds.has(question.id)) return false;
       if (!needle) return true;
       return normalise(`${question.title} ${question.question} ${question.explanation} ${question.drillType || ''} ${question.industry || ''} ${question.businessProblem || ''}`).includes(needle);
     });
-    return filtered.sort((a, b) => DIFFICULTY_RANK[a.difficulty] - DIFFICULTY_RANK[b.difficulty]);
-  }, [visibleQuestions, difficulty, query, journey, drillType, industry, businessProblem, estimatedTime, completion, recommendedOnly, recommendedIds, completionVersion]);
+    return skill === 'creativity'
+      ? filtered.sort((a, b) => String(a.sourceCaseId || '').localeCompare(String(b.sourceCaseId || '')))
+      : filtered.sort((a, b) => DIFFICULTY_RANK[displayDifficultyOf(a)] - DIFFICULTY_RANK[displayDifficultyOf(b)]);
+  }, [visibleQuestions, skill, difficulty, creativityCategory, marketSizingFormat, query, journey, drillType, industry, businessProblem, estimatedTime, completion, recommendedOnly, recommendedIds, isCompleted]);
 
   useEffect(() => {
     const namedJourney = journey !== 'all' && journey !== 'journeys-only' && journey !== 'standalone';
@@ -384,11 +607,17 @@ export default function QuestionLibrary() {
   }, [difficulty, filterOptions, journey, drillType, industry, businessProblem]);
 
   useEffect(() => {
+    if (difficulty !== 'all' && !difficultyFilterLevelsFor(skill).includes(difficulty)) setDifficulty('all');
+  }, [skill, difficulty]);
+
+  useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [skill, difficulty, query, journey, drillType, industry, businessProblem, estimatedTime, completion, recommendedOnly]);
+  }, [skill, difficulty, creativityCategory, marketSizingFormat, query, journey, drillType, industry, businessProblem, estimatedTime, completion, recommendedOnly]);
 
   const clearFilters = () => {
     setQuery('');
+    setCreativityCategory('all');
+    setMarketSizingFormat('all');
     setJourney('all');
     setDrillType('all');
     setIndustry('all');
@@ -398,21 +627,75 @@ export default function QuestionLibrary() {
     setRecommendedOnly(false);
   };
 
-  const resetAttempt = () => {
+  const resetAttempt = (question?: LibraryQuestion) => {
     submittedAttemptRef.current = false;
     explanationViewedRef.current = false;
     setSelectedOption('');
     setAnswer('');
     setWorking('');
-    setMarketSizingFactors(initialMarketSizingFactors());
-    setMarketSizingManualResult('');
+    setCalculationAnswer(createCalculationAnswerPayload(
+      question ? calculationFinalAnswerSpecs(question) : [{ id: 'final-1', label: 'Final result' }],
+      question && (question.difficulty === 'hard' || question.difficulty === 'expert') ? 2 : 1,
+    ));
+    setMarketSizingDraft(createInitialMarketSizingDraft());
     setSubmitted(false);
+    setGrading(false);
+    setScoreResult(null);
     setValidationError('');
+    setConfirmRedo(false);
+    setShownCompletedOn('');
+    setAttemptHistory([]);
   };
 
-  const openQuestion = (question: LibraryQuestion) => {
+  const redoAttempt = () => {
+    if (!active) return;
+    resetAttempt(active);
+  };
+
+  const openQuestion = (question: LibraryQuestion, viaNextButton = false) => {
     setActive(question);
-    resetAttempt();
+    resetAttempt(question);
+    const savedAttempt = attemptByQuestion.get(question.id);
+    if (savedAttempt) {
+      const savedScoring = parseSavedObject<HonestScoreResult>(savedAttempt.scoring_json);
+      const savedAnswer = parseSavedObject<DrillLibraryAnswerSnapshot>(savedAttempt.answer_json);
+      if (savedScoring && Array.isArray(savedScoring.criteria) && savedAnswer) {
+        setSelectedOption(currentOptionFor(question.options, savedAnswer.selectedOption || ''));
+        setAnswer(savedAnswer.answer || '');
+        setWorking(savedAnswer.working || '');
+        const currentCalculationSpecs = calculationFinalAnswerSpecs(question);
+        const currentCalculationAnswer = savedAnswer.calculationAnswer
+          ? {
+              ...savedAnswer.calculationAnswer,
+              finalAnswers: savedAnswer.calculationAnswer.finalAnswers.map((saved, index) => ({
+                ...saved,
+                ...(currentCalculationSpecs[index] || {}),
+                value: saved.value,
+              })),
+            }
+          : null;
+        if (currentCalculationAnswer) setCalculationAnswer(currentCalculationAnswer);
+        setMarketSizingDraft(normalizeMarketSizingDraft(
+          savedAnswer.marketSizingDraft,
+          savedAnswer.marketSizingFactors,
+          savedAnswer.marketSizingManualResult,
+        ));
+        // Calculations attempts are re-marked with the current rules so the reopened score matches a fresh one.
+        const remarked = question.skill === 'calculations' && currentCalculationAnswer
+          ? scoreLibraryCalculation(question, currentCalculationAnswer)
+          : null;
+        setScoreResult(remarked || savedScoring);
+        setShownCompletedOn(savedAttempt.completed_on || '');
+        setAttemptHistory(normalizeAttemptHistory(savedAnswer.previousAttempts));
+        setSubmitted(true);
+        submittedAttemptRef.current = true;
+        try { localStorage.setItem(`casemate-expert-completed:${question.id}`, savedAttempt.completed_on || new Date().toISOString()); } catch { /* Best-effort completion fallback. */ }
+      } else {
+        setValidationError('Your saved completion was found, but its feedback could not be opened. You can submit a fresh attempt without deleting the saved row first.');
+        trackLibraryError('choose_case', 'saved_feedback_unreadable', question.id);
+      }
+    }
+    trackChooseCase(question, viaNextButton);
     void emitLibraryEvent('drill_question_opened', 'step', {
       question_id: question.id,
       skill: question.skill,
@@ -425,6 +708,7 @@ export default function QuestionLibrary() {
   // listener also covers a Case Drill window that is already mounted.
   useEffect(() => {
     const consumeRequest = () => {
+      if (attemptsLoading) return;
       try {
         const id = sessionStorage.getItem('casemate-open-case-drill');
         if (!id) return;
@@ -446,11 +730,13 @@ export default function QuestionLibrary() {
     // The request is event-driven; re-registering on every render would risk
     // consuming the same navigation twice.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [attemptsLoading]);
 
   const switchSkill = (nextSkill: LibrarySkill) => {
     setSkill(nextSkill);
     setDifficulty('all');
+    setCreativityCategory('all');
+    setMarketSizingFormat('all');
     setQuery('');
     setJourney('all');
     setDrillType('all');
@@ -469,36 +755,169 @@ export default function QuestionLibrary() {
     if (pool.length === 0) return;
     const nextQuestion = pool[Math.floor(Math.random() * pool.length)];
     if (active) void emitLibraryEvent('drill_next_question', 'retention', { question_id: nextQuestion.id });
-    openQuestion(nextQuestion);
+    if (active) trackMove(ENGAGEMENT_APP_ID, 'next_case_button', { mode: ENGAGEMENT_MODE, properties: { from_item_id: active.id, to_item_id: nextQuestion.id } });
+    openQuestion(nextQuestion, Boolean(active));
   };
 
-  const submit = () => {
-    if (!active) return;
-    if (active.skill !== 'market-sizing' && active.answerMode === 'choice' && !selectedOption) {
-      setValidationError('Choose An Answer Before Submitting.');
+  const submit = async () => {
+    if (!active || grading) return;
+    if (active.skill === 'market-sizing' && Object.keys(marketSizingCalculation.errors).length > 0) {
+      setValidationError('Fix the invalid Component values before submitting.');
       return;
     }
-    if (active.skill === 'market-sizing' && !marketSizingResult.trim()) {
-      setValidationError('Build Your Formula Or Enter A Final Market Size Before Submitting.');
+    const simpleNumeric = active.skill !== 'market-sizing'
+      && active.skill !== 'calculations'
+      && (active.answerMode === 'number' || active.answerMode === 'percentage' || active.answerMode === 'currency');
+    const normalizedNumeric = simpleNumeric && active.numericAnswer != null
+      ? gradeNumericQuantity(answer, active.numericAnswer, active.answerUnit, active.numericTolerance ?? 0)
+      : null;
+    if (normalizedNumeric && (!normalizedNumeric.ok || normalizedNumeric.value === null)) {
+      setValidationError(normalizedNumeric.message || `Enter one value in ${active.answerUnit || 'the requested unit'}.`);
       return;
     }
-    if (active.skill !== 'market-sizing' && active.answerMode !== 'choice' && !answer.trim() && !working.trim()) {
-      setValidationError('Enter Your Answer Or Working Before Submitting.');
-      return;
-    }
+    const normalizedAnswerText = normalizedNumeric?.value != null
+      ? `${formatCanonicalNumber(normalizedNumeric.value)}${active.answerUnit ? ` ${active.answerUnit}` : ''}`
+      : answer.trim();
+    const candidateAnswer = active.skill === 'market-sizing'
+      ? marketSizingGradableText(marketSizingDraft, active.answerUnit)
+      : active.skill === 'calculations'
+        ? serializeCalculationAnswer(calculationAnswer, { includeCaveat: !isEasyCalculation(active.skill, active.difficulty) })
+        : (active.answerMode === 'choice' || active.answerMode === 'multiple-choice')
+          ? selectedOption
+          : [normalizedAnswerText ? `Final answer: ${normalizedAnswerText}` : '', working.trim()].filter(Boolean).join('\n\n');
     setValidationError('');
-    if (!submittedAttemptRef.current) {
-      submittedAttemptRef.current = true;
-      void emitLibraryEvent('drill_answer_submitted', 'core_action', {
+    setGrading(true);
+    try {
+      const answerSnapshot: DrillLibraryAnswerSnapshot = {
+        schemaVersion: 2,
+        kind: active.skill === 'market-sizing'
+          ? 'market-sizing'
+          : active.skill === 'calculations'
+            ? 'calculation'
+            : (active.answerMode === 'choice' || active.answerMode === 'multiple-choice')
+              ? 'choice'
+              : 'text',
+        candidateAnswer,
+        selectedOption,
+        answer,
+        working,
+        calculationAnswer,
+        marketSizingDraft,
+      };
+      const calculationScoring = active.skill === 'calculations' ? scoreLibraryCalculation(active, calculationAnswer) : null;
+      // MCQs and direct numeric answers are exact/tolerance checks. They must
+      // never depend on an LLM interpretation or disagree with the visible key.
+      const isChoiceQuestion = active.answerMode === 'choice' || active.answerMode === 'multiple-choice';
+      const localObjectiveCorrect = isChoiceQuestion
+        ? sameUnitText(selectedOption, active.correctAnswer)
+        : simpleNumeric && normalizedNumeric
+          ? normalizedNumeric.correct
+          : null;
+      const localObjectiveScoring = localObjectiveCorrect === null
+        ? null
+        : objectiveScoreResult(localObjectiveCorrect, isChoiceQuestion ? selectedOption : normalizedAnswerText, active.correctAnswer);
+      // While the bundle still ships keys, a server verdict that disagrees with it is logged server-side and the bundled result is kept.
+      const serverObjective = !calculationScoring && localObjectiveCorrect !== null
+        ? await gradeObjectiveOnServer({
+            question: active,
+            sessionId,
+            mode: isChoiceQuestion ? 'choice' : 'numeric',
+            selectedOption,
+            answer,
+            evidence: normalizedAnswerText,
+            localCorrect: localObjectiveCorrect,
+          })
+        : null;
+      const objectiveScoring = serverObjective && serverObjective.correct === localObjectiveCorrect
+        ? serverObjective.scoring
+        : localObjectiveScoring;
+      const scoring = calculationScoring || objectiveScoring || await gradeCaseExercise({
+        exerciseType: active.skill === 'calculations'
+          ? (isEasyCalculation(active.skill, active.difficulty) ? 'calculations_easy' : 'calculations_cycle_1')
+          : active.marketSizingFormat === 'provided-data'
+            ? 'market_sizing_provided'
+            : active.marketSizingFormat === 'ambiguous-estimation'
+              ? 'market_sizing_ambiguous'
+              : active.skill,
+        title: active.title,
+        question: active.question,
+        caseContext: active.businessContext || active.instruction || '',
+        exhibits: JSON.stringify(active.exhibits?.length ? active.exhibits : active.exhibit ? [active.exhibit] : []),
+        referenceAnswer: workedAnswerReferenceText(libraryWorkedAnswerFor(active)) || undefined,
+        answer: candidateAnswer,
+        calculationSubmission: active.skill === 'calculations' ? calculationAnswer : undefined,
+      });
+      if (!scoring || !Number.isFinite(Number(scoring.overallScore)) || !Array.isArray(scoring.criteria) || scoring.criteria.length === 0) {
+        throw new Error('Mate returned incomplete feedback, so nothing was saved. Please try again.');
+      }
+      const completedOn = new Date().toISOString();
+      const db = (window as any).__workspaceDb;
+      if (!db?.from || !sessionId) throw new Error('Mate graded your answer, but your saved progress is unavailable. Please sign in and try again.');
+      const persisted = await db
+        .from('drill_library_attempts')
+        .eq('session_id', sessionId)
+        .eq('question_id', active.id)
+        .limit(1)
+        .get();
+      const currentRow = Array.isArray(persisted?.data) ? persisted.data[0] : null;
+      const previousScoring = parseSavedObject<HonestScoreResult>(currentRow?.scoring_json);
+      const previousSnapshot = parseSavedObject<DrillLibraryAnswerSnapshot>(currentRow?.answer_json);
+      const previousAttempts = normalizeAttemptHistory([
+        ...(currentRow?.status === 'completed' && previousScoring ? [{ score: Number(currentRow.score), scale: scoringScale(previousScoring), completedOn: currentRow.completed_on }] : []),
+        ...(previousSnapshot?.previousAttempts || []),
+      ]);
+      answerSnapshot.previousAttempts = previousAttempts;
+      const savedValues = {
         question_id: active.id,
         skill: active.skill,
         difficulty: active.difficulty,
-        answer_mode: active.answerMode,
-      }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
+        answer_json: answerSnapshot,
+        score: Math.round(Number(scoring.overallScore)),
+        scoring_json: scoring,
+        status: 'completed',
+        completed_on: completedOn,
+        updated_at: completedOn,
+      };
+      if (currentRow?.id) {
+        await db.from('drill_library_attempts').update(currentRow.id, savedValues);
+      } else {
+        await db.from('drill_library_attempts').insert({
+          session_id: sessionId,
+          question_id: active.id,
+          skill: active.skill,
+          difficulty: active.difficulty,
+          answer_json: answerSnapshot,
+          score: Math.round(Number(scoring.overallScore)),
+          scoring_json: scoring,
+          status: 'completed',
+          completed_on: completedOn,
+          created_at: completedOn,
+          updated_at: completedOn,
+        });
+      }
+      setScoreResult(scoring);
+      setShownCompletedOn(completedOn);
+      setAttemptHistory(previousAttempts);
+      refreshAttempts();
+      if (!submittedAttemptRef.current) {
+        submittedAttemptRef.current = true;
+        void emitLibraryEvent('drill_answer_submitted', 'core_action', {
+          question_id: active.id,
+          skill: active.skill,
+          difficulty: active.difficulty,
+          answer_mode: active.answerMode,
+        }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
+      }
+      trackAnswer(active.id, scoring);
+      try { localStorage.setItem(`casemate-expert-completed:${active.id}`, completedOn); } catch { /* Best-effort completion filter. */ }
+      setCompletionVersion((version) => version + 1);
+      setSubmitted(true);
+    } catch (gradeError) {
+      setValidationError(gradeError instanceof Error ? gradeError.message : 'Mate could not grade this answer. Your work is unchanged; please try again.');
+      trackLibraryError('answer', gradeError, active.id);
+    } finally {
+      setGrading(false);
     }
-    try { localStorage.setItem(`casemate-expert-completed:${active.id}`, new Date().toISOString()); } catch { /* Best-effort completion filter. */ }
-    setCompletionVersion((version) => version + 1);
-    setSubmitted(true);
   };
 
   useEffect(() => {
@@ -511,25 +930,72 @@ export default function QuestionLibrary() {
     });
   }, [submitted, active, emitLibraryEvent]);
 
-  const isCorrect = useMemo(() => {
-    if (!active || !submitted) return null;
-    if (active.answerMode === 'text') return null;
-    if (active.skill !== 'market-sizing' && active.answerMode === 'choice') return selectedOption === active.correctAnswer;
-    const valueToGrade = active.skill === 'market-sizing' ? marketSizingResult : answer;
-    const parsed = Number(valueToGrade.replace(/,/g, '').replace(/[^0-9.-]/g, ''));
-    if (!Number.isFinite(parsed) || active.numericAnswer == null) return false;
-    return Math.abs(parsed - active.numericAnswer) <= (active.numericTolerance || 0.01);
-  }, [active, submitted, selectedOption, answer, marketSizingResult]);
+  const hasUnfinishedAnswer = Boolean(
+    !submitted && active && (
+      selectedOption.trim() || answer.trim() || working.trim() || calculationAnswer.caveat.trim()
+      || calculationAnswer.finalAnswers.some((item) => item.value.trim())
+      || calculationAnswer.formulaRows.some((row) => row.numbers.some((item) => item.value.trim() || item.label.trim()))
+      || marketSizingDraft.manualResult?.trim()
+      || marketSizingDraft.components.some((component: any) => String(component?.value ?? '').trim())
+    )
+  );
+  const backToLibrary = () => {
+    if (hasUnfinishedAnswer && !window.confirm('Back to the Question Library? Your unfinished answer on this question will be discarded.')) return;
+    setConfirmRedo(false);
+    setActive(null);
+  };
+
+  const compactSingleChart = Boolean(active && isCompactSingleChart(active));
+  useEffect(() => {
+    onCompactLayoutChange?.(compactSingleChart);
+    return () => onCompactLayoutChange?.(false);
+  }, [compactSingleChart, onCompactLayoutChange]);
+
+  if (active?.sourceCaseId?.startsWith('CM-CRE-')) {
+    return (
+      <CreativityCaseExperience
+        question={active}
+        onBack={backToLibrary}
+        hideEvidenceColumn
+        onSubmitted={() => { setCompletionVersion((version) => version + 1); refreshAttempts(); }}
+        onAnswerInput={() => trackSolving('answer_typed')}
+        onGraded={(scoring) => trackAnswer(active.id, scoring)}
+        onGradeError={(error) => trackLibraryError('answer', error, active.id)}
+      />
+    );
+  }
+
+  if (active?.sourceCaseId?.startsWith('CM-CALC-')) {
+    return (
+      <CalculationCaseExperience
+        question={active}
+        onBack={backToLibrary}
+        onAnswerInput={() => trackSolving('answer_typed')}
+        hideEvidenceColumn
+        onSubmitted={() => {
+          setCompletionVersion((version) => version + 1);
+          refreshAttempts();
+          void emitLibraryEvent('drill_answer_submitted', 'core_action', { question_id: active.id, skill: active.skill, difficulty: active.difficulty, answer_mode: 'calculation-cycle-1' }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
+          trackAnswer(active.id);
+        }}
+      />
+    );
+  }
 
   if (active?.skill === 'structures') {
     return (
-      <div className="mt-5" data-testid="question-library-active-structures">
-        <button type="button" onClick={() => setActive(null)} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.ghost}`}>
+      <div className="mt-5" data-testid="question-library-active-structures" onInputCapture={(event) => { if (!(event.target as HTMLElement).closest('[data-testid="structures-library"]')) trackSolving('answer_typed'); }}>
+        <button type="button" onClick={backToLibrary} className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold ${tw.button.secondary}`}>
           <ArrowLeft className="h-4 w-4" />
-          Back To Structures Library
+          Back to Structures Library
         </button>
         <StructuresWorkspace
           initialCaseId={active.id}
+          onBackToLibrary={() => setActive(null)}
+          hideEvidenceColumn
+          onCaseSelected={(item) => trackChooseCase(item)}
+          onGraded={(caseId, scoring) => trackAnswer(caseId, scoring)}
+          onGradeError={(error) => trackLibraryError('answer', error, trackedItemId)}
           onSubmitted={() => {
             try { localStorage.setItem(`casemate-expert-completed:${active.id}`, new Date().toISOString()); } catch { /* Best-effort completion filter. */ }
             setCompletionVersion((version) => version + 1);
@@ -552,10 +1018,14 @@ export default function QuestionLibrary() {
     return (
       <ExpertDrillExperience
         question={active}
-        onBack={() => setActive(null)}
-        onOpenQuestion={openQuestion}
+        onBack={backToLibrary}
+        hideEvidenceColumn
+        onAnswerInput={() => trackSolving('answer_typed')}
+        onGraded={(scoring) => trackAnswer(active.id, scoring)}
+        onGradeError={(error) => trackLibraryError('answer', error, active.id)}
         onSubmitted={() => {
           setCompletionVersion((version) => version + 1);
+          refreshAttempts();
           void emitLibraryEvent('drill_answer_submitted', 'core_action', { question_id: active.id, skill: active.skill, difficulty: active.difficulty, answer_mode: 'structured-expert' }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
         }}
       />
@@ -565,174 +1035,137 @@ export default function QuestionLibrary() {
   if (active) {
     const isCaseCoachLayout = active.skill === 'charts' || active.skill === 'calculations';
     const isMarketSizing = active.skill === 'market-sizing';
+    const capitaliseLineStarts = (value: string) => capitaliseWithNumbers(value, isMarketSizing);
     const activeExhibits = active.exhibits?.length ? active.exhibits : active.exhibit ? [active.exhibit] : [];
     const isNumericMode = active.answerMode === 'number' || active.answerMode === 'percentage' || active.answerMode === 'currency';
+    const answerUnitLabel = clarifyUnitLabel(active.answerUnit);
+    const scaleHint = equivalentScaleHint(answerUnitLabel);
+    const easyCalculation = isEasyCalculation(active.skill, active.difficulty);
+    // Easy Calculations never show Commercial interpretation; saved attempts keep the stored row but it is hidden and the total is recomputed.
+    const shownScore = scoreResult && easyCalculation ? normalizeEasyCalculationScoring(scoreResult) : scoreResult;
+    const visibleScoreCriteria = shownScore?.criteria.filter((criterion) => !isMarketSizing || !['scope', 'assumptions', 'reasonableness', 'interpretation_check', 'assumption_rationale'].includes(criterion.key)) || [];
+    const visibleOverallScore = isMarketSizing && shownScore ? deriveOverallScore(visibleScoreCriteria) : shownScore?.overallScore || 0;
+    const visibleScoreBand = scoreBand(visibleOverallScore, scoreResult ? scoringScale(scoreResult) : 10);
+    const rankedCriteria = visibleScoreCriteria.slice().sort((a, b) => a.score - b.score || b.weight - a.weight);
+    const feedbackPriorities = buildFeedbackPriorities({
+      evidenceToRevisit: shownScore?.evidenceToRevisit || [],
+      nextStep: shownScore?.nextStep,
+      furtherImprovements: shownScore?.furtherImprovements || [],
+      fallbackActions: rankedCriteria.map((item) => ({ action: item.strongerAnswer, why: item.reason })),
+    });
+    const submittedAnswerText = (active.answerMode === 'choice' || active.answerMode === 'multiple-choice')
+      ? selectedOption
+      : [answer.trim() ? `Final answer: ${answer.trim()}` : '', working.trim()].filter(Boolean).join('\n\n');
+    const isChoiceQuestion = active.answerMode === 'choice' || active.answerMode === 'multiple-choice';
+    const objectiveResult = scoreResult?.rubricId === 'objective-exact-v1';
+    const learnerAnswered = isMarketSizing
+      ? marketSizingDraft.components.some((component: any) => String(component?.value ?? '').trim()) || Boolean(marketSizingDraft.manualResult?.trim())
+      : active.skill === 'calculations'
+        ? calculationAnswer.finalAnswers.some((item) => item.value.trim()) || calculationAnswer.formulaRows.some((row) => row.numbers.some((slot) => slot.value.trim()))
+        : hasLearnerResponse(submittedAnswerText);
+    const resultScale = scoreResult ? scoringScale(scoreResult) : 10;
+    const outcome = resultOutcome(visibleOverallScore, resultScale, { objective: objectiveResult, answered: learnerAnswered });
+    const evidence = libraryQuestionEvidence(active);
+    const workedAnswer = submitted && scoreResult ? libraryWorkedAnswerFor(active) : null;
+    const sizingModel = isMarketSizing ? marketSizingWorkedModelForQuestion(active) : null;
+    const sizingLearnerResult = marketSizingCalculation.result ?? parseComponentValue({ label: '', value: marketSizingDraft.manualResult || '', unit: 'number' });
+    const focus = feedbackPriorities.nextStep?.action || '';
+    const resultFeedback = objectiveResult && !evidence.trustworthy
+      ? { worked: [], failed: [`${evidence.reason} This question (${active.id}) is flagged for content review, so treat this mark with caution.`] }
+      : objectiveResult
+        ? isChoiceQuestion
+          ? choiceFeedback(selectedOption, active.correctAnswer, outcome === 'correct')
+          : numericFeedback(answer.trim() ? `${answer.trim()}${answerUnitLabel && !answer.toLowerCase().includes(answerUnitLabel.toLowerCase()) ? ` ${answerUnitLabel}` : ''}` : '', active.correctAnswer, outcome === 'correct')
+        : buildReasoningFeedback({ criteria: visibleScoreCriteria, evidenceToRevisit: shownScore?.evidenceToRevisit || [], exclude: focus ? [focus] : [] });
+    const selectedOptionIndex = (active.options || []).findIndex((option) => sameUnitText(option, selectedOption));
+    const learnerResponseText = !learnerAnswered
+      ? ''
+      : isChoiceQuestion && selectedOptionIndex >= 0
+        ? `${String.fromCharCode(65 + selectedOptionIndex)}. ${selectedOption}`
+        : submittedAnswerText;
+    const relatedQuestion = (active.recommendedNextDrillId ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === active.recommendedNextDrillId) : null)
+      || visibleQuestions.find((question) => question.id !== active.id && displayDifficultyOf(question) === displayDifficultyOf(active) && !isCompleted(question.id))
+      || visibleQuestions.find((question) => question.id !== active.id && !isCompleted(question.id))
+      || null;
+    const fullCase = sourceFullCase(active.source_case_id);
+    const retry = retryAction(redoAttempt, { focus });
+    const nextAction = chooseNextAction(outcome, {
+      'next-question': relatedQuestion ? { kind: 'next-question', label: 'Next related question', detail: `Practise the same skill on “${relatedQuestion.title}”.`, onSelect: () => { if (relatedQuestion.skill !== skill) setSkill(relatedQuestion.skill); openQuestion(relatedQuestion, true); } } : null,
+      'full-case': fullCase ? { kind: 'full-case', label: 'Solve the full case', detail: `Take this drill into its full case: ${fullCase.title}. Your drill result stays saved.`, onSelect: () => openCasePoolCase(fullCase.id) } : null,
+    }, { objective: objectiveResult });
+    const contextSection = (
+      <section className={compactSingleChart ? 'rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 shadow-sm sm:p-4' : 'mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm sm:p-5'}>
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Case Context</p>
+        <h2 className={compactSingleChart ? 'mt-1 break-words text-lg font-bold leading-6 text-[var(--space-text-primary)]' : 'mt-1.5 break-words text-xl font-bold leading-7 text-[var(--space-text-primary)] sm:text-2xl'}>{capitaliseLineStarts(active.title)}</h2>
+        {active.businessContext ? <p className={`${compactSingleChart ? 'mt-1.5 p-2.5' : 'mt-2 p-3'} rounded-xl bg-[var(--space-surface-muted)] text-sm leading-6 text-[var(--space-text-secondary)]`}>{capitaliseLineStarts(active.businessContext)}</p> : null}
+      </section>
+    );
+    const exhibitNode = activeExhibits.length ? <div className={compactSingleChart ? undefined : 'mt-4'}><ExhibitRenderer exhibits={activeExhibits} compact={compactSingleChart} /></div> : null;
+    const questionSection = (
+      <section className={compactSingleChart ? 'rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 shadow-sm sm:p-4' : 'mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm sm:p-5'}>
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Question</p>
+        {active.instruction ? <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{capitaliseLineStarts(active.instruction)}</p> : null}
+        <p className="mt-2 whitespace-pre-wrap text-base leading-7 text-[var(--space-text-secondary)]">{capitaliseLineStarts(active.question)}</p>
+      </section>
+    );
+
     return (
-      <div className="mt-5" data-testid={`question-library-active-${active.skill}`}>
-        <button type="button" onClick={() => setActive(null)} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.ghost}`}>
+      <div className={compactSingleChart ? 'mt-2' : 'mt-5'} data-testid={`question-library-active-${active.skill}`}>
+        <div className={compactSingleChart ? 'flex flex-wrap items-center gap-x-3 gap-y-2' : undefined}>
+        <button type="button" onClick={backToLibrary} className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold ${tw.button.secondary}`}>
           <ArrowLeft className="h-4 w-4" />
-          Back To Question Library
+          Back to Question Library
         </button>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className={`${compactSingleChart ? '' : 'mt-4 '}flex flex-wrap items-center gap-2`}>
           <span className={`${tw.badge.default} ${tw.badge.primary}`}>{capitaliseLineStarts(skillMeta.label)}</span>
-          <span className={`${tw.badge.default} ${difficultyClass(active.difficulty)}`}>{DIFFICULTY_LABELS[active.difficulty]}</span>
-          <span className="text-xs font-medium text-[var(--space-text-muted)]">Question {active.id.split('-').pop()} Of {questionCountFor(active.skill)}</span>
+          {active.skill === 'creativity' && active.creativityCategory ? (
+            <span className={`${tw.badge.default} ${tw.badge.accent}`}>{CREATIVITY_CATEGORY_LABELS[active.creativityCategory]}</span>
+          ) : (
+            <>
+              <span className={`${tw.badge.default} ${difficultyClass(displayDifficultyOf(active))}`} title={active.marketSizingBank ? `Counts as ${DIFFICULTY_LABELS[displayDifficultyOf(active)]} in the difficulty filters` : undefined}>{active.marketSizingBank?.sourceLabel || DIFFICULTY_LABELS[displayDifficultyOf(active)]}</span>
+              {active.marketSizingFormat ? <span className={`${tw.badge.default} ${tw.badge.accent}`}>{MARKET_SIZING_FORMAT_LABELS[active.marketSizingFormat]}</span> : null}
+              {active.marketSizingBank ? (
+                <>
+                  <span className={`${tw.badge.default} ${tw.badge.accent}`} data-testid="market-sizing-bank-industry">{active.industry}</span>
+                  <span className={`${tw.badge.default} ${tw.badge.accent}`} data-testid="market-sizing-bank-geography">{active.marketSizingBank.geography}</span>
+                </>
+              ) : null}
+            </>
+          )}
+          <span className="text-xs font-medium text-[var(--space-text-muted)]">{questionCountFor(active.skill)} practice questions available</span>
           {active.estimatedMinutes ? <span className="text-xs font-medium text-[var(--space-text-muted)]">· {active.estimatedMinutes} Min</span> : null}
         </div>
+        </div>
 
-        <section className={`mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${isCaseCoachLayout ? 'px-5 py-6 shadow-sm sm:px-8 sm:py-8' : 'p-4 sm:p-5'}`}>
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Case Context</p>
-          <h2 className="mt-2 text-xl font-bold leading-8 text-[var(--space-text-primary)] sm:text-2xl">{capitaliseLineStarts(active.title)}</h2>
-          {active.businessContext ? <p className="mt-3 rounded-xl bg-[var(--space-surface-muted)] p-3 text-sm leading-6 text-[var(--space-text-secondary)]">{capitaliseLineStarts(active.businessContext)}</p> : null}
-        </section>
-
-        {activeExhibits.length ? <div className="mt-4"><ExhibitRenderer exhibits={activeExhibits} /></div> : null}
-
-        <section className={`mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${isCaseCoachLayout ? 'px-5 py-6 shadow-sm sm:px-8 sm:py-8' : 'p-4 sm:p-5'}`}>
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Question</p>
-          {active.instruction ? <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{capitaliseLineStarts(active.instruction)}</p> : null}
-          <p className="mt-3 whitespace-pre-wrap text-base leading-7 text-[var(--space-text-secondary)]">{capitaliseLineStarts(active.question)}</p>
-        </section>
+        {compactSingleChart ? (
+          <div className="mt-2 grid gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start" data-testid="question-library-compact-layout">
+            <div className="min-w-0">{exhibitNode}</div>
+            <div className="min-w-0 space-y-3">{contextSection}{questionSection}</div>
+          </div>
+        ) : (
+          <>
+            {contextSection}
+            {exhibitNode}
+            {questionSection}
+          </>
+        )}
 
         {!submitted ? (
           <section className={`mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${isCaseCoachLayout ? 'p-5 shadow-sm sm:p-7' : 'p-4 sm:p-5'}`} data-testid="question-library-answer-area">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">Your Answer</p>
 
             {isMarketSizing ? (
-              <div className="mt-4 space-y-4" data-testid="market-sizing-answer-layout">
-                <section className="overflow-hidden rounded-2xl border-2 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] shadow-md" data-testid="market-sizing-result-box">
-                  <div className="border-b border-[color-mix(in_srgb,var(--space-brand-primary-500)_24%,transparent)] px-4 py-3 sm:px-6">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Part 1 · Calculated Result</p>
-                    <p className="mt-1 text-xs text-[var(--space-text-secondary)]">
-                      {marketSizingCalculation === null ? 'Enter your final figure, or build the formula below.' : 'Updated automatically from your bottom-up formula.'}
-                    </p>
-                  </div>
-                  <div className="px-4 py-5 sm:px-6 sm:py-7">
-                    <label className="text-xs font-bold text-[var(--space-text-secondary)]" htmlFor="market-sizing-result">Final Market Size</label>
-                    <input
-                      id="market-sizing-result"
-                      value={marketSizingCalculation === null ? marketSizingManualResult : formatMarketSizingResult(marketSizingCalculation)}
-                      onChange={(event) => { setMarketSizingManualResult(event.target.value); setValidationError(''); }}
-                      readOnly={marketSizingCalculation !== null}
-                      placeholder="Enter your final estimate"
-                      className="mt-2 w-full bg-transparent text-3xl font-extrabold tabular-nums tracking-tight text-[var(--space-text-primary)] outline-none placeholder:text-[var(--space-text-muted)] sm:text-4xl"
-                      data-testid="input-market-sizing-result"
-                    />
-                    {active.answerUnit ? <p className="mt-2 text-sm font-semibold text-[var(--space-text-brand)]">{capitaliseLineStarts(active.answerUnit)}</p> : null}
-                  </div>
-                </section>
-
-                <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-4 sm:p-5" data-testid="market-sizing-formula-builder">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Part 2 · Bottom-Up Sizing Model</p>
-                      <h3 className="mt-1 text-base font-bold text-[var(--space-text-primary)]">Build Your Bottom-Up Formula</h3>
-                      <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">Name each component, enter its value, and choose the operator between terms. Use decimals for rates, for example 5% = 0.05.</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setMarketSizingFactors((factors) => [...factors, { id: `factor-${Date.now()}-${factors.length}`, label: '', value: '', operator: '×' }])}
-                      className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold ${tw.button.secondary}`}
-                      data-testid="button-add-market-sizing-factor"
-                    >
-                      <Plus className="h-4 w-4" /> Add Component
-                    </button>
-                  </div>
-
-                  <div className="mt-4 space-y-2">
-                    {marketSizingFactors.map((factor, index) => (
-                      <div key={factor.id}>
-                        {index > 0 ? (
-                          <div className="flex h-10 items-center gap-3">
-                            <span className="h-px flex-1 bg-[var(--space-border-default)]" />
-                            <select
-                              value={factor.operator}
-                              onChange={(event) => {
-                                const operator = event.target.value as MarketSizingOperator;
-                                setMarketSizingFactors((factors) => factors.map((item) => item.id === factor.id ? { ...item, operator } : item));
-                                setValidationError('');
-                              }}
-                              aria-label={`Operator before component ${index + 1}`}
-                              className="h-8 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-2 text-xs font-bold text-[var(--space-text-brand)] outline-none focus:border-[var(--space-brand-primary-600)]"
-                              data-testid={`select-market-sizing-operator-${index - 1}`}
-                            >
-                              <option value="×">× Multiply</option>
-                              <option value="+">+ Add</option>
-                              <option value="−">− Subtract</option>
-                              <option value="÷">÷ Divide</option>
-                            </select>
-                            <span className="h-px flex-1 bg-[var(--space-border-default)]" />
-                          </div>
-                        ) : null}
-                        <div className="grid gap-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 sm:grid-cols-[minmax(0,1fr)_minmax(150px,0.55fr)_44px] sm:items-end">
-                          <label className="block text-xs font-bold text-[var(--space-text-secondary)]">
-                            Component {index + 1}
-                            <input
-                              value={factor.label}
-                              onChange={(event) => {
-                                const label = event.target.value;
-                                setMarketSizingFactors((factors) => factors.map((item) => item.id === factor.id ? { ...item, label } : item));
-                                setValidationError('');
-                              }}
-                              placeholder={['AOV', 'Traffic', 'Conversion Rate'][index] || 'Component label'}
-                              className={`${tw.input.base} ${tw.input.default} mt-1.5 text-sm`}
-                              data-testid={`input-market-sizing-label-${index}`}
-                            />
-                          </label>
-                          <label className="block text-xs font-bold text-[var(--space-text-secondary)]">
-                            Value
-                            <input
-                              type="number"
-                              inputMode="decimal"
-                              step="any"
-                              value={factor.value}
-                              onChange={(event) => {
-                                const value = event.target.value;
-                                setMarketSizingFactors((factors) => factors.map((item) => item.id === factor.id ? { ...item, value } : item));
-                                setValidationError('');
-                              }}
-                              placeholder="0"
-                              className={`${tw.input.base} ${tw.input.default} mt-1.5 text-sm font-bold tabular-nums`}
-                              data-testid={`input-market-sizing-value-${index}`}
-                            />
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => setMarketSizingFactors((factors) => factors.filter((item) => item.id !== factor.id))}
-                            disabled={marketSizingFactors.length === 1}
-                            className={`flex h-11 items-center justify-center rounded-xl border border-[var(--space-border-default)] text-[var(--space-semantic-danger)] transition-colors hover:bg-[var(--space-surface-muted)] disabled:cursor-not-allowed disabled:opacity-35`}
-                            aria-label={`Remove component ${index + 1}`}
-                            data-testid={`button-remove-market-sizing-factor-${index}`}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-3 text-sm font-semibold text-[var(--space-text-secondary)]" data-testid="market-sizing-formula-summary">
-                    {marketSizingFactors.map((factor, index) => (
-                      <span key={factor.id} className="inline-flex items-center gap-2">
-                        {index > 0 ? <span className="font-bold text-[var(--space-text-brand)]">{factor.operator}</span> : null}
-                        <span>{factor.label.trim() || `Component ${index + 1}`}</span>
-                      </span>
-                    ))}
-                    <span className="font-bold text-[var(--space-text-brand)]">=</span>
-                    <span className="font-extrabold tabular-nums text-[var(--space-text-primary)]">
-                      {marketSizingCalculation === null ? (marketSizingManualResult.trim() || 'Final Result') : formatMarketSizingResult(marketSizingCalculation)}
-                    </span>
-                  </div>
-                </section>
+              <div className="mt-4">
+                <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setValidationError(''); trackSolving('answer_typed'); }} answerUnit={active.answerUnit} disabled={grading} rootText={active.question} />
               </div>
-            ) : active.answerMode === 'choice' ? (
+            ) : (active.answerMode === 'choice' || active.answerMode === 'multiple-choice') && active.skill !== 'calculations' ? (
               <div className="mt-3 grid gap-2.5">
                 {(active.options || []).map((option, index) => (
                   <button
                     key={option}
                     type="button"
-                    onClick={() => { setSelectedOption(option); setValidationError(''); }}
+                    onClick={() => { setSelectedOption(option); setValidationError(''); trackSolving('answer_typed'); }}
                     className={`flex items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors ${selectedOption === option ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] hover:border-[var(--space-border-strong)]'}`}
                   >
                     <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${selectedOption === option ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]' : 'bg-[var(--space-surface-muted)] text-[var(--space-text-muted)]'}`}>
@@ -743,74 +1176,79 @@ export default function QuestionLibrary() {
                 ))}
               </div>
             ) : active.skill === 'calculations' ? (
-              <div className="mt-4 grid gap-4">
-                <div>
-                  <label className="text-sm font-bold text-[var(--space-text-primary)]" htmlFor="calculation-answer">Final Numerical Answer</label>
-                  <div className="mt-2 flex overflow-hidden rounded-xl border-2 border-[var(--space-border-strong)] bg-[var(--space-surface-page)] focus-within:border-[var(--space-brand-primary-600)]">
-                    <input
-                      id="calculation-answer"
-                      inputMode="decimal"
-                      value={answer}
-                      onChange={(event) => { setAnswer(event.target.value); setValidationError(''); }}
-                      placeholder="Enter Your Number"
-                      className="min-w-0 flex-1 bg-transparent px-4 py-4 text-xl font-bold tabular-nums text-[var(--space-text-primary)] outline-none"
-                      data-testid="input-calculation-answer"
-                    />
-                    <span className="flex max-w-36 items-center border-l border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-3 text-xs font-semibold text-[var(--space-text-muted)]">{capitaliseLineStarts(active.answerUnit || '')}</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-bold text-[var(--space-text-primary)]" htmlFor="calculation-working">Working Space</label>
-                  <textarea
-                    id="calculation-working"
-                    value={working}
-                    onChange={(event) => { setWorking(event.target.value); setValidationError(''); }}
-                    rows={5}
-                    placeholder={capitaliseLineStarts(active.workingPrompt || 'Show Your Working Step By Step.')}
-                    className={`${tw.input.base} ${tw.input.default} mt-2 min-h-32 text-sm leading-6`}
-                    data-testid="input-calculation-working"
-                  />
-                </div>
-              </div>
+              <CalculationAnswerBuilder
+                value={calculationAnswer}
+                onChange={(next) => { setCalculationAnswer(next); setValidationError(''); trackSolving('answer_typed'); }}
+                disabled={grading}
+                showCaveat={!easyCalculation}
+              />
             ) : (
               <div className="mt-3">
                 {isNumericMode ? (
-                  <input
-                    inputMode="decimal"
-                    value={answer}
-                    onChange={(event) => { setAnswer(event.target.value); setValidationError(''); }}
-                    placeholder="Enter Your Final Estimate"
-                    className={`${tw.input.base} ${tw.input.default} text-base font-semibold`}
-                  />
+                  <div>
+                    <div className="flex overflow-hidden rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] focus-within:border-[var(--space-brand-primary-600)]">
+                      <FormattedNumberInput
+                        inputMode="decimal"
+                        value={answer}
+                        onValueChange={(next) => { setAnswer(next); setValidationError(''); trackSolving('answer_typed'); }}
+                        group={active.answerMode !== 'percentage'}
+                        placeholder={active.answerMode === 'percentage' ? 'e.g. 25 or 25%' : 'e.g. 127.2'}
+                        className="min-w-0 flex-1 bg-transparent px-3 py-3 text-base font-semibold tabular-nums text-[var(--space-text-primary)] outline-none"
+                      />
+                      {answerUnitLabel ? <span className="flex max-w-44 items-center border-l border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-3 text-xs font-bold text-[var(--space-text-muted)]" data-testid="question-library-answer-unit">{answerUnitLabel}</span> : null}
+                    </div>
+                    {scaleHint ? <p className="mt-1.5 text-[11px] leading-4 text-[var(--space-text-muted)]" data-testid="question-library-scale-hint">{scaleHint}</p> : null}
+                    {active.numericAnswer != null && answerUnitLabel ? <p className="mt-1.5 text-[11px] leading-4 text-[var(--space-text-muted)]">{toleranceRuleText(active.numericTolerance ?? 0, answerUnitLabel, (active.numericTolerance ?? 0) === 0)}</p> : null}
+                  </div>
                 ) : null}
                 <textarea
                   value={working}
-                  onChange={(event) => { setWorking(event.target.value); setValidationError(''); }}
-                  rows={7}
+                  onChange={(event) => { setWorking(event.target.value); setValidationError(''); trackSolving('answer_typed'); }}
+                  rows={4}
                   placeholder={capitaliseLineStarts(active.workingPrompt || 'Write Your Answer In Clear, Structured Lines.')}
-                  className={`${tw.input.base} ${tw.input.default} ${isNumericMode ? 'mt-3' : ''} min-h-36 text-sm leading-6`}
+                  className={`${tw.input.base} ${tw.input.default} ${isNumericMode ? 'mt-3' : ''} min-h-24 text-sm leading-6`}
                 />
               </div>
             )}
 
             {validationError ? <p className="mt-3 text-sm font-medium text-[var(--space-semantic-danger)]">{validationError}</p> : null}
-            <button type="button" onClick={submit} className={`mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-bold ${tw.button.primary}`} data-testid="button-submit-library-answer">
+            <button type="button" onClick={() => void submit()} disabled={grading} className={`mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-bold ${tw.button.primary} ${grading ? tw.button.disabled : ''}`} data-testid="button-submit-library-answer">
               <Check className="h-4 w-4" />
-              {active.answerMode === 'text' ? 'Reveal Model Answer' : 'Submit Answer'}
+              {grading ? 'Mate is grading…' : 'Submit for feedback'}
             </button>
           </section>
-        ) : (
-          <SolutionPanel question={active} isCorrect={isCorrect} />
-        )}
+        ) : scoreResult ? (
+          <CaseResultView
+            score={visibleOverallScore}
+            scale={resultScale}
+            outcome={outcome}
+            objective={objectiveResult}
+            completedOn={shownCompletedOn}
+            feedback={resultFeedback}
+            criteria={objectiveResult ? [] : visibleScoreCriteria}
+            learnerResponse={learnerAnswered && active.skill === 'calculations' ? (
+              <>
+                <CalculationResultSummaryView value={calculationAnswer} />
+                {!easyCalculation && calculationAnswer.caveat.trim() ? <p className="mt-3 text-xs leading-5 text-[var(--space-text-muted)]"><span className="font-bold">Key caveat or assumption:</span> {calculationAnswer.caveat}</p> : null}
+              </>
+            ) : learnerAnswered && isMarketSizing ? <MarketSizingAttemptSummary value={marketSizingDraft} answerUnit={active.answerUnit} /> : undefined}
+            learnerResponseText={learnerResponseText}
+            workedAnswer={workedAnswer}
+            workedAnswerBody={workedAnswer && sizingModel ? <MarketSizingWorkedAnswer model={sizingModel} /> : undefined}
+            extras={sizingModel ? <MarketSizingAttemptFeedback model={sizingModel} components={marketSizingDraft.components} result={sizingLearnerResult} /> : undefined}
+            layout={sizingModel ? 'stacked' : undefined}
+            unavailableReason={evidence.trustworthy ? undefined : `${evidence.reason} (Question ${active.id}.)`}
+            retry={retry}
+            nextAction={nextAction}
+            history={attemptHistory}
+            format={capitaliseLineStarts}
+            testId="question-library-result"
+          />
+        ) : null}
 
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <button type="button" onClick={randomQuestion} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.primary}`}>
-            <Shuffle className="h-4 w-4" />
-            Next {capitaliseLineStarts(skillMeta.label)} Question
-          </button>
-          <button type="button" onClick={() => setActive(null)} className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.secondary}`}>
-            <ArrowLeft className="h-4 w-4" />
-            Browse All Questions
+        <div className="mt-4 flex flex-col gap-2 pb-20 sm:flex-row sm:pb-0">
+          <button type="button" onClick={backToLibrary} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.secondary}`} data-testid="button-back-case-library">
+            <ArrowLeft className="h-4 w-4" /> Back to case library
           </button>
         </div>
       </div>
@@ -819,9 +1257,15 @@ export default function QuestionLibrary() {
 
   return (
     <div className="mt-5" data-testid="question-library-home">
-      {libraryErrors.length > 0 ? (
-        <div className="rounded-xl border border-[var(--space-semantic-danger)] bg-[var(--space-surface-card)] p-4 text-sm text-[var(--space-semantic-danger)]">
-          {libraryErrors.map((error) => <p key={error}>{capitaliseLineStarts(error)}</p>)}
+      {attemptsError ? (
+        <div className="mb-4 rounded-xl border border-[var(--space-semantic-warning)] bg-[var(--space-surface-card)] p-4 text-sm text-[var(--space-text-secondary)]" data-testid="question-library-attempts-error">
+          <p className="font-bold text-[var(--space-text-primary)]">Saved feedback could not be loaded</p>
+          <p className="mt-1 text-xs leading-5">You can still use the library; completion markers on this device remain available. Try loading your saved feedback again.</p>
+          <button type="button" onClick={refreshAttempts} className={`mt-2 rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.secondary}`}>Try again</button>
+        </div>
+      ) : !attemptsLoading && attemptRows.length === 0 ? (
+        <div className="mb-4 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3 text-xs text-[var(--space-text-muted)]" data-testid="question-library-attempts-empty">
+          No saved Question Library feedback yet. Your first successfully graded answer will appear here permanently.
         </div>
       ) : null}
 
@@ -834,6 +1278,7 @@ export default function QuestionLibrary() {
             <div>
               <h2 className="text-base font-bold text-[var(--space-text-primary)]">Question Library</h2>
               <p className="mt-1 text-sm leading-6 text-[var(--space-text-secondary)]">Choose one of five consulting skills. Alongside the standalone question bank, {CASE_JOURNEYS.length} Case Journeys run one business decision across linked drills - diagnosis, then implication, then a defensible recommendation. Open any journey drill or practise any standalone drill on its own.</p>
+              {answerKeySyncStatus ? <p className="mt-2 text-[11px] font-medium text-[var(--space-text-muted)]" data-testid="question-library-answer-key-sync">{answerKeySyncStatus}</p> : null}
             </div>
           </div>
         </div>
@@ -867,7 +1312,7 @@ export default function QuestionLibrary() {
             <h3 className="text-lg font-bold text-[var(--space-text-primary)]">{capitaliseLineStarts(skillMeta.label)}</h3>
             <p className="mt-1 text-sm leading-6 text-[var(--space-text-secondary)]">{capitaliseLineStarts(skillMeta.description)}</p>
           </div>
-          <button type="button" onClick={randomQuestion} className={`flex shrink-0 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold ${tw.button.primary}`}>
+          <button type="button" onClick={randomQuestion} disabled={attemptsLoading} className={`flex shrink-0 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold ${tw.button.primary} ${attemptsLoading ? tw.button.disabled : ''}`}>
             <Shuffle className="h-4 w-4" />
             Random Question
           </button>
@@ -884,20 +1329,51 @@ export default function QuestionLibrary() {
           />
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          {(['all', 'easy', 'medium', 'hard', 'expert'] as const).map((level) => (
-            <button
-              key={level}
-              type="button"
-              onClick={() => setDifficulty(level)}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${difficulty === level ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]' : 'border border-[var(--space-border-default)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]'}`}
-            >
-              {level === 'all' ? 'All Difficulties' : DIFFICULTY_LABELS[level]}
-            </button>
-          ))}
-        </div>
+        {skill === 'creativity' ? (
+          <div className="mt-4 grid gap-2 sm:grid-cols-2" data-testid="creativity-category-selector">
+            {(Object.keys(CREATIVITY_CATEGORY_LABELS) as CreativityCategory[]).map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setCreativityCategory(category)}
+                className={`rounded-xl border p-3 text-left transition-colors ${creativityCategory === category ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] hover:border-[var(--space-border-strong)]'}`}
+                data-testid={`filter-creativity-${category}`}
+              >
+                <span className="block text-xs font-bold text-[var(--space-text-primary)]">{CREATIVITY_CATEGORY_LABELS[category]}</span>
+                <span className="mt-1 block text-[11px] leading-4 text-[var(--space-text-muted)]">{CREATIVITY_CATEGORY_DESCRIPTIONS[category]}</span>
+              </button>
+            ))}
+            <button type="button" onClick={() => setCreativityCategory('all')} className={`rounded-xl border p-3 text-left text-xs font-bold transition-colors ${creativityCategory === 'all' ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]' : 'border-[var(--space-border-default)] text-[var(--space-text-secondary)]'}`}>All four problem types</button>
+          </div>
+        ) : (
+          <>
+            {skill === 'market-sizing' ? (
+              <div className="mt-4 grid gap-2 sm:grid-cols-2" data-testid="market-sizing-format-selector">
+                {(Object.keys(MARKET_SIZING_FORMAT_LABELS) as MarketSizingFormat[]).map((format) => (
+                  <button key={format} type="button" onClick={() => setMarketSizingFormat(format)} className={`rounded-xl border p-3 text-left transition-colors ${marketSizingFormat === format ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] hover:border-[var(--space-border-strong)]'}`} data-testid={`filter-market-sizing-${format}`}>
+                    <span className="block text-xs font-bold text-[var(--space-text-primary)]">{MARKET_SIZING_FORMAT_LABELS[format]}</span>
+                    <span className="mt-1 block text-[11px] leading-4 text-[var(--space-text-muted)]">{MARKET_SIZING_FORMAT_DESCRIPTIONS[format]}</span>
+                  </button>
+                ))}
+                <button type="button" onClick={() => setMarketSizingFormat('all')} className={`rounded-xl border p-3 text-left text-xs font-bold transition-colors ${marketSizingFormat === 'all' ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]' : 'border-[var(--space-border-default)] text-[var(--space-text-secondary)]'}`}>Both formats</button>
+              </div>
+            ) : null}
+            <div className="mt-3 flex flex-wrap gap-2">
+            {(['all', ...difficultyFilterLevelsFor(skill)] as Array<LibraryDifficulty | 'all'>).map((level) => (
+              <button
+                key={level}
+                type="button"
+                onClick={() => setDifficulty(level)}
+                className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${difficulty === level ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]' : 'border border-[var(--space-border-default)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]'}`}
+              >
+                {level === 'all' ? 'All Difficulties' : DIFFICULTY_LABELS[level]}
+              </button>
+            ))}
+            </div>
+          </>
+        )}
         <div className="mt-4 flex items-center justify-between gap-3">
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--space-text-muted)]">Advanced Filters · {difficulty === 'all' ? 'All Difficulties' : DIFFICULTY_LABELS[difficulty]}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--space-text-muted)]">Advanced Filters · {skill === 'creativity' ? (creativityCategory === 'all' ? 'All problem types' : CREATIVITY_CATEGORY_LABELS[creativityCategory]) : difficulty === 'all' ? 'All Difficulties' : DIFFICULTY_LABELS[difficulty]}</p>
           <button type="button" onClick={clearFilters} className="text-xs font-bold text-[var(--space-text-brand)] hover:underline">Clear Filters</button>
         </div>
         <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -912,10 +1388,15 @@ export default function QuestionLibrary() {
       </section>
 
       <section className="mt-4">
-        {matches.length === 0 ? (
+        {attemptsLoading ? (
+          <div className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-7 text-center" aria-busy="true" data-testid="question-library-attempts-loading">
+            <p className="text-sm font-bold text-[var(--space-text-primary)]">Loading your saved feedback…</p>
+            <p className="mt-1 text-xs text-[var(--space-text-muted)]">Checking completed questions before opening the library.</p>
+          </div>
+        ) : matches.length === 0 ? (
           <div className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-7 text-center" data-testid="question-library-empty-state">
             <p className="text-sm font-bold text-[var(--space-text-primary)]">No Drills Match These Filters</p>
-            <p className="mt-1 text-sm text-[var(--space-text-secondary)]">Clear the search and advanced filters to see {difficulty === 'all' ? 'this skill’s drills' : `${DIFFICULTY_LABELS[difficulty]} drills`} again.</p>
+            <p className="mt-1 text-sm text-[var(--space-text-secondary)]">Clear the search and advanced filters to see {skill === 'creativity' ? 'the four Creativity problem types' : difficulty === 'all' ? 'this skill’s drills' : `${DIFFICULTY_LABELS[difficulty]} drills`} again.</p>
             <button type="button" onClick={clearFilters} className={`mt-4 inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-bold ${tw.button.primary}`} data-testid="button-clear-library-filters">Clear Filters</button>
           </div>
         ) : (
@@ -928,14 +1409,25 @@ export default function QuestionLibrary() {
                   className="group flex h-full w-full items-start gap-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-left transition-all hover:border-[var(--space-brand-primary-600)] hover:shadow-md"
                   data-testid={`library-question-${question.id}`}
                 >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--space-surface-accent-soft)] text-xs font-bold text-[var(--space-text-brand)]">{question.id.split('-').pop()}</span>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]"><Target className="h-4 w-4" /></span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-bold leading-5 text-[var(--space-text-primary)]">{capitaliseLineStarts(question.title)}</span>
-                    <span className="mt-1.5 block line-clamp-2 text-xs leading-5 text-[var(--space-text-muted)]">{capitaliseLineStarts(question.question)}</span>
+                    <span className="block text-sm font-bold leading-5 text-[var(--space-text-primary)]">{capitaliseLineStarts(question.title, question.skill === 'market-sizing')}</span>
+                    <span className="mt-1.5 block line-clamp-2 text-xs leading-5 text-[var(--space-text-muted)]">{capitaliseLineStarts(question.question, question.skill === 'market-sizing')}</span>
                     <span className="mt-2 flex flex-wrap gap-1.5">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${difficultyClass(question.difficulty)}`}>{DIFFICULTY_LABELS[question.difficulty]}</span>
+                      {question.skill === 'creativity' && question.creativityCategory ? (
+                        <span className="inline-flex rounded-full bg-[var(--space-surface-accent-soft)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-brand)]">{CREATIVITY_CATEGORY_LABELS[question.creativityCategory]}</span>
+                      ) : (
+                        <>
+                          <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${difficultyClass(displayDifficultyOf(question))}`}>{question.marketSizingBank?.sourceLabel || DIFFICULTY_LABELS[displayDifficultyOf(question)]}</span>
+                          {question.marketSizingFormat ? <span className="inline-flex rounded-full bg-[var(--space-surface-accent-soft)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-brand)]">{MARKET_SIZING_FORMAT_LABELS[question.marketSizingFormat]}</span> : null}
+                        </>
+                      )}
                       {question.structuredAnswer ? <><span className="inline-flex rounded-full border border-[var(--space-border-default)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-secondary)]">{question.difficulty === 'hard' ? '2 connected exhibits' : '2–3 connected exhibits'}</span><span className="inline-flex rounded-full border border-[var(--space-border-default)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-secondary)]">Insight + implication</span></> : null}
-                      {isQuestionCompleted(question.id) ? <span className="inline-flex rounded-full bg-[var(--space-semantic-success-100)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-neutral-800)]">Completed</span> : null}
+                      {attemptByQuestion.get(question.id) ? (
+                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${scoreBand(listScore(question), scoringScale(parseSavedObject<HonestScoreResult>(attemptByQuestion.get(question.id)?.scoring_json))).badgeClassName}`} data-testid={`library-question-completed-${question.id}`}>
+                          Completed · {listScore(question)}/{scoringScale(parseSavedObject<HonestScoreResult>(attemptByQuestion.get(question.id)?.scoring_json))} · {scoreBand(listScore(question), scoringScale(parseSavedObject<HonestScoreResult>(attemptByQuestion.get(question.id)?.scoring_json))).label}{formatCompletedDate(attemptByQuestion.get(question.id)?.completed_on) ? ` · ${formatCompletedDate(attemptByQuestion.get(question.id)?.completed_on)}` : ''}
+                        </span>
+                      ) : isQuestionCompleted(question.id) ? <span className="inline-flex rounded-full bg-[var(--space-semantic-success-100)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-neutral-800)]" title="This completion marker is stored only in this browser; no saved feedback is available to reopen.">Completed locally</span> : null}
                     </span>
                   </span>
                   <ChevronRight className="mt-2 h-4 w-4 shrink-0 text-[var(--space-text-muted)] transition-transform group-hover:translate-x-0.5" />

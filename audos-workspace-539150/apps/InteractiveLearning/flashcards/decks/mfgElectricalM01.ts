@@ -1,0 +1,388 @@
+// Pinned-ID authored flashcard decks: Electrical Equipment Manufacturing, Module 01 (apps/IndustryKnowledge/mfgElectricalModule01.tsx).
+// Excerpts are checked against the rendered chapter text, not the raw source file.
+
+import type { FlashcardDeckContent } from '../models';
+import { defineLessonDeck } from './factory';
+
+const COMMON = {
+  industryId: 'mfg-electrical',
+  industryLabel: 'Electrical Equipment Manufacturing',
+  moduleId: 'me-m01',
+  moduleLabel: 'Module 01',
+  moduleKey: 'MFG_ELECTRICAL_MODULE01',
+  file: 'apps/IndustryKnowledge/mfgElectricalModule01.tsx',
+  readAtSha256: 'rendered-chapter-text',
+  readAt: '2026-11-13',
+  chapterMarker: '',
+  contentStatus: 'Draft / Ready for Review',
+};
+
+const ME_M01_L1_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'mfg-electrical-m1-industry-definition-and-scope',
+  title: 'Electrical Equipment Manufacturing: Industry Definition & Scope',
+  description: 'What the industry connects, where manufacturing ends, how equipment categories differ and why product boundaries matter.',
+  lessonId: 'me-m1-l1',
+  lessonTitle: 'Industry Definition & Scope',
+  startMarker: '',
+  endMarker: '',
+  chapterIdPrefix: 'me-m1-l1',
+  mappingNotes: [
+    'Excerpts are checked against the rendered chapter text.',
+    'Chapter 2 has no card because it displays only the lesson\u2019s shared base text and a dimension list, with nothing chapter-specific to ground a card on.',
+  ],
+  chapters: [
+    { title: 'What Is Electrical & Energy Equipment Manufacturing?', sourceTitle: 'What Is Electrical & Energy Equipment Manufacturing?', citations: [] },
+    { title: 'What Makes Electrical Equipment Manufacturing Unique?', sourceTitle: 'What Makes Electrical Equipment Manufacturing Unique?', citations: [] },
+    { title: 'Where Does the Industry Begin and End?', sourceTitle: 'Where Does the Industry Begin and End?', citations: [] },
+    { title: 'Understanding Electrical and Energy Equipment Categories', sourceTitle: 'Understanding Electrical and Energy Equipment Categories', citations: [] },
+    { title: 'Who Are the Industry\'s Customers and Stakeholders?', sourceTitle: 'Who Are the Industry\'s Customers and Stakeholders?', citations: [] },
+  ],
+  cards: [
+    {
+      id: 'me11-what-industry-connects',
+      ch: 1,
+      front: 'What does the electrical and energy equipment industry connect, and through what means?',
+      back: 'It connects power sources to end use through physical equipment, digital control and lifecycle services.',
+      explanation: 'The scope covers manufacturers and suppliers of products that generate, convert, transmit, distribute, control, protect, store and manage electrical energy.',
+      example: 'A substation combines transformers, switchgear, protection, communications and control rather than operating as isolated products.',
+      terms: ['Electrical energy equipment', 'Lifecycle services'],
+      refs: [
+        [1, 'The industry connects power sources to end use through physical equipment, digital control and lifecycle services.'],
+        [1, 'manufacturers and suppliers of products that generate, convert, transmit, distribute, control, protect, store and manage electrical energy'],
+      ],
+    },
+    {
+      id: 'me11-manufacturing-is-not',
+      ch: 3,
+      front: 'Electrical equipment manufacturing is not which other activities, and what do certification and a technical specification not prove?',
+      back: 'Manufacturing is not electricity generation, utility operation, EPC delivery, installation or commissioning. Product certification is not factory quality control, and a technical specification does not prove field performance.',
+      explanation: 'Each activity has its own scope: manufacturers design, produce and test products, while utilities operate systems and EPC contractors deliver projects.',
+      example: 'A transformer manufacturer supplies tested equipment while an EPC installs it and the utility accepts and operates the asset.',
+      terms: ['EPC', 'Commissioning', 'Product certification'],
+      refs: [
+        [3, 'Manufacturing is not electricity generation, utility operation, EPC delivery, installation or commissioning.'],
+        [3, 'Product certification is not factory quality control, and a technical specification does not prove field performance.'],
+        [3, 'A transformer manufacturer supplies tested equipment while an EPC installs it and the utility accepts and operates the asset.'],
+      ],
+    },
+    {
+      id: 'me11-transformer-inverter-storage',
+      ch: 4,
+      front: 'How do a transformer, an inverter and a storage system differ in what they are built from?',
+      back: 'A transformer uses magnetic cores and windings; an inverter uses power semiconductors and controls; a storage system adds cells, conversion, protection, monitoring and thermal management.',
+      explanation: 'Transformer is not inverter or battery system, so ratings and capacity measures must be tied to the product and application.',
+      example: 'An analyst segments evidence, capability and demand by equipment class, voltage or capacity, customer and project context.',
+      terms: ['Transformer', 'Inverter', 'Battery storage'],
+      refs: [
+        [4, 'A transformer uses magnetic cores and windings; an inverter uses power semiconductors and controls; a storage system adds cells, conversion, protection, monitoring and thermal management.'],
+        [4, 'Transformer is not inverter or battery system; ratings and capacity measures must be tied to the product and application.'],
+      ],
+    },
+    {
+      id: 'me11-appliance-study-comparability',
+      ch: 5,
+      front: 'One study counts appliances and lighting, while another covers only transformers, switchgear and grid infrastructure. Can their results be compared directly?',
+      back: 'No. A broad study including appliances and lighting cannot be compared directly with a transformer, switchgear or grid-infrastructure study.',
+      explanation: 'Market sizing and competitor comparisons require consistent product boundaries.',
+      example: 'A team sizing the sector keeps electricity generation and retail services out and counts equipment that moves, converts, controls, stores and uses electricity.',
+      terms: ['Category boundary', 'Product segmentation'],
+      refs: [
+        [5, 'A broad study including appliances and lighting cannot be compared directly with a transformer, switchgear or grid-infrastructure study.'],
+        [5, 'Market sizing and competitor comparisons require consistent product boundaries.'],
+        [5, 'excluding electricity generation and retail services while focusing on equipment that moves, converts, controls, stores and uses electricity'],
+      ],
+    },
+  ],
+});
+
+const ME_M01_L2_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'mfg-electrical-m1-industry-history-and-development',
+  title: 'Electrical Equipment Manufacturing: Industry History & Development',
+  description: 'How electrification, standardization and digitalization shaped the industry and what local firms can take part in.',
+  lessonId: 'me-m1-l2',
+  lessonTitle: 'Industry History & Development',
+  startMarker: '',
+  endMarker: '',
+  chapterIdPrefix: 'me-m1-l2',
+  mappingNotes: [
+    'Excerpts are checked against the rendered chapter text.',
+    'Chapter 4 has no card because it displays only the lesson\u2019s shared base text and a dimension list, with nothing chapter-specific to ground a card on.',
+  ],
+  chapters: [
+    { title: 'How Did Industrial Electrification Shape Equipment Manufacturing?', sourceTitle: 'How Did Industrial Electrification Shape Equipment Manufacturing?', citations: [] },
+    { title: 'How Did Power Equipment and Technical Standards Develop?', sourceTitle: 'How Did Power Equipment and Technical Standards Develop?', citations: [] },
+    { title: 'How Did Automation and Global Supply Chains Transform Manufacturing?', sourceTitle: 'How Did Automation and Global Supply Chains Transform Manufacturing?', citations: [] },
+    { title: 'How Has Vietnam\'s Electrical Equipment Industry Developed?', sourceTitle: 'How Has Vietnam\'s Electrical Equipment Industry Developed?', citations: [] },
+  ],
+  cards: [
+    {
+      id: 'me12-electrification-core-categories',
+      ch: 1,
+      front: 'Which forces established the industry\u2019s long-lived core categories?',
+      back: 'Electrification, industrialization and urbanization established the long-lived core categories of the industry.',
+      explanation: 'Long-lived utility and industrial assets create recurring needs for expansion, replacement, testing and maintenance.',
+      example: 'A utility with long-lived assets keeps needing expansion, replacement, testing and maintenance.',
+      terms: ['Electrification', 'Long-lived assets'],
+      refs: [
+        [1, 'Electrification, industrialization and urbanization established the industry\u2019s long-lived core categories.'],
+        [1, 'Long-lived utility and industrial assets create recurring needs for expansion, replacement, testing and maintenance.'],
+      ],
+    },
+    {
+      id: 'me12-standardization-enables-coordination',
+      ch: 2,
+      front: 'How did standardized ratings, insulation, testing and protection help equipment from different participants work together?',
+      back: 'They enabled equipment from multiple participants to operate in coordinated systems.',
+      explanation: 'Generators, transformers, cables, motors, switches and protection grew as networks expanded in voltage, capacity and complexity.',
+      example: 'Equipment from several participants can run in one coordinated system when ratings, insulation, testing and protection are standardized.',
+      terms: ['Standardization', 'Protection'],
+      refs: [
+        [2, 'Standardized ratings, insulation, testing and protection enabled equipment from multiple participants to operate in coordinated systems.'],
+        [2, 'the historical growth of generators, transformers, cables, motors, switches and protection as networks expanded in voltage, capacity and complexity'],
+      ],
+    },
+    {
+      id: 'me12-renewable-storage-project-needs',
+      ch: 3,
+      front: 'What does a renewable-plus-storage project need in order to coordinate variable generation and bidirectional power?',
+      back: 'It needs inverters, protection, controls and data exchange.',
+      explanation: 'Electrification, digitalization and decarbonization are converging in equipment design, shifting products from electromechanical toward semiconductor converters, digital relays, automation, communications and energy-management platforms.',
+      example: 'A project pairing renewable generation with storage needs controls and data exchange as well as hardware.',
+      terms: ['Bidirectional flow', 'Storage integration', 'Power electronics'],
+      refs: [
+        [3, 'A renewable-plus-storage project needs inverters, protection, controls and data exchange to coordinate variable generation and bidirectional power.'],
+        [3, 'Electrification, digitalization and decarbonization are converging in equipment design.'],
+        [3, 'the shift from predominantly electromechanical products toward semiconductor converters, digital relays, automation, communications and energy-management platforms'],
+      ],
+    },
+  ],
+});
+
+const ME_M01_L3_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'mfg-electrical-m1-global-market-overview',
+  title: 'Electrical Equipment Manufacturing: Global Market Overview',
+  description: 'How broad market estimates, measures and electricity demand should be read without mixing scopes.',
+  lessonId: 'me-m1-l3',
+  lessonTitle: 'Global Market Overview',
+  startMarker: '',
+  endMarker: '',
+  chapterIdPrefix: 'me-m1-l3',
+  mappingNotes: [
+    'Excerpts are checked against the rendered chapter text.',
+    'Chapter 3 has no card because it displays only the lesson\u2019s shared base text and a dimension list, with nothing chapter-specific to ground a card on.',
+  ],
+  chapters: [
+    { title: 'How Is the Global Electrical Equipment Market Structured?', sourceTitle: 'How Is the Global Electrical Equipment Market Structured?', citations: [] },
+    { title: 'How Are Electrical Equipment Markets Measured?', sourceTitle: 'How Are Electrical Equipment Markets Measured?', citations: [] },
+    { title: 'Which Regions and Applications Drive Equipment Demand?', sourceTitle: 'Which Regions and Applications Drive Equipment Demand?', citations: [] },
+    { title: 'Who Are the Major Global Equipment Participants?', sourceTitle: 'Who Are the Major Global Equipment Participants?', citations: [] },
+    { title: 'How Do Electricity Infrastructure and Equipment Demand Interact?', sourceTitle: 'How Do Electricity Infrastructure and Equipment Demand Interact?', citations: [] },
+  ],
+  cards: [
+    {
+      id: 'me13-two-estimates-not-averaged',
+      ch: 1,
+      front: 'Two commercial reports give different broad estimates for the global electrical-equipment market. What should you do with the difference?',
+      back: 'The difference should be preserved, not averaged, because each estimate has its own category scope, coverage and methodology.',
+      explanation: 'Broad commercial estimates are not interchangeable, and narrow transformer, cable, storage or grid markets follow different boundaries.',
+      example: 'A broad estimate spanning power generation, transmission and distribution, wiring, accessories and lighting differs from a separate estimate with different coverage and methodology.',
+      terms: ['Market estimate', 'Category scope'],
+      refs: [
+        [1, 'the difference should be preserved, not averaged.'],
+        [1, 'Separate commercial estimate with different coverage and methodology.'],
+        [1, 'The global market is large, but broad commercial estimates are not interchangeable.'],
+        [1, 'Narrow transformer, cable, storage or grid markets follow different boundaries.'],
+      ],
+    },
+    {
+      id: 'me13-rated-capacity-vs-output',
+      ch: 2,
+      front: 'Which measures does the chapter say must not be confused when sizing electrical-equipment markets?',
+      back: 'Rated capacity is not operating output, production is not shipment or revenue, backlog is not current revenue, and broad power-project value is not equipment-market revenue.',
+      explanation: 'Factory output, shipment, customer acceptance, recognized revenue and cash can occur in different periods.',
+      example: 'A factory completes configured switchgear in December, ships in January and recognizes revenue according to its contract and accounting policy.',
+      terms: ['Rated capacity', 'Backlog', 'Recognized revenue'],
+      refs: [
+        [2, 'Rated capacity is not operating output, production is not shipment or revenue, backlog is not current revenue, and broad power-project value is not equipment-market revenue.'],
+        [2, 'Factory output, shipment, customer acceptance, recognized revenue and cash can occur in different periods'],
+        [2, 'A factory completes configured switchgear in December, ships in January and recognizes revenue according to its contract and accounting policy.'],
+      ],
+    },
+    {
+      id: 'me13-demand-growth-not-equipment-sales',
+      ch: 5,
+      front: 'What does a forecast of average annual electricity-demand growth measure, and what does it not measure?',
+      back: 'It measures global electricity consumption, not electrical-equipment revenue or product sales.',
+      explanation: 'Electricity-demand growth creates a backdrop, but equipment sales depend on investment, approvals, replacement and financing.',
+      example: 'Industry, EVs, cooling and data centers drive the demand forecast, which remains electricity consumption and not product sales.',
+      terms: ['Electricity demand', 'Equipment sales'],
+      refs: [
+        [5, 'Global electricity consumption\u2014not electrical-equipment revenue.'],
+        [5, 'Electricity quantity\u2014not product sales.'],
+        [5, 'Electricity-demand growth creates a backdrop, but equipment sales depend on investment, approvals, replacement and financing.'],
+      ],
+    },
+    {
+      id: 'me13-translate-global-demand',
+      ch: 4,
+      front: 'How should a supplier turn global demand trends into a plan for Vietnam?',
+      back: 'Translate global demand into actual project pipelines, procurement timing, local standards, customer finance and service readiness.',
+      explanation: 'Global demand is only a backdrop, so the Vietnam plan has to rest on local project evidence.',
+      example: 'A supplier checks actual project pipelines and procurement timing in Vietnam rather than relying only on global demand growth.',
+      terms: ['Project pipeline', 'Procurement timing'],
+      refs: [
+        [4, 'Translate global demand into actual project pipelines, procurement timing, local standards, customer finance and service readiness.'],
+        [4, 'Electricity-demand growth creates a backdrop, but equipment sales depend on investment, approvals, replacement and financing.'],
+      ],
+    },
+  ],
+});
+
+const ME_M01_L4_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'mfg-electrical-m1-vietnam-market-overview',
+  title: 'Electrical Equipment Manufacturing: Vietnam Market Overview',
+  description: 'How to read PDP8 storage targets, customs trade values and localization for the Vietnam market.',
+  lessonId: 'me-m1-l4',
+  lessonTitle: 'Vietnam Market Overview',
+  startMarker: '',
+  endMarker: '',
+  chapterIdPrefix: 'me-m1-l4',
+  mappingNotes: [
+    'Excerpts are checked against the rendered chapter text.',
+    'Chapter 2 has no card because it displays only the lesson\u2019s shared base text and a dimension list, with nothing chapter-specific to ground a card on.',
+  ],
+  chapters: [
+    { title: 'What Does Vietnam\'s Electrical Equipment Market Look Like?', sourceTitle: 'What Does Vietnam\'s Electrical Equipment Market Look Like?', citations: [] },
+    { title: 'Which Equipment Segments Are Manufactured in Vietnam?', sourceTitle: 'Which Equipment Segments Are Manufactured in Vietnam?', citations: [] },
+    { title: 'Who Are the Key Manufacturers and Supply-Chain Participants?', sourceTitle: 'Who Are the Key Manufacturers and Supply-Chain Participants?', citations: [] },
+    { title: 'How Do Imports, Exports and Local Value Addition Interact?', sourceTitle: 'How Do Imports, Exports and Local Value Addition Interact?', citations: [] },
+    { title: 'What Demand and Capability Constraints Shape Vietnam?', sourceTitle: 'What Demand and Capability Constraints Shape Vietnam?', citations: [] },
+  ],
+  cards: [
+    {
+      id: 'me14-pdp8-storage-target-meaning',
+      ch: 1,
+      front: 'How should the Revised PDP8 battery-storage figure be read, and what does it not show?',
+      back: 'As a planning target and ambition. It is not installed capacity or guaranteed procurement.',
+      explanation: 'Realized opportunity depends on projects, finance, procurement, grid readiness and regulatory execution.',
+      example: 'Revised PDP8 raises planned battery-storage capacity, creating potential equipment and integration demand.',
+      terms: ['PDP8', 'Planning target', 'Battery storage'],
+      refs: [
+        [1, 'Planning target\u2014not installed capacity or guaranteed procurement.'],
+        [1, 'The target is a planning ambition; realized opportunity depends on projects, finance, procurement, grid readiness and regulatory execution.'],
+        [1, 'creating potential equipment and integration demand'],
+      ],
+    },
+    {
+      id: 'me14-vietnam-roles-in-supply-chain',
+      ch: 3,
+      front: 'In which roles does the chapter place Vietnam across cables, components and selected equipment?',
+      back: 'As a producer, importer, exporter, panel builder, integrator and service base.',
+      explanation: 'Vietnam is urged to move beyond distribution and assembly through engineering, qualified components, testing, certification, commissioning and lifecycle service.',
+      example: 'A panel builder that adds engineering, qualified components and testing is moving beyond distribution and assembly.',
+      terms: ['Panel builder', 'Integrator'],
+      refs: [
+        [3, 'Vietnam\u2019s role as a producer, importer, exporter, panel builder, integrator and service base across cables, components and selected equipment.'],
+        [3, 'Move beyond distribution and assembly through engineering, qualified components, testing, certification, commissioning and lifecycle service.'],
+      ],
+    },
+    {
+      id: 'me14-customs-values-not-market-size',
+      ch: 4,
+      front: 'Why can customs trade values not be read as the size of Vietnam\u2019s electrical-equipment market?',
+      back: 'Trade demonstrates supply-chain activity, but customs values do not equal market size or domestic value added.',
+      explanation: 'The wire-and-cable customs category is broad, and gross trade is not revenue, profit or domestic value added.',
+      example: 'Two-way trade shows import and export activity without proving local ownership or capability depth.',
+      terms: ['Customs trade', 'Domestic value added'],
+      refs: [
+        [4, 'Trade demonstrates supply-chain activity, but customs values do not equal market size or domestic value added.'],
+        [4, 'Broad customs category\u2014not total electrical-equipment demand.'],
+        [4, 'Gross trade\u2014not revenue, profit or domestic value added.'],
+        [4, 'Shows import and export activity without proving local ownership or capability depth.'],
+      ],
+    },
+    {
+      id: 'me14-localization-definition',
+      ch: 5,
+      front: 'What does localization mean in the electrical-equipment context?',
+      back: 'Development of qualified domestic materials, components, engineering, production and service capability.',
+      explanation: 'Vietnam is urged to move beyond distribution and assembly toward engineering, qualified components, testing and lifecycle service.',
+      example: 'A firm that qualifies domestic components and builds local engineering and service capability is localizing.',
+      terms: ['Localization'],
+      refs: [
+        [5, 'Development of qualified domestic materials, components, engineering, production and service capability.'],
+        [5, 'Move beyond distribution and assembly through engineering, qualified components, testing, certification, commissioning and lifecycle service.'],
+      ],
+    },
+  ],
+});
+
+const ME_M01_L5_DECK: FlashcardDeckContent = defineLessonDeck({
+  ...COMMON,
+  deckId: 'mfg-electrical-m1-industry-drivers-and-external-factors',
+  title: 'Electrical Equipment Manufacturing: Industry Drivers & External Factors',
+  description: 'What drives demand timing and why a lower price does not make a device equivalent.',
+  lessonId: 'me-m1-l5',
+  lessonTitle: 'Industry Drivers & External Factors',
+  startMarker: '',
+  endMarker: '',
+  chapterIdPrefix: 'me-m1-l5',
+  mappingNotes: [
+    'Excerpts are checked against the rendered chapter text.',
+    'Chapters 2, 4 have no cards because they display only the lesson\u2019s shared base text and a dimension list, with nothing chapter-specific to ground a card on.',
+  ],
+  chapters: [
+    { title: 'How Do Infrastructure and Industrial Investment Affect Demand?', sourceTitle: 'How Do Infrastructure and Industrial Investment Affect Demand?', citations: [] },
+    { title: 'Why Do Safety, Regulation and Technical Standards Matter?', sourceTitle: 'Why Do Safety, Regulation and Technical Standards Matter?', citations: [] },
+    { title: 'How Are Electrification and the Energy Transition Changing Products?', sourceTitle: 'How Are Electrification and the Energy Transition Changing Products?', citations: [] },
+    { title: 'How Do Raw Materials and Supply Chains Affect Manufacturers?', sourceTitle: 'How Do Raw Materials and Supply Chains Affect Manufacturers?', citations: [] },
+    { title: 'What External Risks and Opportunities Shape the Industry?', sourceTitle: 'What External Risks and Opportunities Shape the Industry?', citations: [] },
+  ],
+  cards: [
+    {
+      id: 'me15-factory-expansion-orders',
+      ch: 1,
+      front: 'A factory expansion drives demand for many equipment types. What still decides when the orders arrive?',
+      back: 'The approved project schedule. Orders depend on it even though an expansion drives transformers, switchgear, motors, drives, panels, protection and monitoring.',
+      explanation: 'Long infrastructure and electrification cycles support demand, while capital timing makes sales volatile.',
+      example: 'A factory expansion lists transformers, switchgear, motors, drives, panels, protection and monitoring, yet each order waits on the approved project schedule.',
+      terms: ['Capital timing', 'Project schedule'],
+      refs: [
+        [1, 'A factory expansion drives transformers, switchgear, motors, drives, panels, protection and monitoring, but orders depend on the approved project schedule.'],
+        [1, 'Long infrastructure and electrification cycles support demand, while capital timing makes sales volatile.'],
+      ],
+    },
+    {
+      id: 'me15-lower-cost-device-not-equivalent',
+      ch: 3,
+      front: 'A protection device costs less than the alternative. Why might it still not be equivalent?',
+      back: 'It is not equivalent if its rating, test evidence, documentation, traceability or service support is unsuitable.',
+      explanation: 'Competitiveness depends on compliance, technology, supply resilience and support, not manufacturing cost alone.',
+      example: 'A buyer comparing two protection devices checks rating, test evidence, documentation, traceability and service support before choosing the cheaper one.',
+      terms: ['Protection device', 'Traceability'],
+      refs: [
+        [3, 'A lower-cost protection device is not equivalent if its rating, test evidence, documentation, traceability or service support is unsuitable.'],
+        [3, 'Competitiveness depends on compliance, technology, supply resilience and support\u2014not manufacturing cost alone.'],
+      ],
+    },
+    {
+      id: 'me15-export-suppliers-need',
+      ch: 5,
+      front: 'What do export and infrastructure suppliers need in order to manage standards and supply-chain risk?',
+      back: 'Product-specific standards maps, qualified alternatives, traceable materials and local technical response.',
+      explanation: 'Competitiveness depends on compliance, technology, supply resilience and support, not manufacturing cost alone.',
+      example: 'A supplier keeps a standards map for each product and qualifies alternatives for its materials.',
+      terms: ['Standards map', 'Qualified alternatives'],
+      refs: [
+        [5, 'Export and infrastructure suppliers need product-specific standards maps, qualified alternatives, traceable materials and local technical response.'],
+        [5, 'Competitiveness depends on compliance, technology, supply resilience and support\u2014not manufacturing cost alone.'],
+      ],
+    },
+  ],
+});
+
+export const MFG_ELECTRICAL_M01_DECKS: FlashcardDeckContent[] = [ME_M01_L1_DECK, ME_M01_L2_DECK, ME_M01_L3_DECK, ME_M01_L4_DECK, ME_M01_L5_DECK];

@@ -1,0 +1,306 @@
+import type { RealEstateAdvisoryChapterVisual } from './realEstateAdvisoryVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Property Advisory & Management Module 02, keyed by visualKind. */
+export const REAL_ESTATE_ADVISORY_M2_VISUALS: Record<string, RealEstateAdvisoryChapterVisual> = {
+  'realestate-advisory-m2-1': {
+    heading: 'A property service runs from mandate to report, then renews',
+    intro: 'Services progress from client need and terms through property assessment, transaction or operations, reporting and renewal. Each stage depends on the one before it.',
+    spec: {
+      layout: 'flow', title: '01 The Property Service Lifecycle', kicker: '',
+      steps: [
+        { label: 'Mandate', detail: 'Client need, scope and authority agreed', owner: 'Client and provider' },
+        { label: 'Assess', detail: 'Property and evidence reviewed' },
+        { label: 'Advise', detail: 'Recommendation for the client decision' },
+        { label: 'Execute', detail: 'Transaction or leasing completed', kind: 'decision' },
+        { label: 'Operate', detail: 'Recurring management of the property' },
+        { label: 'Report', detail: 'Accountability to the client', kind: 'outcome' },
+      ],
+      loop: 'Reporting feeds the renewal decision and the next mandate.',
+      note: 'A leasing mandate and management contract share data but have different deliverables.',
+      takeaway: 'Value is created through a clear mandate, evidence, execution and accountability.',
+    },
+  },
+  'realestate-advisory-m2-2': {
+    heading: 'Who takes part, grouped by the role each plays',
+    intro: 'Owners, investors, occupiers, brokers, valuers, advisers, managers, contractors and regulators interact. The valuer provides an opinion; the broker negotiates; the manager administers operations.',
+    spec: {
+      layout: 'taxonomy', title: '02 Participants and Professional Roles', kicker: '',
+      root: 'Property service participants', rootDetail: 'Roles — keep them distinct to avoid conflicts',
+      groups: [
+        { label: 'Principals', detail: 'Make the property decision', items: ['Owner', 'Investor', 'Occupier'] },
+        { label: 'Transaction', detail: 'Negotiates for the client', items: ['Broker', 'Adviser'] },
+        { label: 'Opinion', detail: 'Provides an opinion of value', items: ['Valuer'] },
+        { label: 'Operations', detail: 'Administers and runs the property', items: ['Manager', 'Facility team', 'Contractors'] },
+        { label: 'Oversight', detail: 'Sets and enforces rules', items: ['Regulators'] },
+      ],
+      note: 'Avoid role ambiguity and conflicts.',
+      takeaway: 'Specialists serve different client decisions and property outcomes.',
+    },
+  },
+  'realestate-advisory-m2-3': {
+    heading: 'Rent, service charges and fees move through separate channels',
+    intro: 'Property records, instructions, transactions, rent, service-charge funds, professional fees and reports move under separate controls. Rent collected for an owner is not manager revenue.',
+    spec: {
+      layout: 'ecosystem', title: '03 Property, Information and Money Flows', kicker: '',
+      center: { label: 'Managed property', detail: 'Records, instructions and funds under separate controls' },
+      actors: [
+        { label: 'Owner', relation: 'Gives instructions, receives rent and reports', flows: ['information', 'money'] },
+        { label: 'Occupiers', relation: 'Pay rent and service charges', flows: ['money'] },
+        { label: 'Client or trust account', relation: 'Holds owner and client money apart', flows: ['money', 'oversight'] },
+        { label: 'Service provider', relation: 'Delivers service, invoices its fee', flows: ['service', 'money'] },
+        { label: 'Property records', relation: 'Data used for reporting', flows: ['information'] },
+      ],
+      note: 'Reconcile trust or client accounts and invoices.',
+      takeaway: 'Client and owner money must remain distinct from provider revenue.',
+    },
+  },
+  'realestate-advisory-m2-4': {
+    heading: 'Accept an assignment only when need, authority, scope, fee and conflicts are clear',
+    intro: 'Business development qualifies client need, decision maker, property, scope, deliverable, fee, conflict and liability. A vague mandate creates fee and accountability disputes.',
+    spec: {
+      layout: 'decision', title: '04 Client Acquisition and Terms of Engagement', kicker: '',
+      root: { label: 'Prospective assignment', detail: 'Client need and property identified' },
+      question: 'Are authority, scope, fee and conflicts all settled in signed terms?',
+      branches: [
+        { condition: 'All agreed and signed', outcome: 'Accept the assignment', detail: 'Retain service-specific terms', tone: 'positive' },
+        { condition: 'Scope or fee vague', outcome: 'Clarify before starting work', detail: 'Vague mandates create disputes', tone: 'caution' },
+        { condition: 'No authority or a conflict', outcome: 'Decline or resolve first', tone: 'negative' },
+      ],
+      note: 'Retain signed, service-specific terms.',
+      takeaway: 'A professional assignment begins with a suitable client, authority and agreed terms.',
+    },
+  },
+  'realestate-advisory-m2-5': {
+    heading: 'Five assessment areas, each recorded with its source and limits',
+    intro: 'Teams inspect assets, review rights and contracts, and analyze occupancy, operations, maintenance and market context. Every finding should carry its source, date and limitation.',
+    spec: {
+      layout: 'table', title: '05 Property and Portfolio Assessment', kicker: '',
+      headers: ['Assessment area', 'What the team reviews', 'Watch for'],
+      rows: [
+        { label: 'Inspection', a: 'The asset on site', b: 'A data room cannot replace it' },
+        { label: 'Documents', a: 'Rights and contracts', b: 'Missing or outdated records' },
+        { label: 'Leases', a: 'Occupancy and lease terms', b: 'Terms not matching operations' },
+        { label: 'Condition', a: 'Operations and maintenance', b: 'Undated condition evidence' },
+        { label: 'Risk', a: 'Market context', b: 'Limitations not stated' },
+      ],
+      note: 'Record source, date and limitation for each finding.',
+      takeaway: 'Advice depends on verified property and portfolio information.',
+    },
+  },
+  'realestate-advisory-m2-6': {
+    heading: 'An opinion of value is built from matched evidence on a stated basis',
+    intro: 'Research supports brokerage advice, leasing strategy, valuation and investment decisions. The evidence must match the property, the purpose and the valuation date.',
+    spec: {
+      layout: 'driverTree', title: '06 Market Research and Valuation Preparation', kicker: '',
+      root: { label: 'Opinion of value', detail: 'For a stated purpose and valuation date' },
+      drivers: [
+        { label: 'Comparables', detail: 'Completed evidence', children: [{ label: 'Completed transactions' }, { label: 'Not asking prices' }] },
+        { label: 'Income evidence', detail: 'What the property earns', children: [{ label: 'Rent' }, { label: 'Cash flow' }] },
+        { label: 'Yield', detail: 'Matched to property and purpose' },
+        { label: 'Basis of value', detail: 'Under current Vietnam standards' },
+      ],
+      note: 'An asking price is not a completed comparable or guaranteed value.',
+      takeaway: 'Market evidence must match property, purpose and valuation date.',
+    },
+  },
+  'realestate-advisory-m2-7': {
+    heading: 'Brokerage turns authorized representation into a closed deal, stage by stage',
+    intro: 'Teams market, qualify, coordinate information, negotiate and support closing without replacing legal diligence. Each stage narrows the funnel.',
+    spec: {
+      layout: 'flow', title: '07 Brokerage and Transaction Execution', kicker: '',
+      steps: [
+        { label: 'Listing', detail: 'Market the property under authority', owner: 'Broker' },
+        { label: 'Lead', detail: 'Qualify interested parties' },
+        { label: 'Due diligence', detail: 'Coordinate information; legal diligence stays separate' },
+        { label: 'Negotiation', detail: 'Agree terms between parties', kind: 'decision' },
+        { label: 'Closing', detail: 'Completed transaction', kind: 'outcome' },
+      ],
+      note: 'High lead volume can coexist with low conversion. Track the funnel and authority.',
+      takeaway: 'Brokerage converts authorized representation and market access into a completed transaction.',
+    },
+  },
+  'realestate-advisory-m2-8': {
+    heading: 'Face rent and effective rent tell different stories about a lease',
+    intro: 'Agents source tenants, prepare offers, compare effective terms and coordinate documentation and fit-out. Face rent differs from effective rent after incentives.',
+    spec: {
+      layout: 'compare', title: '08 Leasing and Tenant Acquisition', kicker: '',
+      leftTitle: 'Face rent view', rightTitle: 'Effective rent view',
+      rows: [
+        { label: 'Rent', a: 'Headline rent in the offer', b: 'Rent after incentives' },
+        { label: 'Incentives', a: 'Left out', b: 'Deducted from income' },
+        { label: 'Area', a: 'Not checked', b: 'Measured NLA on a stated lease basis' },
+        { label: 'Decision use', a: 'Marketing the space', b: 'Comparing owner income and risk' },
+      ],
+      note: 'Use measured area and lease basis.',
+      takeaway: 'Leasing aligns occupier needs with owner income and risk.',
+    },
+  },
+  'realestate-advisory-m2-9': {
+    heading: 'Managers and facility teams split operating work, and gaps need an owner',
+    intro: 'Managers administer leases, budgets, collections and reporting while facility teams coordinate systems, maintenance and contractors. Accountability for each area should be assigned.',
+    spec: {
+      layout: 'table', title: '09 Property and Facility Operations', kicker: '',
+      headers: ['Operating area', 'Led by', 'What good looks like'],
+      rows: [
+        { label: 'Budget', a: 'Property manager', b: 'Budgets and collections administered' },
+        { label: 'Maintenance', a: 'Facility team', b: 'Preventive work reduces avoidable failures' },
+        { label: 'Vendor', a: 'Facility team', b: 'Contractors coordinated' },
+        { label: 'Safety', a: 'Assign explicitly', b: 'Owner, manager and vendor roles clear' },
+        { label: 'Tenant service', a: 'Property manager', b: 'Issues handled and reported' },
+      ],
+      note: 'Assign owner, manager and vendor accountability.',
+      takeaway: 'Recurring operations convert contracts into building performance.',
+    },
+  },
+  'realestate-advisory-m2-10': {
+    heading: 'Closing triggers a chain of handoff, invoicing, reporting and archiving',
+    intro: 'Closing or lease execution triggers handoff, invoicing, reporting and document retention. Completion needs evidence of the outcome, the fee entitlement and the records.',
+    spec: {
+      layout: 'flow', title: '10 Transaction Completion and Client Reporting', kicker: '',
+      steps: [
+        { label: 'Completion', detail: 'Closing or lease execution', kind: 'decision' },
+        { label: 'Commission', detail: 'Invoice once mandate and completion reconcile' },
+        { label: 'Document', detail: 'Handoff of transaction records' },
+        { label: 'Report', detail: 'Outcome reported to the client' },
+        { label: 'Archive', detail: 'Records retained', kind: 'outcome' },
+      ],
+      note: 'Transaction value is not agency revenue. Reconcile mandate and completion event.',
+      takeaway: 'Completion requires evidence of outcome, fee entitlement and records.',
+    },
+  },
+  'realestate-advisory-m2-11': {
+    heading: 'Occupancy turns into value through onboarding, billing, collection and renewal',
+    intro: 'Managers coordinate access, billing, tenant communication, issue resolution and lease renewal. Occupancy does not equal collection rate.',
+    spec: {
+      layout: 'driverTree', title: '11 Tenant Onboarding, Collection and Renewal', kicker: '',
+      root: { label: 'Occupancy value', detail: 'Cash and retention, not just occupied space' },
+      drivers: [
+        { label: 'Move in', detail: 'Smooth access and onboarding' },
+        { label: 'Billing and collection', detail: 'Cash actually received', children: [{ label: 'Accurate bills' }, { label: 'Arrears tracked' }] },
+        { label: 'Issue resolution', detail: 'Tenant communication and service' },
+        { label: 'Renewal', detail: 'Retention tracked separately' },
+      ],
+      note: 'Track arrears and retention separately.',
+      takeaway: 'Occupancy value depends on smooth onboarding, service and cash collection.',
+    },
+  },
+  'realestate-advisory-m2-12': {
+    heading: 'Counting activity is not the same as reporting performance',
+    intro: 'Reports combine financial, leasing, maintenance, safety, tenant and vendor outcomes. Activity counts do not prove service quality.',
+    spec: {
+      layout: 'compare', title: '12 Operational Reporting and Retention', kicker: '',
+      leftTitle: 'Activity reporting', rightTitle: 'Performance reporting',
+      rows: [
+        { label: 'Service levels', a: 'Tasks completed', b: 'Results against agreed SLA definitions' },
+        { label: 'Budget', a: 'Spending listed', b: 'Budget variance explained' },
+        { label: 'Incidents', a: 'Number logged', b: 'Causes and resolution' },
+        { label: 'Client review', a: 'Volume of work shown', b: 'Evidence for the renewal decision' },
+      ],
+      note: 'Use agreed SLA definitions.',
+      takeaway: 'Transparent performance reporting supports client trust and contract retention.',
+    },
+  },
+  'realestate-advisory-m2-13': {
+    heading: 'Property services draw on five kinds of professional input',
+    intro: 'Inputs include qualified people, property data, market intelligence, systems, vendor networks and client access. Poor source data weakens even sophisticated analysis.',
+    spec: {
+      layout: 'taxonomy', title: '13 Professional Inputs', kicker: '',
+      root: 'Professional inputs', rootDetail: 'Expertise and information quality',
+      groups: [
+        { label: 'People', detail: 'Qualified, competent practitioners' },
+        { label: 'Data', items: ['Property data', 'Market intelligence'] },
+        { label: 'Standards', detail: 'Govern competence and data' },
+        { label: 'Technology', detail: 'Systems for analysis and operations' },
+        { label: 'Relationships', items: ['Vendor networks', 'Client access'] },
+      ],
+      note: 'Poor source data weakens even sophisticated analysis.',
+      takeaway: 'Property services depend on expertise and information quality.',
+    },
+  },
+  'realestate-advisory-m2-14': {
+    heading: 'Each service output is judged against its own purpose and service level',
+    intro: 'Deliverables include valuations, advice, completed transactions, occupancy, maintenance, budgets and reports. Each should be judged against its purpose and agreed service levels.',
+    spec: {
+      layout: 'table', title: '14 Service Outputs and Quality', kicker: '',
+      headers: ['Output', 'Example deliverable', 'Judge it against'],
+      rows: [
+        { label: 'Opinion', a: 'Valuation or advice', b: 'Stated purpose and assumptions' },
+        { label: 'Transaction', a: 'Completed sale or purchase', b: 'The client mandate' },
+        { label: 'Lease', a: 'Occupied space', b: 'Agreed leasing terms' },
+        { label: 'Budget', a: 'Approved operating budget', b: 'Actual results' },
+        { label: 'Work order', a: 'Completed maintenance', b: 'Service levels' },
+        { label: 'Report', a: 'Client performance report', b: 'Documented limitations' },
+      ],
+      note: 'An appraisal is an opinion under assumptions, not a sale guarantee.',
+      takeaway: 'Outputs should be judged against purpose and service levels.',
+    },
+  },
+  'realestate-advisory-m2-15': {
+    heading: 'Owner NOI rises when vacancy, cost, compliance and reliability risks fall',
+    intro: 'Good advice supports decisions; management supports income, cost, safety, service and lifecycle condition. Manager profit and owner NOI are separate.',
+    spec: {
+      layout: 'driverTree', title: '15 Risk Reduction and Asset Performance', kicker: '',
+      root: { label: 'Owner NOI', detail: 'Reported separately from manager profit' },
+      drivers: [
+        { label: 'Vacancy', detail: 'Income lost to empty space' },
+        { label: 'Cost', detail: 'Operating spend' },
+        { label: 'Compliance', detail: 'Safety obligations met' },
+        { label: 'Reliability', detail: 'Lifecycle condition and service' },
+      ],
+      note: 'Manager profit and owner NOI are separate. Report each entity correctly.',
+      takeaway: 'Value comes from reducing uncertainty and improving owner and occupier outcomes.',
+    },
+  },
+  'realestate-advisory-m2-16': {
+    heading: 'Global frameworks give consistency, but local evidence and law decide',
+    intro: 'International firms use networks, standards and systems across markets. A global brand does not guarantee local comparables or legal authority.',
+    spec: {
+      layout: 'compare', title: '16 International Professional Practice', kicker: '',
+      leftTitle: 'What global frameworks provide', rightTitle: 'What must be confirmed locally',
+      rows: [
+        { label: 'Standard', a: 'Consistent methods across markets', b: 'Local law remains decisive' },
+        { label: 'Network', a: 'Cross-market reach', b: 'Local comparables and property evidence' },
+        { label: 'Mandate', a: 'Common systems and terms', b: 'Local entity and practitioner scope' },
+        { label: 'Quality and conflict', a: 'Firm-wide controls', b: 'Checked for each local assignment' },
+      ],
+      note: 'Verify local entity and practitioner scope.',
+      takeaway: 'Global frameworks support consistency but local law and property evidence remain decisive.',
+    },
+  },
+  'realestate-advisory-m2-17': {
+    heading: 'Vietnam services share a local legal base, then split into activities with their own requirements',
+    intro: 'Local practitioners and international networks serve residential, commercial and industrial clients under Vietnam law, standards, contracts and market practice. Different activities can have different qualification requirements.',
+    spec: {
+      layout: 'pathway', title: '17 Vietnam Property Service Delivery', kicker: '',
+      trunk: [
+        { label: 'Local laws and standards', detail: 'Check official Vietnamese text' },
+        { label: 'Contracts and market practice', detail: 'Local data and conventions' },
+      ],
+      optionsLabel: 'Service activities — each with its own qualification requirements',
+      options: [
+        { label: 'Brokerage', detail: 'Intermediation under defined authority' },
+        { label: 'Valuation', detail: 'Opinion for a stated purpose, basis and date' },
+        { label: 'Management', detail: 'Property administration for owners' },
+        { label: 'FM', detail: 'Facilities and building systems' },
+      ],
+      note: 'Check official Vietnamese text.',
+      takeaway: 'Vietnam services operate under local laws, standards, contracts and market practices.',
+    },
+  },
+  'realestate-advisory-m2-18': {
+    heading: 'Reuse a service model only where the operating context matches',
+    intro: 'Residential, office, retail, industrial and mixed-use mandates differ in data, staff and vendors. One apartment management model cannot simply be copied to an industrial facility.',
+    spec: {
+      layout: 'decision', title: '18 Localization and Service Specialization', kicker: '',
+      root: { label: 'Existing service model', detail: 'E.g. an apartment management model' },
+      question: 'Does the new mandate match on property type, city, tenants, vendors and language?',
+      branches: [
+        { condition: 'Same context', outcome: 'Reuse with localized SLAs', tone: 'positive' },
+        { condition: 'Partly similar', outcome: 'Adapt SLAs and controls', detail: 'Different city, tenants or vendors', tone: 'caution' },
+        { condition: 'Different property type', outcome: 'Redesign data, staff and vendors', detail: 'E.g. moving to an industrial facility', tone: 'negative' },
+      ],
+      note: 'Localize SLAs and controls.',
+      takeaway: 'Service design must fit property, client and operating context.',
+    },
+  },
+};

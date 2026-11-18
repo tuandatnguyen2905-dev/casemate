@@ -1,0 +1,158 @@
+// Pinned card IDs: Healthcare Products & Nutrition. Renaming or removing an ID would orphan learners' review history, so a change here must be deliberate.
+
+export const HEALTHCARE_PRODUCTS_CARD_IDS: Record<string, string[]> = {
+  'healthcare-products-m1-industry-definition-and-scope': [
+    'hp11-industry-scope-products',
+    'hp11-intended-use-defined',
+    'hp11-strategy-starts-with-need',
+    'hp11-not-medicine-boundary',
+    'hp11-registration-not-proof-of-efficacy',
+    'hp11-ingredient-evidence-not-finished-product',
+    'hp11-health-need-drives-demand',
+    'hp11-overlapping-households-not-interchangeable',
+  ],
+  'healthcare-products-m1-industry-history-and-development': [
+    'hp12-toward-standardized-evidence-led',
+    'hp12-who-gmp-formalizes-quality',
+    'hp12-historical-use-not-enough',
+  ],
+  'healthcare-products-m1-global-market-overview': [
+    'hp13-headline-figure-misleading',
+    'hp13-estimates-not-added',
+    'hp13-revenue-is-not-profit',
+    'hp13-who-versus-codex-scope',
+    'hp13-global-evidence-then-local-test',
+  ],
+  'healthcare-products-m1-vietnam-market-overview': [
+    'hp14-trust-not-brand-awareness',
+    'hp14-medicine-law-versus-food-law',
+    'hp14-confirm-duties-before-launch',
+  ],
+  'healthcare-products-m1-industry-drivers-and-external-factors': [
+    'hp15-drivers-listed',
+    'hp15-growth-is-interaction',
+    'hp15-who-effective-regulatory-systems',
+  ],
+  'healthcare-products-m2-value-chain-overview': [
+    'hp21-value-from-coordination',
+    'hp21-map-accountable-owners',
+    'hp21-post-market-monitoring-defined',
+  ],
+  'healthcare-products-m2-upstream-activities': [
+    'hp22-product-specific-evidence-defined',
+    'hp22-low-cost-inputs-not-economical',
+    'hp22-codex-source-selection',
+    'hp22-define-ingredient-specifications',
+  ],
+  'healthcare-products-m2-midstream-activities': [
+    'hp23-quality-designed-in',
+    'hp23-no-single-manufacturing-standard',
+    'hp23-quality-not-clinical-effectiveness',
+    'hp23-late-classification-change',
+    'hp23-fda-claims-illustration-versus-vietnam',
+  ],
+  'healthcare-products-m2-downstream-activities': [
+    'hp24-widest-channel-not-safest',
+    'hp24-protect-integrity-across-channels',
+    'hp24-traceability-limits',
+  ],
+  'healthcare-products-m2-inputs-outputs-and-value-creation': [
+    'hp25-supply-and-information-versus-value-loss',
+    'hp25-align-evidence-quality-access-sustainability',
+    'hp25-measure-beyond-revenue',
+  ],
+  'healthcare-products-m2-global-vs-local-value-chain': [
+    'hp26-traceability-borders-or-local',
+    'hp26-local-versus-imports-compare',
+    'hp26-global-capability-local-execution',
+  ],
+  'healthcare-products-m3-industry-business-models': [
+    'hp31-brand-ownership-durable-value',
+    'hp31-asset-light-brand-responsibility',
+    'hp31-choose-internal-or-outsourced',
+  ],
+  'healthcare-products-m3-products-services-and-segmentation': [
+    'hp32-scale-lowers-cost-only-when',
+    'hp32-who-gmp-connected-controls',
+    'hp32-evaluate-contract-manufacturer',
+  ],
+  'healthcare-products-m3-customer-segments-and-needs': [
+    'hp33-distribution-access-and-intelligence',
+    'hp33-sell-through-versus-shipments',
+    'hp33-distributor-contracts-define',
+  ],
+  'healthcare-products-m3-revenue-streams-and-cost-structure': [
+    'hp34-hypothetical-contribution-and-margin',
+    'hp34-hypothetical-not-company-figures',
+    'hp34-hypothetical-dtc-contribution',
+    'hp34-hypothetical-channel-margin-comparison',
+    'hp34-hypothetical-expiry-write-off',
+    'hp34-contribution-margin-defined',
+  ],
+  'healthcare-products-m3-distribution-and-channel-economics': [
+    'hp35-net-sales-reconciled-with-costs',
+    'hp35-sustainable-economics-not-headline-sales',
+    'hp35-discount-grows-sales-reduces-contribution',
+  ],
+  'healthcare-products-m3-industry-ecosystem-and-stakeholders': [
+    'hp36-defensible-advantage',
+    'hp36-barriers-differ-by-category',
+    'hp36-select-model-after-testing',
+  ],
+  'healthcare-products-m4-industry-competition-structure': [
+    'hp41-advantage-is-category-specific',
+    'hp41-private-label-versus-specialist',
+    'hp41-map-competitors-by-product-class',
+  ],
+  'healthcare-products-m4-key-industry-players': [
+    'hp42-international-versus-domestic-strengths',
+    'hp42-local-execution-sustained-demand',
+    'hp42-validate-before-committing-to-scale',
+  ],
+  'healthcare-products-m4-competitor-benchmarking': [
+    'hp43-scientific-language-not-credibility',
+    'hp43-benchmark-permitted-claims-only',
+    'hp43-distribution-reach-creates-advantage-when',
+    'hp43-marketplace-reach-tradeoff',
+  ],
+  'healthcare-products-m4-key-success-factors': [
+    'hp44-portfolio-expansion-value',
+    'hp44-supplements-and-specialized-nutrition-distinct',
+    'hp44-prioritize-launches',
+  ],
+  'healthcare-products-m4-industry-swot-and-strategic-challenges': [
+    'hp45-trust-moat-and-risk',
+    'hp45-who-traceability-cannot-fully-block',
+    'hp45-maintain-readiness-measures',
+  ],
+  'healthcare-products-m5-consumer-and-patient-trends': [
+    'hp51-preventive-wellness-sustainable-demand',
+    'hp51-avoid-implying-universal-need',
+    'hp51-personalization-adds-value-only-when',
+    'hp51-targeted-versus-individualized',
+  ],
+  'healthcare-products-m5-technology-and-innovation-trends': [
+    'hp52-evidence-differentiates-only-when',
+    'hp52-fda-illustration-not-vietnam-template',
+    'hp52-useful-innovation-solves-defined-problem',
+    'hp52-stage-investment',
+  ],
+  'healthcare-products-m5-market-and-channel-trends': [
+    'hp53-digital-growth-sustainable-when',
+    'hp53-who-online-informal-markets',
+    'hp53-specialized-nutrition-opportunity-depends',
+    'hp53-codex-excludes-special-dietary-uses',
+  ],
+  'healthcare-products-m5-regulatory-and-sustainability-trends': [
+    'hp54-foreign-authorization-not-automatic',
+    'hp54-reformulation-or-claim-change',
+    'hp54-nutrient-content-versus-health-claim',
+    'hp54-do-not-invent-legal-details',
+    'hp54-reassess-when-product-changes',
+  ],
+  'healthcare-products-m5-growth-outlook-and-strategic-opportunities': [
+    'hp55-best-opportunities-intersect',
+    'hp55-focused-launch-versus-broad-portfolio',
+    'hp55-validate-before-expansion',
+  ],
+};

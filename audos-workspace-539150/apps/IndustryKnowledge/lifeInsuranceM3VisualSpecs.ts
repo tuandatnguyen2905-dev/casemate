@@ -1,0 +1,310 @@
+import type { LifeInsuranceChapterVisual } from './lifeInsuranceVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Life Insurance Module 03, keyed by visualKind. */
+export const LIFE_INSURANCE_M3_VISUALS: Record<string, LifeInsuranceChapterVisual> = {
+  'life-insurance-m3-1': {
+    heading: 'How a protection promise moves from risk selection to a paid claim',
+    intro: 'Insurers collect premiums, underwrite mortality and other defined risks, manage liabilities and pay benefits. Each stage has to work for the pool to keep its promise.',
+    spec: {
+      layout: 'flow', title: '01 How Do Traditional Protection and Savings Models Work?', kicker: '',
+      steps: [
+        { label: 'Customer need and application', detail: 'Protection need, coverage and premium affordability', owner: 'Household' },
+        { label: 'Underwriting', detail: 'Risk, eligibility and terms assessed with permitted information', kind: 'decision', owner: 'Insurer' },
+        { label: 'Risk pooling', detail: 'Premiums from many policyholders fund expected benefits', owner: 'Insurer' },
+        { label: 'Policy in force', detail: 'Term cover is time-bound; whole life cover is lifelong', owner: 'Insurer' },
+        { label: 'Claims settlement', detail: 'Eligible claims assessed and benefits paid', kind: 'outcome', owner: 'Beneficiary' },
+      ],
+      loop: 'Reliable claims and service sustain the long relationship that keeps policies in the pool.',
+      note: 'Example: a household buys term coverage for income protection without a savings component.',
+      takeaway: 'Protection-led value comes from sound risk selection, efficient operations, reliable claims and long relationships.',
+    },
+  },
+  'life-insurance-m3-2': {
+    heading: 'Individual term cover and group cover are priced on different bases',
+    intro: 'Term life protects one insured person for a set period, while group life covers members under one arrangement. Premium pricing follows how each risk is selected.',
+    spec: {
+      layout: 'compare', title: '02 How Do Investment-Linked, Group, and Reinsurance Models Work?', kicker: '',
+      leftTitle: 'Individual term life', rightTitle: 'Group life',
+      rows: [
+        { label: 'Who buys', a: 'A household or individual', b: 'An employer or group for its members' },
+        { label: 'What is covered', a: 'Time-bound income protection, no savings', b: 'Members covered under one group contract' },
+        { label: 'Risk selection', a: 'Each applicant underwritten', b: 'Risk assessed for the group under scheme terms' },
+        { label: 'Premium pricing', a: 'Reflects individual risk, term and sum assured', b: 'Reflects the group’s risk and contract terms' },
+        { label: 'What to check', a: 'Affordability, exclusions, claims service', b: 'Who is eligible and what happens on leaving' },
+      ],
+      note: 'Both rest on underwriting mortality and other defined risks, managing liabilities and paying benefits.',
+      takeaway: 'Protection-led value comes from sound risk selection, efficient operations, reliable claims and long relationships.',
+    },
+  },
+  'life-insurance-m3-3': {
+    heading: 'Savings features and wider distribution both add disclosure duties',
+    intro: 'Some products combine protection with savings or investment, and some reach customers through banks, employers and platforms. Each feature or route changes what must be explained.',
+    spec: {
+      layout: 'taxonomy', title: '03 How Do Agency, Bancassurance, and Digital Operating Models Differ?', kicker: '',
+      root: 'Life insurance beyond pure protection', rootDetail: 'Feature types and reach routes, not a sequence',
+      groups: [
+        { label: 'Savings and investment features', items: ['Endowment', 'Participating policy', 'Universal life', 'Investment-linked insurance'] },
+        { label: 'Distribution reach', items: ['Bancassurance', 'Employer partnership', 'Digital platform'] },
+        { label: 'What must be separated', items: ['Insurance benefit', 'Guaranteed value', 'Non-guaranteed illustration', 'Fund risk and fees', 'Distributor incentive'] },
+      ],
+      note: 'Example: a bank distributes an eligible savings-oriented life policy under an insurer partnership.',
+      takeaway: 'Broader financial features expand reach and needs served but raise complexity, disclosure and investment-risk requirements.',
+    },
+  },
+  'life-insurance-m3-4': {
+    heading: 'What each core product mainly provides and what to align before comparing',
+    intro: 'Products are categorised by duration, benefit, premium, savings, investment exposure, exclusions, surrender and optional riders. Compare them only on aligned terms.',
+    spec: {
+      layout: 'table', title: '04 How Do Term, Whole Life, and Endowment Products Differ?', kicker: '',
+      headers: ['Product or feature', 'What it mainly provides', 'Align before comparing'],
+      rows: [
+        { label: 'Term life', a: 'Time-bound protection', b: 'Sum assured, term and premium' },
+        { label: 'Endowment', a: 'Protection combined with savings', b: 'Guaranteed value and surrender terms' },
+        { label: 'Universal life', a: 'Cover with a savings value', b: 'Charges and fund assumptions' },
+        { label: 'Rider', a: 'Optional added benefit on a base policy', b: 'Exclusions and extra premium' },
+      ],
+      note: 'Underwriting and exclusions must also be aligned before two policies are compared.',
+      takeaway: 'Features determine risk allocation, premium commitment, possible value and customer complexity.',
+    },
+  },
+  'life-insurance-m3-5': {
+    heading: 'One protection core, three ways of sharing value and risk',
+    intro: 'Whole life, participating and investment-linked policies all start from life cover and a premium commitment. They differ in what is guaranteed and who bears the investment outcome.',
+    spec: {
+      layout: 'pathway', title: '05 How Do Participating, Universal, and Investment-Linked Products Differ?', kicker: '',
+      trunk: [
+        { label: 'Insurance protection', detail: 'Benefit paid on an insured event' },
+        { label: 'Premium commitment', detail: 'Payments the customer must sustain' },
+      ],
+      optionsLabel: 'Product designs — alternatives, not steps',
+      options: [
+        { label: 'Whole life', detail: 'Lifelong cover under policy terms' },
+        { label: 'Participating policy', detail: 'Adds non-guaranteed bonuses or dividends tied to insurer performance' },
+        { label: 'Investment-linked insurance', detail: 'Adds investment exposure; value depends on fund performance' },
+      ],
+      afterLabel: 'Before comparing',
+      after: [{ label: 'Align terms', detail: 'Charges, surrender and fund assumptions', kind: 'outcome' }],
+      note: 'Example: term life prioritises time-bound protection while investment-linked insurance combines cover with market exposure.',
+      takeaway: 'Features determine risk allocation, premium commitment, possible value and customer complexity.',
+    },
+  },
+  'life-insurance-m3-6': {
+    heading: 'A suitable recommendation depends on circumstances, not demographics alone',
+    intro: 'Customers are grouped by life stage, obligations, affordability, health, goals and existing coverage. Each factor changes what cover, riders or group benefits fit.',
+    spec: {
+      layout: 'driverTree', title: '06 How Do Riders, Group Coverage, and Product Suitability Work?', kicker: '',
+      root: { label: 'Suitable recommendation', detail: 'Documented suitability, affordability and advice rationale' },
+      drivers: [
+        { label: 'Life stage', detail: 'Who relies on the customer', children: [{ label: 'Age' }, { label: 'Dependant' }] },
+        { label: 'Affordability', detail: 'Ability to sustain premiums', children: [{ label: 'Income' }, { label: 'Occupation' }] },
+        { label: 'Insurability', detail: 'Permitted, relevant data only', children: [{ label: 'Health risk' }] },
+        { label: 'Need', detail: 'What the cover must achieve', children: [{ label: 'Financial goal' }, { label: 'Protection gap' }] },
+      ],
+      note: 'Example: a young parent prioritises income replacement while a pre-retirement customer considers legacy planning. Avoid unfair assumptions.',
+      takeaway: 'Effective segmentation aligns need and advice with customer circumstances rather than demographics alone.',
+    },
+  },
+  'life-insurance-m3-7': {
+    heading: 'Sizing family income protection: from need, minus existing cover, within budget',
+    intro: 'Families with regular income, debt and household responsibilities buy cover to replace income and protect commitments. The amount follows a needs assessment.',
+    spec: {
+      layout: 'flow', title: '07 How Do Families Use Life Insurance for Income Protection?', kicker: '',
+      steps: [
+        { label: 'Income to replace', detail: 'What dependants would lose after an insured death' },
+        { label: 'Add commitments', detail: 'Mortgage and other liabilities to cover' },
+        { label: 'Subtract existing cover', detail: 'Current policies and employer benefits' },
+        { label: 'Check premium capacity', detail: 'A sustainable premium budget for the full term', kind: 'decision' },
+        { label: 'Set cover and term', detail: 'Protection gap closed at an affordable premium', kind: 'outcome' },
+      ],
+      note: 'Example: a household with a mortgage buys cover to reduce financial burden after an insured death. Allow for inflation.',
+      takeaway: 'Demand centers on replacing income and protecting dependants and major financial commitments.',
+    },
+  },
+  'life-insurance-m3-8': {
+    heading: 'Long-term goals only become cover when the premium can be sustained',
+    intro: 'Dependants, education and family continuity create long-horizon needs. Affordability decides how much of that need a household can realistically insure.',
+    spec: {
+      layout: 'decision', title: '08 How Do Affordability and Long-Term Financial Planning Shape Need?', kicker: '',
+      root: { label: 'Long-term family need', detail: 'Dependants, education and family continuity' },
+      question: 'Can the household sustain the premium for as long as the need lasts?',
+      branches: [
+        { condition: 'Yes, within budget', outcome: 'Match cover and term to the need', detail: 'Cover dependants through education years', tone: 'positive' },
+        { condition: 'Only partly', outcome: 'Prioritise family continuity first', detail: 'Protect core income now and review later', tone: 'caution' },
+        { condition: 'No', outcome: 'Do not over-commit', detail: 'A policy that lapses protects no one', tone: 'negative' },
+      ],
+      note: 'Assess liabilities, existing policies, employer benefits, term and inflation alongside the premium budget.',
+      takeaway: 'Demand centers on replacing income and protecting dependants and major financial commitments.',
+    },
+  },
+  'life-insurance-m3-9': {
+    heading: 'A first-time buyer and a legacy-planning customer need different advice',
+    intro: 'Customers range from new or underserved buyers to affluent individuals seeking customised protection and legacy solutions. Advice should match the actual customer, not a broad label.',
+    spec: {
+      layout: 'compare', title: '09 How Do Trust, Suitability, and Needs Assessment Shape Advice?', kicker: '',
+      leftTitle: 'First-time or underserved buyer', rightTitle: 'Affluent legacy-planning customer',
+      rows: [
+        { label: 'Typical need', a: 'Entry protection, often affordable term cover', b: 'Wealth transfer and estate planning' },
+        { label: 'Underwriting', a: 'Simplified underwriting where appropriate', b: 'Fuller evidence for tailored cover' },
+        { label: 'Payment', a: 'Flexibility for irregular income', b: 'Structured to the legacy plan' },
+        { label: 'Access', a: 'Digital access and simple explanation', b: 'Personal, customised advice' },
+        { label: 'Trust test', a: 'Understands cover and premium commitment', b: 'Understands complexity and trade-offs' },
+      ],
+      note: 'Match complexity, advice, evidence, service and payment flexibility to the customer.',
+      takeaway: 'Segments differ in affordability, literacy, access, advice and service expectations.',
+    },
+  },
+  'life-insurance-m3-10': {
+    heading: 'A protection cohort is profitable only if premiums cover every long-term cost',
+    intro: 'The chapter’s hypothetical cohort is profitable when premiums and investment returns cover expected benefits, expenses, reinsurance and capital while policies persist as assumed. Premiums collected are cash, not profit.',
+    spec: {
+      layout: 'driverTree', title: '10 How Do Premiums, Claims, Expenses, and Reinsurance Shape Insurance Economics?', kicker: '',
+      root: { label: 'Long-duration cohort result', detail: 'Hypothetical educational illustration, not an insurer forecast' },
+      formula: 'Premium inflow and investment returns − expected claims − expenses − reinsurance cost − cost of capital',
+      drivers: [
+        { label: 'Premium inflow', op: '+', detail: 'Cash collected while policies persist as assumed' },
+        { label: 'Expected claims', op: '−', detail: 'Benefits the cohort is expected to pay', children: [{ label: 'Mortality assumption' }] },
+        { label: 'Expenses', op: '−', detail: 'Priced through expense loading', children: [{ label: 'Acquisition expense' }, { label: 'Servicing cost' }] },
+        { label: 'Reinsurance cost', op: '−', detail: 'Price of transferring part of the risk' },
+      ],
+      note: 'Hypothetical example — no figures. Distinguish collected premium, accounting revenue, investment result, reserve movement, claim, benefit and profit.',
+      takeaway: 'Premiums collected are cash inflows, not accounting profit; long-duration economics depend on expected benefits, expenses, reinsurance, persistency, capital and the timing of obligations.',
+    },
+  },
+  'life-insurance-m3-11': {
+    heading: 'Insurer assets are managed against liabilities, not for return alone',
+    intro: 'Investment management for insurance liabilities covers ALM, duration and cash-flow matching, interest-rate exposure, liquidity for benefits and surrenders, and capital constraints.',
+    spec: {
+      layout: 'compare', title: '11 How Do Investment Portfolios, ALM, Duration, and Liquidity Shape Results?', kicker: '',
+      leftTitle: 'Free-standing return portfolio', rightTitle: 'Liability-driven portfolio (ALM)',
+      rows: [
+        { label: 'Goal', a: 'Maximise investment income', b: 'Meet policyholder obligations as they fall due' },
+        { label: 'Duration', a: 'Chosen for return', b: 'Duration matching to liability timing' },
+        { label: 'Interest-rate risk', a: 'Taken as a market bet', b: 'Managed against liability sensitivity' },
+        { label: 'Liquidity', a: 'Secondary concern', b: 'Enough liquid assets for claims and surrenders' },
+        { label: 'Capital', a: 'Not tied to liabilities', b: 'Asset risk constrained by capital' },
+      ],
+      note: 'Example: a long-duration liability portfolio can face strain when assets mature too early, rates move adversely or liquid assets fall short.',
+      takeaway: 'Investment income supports insurer economics, but assets must be managed against liability timing, duration, liquidity and capital rather than pursued as a free-standing return portfolio.',
+    },
+  },
+  'life-insurance-m3-12': {
+    heading: 'Under IFRS 17, premium cash, revenue and profit are separate lines',
+    intro: 'IFRS 17 insurance revenue reflects insurance services provided, not premium cash received. Several distinct measures together shape reported profit.',
+    spec: {
+      layout: 'table', title: '12 How Does IFRS 17 Report Insurance Revenue, Service Result, Finance Effects, CSM, and Profit?', kicker: '',
+      headers: ['Measure', 'What it reflects', 'What it is not'],
+      rows: [
+        { label: 'Premium inflow', a: 'Cash received from policyholders', b: 'Not insurance revenue or profit' },
+        { label: 'Insurance revenue', a: 'Insurance services provided in the period', b: 'Not premium cash collected' },
+        { label: 'Insurance service result', a: 'Revenue less insurance service expenses and reinsurance effects', b: 'Not total reported profit' },
+        { label: 'Insurance finance effects', a: 'Finance income or expense on insurance liabilities', b: 'Not the investment result' },
+        { label: 'Investment result', a: 'Return on the invested assets', b: 'Not a free-standing profit source' },
+        { label: 'CSM release', a: 'Contractual service margin recognised as services are provided', b: 'Not cash received' },
+      ],
+      note: 'Hypothetical example from the chapter: premium inflows grow, yet profitability deteriorates as acquisition costs rise, claims are worse than assumed and persistency weakens.',
+      takeaway: 'IFRS 17 insurance revenue reflects insurance services rather than premium cash receipts; service result, finance effects, investment results, CSM release and other expenses jointly shape reported profit.',
+    },
+  },
+  'life-insurance-m3-13': {
+    heading: 'Agents, call centres and apps reach customers; sales quality governs all three',
+    intro: 'Agent-led advice and direct human or digital acquisition each reach the customer differently. All of them share the same conduct controls.',
+    spec: {
+      layout: 'pathway', title: '13 How Does Agency Distribution Work?', kicker: '',
+      trunk: [{ label: 'Customer contact', detail: 'Need identified and lead recorded' }],
+      optionsLabel: 'Acquisition routes — alternatives, not steps',
+      options: [
+        { label: 'Tied agent', detail: 'Face-to-face advice for one insurer' },
+        { label: 'Call centre', detail: 'Scripted human contact at a distance' },
+        { label: 'Mobile app', detail: 'Self-directed digital journey' },
+      ],
+      afterLabel: 'Sales quality on every route',
+      after: [
+        { label: 'Explain cover clearly', detail: 'Coverage, exclusions and premium commitment' },
+        { label: 'Record suitability', detail: 'Consent, advice rationale and records', kind: 'outcome' },
+      ],
+      note: 'Govern recruitment, training, scripts, illustrations, remuneration and post-sale service.',
+      takeaway: 'Distribution effectiveness depends on trust, advice quality, cost and product complexity.',
+    },
+  },
+  'life-insurance-m3-14': {
+    heading: 'The level of advice a sale needs depends on how complex the product is',
+    intro: 'Independent advisers, direct websites and trained agents suit different needs. Product complexity decides how much advice the customer should receive.',
+    spec: {
+      layout: 'decision', title: '14 How Do Bancassurance, Brokers, and Group Sales Work?', kicker: '',
+      root: { label: 'Customer and product', detail: 'Advice need rises with complexity' },
+      question: 'How complex is the cover the customer is choosing?',
+      branches: [
+        { condition: 'Simple, well-understood cover', outcome: 'Direct website', detail: 'Clear terms and illustrations', tone: 'positive' },
+        { condition: 'Needs comparison across insurers', outcome: 'Independent adviser', detail: 'Disclose remuneration', tone: 'caution' },
+        { condition: 'Complex long-term commitment', outcome: 'Trained adviser', detail: 'Agent training and suitability records', tone: 'caution' },
+      ],
+      note: 'Example: an adviser explains coverage, exclusions and premium commitment before recommending a policy.',
+      takeaway: 'Distribution effectiveness depends on trust, advice quality, cost and product complexity.',
+    },
+  },
+  'life-insurance-m3-15': {
+    heading: 'Each partner route adds reach and needs its own fairness control',
+    intro: 'Insurance offered through banks, workplaces, communities and platforms reaches more customers. Explicit roles and controls protect the customer in each route.',
+    spec: {
+      layout: 'table', title: '15 How Do Direct and Digital Channels Change Acquisition Economics?', kicker: '',
+      headers: ['Partner route', 'What it adds', 'Control that keeps it fair'],
+      rows: [
+        { label: 'Bank partnership', a: 'Insurance alongside banking services', b: 'Keep loan, deposit and insurance decisions separate' },
+        { label: 'Employer benefit', a: 'Cover offered through the workplace', b: 'Clear roles and service ownership' },
+        { label: 'Affinity program', a: 'Access through an established community', b: 'Disclose insurer, terms and complaints path' },
+        { label: 'Digital marketplace', a: 'Online comparison and acquisition', b: 'Customer consent for data use' },
+        { label: 'Partner incentive', a: 'Motivates partner selling', b: 'Disclosed and governed to prevent unsuitable sales' },
+      ],
+      note: 'Example: a bank offers insurance alongside banking services while keeping the insurance contract distinct. Distribution governance spans every route.',
+      takeaway: 'Partnerships expand reach but unsuitable selling can damage policyholders, insurer and distributor trust.',
+    },
+  },
+  'life-insurance-m3-16': {
+    heading: 'The primary insurer sits at the centre and keeps responsibility for the promise',
+    intro: 'Banks, brokers and technology providers contribute different capabilities. Contracts allocate risk, revenue and responsibility, while the insurer remains accountable to policyholders and beneficiaries.',
+    spec: {
+      layout: 'ecosystem', title: '16 How Do Insurers, Policyholders, and Beneficiaries Interact?', kicker: '',
+      center: { label: 'Primary insurer', detail: 'Carries the risk and retains responsibility' },
+      actors: [
+        { label: 'Policyholder', relation: 'Pays premiums and receives cover', flows: ['money', 'product'] },
+        { label: 'Beneficiary', relation: 'Receives the benefit on a valid claim', flows: ['money'] },
+        { label: 'Bank', relation: 'Distributes policies to its customers', flows: ['product', 'money'] },
+        { label: 'Broker', relation: 'Advises and places business', flows: ['information', 'service'] },
+        { label: 'Technology provider', relation: 'Supports administration and data', flows: ['information', 'service'] },
+      ],
+      note: 'Verify licence, contractual role, service level, data access, quality review and remuneration for each participant.',
+      takeaway: 'Participants contribute different capabilities while contracts allocate risk, revenue and responsibility.',
+    },
+  },
+  'life-insurance-m3-17': {
+    heading: 'Actuaries, agents and reinsurers each add one capability along the chain',
+    intro: 'Commercial relationships support product design, distribution, risk transfer and service. Each participant contributes at a different point.',
+    spec: {
+      layout: 'flow', title: '17 How Do Agents, Banks, Brokers, and Reinsurers Interact?', kicker: '',
+      steps: [
+        { label: 'Product design', detail: 'Pricing and assumptions expertise', owner: 'Actuarial consultant' },
+        { label: 'Advice and sale', detail: 'Explains cover and submits the application', owner: 'Agent' },
+        { label: 'Underwriting and issue', detail: 'Accepts the risk and issues the policy', owner: 'Primary insurer' },
+        { label: 'Risk transfer', detail: 'Shares selected high-sum or concentrated risks', owner: 'Reinsurer' },
+        { label: 'Service and claims', detail: 'Insurer keeps responsibility to the policyholder', kind: 'outcome', owner: 'Primary insurer' },
+      ],
+      note: 'Example: an insurer uses reinsurance to strengthen capacity for selected high-sum or concentrated risks.',
+      takeaway: 'Participants contribute different capabilities while contracts allocate risk, revenue and responsibility.',
+    },
+  },
+  'life-insurance-m3-18': {
+    heading: 'Oversight bodies, what they oversee and where customers seek redress',
+    intro: 'Institutions supervise insurers, intermediaries, products, conduct, complaints, data and financial capacity. Each requirement should map to an accountable owner.',
+    spec: {
+      layout: 'taxonomy', title: '18 How Do Actuaries, Investment Managers, Regulators, and Service Partners Interact?', kicker: '',
+      root: 'Oversight of life insurance', rootDetail: 'Institutions and areas of oversight — categories, not steps',
+      groups: [
+        { label: 'Institutions', items: ['Insurance supervisor', 'Industry association', 'Consumer body'] },
+        { label: 'Areas overseen', items: ['Solvency oversight', 'Sales conduct', 'Data protection'] },
+        { label: 'Customer redress', items: ['Complaints', 'Dispute resolution'] },
+      ],
+      note: 'Example: solvency supervision reduces policyholder exposure to an insurer unable to meet obligations.',
+      takeaway: 'Effective oversight supports solvency, fair treatment, market integrity and confidence in long commitments.',
+    },
+  },
+};

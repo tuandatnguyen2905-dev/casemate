@@ -1,0 +1,202 @@
+import { F5DeepDive, citeF5, f5Chapter, f5Quiz } from './fashionM5Core';
+import type { FashionM5LessonBundle } from './fashionM5Core';
+
+const LESSON = '2. Technology & Innovation Trends';
+
+const deck = [
+  f5Chapter({
+    title: 'AI, Data Analytics, and Personalization', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Identify where AI and analytics improve specific decisions in fashion retail and what data quality and governance they depend on.',
+    mateIntro: 'AI is not a strategy. It is a tool for making particular decisions a little better: how much to buy, where to send it, what to show a customer. The skill is choosing the decisions worth improving.',
+    keyInsight: 'AI creates value when it improves specific business decisions rather than being adopted simply as a technology trend. Its greatest potential lies in connecting consumer insights with product development, merchandising, inventory management, and customer engagement.',
+    statTiles: [
+      { value: '6', label: 'AI and data use cases', subtitle: 'Forecasting to responsible use', description: 'Demand forecasting, personalised recommendations, trend analysis, inventory optimisation, service automation and responsible data use.' },
+      { value: '1 Mar 2026', label: 'Vietnam’s Law on Artificial Intelligence took effect', subtitle: 'Passed 10 December 2025', description: 'It sets risk-based rules, with transparency and human oversight as core principles.' },
+      { value: '1 Jan 2026', label: 'Personal Data Protection Law took effect', subtitle: 'Law 91/2025/QH15', description: 'AI processing of personal data has to be classified by risk level and built with security.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the legal dates are from advisory and legal summaries, so confirm obligations against the official texts.',
+    narrative: [
+      { label: 'What it is', text: 'Artificial intelligence and data analytics are changing how fashion and sportswear businesses understand customers, forecast demand, manage products and personalise shopping. Retailers can use data from transactions, customer interactions, product searches and market trends to support decisions across the value chain. Effectiveness depends on data quality, integration and appropriate implementation.' },
+      { label: 'Why it is happening', text: 'Businesses now hold large amounts of sales, search and engagement data, and tools to analyse it have become accessible. At the same time they must balance personalisation and efficiency against privacy, transparency and the risk of relying too heavily on automated recommendations or forecasts.' },
+      { label: 'Real-world example', text: 'Retailers analyse historical sales, seasonality and market signals to improve purchasing and replenishment; suggest products from customer preferences, browsing behaviour and relevant purchase history; analyse searches, social content and feedback to spot emerging interests; support stock allocation, replenishment and markdown decisions; use conversational assistants for questions on sizing, product features, delivery and returns; and maintain privacy protections, data governance and human oversight.' },
+      { label: 'Vietnam example', text: 'The CEO of IVY Moda told Thanh Nien that AI helps with data processing, reporting and content creation and, in design, with trend research and 3D mock-ups. K&K Fashion, a Vietnamese women’s brand with 13 showrooms, uses Appier’s AI personalisation platform to segment audiences faster and tailor recommendations, and YODY has trialled AI try-on for VIP customers. Vietnam’s Law on Artificial Intelligence, effective 1 March 2026, and the Personal Data Protection Law, effective 1 January 2026, now frame how such systems are governed.' },
+      { label: 'Business impact', text: 'AI and analytics can improve customer relevance, demand planning and operational efficiency. Businesses should prioritise use cases with measurable benefits and make sure data quality, privacy and governance support reliable implementation.' },
+    ],
+    visualKind: 'fashion-m5-21-ai', visualHeading: 'From data to decision',
+    visualIntro: 'Follow the five steps from collecting data to reviewing the benefit, with an example at each step.',
+    imageAlt: 'Casemate flow of five steps from data collection to review, with an example use for each',
+    keyTerms: [
+      { term: 'Demand forecasting', definition: 'Predicting future sales from past sales, seasonality and market signals.' },
+      { term: 'Data governance', definition: 'Rules and responsibilities that keep data accurate, secure and used appropriately.' },
+      { term: 'Inventory optimisation', definition: 'Using data to decide stock allocation, replenishment and markdowns.' },
+      { term: 'Human oversight', definition: 'People reviewing and able to override automated recommendations or forecasts.' },
+    ],
+    recap: [
+      'AI and analytics support decisions across the value chain.',
+      'Value comes from specific decisions, not from adopting AI as a trend.',
+      'Results depend on data quality, integration and implementation.',
+      'Privacy, transparency and human oversight are part of responsible use.',
+    ],
+    chapterRecap: 'AI and analytics can improve customer relevance, demand planning, and operational efficiency. Businesses should prioritize use cases with measurable benefits and ensure that data quality, privacy, and governance support reliable implementation.',
+    deepDiveTitle: 'Why start with the decision, not the technology',
+    body: <F5DeepDive paragraphs={[
+      'A project that begins with a question such as how to reduce unsold stock in a category has a measure of success and a person responsible. A project that begins with a tool usually produces a demonstration and little change in results.' ,
+      'The same discipline applies to data. Forecasts built on incomplete or inconsistent records mislead, so many retailers fix data quality and integration first and then add models, with a person able to question the output.',
+    ]} evidence="The use cases are described qualitatively in the supplied material. The Vietnamese examples come from a Thanh Nien interview, vendor and brand pages, and legal summaries; none measures results across the industry." />,
+    sources: citeF5('bofStateOfFashion', 'thanhnienAi', 'appierKk', 'yodyAiTryOn', 'acclimeJan2026', 'vnPdpl'),
+  }),
+  f5Chapter({
+    title: 'Smart Retail, Automation, and Omnichannel Technology', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe the technologies that connect stores, warehouses and online orders and the investment needed to make them work.',
+    mateIntro: 'Most retail technology fails the same way: it is bought for one department and does not talk to the others. The value appears when stock, orders and customers are visible in one place.',
+    keyInsight: 'Technology delivers the greatest value when it connects previously fragmented operations. Businesses should prioritize solutions that improve inventory accuracy, purchasing convenience, fulfillment reliability, and the overall customer experience.',
+    statTiles: [
+      { value: '6', label: 'Smart-retail capabilities', subtitle: 'Visibility to integration', description: 'Inventory visibility, automated warehousing, digital store experiences, fulfilment integration, analytics and system integration.' },
+      { value: 'Nov 2023', label: 'Canifa launched its C-Live video-consultation feature', subtitle: 'In its shopping app', description: 'Customers connect with store advisers by video for styling, colour and size advice.' },
+      { value: 'US$31B', label: 'Vietnam e-commerce market in 2025', subtitle: '+25.5%, about 10% of retail', description: 'Department of E-commerce and Digital Economy estimate; another ministry report puts it near US$32 billion.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the Canifa feature is described by the brand and its vendor, and the market size is a ministry estimate for all e-commerce, not fashion alone.',
+    narrative: [
+      { label: 'What it is', text: 'Retail technology is changing how businesses manage stores, warehouses, online orders and customer interactions. Digital inventory systems, automated fulfilment and integrated retail platforms can improve stock visibility and coordinate activity across channels. These tools matter most for businesses with both physical and digital stores, but they require investment in infrastructure, employee training, system integration and process redesign.' },
+      { label: 'Why it is happening', text: 'Customers expect stock, price and service to be consistent whichever channel they use, and manual processes cannot keep several channels aligned. Automation and shared systems reduce errors and speed up fulfilment, although implementation cost and complexity limit how fast businesses can move.' },
+      { label: 'Real-world example', text: 'Retailers integrate stock information across stores, distribution centres and e-commerce platforms; use warehouse management systems, sorting technology and automation to speed fulfilment; introduce mobile payment, digital product information and assisted online ordering in stores; support store pickup, ship-from-store and coordinated returns where operationally appropriate; use store traffic, conversion and sales data to improve merchandising and staffing; and connect inventory, order management, CRM and payment systems.' },
+      { label: 'Vietnam example', text: 'Canifa, which operates more than 100 stores, launched C-Live in November 2023, an in-app video call that lets customers see products and take styling, colour and size advice from store staff and complete the purchase on the same call. The Ministry of Industry and Trade’s 2025 domestic market report attributes part of e-commerce growth to company investment in digital tools such as inventory management, cashless payment, online platforms and livestream selling, in a market of about US$31 billion in 2025.' },
+      { label: 'Business impact', text: 'Smart retail and automation can improve service consistency and operating efficiency. Successful implementation needs integrated systems, clear operational objectives and a realistic assessment of investment and implementation costs.' },
+    ],
+    visualKind: 'fashion-m5-22-smart-retail', visualHeading: 'Technology that connects fragmented operations',
+    visualIntro: 'See six smart-retail capabilities and the value each one delivers.',
+    imageAlt: 'Casemate mind map of six smart-retail capabilities and the value each delivers',
+    keyTerms: [
+      { term: 'Warehouse management system', definition: 'Software that controls receiving, storing, picking and dispatch of stock.' },
+      { term: 'Order management system', definition: 'Software that routes, reserves and tracks orders across channels.' },
+      { term: 'Ship-from-store', definition: 'Fulfilling online orders from stock held in a nearby store.' },
+      { term: 'System integration', definition: 'Connecting separate systems so they share data automatically.' },
+    ],
+    recap: [
+      'Retail technology links stores, warehouses, online orders and customers.',
+      'Integrated systems improve stock visibility and fulfilment.',
+      'Implementation needs investment, training and process redesign.',
+      'Prioritise inventory accuracy, convenience and fulfilment reliability.',
+    ],
+    chapterRecap: 'Smart retail and automation can improve service consistency and operating efficiency. Successful implementation requires integrated systems, clear operational objectives, and a realistic assessment of investment and implementation costs.',
+    deepDiveTitle: 'Why integration is harder than the tools',
+    body: <F5DeepDive paragraphs={[
+      'Each tool can be sound on its own. Trouble starts at the joins, such as a point-of-sale system that updates stock overnight while the website sells it in real time, or an order system that cannot see store inventory.' ,
+      'Retailers therefore plan integration and staff training as part of the cost of any new system, and start with the flows that matter most to customers, usually stock accuracy and order tracking.',
+    ]} evidence="The capabilities are described qualitatively in the supplied material. The Canifa description comes from a brand and vendor case study and the market size from a ministry estimate, so neither measures fashion retail performance directly." />,
+    sources: citeF5('bofStateOfFashion', 'stringeeCanifa', 'vietnamNewsEcom', 'vovDomesticReport'),
+  }),
+  f5Chapter({
+    title: 'Product Innovation, Smart Materials, and Performance Technology', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how product and material innovation differentiates brands and why a technical feature must become a benefit customers understand.',
+    mateIntro: 'A clever fabric that no one can feel or explain is a cost, not an advantage. The innovations that sell are the ones a customer can describe in one sentence.',
+    keyInsight: 'Product innovation is most effective when it solves identifiable consumer problems and creates benefits that customers can understand. Technical complexity alone does not guarantee market acceptance.',
+    statTiles: [
+      { value: '6', label: 'Innovation routes', subtitle: 'Textiles to commercialisation', description: 'Advanced textiles, footwear technology, functional design, digital development, performance testing and commercialisation.' },
+      { value: 'US$46B', label: 'Vietnam textile and garment exports, 2025', subtitle: '+5.6% year on year', description: 'VITAS figure; the country is the production base for many innovations brands design elsewhere.' },
+      { value: '~52%', label: 'Domestic value-added ratio in the sector', subtitle: 'VITAS, 2025', description: 'A sign of growing local supply of materials and components.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the export and value-added figures are association figures for the whole textile and garment industry, not for innovation specifically.',
+    narrative: [
+      { label: 'What it is', text: 'Product innovation is a major competitive driver in fashion, sportswear, footwear and outdoor retail. Advances in textiles, cushioning, garment construction and manufacturing allow brands to improve comfort, durability, functionality and design, and to differentiate in competitive markets. Technical features must still deliver meaningful consumer benefits, and development costs must be weighed against demand, price positioning and commercial viability.' },
+      { label: 'Why it is happening', text: 'With many products meeting a basic need, brands look to materials and construction for advantages that customers can feel. Better testing and digital tools make development faster, so competitors respond quickly and innovation has to be translated into clear benefits to hold its value.' },
+      { label: 'Real-world example', text: 'Brands develop breathable, stretchable, moisture-managing or weather-resistant materials; improve cushioning, stability, grip, fit and weight in footwear; incorporate ergonomic construction, adaptable features and practical storage; use computer-aided design and digital prototyping; test comfort, durability, safety and functionality before launch; and turn technical improvements into clear product benefits and credible marketing messages.' },
+      { label: 'Vietnam example', text: 'Vietnam’s textile and garment exports were estimated at about US$46 billion in 2025, up 5.6%, with a domestic value-added ratio of around 52%, according to VITAS. A ministry portal summary says the product structure has shifted toward items with higher technical content, design and environmental factors, and footwear exports reached nearly US$29 billion with annual capacity of about 1.3–1.4 billion pairs. Vietnamese factories are therefore where many innovations are made even when they are designed elsewhere.' },
+      { label: 'Business impact', text: 'Product and material innovation can strengthen differentiation across fashion, sports and outdoor categories. Businesses should connect research and development with customer needs, product testing and commercial feasibility.' },
+    ],
+    visualKind: 'fashion-m5-23-innovation', visualHeading: 'Six routes from innovation to customer benefit',
+    visualIntro: 'See each innovation route and the customer benefit it should deliver.',
+    imageAlt: 'Casemate cards of six innovation routes and the customer benefit of each',
+    keyTerms: [
+      { term: 'Technical textile', definition: 'A fabric engineered for a specific function such as moisture management or weather protection.' },
+      { term: 'Cushioning system', definition: 'The materials and construction in a shoe that absorb impact and return energy.' },
+      { term: 'Digital prototyping', definition: 'Testing designs on screen before physical samples are made.' },
+      { term: 'Commercialisation', definition: 'Turning a technical improvement into a product customers understand and buy.' },
+    ],
+    recap: [
+      'Innovation differentiates but must solve a real customer problem.',
+      'Development cost has to be balanced against demand and price.',
+      'Testing builds trust in performance claims.',
+      'Translate technical features into clear benefits.',
+    ],
+    chapterRecap: 'Product and material innovation can strengthen differentiation across fashion, sports, and outdoor categories. Businesses should connect research and development with customer needs, product testing, and commercial feasibility.',
+    deepDiveTitle: 'Why a feature is not yet a benefit',
+    body: <F5DeepDive paragraphs={[
+      'A feature describes what a product has, such as a new foam or a woven membrane. A benefit describes what it does for the customer, such as less fatigue on a long run or dryness in a shower. Customers buy benefits, and they believe them when testing backs them up.' ,
+      'Teams that write the benefit first, then the evidence, then the technical detail, usually communicate better and avoid spending on features that customers cannot perceive.',
+    ]} evidence="The innovation routes are described qualitatively in the supplied material. The Vietnamese figures are VITAS and LEFASO association data for whole industries, and the product-structure statement is from a ministry portal summary." />,
+    sources: citeF5('bofStateOfFashion', 'vneconomyTextile', 'asemTextile', 'vneconomyFootwear'),
+  }),
+  f5Chapter({
+    title: 'Digital Product Design and Emerging Technologies', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Evaluate digital design and emerging technologies by their practical contribution rather than their novelty.',
+    mateIntro: 'A virtual try-on makes a good demonstration. The harder question is whether it cuts returns or sampling cost. Emerging technology earns its place by what it measurably changes.',
+    keyInsight: 'Emerging technologies should be evaluated by their practical contribution to product development and customer value. Businesses should distinguish technologies that improve core operations from those that primarily provide novelty or promotional appeal.',
+    statTiles: [
+      { value: '6', label: 'Digital design activities', subtitle: '3D design to technology evaluation', description: '3D design, virtual sampling, augmented reality, digital fit assistance, virtual presentation and technology evaluation.' },
+      { value: '60 seconds', label: 'YODY AI try-on image generation', subtitle: 'As described by the brand', description: 'Customers upload a photo and enter height and weight to see a product on their figure.' },
+      { value: 'VIP trial', label: 'Limited to selected customers', subtitle: 'Selective adoption', description: 'YODY introduced the feature as a trial for its VIP segment, not across all customers.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the other two come from one brand’s own description of a trial and are not evidence of results or of industry adoption.',
+    narrative: [
+      { label: 'What it is', text: 'Digital design tools and emerging technologies are widening the ways to create, present and test fashion products. Three-dimensional design, virtual sampling, augmented reality and digital visualisation can support product development and help customers evaluate products before buying. Adoption varies with product complexity, customer expectations, infrastructure and cost, and the technologies are not equally valuable for every brand.' },
+      { label: 'Why it is happening', text: 'Physical sampling takes time and money, and online shoppers cannot try products on. Digital tools promise shorter development and better product understanding, but their benefit depends on whether they reduce development time, improve understanding or improve the purchasing experience.' },
+      { label: 'Real-world example', text: 'Businesses develop digital prototypes to evaluate designs before physical samples are produced; reduce selected physical sampling and support faster product revisions; allow customers to visualise certain products or accessories in relevant environments; use sizing tools and fit recommendations to help customers choose suitable products; use digital visualisation for merchandising, marketing and launches; and measure development-time savings, customer engagement, conversion and implementation cost.' },
+      { label: 'Vietnam example', text: 'The CEO of IVY Moda described to Thanh Nien how the brand builds products on 3D models and tests them in simulated settings to judge fit, drape and feasibility before production, which saves sampling cost and speeds launches. YODY introduced an AI try-on trial for VIP customers in which a customer uploads a photo and enters height and weight and receives an image in about 60 seconds, a deliberately limited rollout.' },
+      { label: 'Business impact', text: 'Digital design and emerging technologies offer opportunities to improve development workflows and product presentation. Businesses should adopt solutions selectively, focusing on measurable improvements and a clear fit with customer needs.' },
+    ],
+    visualKind: 'fashion-m5-24-digital-design', visualHeading: 'Which technologies to adopt first',
+    visualIntro: 'See how five technologies can be placed by effort to implement and practical value.',
+    imageAlt: 'Casemate matrix placing 3D design, virtual sampling, fit assistance, virtual presentation and AR try-on by effort and practical value',
+    keyTerms: [
+      { term: '3D product design', definition: 'Creating digital prototypes of garments or footwear before physical samples exist.' },
+      { term: 'Virtual sampling', definition: 'Reviewing and revising product samples on screen to reduce physical samples.' },
+      { term: 'Augmented reality', definition: 'Overlaying digital images on the real world so a customer can visualise a product.' },
+      { term: 'Fit assistance', definition: 'Tools that use measurements or photos to recommend a suitable size.' },
+    ],
+    recap: [
+      'Digital tools can speed design and help customers evaluate products.',
+      'Adoption depends on product, customer, infrastructure and cost.',
+      'Separate technologies that improve operations from novelty.',
+      'Measure time saved, engagement, conversion and cost.',
+    ],
+    chapterRecap: 'Digital design and emerging technologies offer opportunities to improve development workflows and product presentation. Businesses should adopt solutions selectively, focusing on measurable improvements and a clear fit with customer needs.',
+    deepDiveTitle: 'Why a pilot beats a launch',
+    body: <F5DeepDive paragraphs={[
+      'A small pilot with a defined group, such as a limited customer segment or one product line, shows whether a technology changes behaviour or only attracts curiosity. It also exposes data, cost and staffing issues before they become large.' ,
+      'Success measures should be set before the pilot: development days saved, sample cost avoided, conversion or return rate. If the numbers do not move, the technology is a marketing exercise and can be dropped.',
+    ]} evidence="The technologies are described qualitatively in the supplied material. The Vietnamese examples are a brand page describing a trial and a newspaper interview; they show intent and design, not measured outcomes." />,
+    sources: citeF5('bofStateOfFashion', 'yodyAiTryOn', 'thanhnienAi'),
+  }),
+];
+
+const quiz = f5Quiz('fashion-m5-l2', [
+  { chapter: '1', objective: 'State when AI creates value', question: 'When does AI create value for a retailer?', application: 'A company wants to adopt AI. What should guide the choice?', correct: 'When it improves specific business decisions rather than being adopted as a trend', wrong: ['When it is adopted because competitors announced it', 'When it replaces all human oversight', 'When it collects the most data possible'], explanation: 'AI should connect consumer insight with product, merchandising, inventory and engagement decisions. Review Chapter 1.' },
+  { chapter: '1', objective: 'Name AI use cases', question: 'Which of these is an AI or analytics use case in fashion retail?', application: 'A retailer predicts demand from past sales and seasonality. What is this?', correct: 'Demand forecasting', wrong: ['Building a new store', 'Printing price tags', 'Hiring a landlord'], explanation: 'Forecasting, recommendations, trend analysis, inventory optimisation and service automation are common use cases. Review Chapter 1.' },
+  { chapter: '1', objective: 'Recognise conditions for success', question: 'What do AI results depend on?', application: 'A forecasting tool gives unreliable output. What should the retailer check?', correct: 'Data quality, integration, appropriate implementation, privacy and governance', wrong: ['Only the colour of the dashboard', 'Only the number of users', 'Only the vendor’s logo'], explanation: 'Reliable implementation needs data quality, privacy and governance. Review Chapter 1.' },
+  { chapter: '2', objective: 'State where technology adds most value', question: 'When does retail technology deliver the greatest value?', application: 'A retailer has separate stock systems for stores and online. What would add most value?', correct: 'When it connects previously fragmented operations', wrong: ['When it is bought for one department only', 'When it is installed without training', 'When it avoids integration'], explanation: 'Prioritise solutions that improve inventory accuracy, convenience and fulfilment reliability. Review Chapter 2.' },
+  { chapter: '2', objective: 'List implementation requirements', question: 'What does smart-retail implementation require?', application: 'A retailer plans automated fulfilment. What must it budget for?', correct: 'Investment in infrastructure, employee training, system integration and process redesign', wrong: ['Nothing beyond buying the software', 'Only extra advertising', 'Only a new logo'], explanation: 'Implementation needs integrated systems and realistic cost assessment. Review Chapter 2.' },
+  { chapter: '3', objective: 'State when innovation works', question: 'When is product innovation most effective?', application: 'A brand adds a complex feature customers cannot perceive. What is the problem?', correct: 'When it solves identifiable consumer problems and creates benefits customers can understand', wrong: ['When it is technically complex', 'When it is kept secret', 'When it raises price without explanation'], explanation: 'Technical complexity alone does not guarantee market acceptance. Review Chapter 3.' },
+  { chapter: '3', objective: 'Link testing to credibility', question: 'Why test products before launch?', application: 'A shoe is advertised as durable. What supports the claim?', correct: 'Testing comfort, durability, safety and functionality supports credible claims', wrong: ['Testing delays claims without benefit', 'Testing replaces design', 'Testing only matters for luxury goods'], explanation: 'Performance testing evaluates functionality before commercial launch. Review Chapter 3.' },
+  { chapter: '4', objective: 'Evaluate emerging technology', question: 'How should emerging technologies be evaluated?', application: 'A brand is considering augmented reality. What should it ask?', correct: 'By their practical contribution to product development and customer value', wrong: ['By how new they look', 'By how many competitors use them', 'By how much publicity they create'], explanation: 'Distinguish technologies that improve core operations from those that mainly provide novelty. Review Chapter 4.' },
+  { chapter: '4', objective: 'Define virtual sampling', question: 'What is virtual sampling?', application: 'A designer reviews garment samples on screen instead of ordering all physical samples. What is this?', correct: 'Reducing selected physical sampling and supporting faster product revisions through digital samples', wrong: ['Selling samples to customers', 'Shipping samples by air', 'Copying a competitor’s samples'], explanation: 'Virtual sampling can reduce physical sampling requirements. Review Chapter 4.' },
+  { chapter: '4', objective: 'Measure adoption', question: 'Which measures show whether a digital technology is worthwhile?', application: 'A pilot of fit tools has ended. What should be measured?', correct: 'Development-time savings, customer engagement, conversion and implementation costs', wrong: ['Only the number of press mentions', 'Only the length of the pilot', 'Only the price of the software'], explanation: 'Measure the practical benefit and cost of each technology. Review Chapter 4.' },
+]);
+
+export const LESSON_5_2: FashionM5LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can match AI and analytics to specific decisions, describe the technologies that connect retail operations, link product innovation to customer benefits and evaluate emerging design technologies by their practical value.',
+    keyTakeaways: [
+      'AI creates value when it improves specific decisions, not when adopted as a trend.',
+      'Technology adds most value when it connects fragmented operations.',
+      'Innovation must solve a customer problem and be explained as a benefit.',
+      'Evaluate emerging technologies by measurable contribution, not novelty.',
+      'Data quality, privacy and governance determine whether results can be trusted.',
+    ],
+    businessImplications: 'Start from the decision or customer problem, fix data and integration before adding tools, test claims before launch, and run pilots with measures set in advance.',
+    remember: 'Choose technology for the decision it improves, not for the headline it earns.',
+    nextLesson: 'Market & Channel Trends',
+  },
+};

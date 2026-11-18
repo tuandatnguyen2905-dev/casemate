@@ -1,0 +1,415 @@
+import type { MfgTextilesChapterVisual } from './mfgTextilesVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Textiles & Apparel Manufacturing Module 01, keyed by visualKind. */
+export const MFG_TEXTILES_M1_VISUALS: Record<string, MfgTextilesChapterVisual> = {
+  'mfg-textiles-m1-1': {
+    heading: 'A sportswear order links fiber, fabric, dyeing, sewing and quality checks',
+    intro: 'Textiles and apparel manufacturing transforms natural and synthetic fibers into yarns, fabrics, processed textiles, garments and specialized materials. A sportswear product shows how each stage depends on the one before it.',
+    spec: {
+      layout: 'flow', title: '01 What Is Textiles & Apparel Manufacturing?', kicker: '',
+      steps: [
+        { label: 'Yarn choice', detail: 'Natural or synthetic fiber spun into yarn', owner: 'Fibers and yarn' },
+        { label: 'Knitting', detail: 'Yarn formed into fabric' },
+        { label: 'Dyeing and finishing', detail: 'Fabric processed for color and finish', owner: 'Dyeing and finishing' },
+        { label: 'Pattern and cutting', detail: 'Fabric cut to the garment pattern' },
+        { label: 'Sewing', detail: 'Cut panels assembled into the garment' },
+        { label: 'Testing and packing', detail: 'Product checked before it is packed', kind: 'outcome', owner: 'Quality control' },
+      ],
+      note: 'The same scope also covers woven and nonwoven fabrics, processed textiles and specialized materials.',
+      takeaway: 'Competitiveness depends on coordinating fibers and yarn, dyeing and finishing, and quality control across a multi-stage material and manufacturing ecosystem.',
+    },
+  },
+  'mfg-textiles-m1-2': {
+    heading: 'Fabric formation, apparel assembly and technical textiles are distinct kinds of manufacturing',
+    intro: 'The industry spans woven, knitted and nonwoven fabrics, garments and specialized materials. Each domain uses its own processes, yet all of them must coordinate within one material ecosystem.',
+    spec: {
+      layout: 'taxonomy', title: '02 What Makes the Industry Unique?', kicker: '',
+      root: 'Textiles & apparel manufacturing', rootDetail: 'Distinct domains linked by one material flow',
+      groups: [
+        { label: 'Fabric formation', detail: 'Turns yarn into fabric', items: ['Woven', 'Knitted', 'Nonwoven'] },
+        { label: 'Apparel assembly', detail: 'Turns fabric into garments', items: ['Pattern', 'Cutting', 'Sewing', 'Packing'] },
+        { label: 'Technical textiles', detail: 'Specialized materials made from processed textiles' },
+        { label: 'Cross-stage pressures', detail: 'Buyer demand, lead time, trade, technology, labor and environment' },
+      ],
+      note: 'Define the product category, material, customer and production stage before comparing firms.',
+      takeaway: 'The industry is unique because fabric formation, apparel assembly and technical textiles must coordinate across one multi-stage material ecosystem.',
+    },
+  },
+  'mfg-textiles-m1-3': {
+    heading: 'Manufacturing starts at fiber and ends at garment assembly; fashion retail is adjacent',
+    intro: 'Textile manufacturing converts fibers into yarn and fabric; garment manufacturing cuts and assembles fabric into products. Fashion branding and retail sell and merchandise the finished goods.',
+    spec: {
+      layout: 'table', title: '03 Where Does Textiles & Apparel Manufacturing Begin and End?', kicker: '',
+      headers: ['Stage', 'What it does', 'Boundary'],
+      rows: [
+        { label: 'Fiber production', a: 'Supplies natural or synthetic fiber', b: 'Upstream start of the chain' },
+        { label: 'Spinning', a: 'Converts fiber into yarn', b: 'Textile manufacturing' },
+        { label: 'Weaving', a: 'Forms woven fabric from yarn', b: 'Textile manufacturing' },
+        { label: 'Knitting', a: 'Forms knitted fabric from yarn', b: 'Textile manufacturing' },
+        { label: 'Dyeing and finishing', a: 'Colors and finishes fabric', b: 'Textile manufacturing' },
+        { label: 'Garment assembly', a: 'Cuts and assembles fabric into products', b: 'Garment manufacturing' },
+        { label: 'Fashion retail', a: 'Sells and merchandises finished goods', b: 'Adjacent — outside manufacturing' },
+      ],
+      note: 'A yarn mill, dyeing house, CMT factory and apparel retailer can contribute to one garment with different assets, skills and economics. Integrated firms may span stages without making them interchangeable.',
+      takeaway: 'Textile manufacturing is not garment manufacturing or fashion retail; spinning, weaving, knitting, fabric production and garment assembly are distinct processes.',
+    },
+  },
+  'mfg-textiles-m1-4': {
+    heading: 'Fiber becomes yarn, then one of several fabric structures, before finishing and sewing',
+    intro: 'Fibers are converted into yarn, and yarn becomes woven, knitted or other textile structures. Fabrics can be dyed and finished before cutting and sewing into garments.',
+    spec: {
+      layout: 'pathway', title: '04 Understanding Fibers, Yarn, Fabric and Garments', kicker: '',
+      trunk: [
+        { label: 'Natural or synthetic fiber', detail: 'Chosen for performance and end use' },
+        { label: 'Yarn', detail: 'Fibers converted into yarn' },
+      ],
+      optionsLabel: 'Fabric structure — alternatives, not steps',
+      options: [
+        { label: 'Woven fabric', detail: 'e.g. woven workwear' },
+        { label: 'Knitted fabric', detail: 'e.g. a knitted sports shirt' },
+        { label: 'Other textile structures' },
+      ],
+      afterLabel: 'Then, for the chosen structure',
+      after: [
+        { label: 'Finished textile', detail: 'Fabric dyed and finished' },
+        { label: 'Garment', detail: 'Cut and sewn under its own controls', kind: 'outcome' },
+      ],
+      note: 'A knitted sports shirt and a woven workwear garment differ in fabric construction, pattern, sewing, finishing and performance controls.',
+      takeaway: 'Material structure affects performance, production method, quality control, cost and suitable end use.',
+    },
+  },
+  'mfg-textiles-m1-5': {
+    heading: 'Mills, factories and retailers serve the same garment but earn in different ways',
+    intro: 'A fabric mill, a CMT factory and a fashion retailer may serve one garment but earn revenue through different assets and responsibilities. Branding and retail shape demand from outside manufacturing.',
+    spec: {
+      layout: 'ecosystem', title: "05 Who Are the Industry's Customers and Stakeholders?", kicker: '',
+      center: { label: 'One finished garment', detail: 'Several businesses contribute, each earning differently' },
+      actors: [
+        { label: 'Woven and knit fabric mills', relation: 'Supply fabric; earn on material production', flows: ['product'] },
+        { label: 'Technical textile producers', relation: 'Supply specialized materials', flows: ['product'] },
+        { label: 'CMT factory', relation: 'Converts fabric into garments; earns on assembly', flows: ['service'] },
+        { label: 'Branding and retail', relation: 'Shape demand and sell; adjacent to manufacturing', flows: ['money', 'information'] },
+      ],
+      note: 'Segment factories by materials, processes, product complexity, customer and value-chain responsibility rather than one industry label.',
+      takeaway: 'Textile production, garment manufacturing and apparel retail have different economics and should remain separate.',
+    },
+  },
+  'mfg-textiles-m1-6': {
+    heading: 'Mechanized spinning, synthetic fibers and global sourcing built specialized hubs',
+    intro: 'Production progressed from manual fiber and garment work to mills, industrial sewing, synthetic materials, standardized production and internationally allocated orders.',
+    spec: {
+      layout: 'timeline', title: '06 How Did Industrial Textile Production Develop?', kicker: '',
+      events: [
+        { period: 'Before mills', label: 'Manual fiber and garment work', detail: 'Spinning and sewing done by hand', status: 'historical' },
+        { period: 'Mechanization', label: 'Mechanized spinning in mills', detail: 'Mills industrialize yarn production', status: 'historical' },
+        { period: 'Material innovation', label: 'Synthetic fibers', detail: 'Synthetic materials join natural fibers', status: 'historical' },
+        { period: 'Global trade', label: 'Global sourcing', detail: 'Standardized production; orders allocated internationally', status: 'historical' },
+        { period: 'Now', label: 'Specialized manufacturing hubs', detail: 'Factories specialize by material, process and cost position', status: 'current' },
+      ],
+      note: 'In Vietnam, export-oriented industrialization built production experience and buyer relationships that now support capability upgrading.',
+      takeaway: 'Mechanized spinning, synthetic fibers and global sourcing created specialized manufacturing hubs.',
+    },
+  },
+  'mfg-textiles-m1-7': {
+    heading: 'Mechanization moved garment making from manual work to standardized output in export hubs',
+    intro: 'Mechanized weaving and industrial sewing enabled standardized mass production. Brands increasingly separated design and merchandising from manufacturing while factories specialized.',
+    spec: {
+      layout: 'compare', title: '07 How Did Mechanization Transform Garment Manufacturing?', kicker: '',
+      leftTitle: 'Manual garment making', rightTitle: 'Mechanized mass production',
+      rows: [
+        { label: 'Fabric', a: 'Manual fiber and fabric work', b: 'Mechanized weaving in mills' },
+        { label: 'Sewing', a: 'Manual garment work', b: 'Industrial sewing' },
+        { label: 'Production basis', a: 'Individual skill', b: 'Standardized production' },
+        { label: 'Order allocation', a: 'Local work', b: 'Allocated internationally to export hubs' },
+        { label: 'Roles', a: 'Design and making together', b: 'Brands separate design and merchandising from manufacturing' },
+      ],
+      note: 'Factories in export hubs specialized by material, process and cost position.',
+      takeaway: 'Mechanized weaving, mass production and global trade created specialized export manufacturing hubs.',
+    },
+  },
+  'mfg-textiles-m1-8': {
+    heading: 'Global networks now reward integration, digital development and sustainable operations',
+    intro: 'International networks of mills, factories, agents, logistics providers and buyers are coordinated through specifications, forecasts and compliance systems. Competition is shifting from labor cost alone toward capability.',
+    spec: {
+      layout: 'pathway', title: '08 How Did Global Sourcing and Manufacturing Networks Evolve?', kicker: '',
+      trunk: [
+        { label: 'International production network', detail: 'Material producers, mills, factories, agents, logistics and buyers' },
+        { label: 'Shared coordination systems', detail: 'Specifications, forecasts and compliance' },
+      ],
+      optionsLabel: 'Ways to compete beyond labor cost — can be combined',
+      options: [
+        { label: 'Vertical integration', detail: 'Hold more stages of the chain' },
+        { label: 'Digital development', detail: '3D sampling, automated cutting, production dashboards' },
+        { label: 'Sustainable operations', detail: 'Green transition as a capability' },
+      ],
+      note: 'Digital tools shorten development and expose bottlenecks only when data and workflows are reliable.',
+      takeaway: 'Competition is shifting from labor cost alone toward speed, flexibility, transparency and capability.',
+    },
+  },
+  'mfg-textiles-m1-9': {
+    heading: 'Vietnam is moving from CMT assembly toward flexible, traceable, buyer-coordinated production',
+    intro: 'Competition is shifting from labor cost alone toward speed, flexibility, transparency and capability. The ILO recommends that Vietnam move beyond CMT through domestic linkages, technology, green transition and skills.',
+    spec: {
+      layout: 'timeline', title: "09 How Has Vietnam's Textile and Garment Industry Developed?", kicker: '',
+      events: [
+        { period: 'Foundation', label: 'CMT-led export assembly', detail: 'CMT remains prevalent in the sector', status: 'historical' },
+        { period: 'Today', label: 'Flexible production', detail: 'Buyers expect speed and flexibility', status: 'current' },
+        { period: 'Today', label: 'Traceability', detail: 'Follow materials, processing, tests and records', status: 'current' },
+        { period: 'Today', label: 'Buyer coordination', detail: 'Specifications, forecasts and compliance shared with buyers', status: 'current' },
+        { period: 'Next', label: 'Higher-value activities', detail: 'ILO path: domestic linkages, technology, green transition, skills', status: 'forecast' },
+      ],
+      takeaway: 'Vietnam competes less on labor cost alone and more on flexible production, traceability and buyer coordination.',
+    },
+  },
+  'mfg-textiles-m1-10': {
+    heading: 'Textile and apparel estimates describe two scopes that cannot simply be added',
+    intro: 'GVR estimates the 2025 textile market at US$1.16T and the apparel market at about US$1.8T. These are separate commercial definitions.',
+    spec: {
+      layout: 'taxonomy', title: '10 How Is the Global Textiles and Apparel Industry Structured?', kicker: '',
+      root: 'Global textiles and apparel', rootDetail: 'Separate market scopes — not additive',
+      groups: [
+        { label: 'Textile scope', detail: 'GVR estimate: US$1.16T in 2025', items: ['Textile materials'] },
+        { label: 'Apparel scope', detail: 'GVR estimate: about US$1.8T in 2025', items: ['Apparel demand'] },
+        { label: 'Integrated hubs', detail: 'Producers spanning textile and garment stages' },
+      ],
+      note: 'Textile inputs can be embedded in apparel value, so the totals are not automatically additive. Apparel value is not manufacturing revenue alone.',
+      takeaway: 'Textile and apparel market estimates describe separate scopes and must not be added without overlap analysis.',
+    },
+  },
+  'mfg-textiles-m1-11': {
+    heading: 'Each measure counts a different unit, entity and moment in the order',
+    intro: 'Physical output, accepted output, shipment, export value, manufacturing revenue and retail value use different units, entities and timing.',
+    spec: {
+      layout: 'table', title: '11 How Are Textile and Apparel Manufacturing Markets Measured?', kicker: '',
+      headers: ['Measure', 'What it counts', 'Not the same as'],
+      rows: [
+        { label: 'Fiber, yarn or fabric output', a: 'Upstream physical material', b: 'Garment output' },
+        { label: 'Garment pieces', a: 'Pieces produced, e.g. 100,000', b: 'Accepted pieces' },
+        { label: 'Accepted pieces', a: 'Pieces passing quality control, e.g. 97,000', b: 'Shipped or recognized revenue' },
+        { label: 'Manufacturing revenue', a: 'Recognized under accounting policy', b: 'Order volume' },
+        { label: 'Export value', a: 'Gross value shipped abroad', b: 'Domestic value added' },
+        { label: 'Retail market value', a: 'Apparel sold to consumers', b: 'Factory revenue' },
+      ],
+      note: 'State product, unit, entity, ownership model, period and gross-export versus domestic-value basis.',
+      takeaway: 'Pieces produced are not pieces accepted, order volume is not recognized revenue, export value is not domestic value added, and apparel retail size is not factory revenue.',
+    },
+  },
+  'mfg-textiles-m1-12': {
+    heading: 'Production opportunity narrows from global totals to region, product, process and buyer',
+    intro: 'Commercial estimates cover textile materials and apparel demand across regions, product definitions and channels. Use global totals as context, then size addressable manufacturing.',
+    spec: {
+      layout: 'driverTree', title: '12 Which Regions and Product Segments Drive Production?', kicker: '',
+      root: { label: 'Addressable manufacturing', detail: 'Sized from product, process, buyer and geography' },
+      drivers: [
+        { label: 'Geography', detail: 'Regions in commercial estimates', children: [{ label: 'Asia-Pacific' }, { label: 'Other regions' }] },
+        { label: 'Product segment', detail: 'Separate commercial definitions', children: [{ label: 'Textile materials' }, { label: 'Apparel' }] },
+        { label: 'Process', detail: 'Stages the factory actually performs' },
+        { label: 'Buyer', detail: 'Who places the orders' },
+      ],
+      note: 'Market overlap: textile inputs can be embedded in apparel value, so global totals are context, not addressable volume.',
+      takeaway: 'Regional and product estimates use separate scopes, so resolve market overlap before adding them or treating them as production.',
+    },
+  },
+  'mfg-textiles-m1-13': {
+    heading: 'Global participants differ by the product position they serve for multi-country buyers',
+    intro: 'A global buyer allocates basics, outerwear and sportswear across countries according to capacity, quality, lead time, tariffs and risk.',
+    spec: {
+      layout: 'taxonomy', title: '13 Who Are the Major Global Manufacturing Participants?', kicker: '',
+      root: 'Global manufacturing participants', rootDetail: 'Grouped by the product position they serve',
+      groups: [
+        { label: 'Mass apparel suppliers', detail: 'Recurring clothing demand in volume', items: ['Basics'] },
+        { label: 'Category suppliers', detail: 'Products with their own quality needs', items: ['Outerwear', 'Sportswear'] },
+        { label: 'Premium product suppliers', detail: 'Higher-value products for selective buyers' },
+        { label: 'Multi-country sourcing', detail: 'Buyers spread orders by capacity, quality, lead time, tariffs and risk' },
+      ],
+      note: 'Order resilience requires product fit, buyer diversification, realistic capacity and flexible production—not macro demand alone.',
+      takeaway: 'Recurring clothing demand coexists with volatile orders, inventory cycles and strong buyer bargaining power.',
+    },
+  },
+  'mfg-textiles-m1-14': {
+    heading: 'Buyers, short cycles and performance-wear programs pull on the manufacturer at once',
+    intro: 'Demand is shaped by spending, fashion, sportswear, workwear, online retail, promotions and buyer inventory decisions. Buyers then allocate orders across countries.',
+    spec: {
+      layout: 'ecosystem', title: '14 How Do Trade, Sourcing and Buyer Networks Shape the Industry?', kicker: '',
+      center: { label: 'Garment manufacturer', detail: 'Competes for allocated orders' },
+      actors: [
+        { label: 'Global buyers', relation: 'Allocate orders with strong bargaining power', flows: ['money', 'risk'] },
+        { label: 'Performance wear programs', relation: 'Sportswear and workwear demand', flows: ['information'] },
+        { label: 'Fashion short cycles', relation: 'Fashion and promotions make orders volatile', flows: ['risk'] },
+        { label: 'Retail and online inventory', relation: 'Inventory decisions set reorder timing', flows: ['information'] },
+        { label: 'Competing country hubs', relation: 'Alternative capacity for the same orders', flows: ['risk'] },
+      ],
+      note: 'Buyers weigh capacity, quality, lead time, tariffs and risk when they allocate across countries.',
+      takeaway: 'Buyer power, short cycles and performance-wear demand make orders volatile even when clothing demand recurs.',
+    },
+  },
+  'mfg-textiles-m1-15': {
+    heading: "Vietnam's export hub combines factories, upstream mills, suppliers and logistics",
+    intro: 'The ecosystem spans export garments, yarn and fabric production, domestic and foreign-invested factories, suppliers, logistics and local apparel demand.',
+    spec: {
+      layout: 'ecosystem', title: "15 What Does Vietnam's Textile and Garment Ecosystem Look Like?", kicker: '',
+      center: { label: 'Vietnam export manufacturing', detail: 'Garment production within industrial clusters' },
+      actors: [
+        { label: 'Yarn and fabric producers', relation: 'Supply upstream materials', flows: ['product'] },
+        { label: 'Domestic factories', relation: 'Produce garments and textiles', flows: ['product'] },
+        { label: 'Foreign-invested factories', relation: 'Produce alongside domestic groups', flows: ['product'] },
+        { label: 'Suppliers', relation: 'Accessories, processing and services', flows: ['product', 'service'] },
+        { label: 'Logistics providers', relation: 'Move goods to export markets', flows: ['service'] },
+        { label: 'Export buyers', relation: 'Place orders, pay and set requirements', flows: ['money', 'information'] },
+      ],
+      note: 'MOIT-linked reporting places 2025 sector exports at US$46B; the 2026 figure of US$48B is a target, not a confirmed result.',
+      takeaway: 'Vietnam is an established export hub, but future competitiveness depends on productivity, local sourcing and value added.',
+    },
+  },
+  'mfg-textiles-m1-16': {
+    heading: 'Vietnamese production divides by whether it serves export buyers or local demand',
+    intro: 'Vietnam has export garment, yarn and fabric production in domestic and foreign-invested factories, alongside local apparel demand. Buyer relationships and local demand set different requirements.',
+    spec: {
+      layout: 'taxonomy', title: '16 Which Production Regions and Factory Types Shape Vietnam?', kicker: '',
+      root: 'Vietnamese production by market served', rootDetail: 'Classify factories by customer and process',
+      groups: [
+        { label: 'Export garment production', detail: 'Depends on buyer relationships and order visibility', items: ['Domestic factories', 'Foreign-invested factories'] },
+        { label: 'Yarn and fabric production', detail: 'Upstream supply for garment factories' },
+        { label: 'Local apparel demand', detail: 'Domestic sales alongside export work' },
+      ],
+      note: 'Reported 2025 exports of US$46B describe the export side; the US$48B 2026 target depends on tariffs, costs, order visibility and sustainability requirements.',
+      takeaway: 'Vietnam is an established export hub whose future depends on productivity, local sourcing and value added across both buyer and local markets.',
+    },
+  },
+  'mfg-textiles-m1-17': {
+    heading: 'Domestic textiles and supplier upgrading feed local sourcing and value added',
+    intro: "Vietnam's participants include domestic and foreign-invested factories, yarn and fabric producers and suppliers. Future competitiveness depends on productivity, local sourcing and value added.",
+    spec: {
+      layout: 'driverTree', title: '17 Who Are the Domestic and Foreign-Invested Participants?', kicker: '',
+      root: { label: 'Future competitiveness', detail: 'Beyond an established export hub' },
+      drivers: [
+        { label: 'Productivity', detail: 'Domestic and foreign-invested factories alike' },
+        { label: 'Local sourcing', detail: 'Domestic yarn and fabric production', children: [{ label: 'Domestic textiles' }] },
+        { label: 'Value added', detail: 'Suppliers moving to higher-value work', children: [{ label: 'Supplier upgrading' }] },
+      ],
+      note: 'The reported US$46B 2025 figure is sector export value, not manufacturing profit.',
+      takeaway: 'Domestic textile capacity and supplier upgrading are where Vietnam can add local sourcing and value beyond assembly.',
+    },
+  },
+  'mfg-textiles-m1-18': {
+    heading: 'Garment strength is established; upstream capacity still needs technology, wastewater treatment and demand',
+    intro: 'Domestic groups, FDI manufacturers, contract factories, mills and suppliers still depend on selected imported fabrics, fibers, chemicals, trims and machinery. Local fabric investment can shorten lead time but needs technology, wastewater treatment, scale, approvals and stable demand.',
+    spec: {
+      layout: 'compare', title: '18 How Do Exports, Buyers and Destination Markets Shape Production?', kicker: '',
+      leftTitle: 'Garment strength today', rightTitle: 'Upstream capacity to build',
+      rows: [
+        { label: 'Scope', a: 'Established garment production for export', b: 'Yarn, fabric, dyeing, finishing, accessories, testing' },
+        { label: 'Material position', a: 'Relies on selected imported inputs', b: 'Could supply selected inputs locally' },
+        { label: 'Lead time', a: 'Tied to imported material arrival', b: 'Local fabric can shorten lead time' },
+        { label: 'Requirements', a: 'Quality and delivery performance', b: 'Technology, scale, approvals, stable demand' },
+        { label: 'Environmental infrastructure', a: 'Must not weaken environmental performance', b: 'Wastewater treatment required' },
+      ],
+      note: 'Prioritize commercially viable upstream investment linked to real buyer programs.',
+      takeaway: 'Vietnam must strengthen upstream capability without weakening quality, delivery or environmental performance.',
+    },
+  },
+  'mfg-textiles-m1-19': {
+    heading: 'Import dependence opens several upgrading routes, each needing a real buyer program',
+    intro: 'Vietnam continues to depend on selected imported fabrics, fibers, chemicals, trims and machinery. Upgrading must strengthen upstream capability without weakening quality, delivery or environmental performance.',
+    spec: {
+      layout: 'pathway', title: '19 How Do Material Dependencies and Upgrading Opportunities Affect Vietnam?', kicker: '',
+      trunk: [
+        { label: 'Imported material dependence', detail: 'Selected fabrics, fibers, chemicals, trims and machinery' },
+        { label: 'Buyer program check', detail: 'Is local supply commercially viable?', kind: 'decision' },
+      ],
+      optionsLabel: 'Upgrading opportunities — pursue those linked to real buyer programs',
+      options: [
+        { label: 'Yarn' },
+        { label: 'Fabric', detail: 'Can shorten lead time' },
+        { label: 'Dyeing and finishing', detail: 'Needs technology and wastewater treatment' },
+        { label: 'Accessories' },
+        { label: 'Testing' },
+      ],
+      note: 'Rules of origin can change how a sourcing choice is treated; confirm the rule for each buyer program instead of assuming it.',
+      takeaway: 'Vietnam must strengthen upstream capability without weakening quality, delivery or environmental performance.',
+    },
+  },
+  'mfg-textiles-m1-20': {
+    heading: 'Consumer spending sets order volume while rules of origin help decide where it is made',
+    intro: 'Household spending, inflation, brand inventory, tariffs, customs, origin rules, exchange rates and sourcing geography all reach the factory through its orders.',
+    spec: {
+      layout: 'driverTree', title: '20 How Does Global Apparel Demand Affect Manufacturers?', kicker: '',
+      root: { label: 'Orders a manufacturer receives', detail: 'Volume and location both move' },
+      drivers: [
+        { label: 'Order volume', detail: 'How much buyers need', children: [{ label: 'Consumer spending' }, { label: 'Inflation' }, { label: 'Brand inventory' }] },
+        { label: 'Order location', detail: 'Where buyers place production', children: [{ label: 'Rules of origin' }, { label: 'Tariffs and customs' }, { label: 'Exchange rates' }] },
+      ],
+      note: 'VietnamPlus reported 2026 tariff and logistics pressure alongside uncertain later-year orders.',
+      takeaway: 'Demand and trade affect both order volume and where manufacturing is allocated.',
+    },
+  },
+  'mfg-textiles-m1-21': {
+    heading: 'Retail inventory and trade agreements change how much production labor is needed, and where',
+    intro: 'Brand inventory decisions and trade agreements reach factories as changes in order volume and allocation. Labor, wage and skill plans have to absorb both.',
+    spec: {
+      layout: 'decision', title: '21 How Do Labor, Wages and Skills Shape Production?', kicker: '',
+      root: { label: 'Shift in retail inventory or trade terms', detail: 'Reaches the factory as orders' },
+      question: 'Does it change how much labor capacity is needed, or where?',
+      branches: [
+        { condition: 'Brand inventory is high', outcome: 'Fewer orders for the line', detail: 'Keep capacity and staffing flexible', tone: 'caution' },
+        { condition: 'Trade agreement favours this origin', outcome: 'Orders may shift in', detail: 'Check skills and capacity before committing', tone: 'positive' },
+        { condition: 'Trade terms favour another hub', outcome: 'Orders may shift out', detail: 'Diversify buyers and markets', tone: 'negative' },
+      ],
+      note: 'Model landed cost and preserve cash and capacity flexibility under uncertain trade conditions.',
+      takeaway: 'Demand and trade affect both order volume and where manufacturing is allocated, so labor capacity needs to stay flexible.',
+    },
+  },
+  'mfg-textiles-m1-22': {
+    heading: 'Tariff pressure leaves manufacturers several diversification responses, not one fix',
+    intro: 'VietnamPlus reported 2026 tariff and logistics pressure alongside uncertain later-year orders and a shift toward higher-value contracts.',
+    spec: {
+      layout: 'pathway', title: '22 How Do Trade Policy and Sourcing Diversification Affect Orders?', kicker: '',
+      trunk: [
+        { label: 'Tariff and logistics pressure', detail: 'Reported by VietnamPlus for 2026' },
+        { label: 'Uncertain later-year orders', detail: 'Order visibility weakens' },
+      ],
+      optionsLabel: 'Responses — can be combined',
+      options: [
+        { label: 'Diversify buyers' },
+        { label: 'Diversify markets' },
+        { label: 'Model landed cost', detail: 'Include tariffs, customs and freight' },
+        { label: 'Keep cash and capacity flexible' },
+        { label: 'Pursue higher-value contracts', detail: 'A shift VietnamPlus also reported' },
+      ],
+      note: 'Trade-policy conditions are current context, not a permanent rate assumption.',
+      takeaway: 'Tariffs affect where orders are allocated, so diversify buyers and markets and model landed cost before committing capacity.',
+    },
+  },
+  'mfg-textiles-m1-23': {
+    heading: 'Automation suits repetitive tasks while complex sewing still needs skilled operators',
+    intro: 'Factories combine labor-intensive sewing with automated spreading, cutting, handling, inspection and planning. Automation can improve repetitive tasks, while complex sewing still depends on skilled handling.',
+    spec: {
+      layout: 'decision', title: '23 How Are Automation and Product Requirements Changing Factories?', kicker: '',
+      root: { label: 'Factory task', detail: 'Spreading, cutting, handling, inspection, planning or sewing' },
+      question: 'Which capability does this task depend on most?',
+      branches: [
+        { condition: 'Repetitive and standardized', outcome: 'Automation', detail: 'e.g. spreading, cutting, handling, inspection', tone: 'positive' },
+        { condition: 'Complex and product-specific', outcome: 'Workforce skills', detail: 'Skilled handling and product-specific methods', tone: 'caution' },
+        { condition: 'Energy- or waste-intensive', outcome: 'Energy and waste control', detail: 'Responsible production as a capability', tone: 'caution' },
+      ],
+      note: 'The ILO identifies skills, productivity, digitalization, green transition and decent work as central to sector upgrading.',
+      takeaway: 'Technology, workforce and responsible production are core competitive capabilities.',
+    },
+  },
+  'mfg-textiles-m1-24': {
+    heading: 'Sustainability requirements cover water and chemicals, social compliance and digital planning',
+    intro: 'Responsible production is a core competitive capability. Requirements come from industry frameworks such as ZDHC and from buyer programs, and they vary.',
+    spec: {
+      layout: 'taxonomy', title: '24 How Do Sustainability and Environmental Requirements Shape the Industry?', kicker: '',
+      root: 'Responsible-production requirements', rootDetail: 'Buyer or program requirements vary',
+      groups: [
+        { label: 'Water and chemicals', detail: 'Chemical management for safer production', items: ['ZDHC framework'] },
+        { label: 'Social compliance', detail: 'Decent work across the workforce' },
+        { label: 'Digital planning', detail: 'Digitalization of production planning' },
+        { label: 'Green transition', detail: 'Environmental performance as an upgrading priority' },
+      ],
+      note: 'ZDHC is an industry framework for chemical management in textile, leather and footwear production; individual buyer requirements differ.',
+      takeaway: 'Responsible production—water and chemicals, social compliance and digital planning—is a core competitive capability.',
+    },
+  },
+};

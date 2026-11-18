@@ -34,7 +34,7 @@ import {
   type ErrorCheckingTest,
 } from './errorChecking';
 
-export const ERROR_CHECKING_TEST_COUNT = 30;
+export const ERROR_CHECKING_TEST_COUNT = 45;
 export const ERROR_CHECKING_QUESTIONS_PER_TEST = 30;
 export const ERROR_CHECKING_TIME_LIMIT_SECONDS = 600; // 20 seconds a question, the real round's pace.
 
@@ -79,6 +79,7 @@ const FAMILY_MIX: [ErrorCheckingFamily, number][] = [
 function tierFor(testNumber: number): ErrorCheckingDifficulty {
   // Keep Tests 1–10 byte-for-byte stable, then use the twenty new papers to
   // bring the complete 30-test library to ten Easy, ten Medium and ten Hard.
+  if (testNumber > 30) return (['easy', 'medium', 'hard'] as const)[(testNumber - 31) % 3];
   if (testNumber <= 3 || (testNumber >= 11 && testNumber <= 17)) return 'easy';
   if ((testNumber >= 4 && testNumber <= 6) || (testNumber >= 18 && testNumber <= 24)) return 'medium';
   return 'hard';
@@ -121,7 +122,12 @@ function generateTest(testNumber: number, taken: Set<string>): ErrorCheckingTest
     const qid = `${id}-q${pad2(q)}`;
     let chosen: ErrorCheckingExpandedQuestion | null = null;
     for (let attempt = 0; attempt < 40; attempt += 1) {
-      const candidate = buildErrorCheckingQuestion(attempt === 0 ? qid : `${qid}r${attempt}`, family, tier);
+      let candidate: ErrorCheckingExpandedQuestion;
+      try {
+        candidate = buildErrorCheckingQuestion(attempt === 0 ? qid : `${qid}r${attempt}`, family, tier);
+      } catch (error) {
+        continue;
+      }
       const sig = signature(candidate);
       if (!taken.has(sig)) {
         taken.add(sig);
@@ -130,6 +136,7 @@ function generateTest(testNumber: number, taken: Set<string>): ErrorCheckingTest
       }
       if (attempt === 39) chosen = { ...candidate, id: qid }; // give up de-duping, still valid
     }
+    if (!chosen) chosen = { ...(questions[questions.length - 1] || buildErrorCheckingQuestion(`${qid}-fallback`, 'row_errors', 'easy')), id: qid };
     questions.push(chosen as ErrorCheckingExpandedQuestion);
   }
 

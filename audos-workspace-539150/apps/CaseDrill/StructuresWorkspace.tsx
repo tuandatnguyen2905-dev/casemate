@@ -1,71 +1,73 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { PointerEvent as ReactPointerEvent } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
-  ArrowLeftRight,
+  ArrowRight,
   BookOpen,
   Check,
+  CheckCircle2,
   ChevronDown,
   ChevronRight,
   CircleDot,
-  GitBranch,
+  CircleMinus,
+  CircleX,
   History,
-  Link2,
   Loader2,
-  Maximize2,
-  Plus,
+  Network,
   Redo2,
   RotateCcw,
   Save,
   Search,
   Send,
-  Trash2,
   Undo2,
   Unlink,
   X,
-  ZoomIn,
-  ZoomOut,
 } from 'lucide-react';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import ExhibitRenderer from '../../components/ExhibitRenderer';
+import { clarifyUnitText, clarifyUnitsDeep } from '../../lib/unitLabels';
+import {
+  StructureTreeCanvas,
+  childrenOf,
+  normalizeOrders,
+  useStructureTreeEditing,
+  type CrossLink,
+  type TreeDraft,
+  type TreeNode,
+} from '../../components/StructureTree';
 import { QUESTION_LIBRARY, type LibraryExhibit, type LibraryQuestion } from '../../lib/skillQuestionLibrary';
 import { restoreArchivedHardQuestion } from '../../lib/hardCaseDrillQuestions';
 import { DIFFICULTY_LABELS } from '../../lib/caseLibraryShared';
+import { displayDifficultyOf } from '../../lib/difficultyTiers';
+import {
+  suggestedStructureFor,
+  type CoverageStatus,
+  type SuggestedStructureTree,
+  type SuggestedTreeNode,
+} from '../../lib/structureSuggestedTrees';
+import {
+  assessTreeAgainstGuide,
+  structureAnswerGuideFor,
+  structureGradingBrief,
+} from '../../lib/structureFrameworkGuides';
+import { structuresEasySuggestedTree } from '../../lib/structuresEasyBank';
+import CaseResultView from '../../components/CaseResultView';
+import { openCasePoolCase, sourceFullCase } from '../../components/SolveFullCaseCta';
+import { buildReasoningFeedback, chooseNextAction, emptyWorkedAnswer, resultOutcome, retryAction, type ResultOutcome, type WorkedAnswerModel } from '../../lib/caseResultModel';
+import {
+  normalizeCriterionScores,
+  rubricForExercise,
+  type HonestScoreResult,
+} from '../../lib/caseScoringRubrics';
 
 const REQUEST_KEY = 'casemate-open-structures-case';
 const LEGACY_REQUEST_KEY = 'casemate-open-case-drill';
 const TABLE = 'case_structure_trees';
-const NODE_WIDTH = 220;
-const NODE_HEIGHT = 86;
-const X_GAP = 285;
-const Y_GAP = 112;
 
-const STRUCTURE_CASES = QUESTION_LIBRARY.structures
+const BASE_STRUCTURE_QUESTIONS = QUESTION_LIBRARY.structures
   .map(restoreArchivedHardQuestion)
   .filter((question) => question.reviewStatus !== 'Archived');
 
 type SaveState = 'editing' | 'saving' | 'saved' | 'error';
 type ViewState = 'editing' | 'feedback' | 'compare';
-
-interface TreeNode {
-  id: string;
-  parentId: string | null;
-  text: string;
-  order: number;
-  x?: number;
-  y?: number;
-}
-
-interface CrossLink {
-  id: string;
-  from: string;
-  to: string;
-  label?: string;
-}
-
-interface TreeDraft {
-  nodes: TreeNode[];
-  crossLinks: CrossLink[];
-}
 
 interface FeedbackAction {
   title: string;
@@ -78,6 +80,13 @@ interface TreeFeedback {
   strengths: FeedbackAction[];
   improvements: FeedbackAction[];
   priorities: FeedbackAction[];
+  coverage: Array<{ branchId: string; status: CoverageStatus }>;
+  scoring?: HonestScoreResult;
+  /** Four-part feedback. Absent on attempts saved before the framework guides; those fall back to strengths, improvements and priorities. */
+  covered?: string[];
+  materialGap?: FeedbackAction | null;
+  whyItMatters?: string;
+  nextAction?: { action: string; why: string } | null;
 }
 
 interface Submission {
@@ -93,22 +102,6 @@ interface ProgressRow {
   case_id: string;
   draft_json?: TreeDraft | string;
   submissions_json?: Submission[] | string;
-}
-
-interface LayoutNode extends TreeNode {
-  x: number;
-  y: number;
-  depth: number;
-}
-
-interface NodeDragState {
-  pointerId: number;
-  nodeId: string;
-  startClientX: number;
-  startClientY: number;
-  basePositions: Map<string, { x: number; y: number }>;
-  movingIds: Set<string>;
-  moved: boolean;
 }
 
 function uid(prefix: string): string {
@@ -133,6 +126,110 @@ function parseStored<T>(value: T | string | null | undefined, fallback: T): T {
   }
 }
 
+const UNAVAILABLE_TEXT = 'Text unavailable for this box';
+
+function isTechnicalLabel(value: string): boolean {
+  const text = value.trim();
+  return /^(?:issue|sub[- ]?issue|node|branch|root|new branch)[-_ #]*[a-z0-9-]*$/i.test(text)
+    || /^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(text)
+    || /^(?:node|root|branch)-[a-z0-9-]{6,}$/i.test(text);
+}
+
+function legacyText(value: any, lookup: Map<string, string>, fallback: string): string {
+  const candidates = [value?.text, value?.label, value?.title, value?.name, value?.content, value?.value];
+  for (const candidate of candidates) {
+    if (typeof candidate !== 'string' && typeof candidate !== 'number') continue;
+    const text = String(candidate).trim();
+    if (!text) continue;
+    const resolved = lookup.get(text) || text;
+    if (!isTechnicalLabel(resolved)) return resolved;
+  }
+  return fallback;
+}
+
+function flattenLegacyNodes(value: any): any[] {
+  const nodeContainer = value?.nodes ?? value?.tree?.nodes ?? value?.tree;
+  const source = Array.isArray(value)
+    ? value
+    : Array.isArray(nodeContainer)
+      ? nodeContainer
+      : nodeContainer && typeof nodeContainer === 'object'
+        ? Object.entries(nodeContainer).map(([key, node]) => ({ ...(node as any), id: (node as any)?.id ?? key }))
+        : value?.root && typeof value.root === 'object'
+          ? [value.root]
+          : [];
+  const flattened: any[] = [];
+  const visit = (node: any, parentId: string | null, order: number) => {
+    if (!node || typeof node !== 'object') return;
+    const id = String(node.id ?? node.nodeId ?? node.key ?? uid('legacy'));
+    flattened.push({ ...node, __id: id, __parentId: node.parentId ?? node.parent_id ?? node.parent ?? parentId, __order: node.order ?? node.index ?? order });
+    const childContainer = node.children ?? node.branches ?? node.subIssues;
+    const children = Array.isArray(childContainer)
+      ? childContainer
+      : childContainer && typeof childContainer === 'object'
+        ? Object.entries(childContainer).map(([key, child]) => ({ ...(child as any), id: (child as any)?.id ?? key }))
+        : [];
+    children.forEach((child: any, index: number) => visit(child, id, index));
+  };
+  source.forEach((node: any, index: number) => visit(node, null, index));
+  return flattened;
+}
+
+function normalizeStoredDraft(value: any, item: LibraryQuestion): TreeDraft {
+  const fallback = emptyDraft(item);
+  if (typeof value === 'string') {
+    try { JSON.parse(value); } catch {
+      const lines = value.split('\n').map((line) => line.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '').trim()).filter(Boolean);
+      if (lines.length) return {
+        nodes: [fallback.nodes[0], ...lines.map((text, index) => ({ id: `legacy-text-${item.id}-${index}`, parentId: fallback.nodes[0].id, text: isTechnicalLabel(text) ? UNAVAILABLE_TEXT : text, order: index }))],
+        crossLinks: [],
+      };
+    }
+  }
+  const parsed = parseStored<any>(value, fallback);
+  const rawNodes = flattenLegacyNodes(parsed);
+  if (!rawNodes.length) return fallback;
+  const lookup = new Map<string, string>();
+  const textDictionaries = [parsed?.nodeTextById, parsed?.node_text_by_id, parsed?.labels, parsed?.texts];
+  textDictionaries.forEach((dictionary) => {
+    if (!dictionary || typeof dictionary !== 'object') return;
+    Object.entries(dictionary).forEach(([id, text]) => {
+      if ((typeof text === 'string' || typeof text === 'number') && String(text).trim() && !isTechnicalLabel(String(text))) lookup.set(String(id), String(text).trim());
+    });
+  });
+  rawNodes.forEach((node) => {
+    const id = String(node.__id);
+    const raw = [node.text, node.label, node.title, node.name, node.content, node.value]
+      .find((candidate) => (typeof candidate === 'string' || typeof candidate === 'number') && String(candidate).trim());
+    if (raw != null && !isTechnicalLabel(String(raw))) lookup.set(id, String(raw).trim());
+  });
+  const ids = new Set(rawNodes.map((node) => String(node.__id)));
+  let nodes = rawNodes.map((node, index) => {
+    const id = String(node.__id);
+    const rawParent = node.__parentId && typeof node.__parentId === 'object' ? node.__parentId.id : node.__parentId;
+    const parentId = rawParent != null && ids.has(String(rawParent)) ? String(rawParent) : null;
+    return {
+      id,
+      parentId,
+      text: legacyText(node, lookup, parentId === null && index === 0 ? item.question : UNAVAILABLE_TEXT),
+      order: Number.isFinite(Number(node.__order)) ? Number(node.__order) : index,
+    };
+  });
+  if (!nodes.some((node) => node.parentId === null)) nodes[0] = { ...nodes[0], parentId: null, text: nodes[0].text === UNAVAILABLE_TEXT ? item.question : nodes[0].text };
+  const primaryRootIndex = nodes.findIndex((node) => node.parentId === null);
+  const primaryRootId = nodes[primaryRootIndex]?.id;
+  if (primaryRootIndex >= 0 && nodes[primaryRootIndex].text === UNAVAILABLE_TEXT) nodes[primaryRootIndex] = { ...nodes[primaryRootIndex], text: item.question };
+  if (primaryRootId) nodes = nodes.map((node, index) => index !== primaryRootIndex && node.parentId === null ? { ...node, parentId: primaryRootId } : node);
+  const crossLinksRaw = Array.isArray(parsed?.crossLinks) ? parsed.crossLinks : Array.isArray(parsed?.links) ? parsed.links : [];
+  const crossLinks = crossLinksRaw.map((link: any, index: number) => ({
+    id: String(link.id || `legacy-link-${index}`),
+    from: String(link.from ?? link.source ?? ''),
+    to: String(link.to ?? link.target ?? ''),
+    label: typeof link.label === 'string' ? link.label : undefined,
+  })).filter((link: CrossLink) => ids.has(link.from) && ids.has(link.to));
+  return { nodes: normalizeOrders(nodes), crossLinks };
+}
+
 function emptyDraft(item: LibraryQuestion): TreeDraft {
   return {
     nodes: [{ id: `root-${item.id}`, parentId: null, text: item.question, order: 0 }],
@@ -143,75 +240,6 @@ function emptyDraft(item: LibraryQuestion): TreeDraft {
 function questionExhibits(item: LibraryQuestion): LibraryExhibit[] {
   if (item.exhibits?.length) return item.exhibits;
   return item.exhibit ? [item.exhibit] : [];
-}
-
-function childrenOf(nodes: TreeNode[], parentId: string | null): TreeNode[] {
-  return nodes.filter((node) => node.parentId === parentId).sort((a, b) => a.order - b.order);
-}
-
-function descendantsOf(nodes: TreeNode[], nodeId: string): Set<string> {
-  const found = new Set<string>([nodeId]);
-  let changed = true;
-  while (changed) {
-    changed = false;
-    nodes.forEach((node) => {
-      if (node.parentId && found.has(node.parentId) && !found.has(node.id)) {
-        found.add(node.id);
-        changed = true;
-      }
-    });
-  }
-  return found;
-}
-
-function normalizeOrders(nodes: TreeNode[]): TreeNode[] {
-  const byParent = new Map<string | null, TreeNode[]>();
-  nodes.forEach((node) => {
-    const list = byParent.get(node.parentId) || [];
-    list.push(node);
-    byParent.set(node.parentId, list);
-  });
-  const orderById = new Map<string, number>();
-  byParent.forEach((list) => list.sort((a, b) => a.order - b.order).forEach((node, index) => orderById.set(node.id, index)));
-  return nodes.map((node) => ({ ...node, order: orderById.get(node.id) || 0 }));
-}
-
-function layoutTree(
-  nodes: TreeNode[],
-  positionOverrides?: ReadonlyMap<string, { x: number; y: number }>,
-): { nodes: LayoutNode[]; width: number; height: number } {
-  const positioned = new Map<string, LayoutNode>();
-  let leafCursor = 0;
-  const root = nodes.find((node) => node.parentId === null) || nodes[0];
-  const visit = (node: TreeNode, depth: number): number => {
-    const children = childrenOf(nodes, node.id);
-    let y: number;
-    if (!children.length) {
-      y = leafCursor * Y_GAP + 44;
-      leafCursor += 1;
-    } else {
-      const childYs = children.map((child) => visit(child, depth + 1));
-      y = (childYs[0] + childYs[childYs.length - 1]) / 2;
-    }
-    const override = positionOverrides?.get(node.id);
-    positioned.set(node.id, {
-      ...node,
-      x: override?.x ?? node.x ?? depth * X_GAP + 36,
-      y: override?.y ?? node.y ?? y,
-      depth,
-    });
-    return y;
-  };
-  if (root) visit(root, 0);
-  nodes.filter((node) => !positioned.has(node.id)).forEach((node) => visit(node, 0));
-  const resolved = Array.from(positioned.values());
-  const maxX = resolved.reduce((value, node) => Math.max(value, node.x + NODE_WIDTH), 0);
-  const maxY = resolved.reduce((value, node) => Math.max(value, node.y + NODE_HEIGHT), 0);
-  return {
-    nodes: resolved,
-    width: Math.max(720, maxX + 80),
-    height: Math.max(480, maxY + 100),
-  };
 }
 
 function linearize(nodes: TreeNode[]): Array<{ node: TreeNode; depth: number }> {
@@ -238,10 +266,23 @@ function exhibitsForPrompt(item: LibraryQuestion): string {
   }).join('\n') || 'No exhibit for this drill.';
 }
 
-function cleanAction(value: any, validIds: Set<string>): FeedbackAction | null {
+function humanizeFeedbackText(value: unknown, nodes: TreeNode[]): string {
+  let text = String(value || '').trim();
+  const ordered = [...nodes].sort((a, b) => b.id.length - a.id.length);
+  ordered.forEach((node) => {
+    const replacement = node.text?.trim() && !isTechnicalLabel(node.text) ? `“${node.text.trim()}”` : UNAVAILABLE_TEXT;
+    text = text.split(`[${node.id}]`).join(replacement).split(node.id).join(replacement);
+  });
+  return text
+    .replace(/\b(?:Issue|Sub-Issue)\s*#?\d+\b/gi, UNAVAILABLE_TEXT)
+    .replace(/\b(?:node|branch|root)-[a-z0-9-]{6,}\b/gi, UNAVAILABLE_TEXT)
+    .replace(/\b[0-9a-f]{8}-[0-9a-f-]{27,}\b/gi, UNAVAILABLE_TEXT);
+}
+
+function cleanAction(value: any, validIds: Set<string>, nodes: TreeNode[]): FeedbackAction | null {
   if (!value || typeof value !== 'object') return null;
-  const title = String(value.title || '').trim();
-  const detail = String(value.detail || '').trim();
+  const title = humanizeFeedbackText(value.title, nodes);
+  const detail = humanizeFeedbackText(value.detail, nodes);
   if (!title || !detail) return null;
   const nodeIds = Array.isArray(value.nodeIds)
     ? value.nodeIds.map(String).filter((id: string) => validIds.has(id)).slice(0, 6)
@@ -249,117 +290,286 @@ function cleanAction(value: any, validIds: Set<string>): FeedbackAction | null {
   return { title, detail, nodeIds };
 }
 
-function cleanFeedback(value: any, nodes: TreeNode[]): TreeFeedback {
-  const ids = new Set(nodes.map((node) => node.id));
-  const list = (raw: any) => Array.isArray(raw) ? raw.map((item) => cleanAction(item, ids)).filter(Boolean).slice(0, 5) as FeedbackAction[] : [];
-  return {
-    summary: String(value?.summary || 'Review the highlighted branches, then revise the tree and submit another version.').trim(),
-    strengths: list(value?.strengths),
-    improvements: list(value?.improvements),
-    priorities: list(value?.priorities),
+const FEEDBACK_STOP_WORDS = new Set([
+  'about', 'after', 'also', 'before', 'branch', 'candidate', 'clear', 'first', 'from', 'into', 'next', 'only', 'should', 'that', 'their', 'then', 'this', 'tree', 'with', 'would',
+]);
+
+function feedbackTokens(value: string): Set<string> {
+  const aliases: Record<string, string> = {
+    break: 'decompose', causes: 'cause', choosing: 'prioritize', choose: 'prioritize', costs: 'cost', customers: 'customer', drivers: 'driver', expand: 'decompose', identify: 'measure', improvements: 'improve', locate: 'measure', margins: 'margin', order: 'prioritize', prices: 'price', pricing: 'price', profits: 'profit', quantify: 'measure', revenues: 'revenue', sales: 'sale', sequence: 'prioritize', split: 'decompose', stores: 'store', volumes: 'volume',
   };
+  return new Set(value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .split(/[^a-z0-9]+/)
+    .map((word) => aliases[word] || word)
+    .filter((word) => word.length > 2 && !FEEDBACK_STOP_WORDS.has(word)));
+}
+
+function tokenOverlap(leftText: string, rightText: string): boolean {
+  const left = feedbackTokens(leftText);
+  const right = feedbackTokens(rightText);
+  if (!left.size || !right.size) return false;
+  const overlap = [...left].filter((word) => right.has(word)).length;
+  const containment = overlap / Math.min(left.size, right.size);
+  const union = new Set([...left, ...right]).size;
+  return (Math.min(left.size, right.size) >= 3 && containment >= 0.55) || overlap / union >= 0.5;
+}
+
+function isNearDuplicate(candidate: string, prior: string): boolean {
+  const candidateParts = [candidate, ...candidate.split(/[.!?;:\n]+/).map((part) => part.trim()).filter(Boolean)];
+  const priorParts = [prior, ...prior.split(/[.!?;:\n]+/).map((part) => part.trim()).filter(Boolean)];
+  return candidateParts.some((left) => priorParts.some((right) => tokenOverlap(left, right)));
+}
+
+function actionText(action: FeedbackAction): string {
+  return `${action.title}. ${action.detail}`;
+}
+
+function cleanDistinctActions(raw: any, ids: Set<string>, nodes: TreeNode[], blocked: string[]): FeedbackAction[] {
+  const result: FeedbackAction[] = [];
+  if (!Array.isArray(raw)) return result;
+  raw.forEach((item) => {
+    const action = cleanAction(item, ids, nodes);
+    if (!action || result.length >= 5) return;
+    const text = actionText(action);
+    if ([...blocked, ...result.map(actionText)].some((prior) => isNearDuplicate(text, prior))) return;
+    result.push(action);
+  });
+  return result;
+}
+
+function cleanFeedback(value: any, nodes: TreeNode[], suggested: SuggestedStructureTree): TreeFeedback {
+  const ids = new Set(nodes.map((node) => node.id));
+  const suggestedIds = new Set(suggested.branches.map((branch) => branch.id));
+  const fixedRoleText = [suggested.investigateFirst, ...suggested.explanations.map((item) => `${item.title} ${item.explanation}`)];
+  const strengths = cleanDistinctActions(value?.strengths, ids, nodes, fixedRoleText);
+  const improvements = cleanDistinctActions(value?.improvements, ids, nodes, [...fixedRoleText, ...strengths.map(actionText)]);
+  const priorities = cleanDistinctActions(value?.priorities, ids, nodes, [...fixedRoleText, ...strengths.map(actionText), ...improvements.map(actionText)]);
+  const coverage = Array.isArray(value?.coverage) ? value.coverage.map((item: any) => ({
+    branchId: String(item?.branchId || ''),
+    status: String(item?.status || '').toLowerCase() as CoverageStatus,
+  })).filter((item: { branchId: string; status: CoverageStatus }) => suggestedIds.has(item.branchId) && ['covered', 'partial', 'missed'].includes(item.status)) : [];
+  const coveredRaw = Array.isArray(value?.covered) ? value.covered : [];
+  const covered = coveredRaw
+    .map((entry: any) => humanizeFeedbackText(typeof entry === 'string' ? entry : entry?.detail || entry?.title, nodes))
+    .filter((entry: string) => entry && entry !== UNAVAILABLE_TEXT)
+    .slice(0, 4);
+  const materialGap = cleanAction(value?.material_gap ?? value?.materialGap, ids, nodes);
+  const whyItMatters = humanizeFeedbackText(value?.why_it_matters ?? value?.whyItMatters ?? '', nodes);
+  const nextRaw = value?.next_step ?? value?.nextAction;
+  const nextAction = nextRaw && typeof nextRaw === 'object' && String(nextRaw.action || '').trim()
+    ? { action: humanizeFeedbackText(nextRaw.action, nodes), why: humanizeFeedbackText(nextRaw.why || '', nodes) }
+    : null;
+  return {
+    summary: humanizeFeedbackText(value?.summary || 'Review the highlighted branches, then revise the tree and submit another version.', nodes),
+    strengths,
+    improvements,
+    priorities,
+    coverage,
+    ...(value?.scoring ? { scoring: value.scoring as HonestScoreResult } : {}),
+    ...(covered.length ? { covered } : {}),
+    ...(materialGap ? { materialGap } : {}),
+    ...(whyItMatters ? { whyItMatters } : {}),
+    ...(nextAction ? { nextAction } : {}),
+  };
+}
+
+function normalizeSubmission(value: any, item: LibraryQuestion, suggested: SuggestedStructureTree): Submission | null {
+  if (!value || typeof value !== 'object') return null;
+  const legacyTree = value.nodes ?? value.tree ?? value.answer;
+  const normalized = normalizeStoredDraft(typeof legacyTree === 'string'
+    ? legacyTree
+    : { ...value, nodes: legacyTree, crossLinks: value.crossLinks ?? value.links }, item);
+  return {
+    id: String(value.id || uid('legacy-submission')),
+    submittedAt: String(value.submittedAt || value.submitted_at || new Date().toISOString()),
+    nodes: normalized.nodes,
+    crossLinks: normalized.crossLinks,
+    feedback: cleanFeedback(value.feedback || {}, normalized.nodes, suggested),
+  };
+}
+
+function tokens(value: string): Set<string> {
+  const aliases: Record<string, string> = { customers: 'customer', clients: 'customer', costs: 'cost', pricing: 'price', prices: 'price', revenues: 'revenue', competitors: 'competition', competitive: 'competition', capabilities: 'capability', economics: 'economic', profitability: 'profit', margins: 'margin', operational: 'operation', operations: 'operation', risks: 'risk' };
+  return new Set(value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(/[^a-z0-9]+/).filter((word) => word.length > 2).map((word) => aliases[word] || word));
+}
+
+function heuristicCoverage(branch: SuggestedTreeNode, nodes: TreeNode[]): CoverageStatus {
+  const userNodes = nodes.filter((node) => node.parentId !== null && node.text !== UNAVAILABLE_TEXT && !isTechnicalLabel(node.text));
+  if (!userNodes.length) return 'missed';
+  const expected = tokens([branch.text, ...(branch.children || []).map((child) => child.text)].join(' '));
+  let best = 0;
+  userNodes.forEach((node) => {
+    const actual = tokens(node.text);
+    const overlap = [...expected].filter((word) => actual.has(word)).length;
+    best = Math.max(best, overlap / Math.max(2, Math.min(expected.size, actual.size)));
+  });
+  return best >= 0.55 ? 'covered' : best >= 0.2 ? 'partial' : 'missed';
+}
+
+function coverageFor(feedback: TreeFeedback, suggested: SuggestedStructureTree, nodes: TreeNode[], guideCoverage?: Map<string, CoverageStatus>): Map<string, CoverageStatus> {
+  const hasCandidateBranches = nodes.some((node) => node.parentId !== null && node.text !== UNAVAILABLE_TEXT && !isTechnicalLabel(node.text));
+  if (!hasCandidateBranches) return new Map<string, CoverageStatus>(suggested.branches.map((branch) => [branch.id, 'missed']));
+  const returned = new Map<string, CoverageStatus>(feedback.coverage.map((item) => [item.branchId, item.status]));
+  return new Map<string, CoverageStatus>(suggested.branches.map((branch) => [branch.id, returned.get(branch.id) || guideCoverage?.get(branch.id) || heuristicCoverage(branch, nodes)]));
+}
+
+function fourPartFeedback(feedback: TreeFeedback): { covered: string[]; gap: FeedbackAction | null; why: string; next: { action: string; why: string } | null } {
+  const covered = feedback.covered?.length
+    ? feedback.covered
+    : feedback.strengths.slice(0, 3).map((item) => `${item.title}: ${item.detail}`);
+  const gap = feedback.materialGap || feedback.improvements[0] || null;
+  const legacyPriority = feedback.priorities[0] ? { action: feedback.priorities[0].title, why: feedback.priorities[0].detail } : null;
+  const next = feedback.nextAction || feedback.scoring?.nextStep || legacyPriority;
+  return { covered, gap, why: feedback.whyItMatters || '', next };
+}
+
+function FourPartFeedbackPanel({ feedback, onHighlight }: { feedback: TreeFeedback; onHighlight: (ids: string[]) => void }) {
+  const parts = fourPartFeedback(feedback);
+  return (
+    <section className="mt-4 grid gap-3 sm:grid-cols-2" data-testid="structures-feedback-four-part">
+      <div className="rounded-xl bg-[var(--space-surface-muted)] p-3" data-testid="structures-feedback-covered">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-semantic-success)]">1 · What you covered</p>
+        {parts.covered.length ? (
+          <ul className="mt-2 space-y-1.5">
+            {parts.covered.map((entry, index) => <li key={`${index}-${entry.slice(0, 24)}`} className="rounded-lg bg-[var(--space-surface-card)] p-2.5 text-[11px] leading-5 text-[var(--space-text-secondary)]">{entry}</li>)}
+          </ul>
+        ) : <p className="mt-2 text-[11px] leading-5 text-[var(--space-text-muted)]">No material driver was clearly covered in this version.</p>}
+      </div>
+      <div className="rounded-xl bg-[var(--space-surface-muted)] p-3" data-testid="structures-feedback-gap">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-semantic-warning)]">2 · Most material gap</p>
+        {parts.gap ? (
+          <button type="button" onClick={() => onHighlight(parts.gap?.nodeIds || [])} className="mt-2 block w-full rounded-lg bg-[var(--space-surface-card)] p-2.5 text-left">
+            <span className="block text-xs font-bold text-[var(--space-text-primary)]">{parts.gap.title}</span>
+            <span className="mt-1 block text-[11px] leading-5 text-[var(--space-text-secondary)]">{parts.gap.detail}</span>
+            {parts.gap.nodeIds.length ? <span className="mt-1 block text-[9px] font-bold text-[var(--space-text-brand)]">Highlight {parts.gap.nodeIds.length} node{parts.gap.nodeIds.length === 1 ? '' : 's'}</span> : null}
+          </button>
+        ) : <p className="mt-2 text-[11px] leading-5 text-[var(--space-text-muted)]">No material gap was found. The tree covers the drivers this case needs.</p>}
+      </div>
+      {parts.why ? (
+        <div className="rounded-xl bg-[var(--space-surface-muted)] p-3" data-testid="structures-feedback-why">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">3 · Why it matters</p>
+          <p className="mt-2 text-[11px] leading-5 text-[var(--space-text-secondary)]">{parts.why}</p>
+        </div>
+      ) : null}
+      {parts.next ? (
+        <div className={`rounded-xl border-l-4 border-[var(--space-brand-primary)] bg-[var(--space-surface-card)] p-3 ${parts.why ? '' : 'sm:col-span-2'}`} data-testid="structures-feedback-next-step">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">4 · Next step</p>
+          <p className="mt-2 text-xs font-bold leading-5 text-[var(--space-text-primary)]">{parts.next.action}</p>
+          {parts.next.why ? <p className="mt-1 text-[11px] leading-5 text-[var(--space-text-secondary)]">{parts.next.why}</p> : null}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/** Legacy submissions saved before scoring existed: the outcome follows branch coverage, the only verdict they carry. */
+function coverageOutcome(coverage: Map<string, CoverageStatus>): ResultOutcome {
+  const statuses = [...coverage.values()];
+  if (!statuses.length) return 'partial';
+  const ratio = statuses.reduce((sum, status) => sum + (status === 'covered' ? 1 : status === 'partial' ? 0.5 : 0), 0) / statuses.length;
+  return ratio >= 0.8 ? 'correct' : ratio >= 0.4 ? 'partial' : 'incorrect';
+}
+
+/** The recommended tree the grader compared against, presented as one strong example. */
+function structureWorkedAnswer(item: LibraryQuestion, tree: SuggestedStructureTree): WorkedAnswerModel {
+  return {
+    ...emptyWorkedAnswer('example'),
+    approach: tree.explanations.map((entry) => `${entry.title}: ${entry.explanation}`),
+    conclusion: tree.investigateFirst ? `Investigate first: ${tree.investigateFirst}` : '',
+    checks: questionExhibits(item)
+      .map((exhibit, index) => (exhibit.structureEvidence ? `Exhibit ${index + 1} · ${exhibit.title}: ${exhibit.structureEvidence}` : ''))
+      .filter(Boolean),
+    note: 'The recommended tree is one strong approach, not the only valid answer. A different tree that reaches the material drivers with sound, non-overlapping logic earns full credit.',
+  };
+}
+
+function CoverageMark({ status }: { status: CoverageStatus }) {
+  const spec = status === 'covered'
+    ? { label: 'Covered', Icon: CheckCircle2, className: 'text-[var(--space-semantic-success)]' }
+    : status === 'partial'
+      ? { label: 'Partially covered', Icon: CircleMinus, className: 'text-[var(--space-semantic-warning)]' }
+      : { label: 'Missed', Icon: CircleX, className: 'text-[var(--space-semantic-danger)]' };
+  return <span className={`inline-flex items-center gap-1 text-[10px] font-bold ${spec.className}`}><spec.Icon className="h-3.5 w-3.5" /> {spec.label}</span>;
+}
+
+const TREE_COLUMN_GAP = 16;
+const TREE_STEM = 32;
+const TREE_MIN_COLUMN = 232;
+const TREE_MAX_COLUMN = 340;
+
+function SuggestedTreePanel({ tree, coverage }: { tree: SuggestedStructureTree; coverage: Map<string, CoverageStatus> }) {
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [hostWidth, setHostWidth] = useState(0);
+  useLayoutEffect(() => {
+    const host = hostRef.current;
+    if (!host) return undefined;
+    const update = () => setHostWidth(host.clientWidth);
+    update();
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null;
+    observer?.observe(host);
+    window.addEventListener('resize', update);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+  const count = tree.branches.length;
+  const fitting = hostWidth > 0 ? Math.floor((hostWidth + TREE_COLUMN_GAP) / (TREE_MIN_COLUMN + TREE_COLUMN_GAP)) : 1;
+  const rowCount = Math.max(1, Math.ceil(count / Math.max(1, Math.min(count, fitting))));
+  const columns = Math.max(1, Math.ceil(count / rowCount));
+  const rows: SuggestedTreeNode[][] = [];
+  for (let index = 0; index < count; index += columns) rows.push(tree.branches.slice(index, index + columns));
+  const columnWidth = `min(${TREE_MAX_COLUMN}px, calc((100% - ${(columns - 1) * TREE_COLUMN_GAP}px) / ${columns}))`;
+  const line = 'var(--space-brand-primary)';
+  return (
+    <div className="w-full overflow-x-auto rounded-xl bg-[var(--space-surface-page)] p-3 sm:p-4" data-testid="structures-suggested-tree">
+      <div ref={hostRef} className="mx-auto w-full">
+        <div className="mx-auto flex min-h-28 w-full max-w-[640px] items-center justify-center whitespace-pre-wrap break-words rounded-xl border-2 border-[var(--space-brand-primary)] bg-white p-4 text-center text-sm font-bold leading-6 text-[var(--space-text-primary)] [overflow-wrap:anywhere]">{clarifyUnitText(tree.root.text)}</div>
+        <div>
+          {rows.map((row, rowIndex) => (
+            <div key={rowIndex} className="relative flex justify-center" style={{ columnGap: TREE_COLUMN_GAP, paddingTop: TREE_STEM }}>
+              <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-0 z-0 w-0.5 -translate-x-1/2" style={{ height: rowIndex === rows.length - 1 ? TREE_STEM / 2 : '100%', background: line }} />
+              {row.map((branch, index) => (
+                <section key={branch.id} className="relative z-10 min-w-0 shrink-0 grow-0" style={{ width: columnWidth }}>
+                  <span aria-hidden="true" className="pointer-events-none absolute left-1/2 w-0.5 -translate-x-1/2" style={{ top: -TREE_STEM / 2, height: TREE_STEM / 2, background: line }} />
+                  {row.length > 1 ? <span aria-hidden="true" className="pointer-events-none absolute h-0.5" style={{ top: -TREE_STEM / 2 - 1, left: index === 0 ? '50%' : -TREE_COLUMN_GAP / 2, right: index === row.length - 1 ? '50%' : -TREE_COLUMN_GAP / 2, background: line }} /> : null}
+                  <div className="min-h-24 whitespace-pre-wrap break-words rounded-xl border-2 border-[var(--space-brand-primary)] bg-white p-3 text-center text-xs font-bold leading-5 text-[var(--space-text-primary)] [overflow-wrap:anywhere]">
+                    {clarifyUnitText(branch.text)}
+                    <span className="mt-2 block"><CoverageMark status={coverage.get(branch.id) || 'missed'} /></span>
+                  </div>
+                  <div className="mx-auto h-3 w-px bg-[var(--space-brand-primary)]" />
+                  <div className="space-y-2">
+                    {(branch.children || []).map((child) => (
+                      <div key={child.id} className="min-h-28 whitespace-pre-wrap break-words rounded-xl border-2 border-[var(--space-brand-primary)] bg-white p-3 text-xs leading-5 text-[var(--space-text-primary)] [overflow-wrap:anywhere]">
+                        <p className="font-semibold">{clarifyUnitText(child.text)}</p>
+                        {child.test ? <p className="mt-2 border-t border-[var(--space-border-default)] pt-2 text-[10px] leading-4 text-[var(--space-text-muted)]"><span className="font-bold text-[var(--space-text-brand)]">To test this, look at:</span> {clarifyUnitText(child.test)}</p> : null}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function parseAiJson(text: string): any {
   const trimmed = String(text || '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
   const start = trimmed.indexOf('{');
   const end = trimmed.lastIndexOf('}');
-  if (start < 0 || end <= start) throw new Error('Mate returned feedback in an unreadable format. Please resubmit.');
+  if (start < 0 || end <= start) throw new Error('Mate returned feedback in an unreadable format. Your tree is unchanged; please resubmit.');
   return JSON.parse(trimmed.slice(start, end + 1));
 }
 
-function NodeEditor({
-  node,
-  root,
-  highlighted,
-  relationSource,
-  moveSource,
-  onText,
-  onAddChild,
-  onAddSibling,
-  onDelete,
-  onRelation,
-  onMove,
-  dragging = false,
-  onPointerDown,
-  shouldSuppressEdit,
-}: {
-  node: TreeNode;
-  root: boolean;
-  highlighted: boolean;
-  relationSource: boolean;
-  moveSource: boolean;
-  onText: (text: string) => void;
-  onAddChild: () => void;
-  onAddSibling: () => void;
-  onDelete: () => void;
-  onRelation: () => void;
-  onMove: () => void;
-  dragging?: boolean;
-  onPointerDown?: (event: ReactPointerEvent<HTMLElement>) => void;
-  shouldSuppressEdit?: () => boolean;
-}) {
-  const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(node.text);
-  useEffect(() => setValue(node.text), [node.text]);
-  const commit = () => {
-    const next = value.trim();
-    if (next && next !== node.text) onText(next);
-    else setValue(node.text);
-    setEditing(false);
-  };
-  return (
-    <article
-      onPointerDown={onPointerDown}
-      onDoubleClick={() => { if (!dragging && !shouldSuppressEdit?.()) setEditing(true); }}
-      className={`group relative rounded-2xl border-2 bg-[var(--space-surface-card)] p-3 shadow-sm transition-all ${dragging ? 'cursor-grabbing select-none' : 'cursor-grab'} ${
-        highlighted
-          ? 'border-[var(--space-semantic-warning)] shadow-[0_0_0_4px_color-mix(in_srgb,var(--space-semantic-warning)_20%,transparent)]'
-          : relationSource
-            ? 'border-[var(--space-brand-highlight)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--space-brand-highlight)_18%,transparent)]'
-            : moveSource
-              ? 'border-[var(--space-brand-primary)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--space-brand-primary-500)_18%,transparent)]'
-            : root
-              ? 'border-[var(--space-brand-primary)]'
-              : 'border-[var(--space-border-default)] hover:border-[var(--space-brand-primary-200)]'
-      }`}
-      data-node-id={node.id}
-      data-testid={`structure-node-${node.id}`}
-    >
-      <div className="mb-1 flex items-center justify-between gap-2">
-        <span className={`text-[9px] font-bold uppercase tracking-[0.14em] ${root ? 'text-[var(--space-text-brand)]' : 'text-[var(--space-text-muted)]'}`}>
-          {root ? 'Central question' : 'Sub-question'}
-        </span>
-        {!editing ? <span className="text-[9px] text-[var(--space-text-muted)]">{dragging ? 'Moving subtree…' : 'Drag'}</span> : null}
-      </div>
-      {editing ? (
-        <textarea
-          autoFocus
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-          onBlur={commit}
-          onKeyDown={(event) => {
-            if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') commit();
-            if (event.key === 'Escape') { setValue(node.text); setEditing(false); }
-          }}
-          rows={3}
-          className="w-full resize-none rounded-lg border border-[var(--space-brand-primary)] bg-[var(--space-surface-page)] p-2 text-xs leading-5 text-[var(--space-text-primary)] outline-none"
-          aria-label="Edit issue tree node"
-        />
-      ) : (
-        <button type="button" onClick={() => { if (!dragging && !shouldSuppressEdit?.()) setEditing(true); }} className="min-h-10 w-full cursor-grab text-left text-xs font-semibold leading-5 text-[var(--space-text-primary)]">
-          {node.text}
-        </button>
-      )}
-      <div data-node-action className="mt-2 flex flex-wrap gap-1 opacity-100 lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100 lg:group-focus-within:opacity-100">
-        <button type="button" onClick={onAddChild} className="inline-flex h-8 items-center gap-1 rounded-lg bg-[var(--space-surface-muted)] px-2 text-[10px] font-semibold text-[var(--space-text-secondary)]" title="Add sub-issue"><GitBranch className="h-3 w-3" /> Sub-issue</button>
-        {!root ? <button type="button" onClick={onAddSibling} className="inline-flex h-8 items-center gap-1 rounded-lg bg-[var(--space-surface-muted)] px-2 text-[10px] font-semibold text-[var(--space-text-secondary)]" title="Add related issue"><Plus className="h-3 w-3" /> Related issue</button> : null}
-        {!root ? <button type="button" onClick={onMove} className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--space-surface-muted)] text-[var(--space-text-secondary)]" title="Move or reconnect subtree"><ArrowLeftRight className="h-3 w-3" /></button> : null}
-        <button type="button" onClick={onRelation} className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--space-surface-muted)] text-[var(--space-text-secondary)]" title="Add cross-branch relationship"><Link2 className="h-3 w-3" /></button>
-        {!root ? <button type="button" onClick={onDelete} className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--space-surface-muted)] text-[var(--space-semantic-danger)]" title="Delete subtree"><Trash2 className="h-3 w-3" /></button> : null}
-      </div>
-    </article>
-  );
+function scoreableTreeText(nodes: TreeNode[]): string {
+  return nodes
+    .filter((node) => node.parentId !== null && node.text !== UNAVAILABLE_TEXT && !isTechnicalLabel(node.text))
+    .map((node) => node.text.trim())
+    .filter(Boolean)
+    .join('\n');
 }
 
 function DraftVersionCard({ draft }: { draft: TreeDraft }) {
@@ -395,76 +605,82 @@ function VersionCard({ submission, label }: { submission: Submission; label: str
           </li>
         ))}
       </ol>
-      <p className="mt-3 text-xs leading-5 text-[var(--space-text-secondary)]">{submission.feedback.summary}</p>
+      <p className="mt-3 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(submission.feedback.summary)}</p>
     </section>
   );
 }
 
-export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { initialCaseId?: string; onSubmitted?: () => void }) {
+export default function StructuresWorkspace({ initialCaseId, caseOverride, suggestedTreeOverride = null, onSubmitted, onBackToLibrary, hideEvidenceColumn = false, onCaseSelected, onGraded, onGradeError }: { initialCaseId?: string; caseOverride?: LibraryQuestion; suggestedTreeOverride?: SuggestedStructureTree | null; onSubmitted?: () => void; onBackToLibrary?: () => void; hideEvidenceColumn?: boolean; onCaseSelected?: (item: LibraryQuestion) => void; onGraded?: (caseId: string, scoring?: HonestScoreResult) => void; onGradeError?: (error: unknown) => void }) {
   const { sessionId } = useSpaceRuntime();
+  const availableCases = useMemo(() => caseOverride
+    ? [caseOverride, ...BASE_STRUCTURE_QUESTIONS.filter((item) => item.id !== caseOverride.id)]
+    : BASE_STRUCTURE_QUESTIONS, [caseOverride]);
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState(() => {
     try {
       const direct = sessionStorage.getItem(REQUEST_KEY);
       const legacy = sessionStorage.getItem(LEGACY_REQUEST_KEY);
-      const requested = STRUCTURE_CASES.some((item) => item.id === initialCaseId)
+      const requested = availableCases.some((item) => item.id === initialCaseId)
         ? initialCaseId
-        : STRUCTURE_CASES.some((item) => item.id === direct) ? direct : legacy;
-      return STRUCTURE_CASES.some((item) => item.id === requested) ? String(requested) : STRUCTURE_CASES[0]?.id || '';
+        : availableCases.some((item) => item.id === direct) ? direct : legacy;
+      return availableCases.some((item) => item.id === requested) ? String(requested) : availableCases[0]?.id || '';
     } catch {
-      return STRUCTURE_CASES[0]?.id || '';
+      return availableCases[0]?.id || '';
     }
   });
   const [showLibrary, setShowLibrary] = useState(false);
   const [briefOpen, setBriefOpen] = useState(true);
-  const [draft, setDraft] = useState<TreeDraft>(() => emptyDraft(STRUCTURE_CASES.find((item) => item.id === selectedId) || STRUCTURE_CASES[0]));
+  const [draft, setDraft] = useState<TreeDraft>(() => emptyDraft(availableCases.find((item) => item.id === selectedId) || availableCases[0]));
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [undoStack, setUndoStack] = useState<TreeDraft[]>([]);
   const [redoStack, setRedoStack] = useState<TreeDraft[]>([]);
   const [saveState, setSaveState] = useState<SaveState>('editing');
   const [viewState, setViewState] = useState<ViewState>('editing');
   const [highlightIds, setHighlightIds] = useState<Set<string>>(new Set());
-  const [relationFrom, setRelationFrom] = useState<string | null>(null);
-  const [moveFrom, setMoveFrom] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [zoom, setZoom] = useState(0.88);
-  const [pan, setPan] = useState({ x: 18, y: 18 });
-  const [panning, setPanning] = useState<{ x: number; y: number; startX: number; startY: number } | null>(null);
-  const [nodeDrag, setNodeDrag] = useState<NodeDragState | null>(null);
-  const [dragPositions, setDragPositions] = useState<Map<string, { x: number; y: number }> | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const rowIdRef = useRef<number | null>(null);
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const nodeDragRef = useRef<NodeDragState | null>(null);
-  const dragPositionsRef = useRef<Map<string, { x: number; y: number }> | null>(null);
-  const recentDragRef = useRef<{ nodeId: string; until: number } | null>(null);
+  const editedSinceLoadRef = useRef(false);
+  const feedbackRef = useRef<HTMLElement>(null);
+  const revealFeedbackRef = useRef(false);
 
-  const activeCase = useMemo(() => STRUCTURE_CASES.find((item) => item.id === selectedId) || STRUCTURE_CASES[0], [selectedId]);
-  const layout = useMemo(() => layoutTree(draft.nodes, dragPositions || undefined), [draft.nodes, dragPositions]);
-  const nodeMap = useMemo(() => new Map(layout.nodes.map((node) => [node.id, node])), [layout.nodes]);
+  const activeCase = useMemo(() => availableCases.find((item) => item.id === selectedId) || availableCases[0], [availableCases, selectedId]);
+  const shownExhibits = useMemo(() => clarifyUnitsDeep(questionExhibits(activeCase)), [activeCase]);
+  const formatRootText = (text: string) => (text === activeCase.question ? clarifyUnitText(text) : text);
+  // Only authored content may be shown as the strong example tree: the host case's published
+  // issue tree, a mapped framework guide, or an authored Easy tree. Never the archetype template.
+  const treeOverride = caseOverride && suggestedTreeOverride && activeCase?.id === caseOverride.id ? suggestedTreeOverride : null;
+  const guide = useMemo(() => (treeOverride ? null : structureAnswerGuideFor(activeCase)), [activeCase, treeOverride]);
+  const treeVerified = Boolean(treeOverride || guide || structuresEasySuggestedTree(activeCase.id));
+  const suggestedTree = useMemo(() => treeOverride || suggestedStructureFor(activeCase), [activeCase, treeOverride]);
   const latest = submissions[submissions.length - 1] || null;
+  const guideCoverage = useMemo(() => {
+    if (!guide || !latest) return undefined;
+    const assessment = assessTreeAgainstGuide(activeCase, guide, scoreableTreeText(latest.nodes));
+    return new Map<string, CoverageStatus>(assessment.branchCoverage.map((item) => [item.branchId, item.status]));
+  }, [activeCase, guide, latest]);
   useEffect(() => {
-    if (initialCaseId && STRUCTURE_CASES.some((item) => item.id === initialCaseId)) {
+    if (initialCaseId && availableCases.some((item) => item.id === initialCaseId)) {
       setSelectedId(initialCaseId);
       setShowLibrary(false);
     }
-  }, [initialCaseId]);
+  }, [availableCases, initialCaseId]);
 
   const filteredCases = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    if (!needle) return STRUCTURE_CASES;
-    return STRUCTURE_CASES.filter((item) => `${item.id} ${item.title} ${item.question} ${item.businessContext || ''}`.toLowerCase().includes(needle));
-  }, [query]);
+    if (!needle) return availableCases;
+    return availableCases.filter((item) => `${item.id} ${item.title} ${item.question} ${item.businessContext || ''}`.toLowerCase().includes(needle));
+  }, [availableCases, query]);
 
   useEffect(() => {
     const consume = () => {
       try {
         const direct = sessionStorage.getItem(REQUEST_KEY);
         const legacy = sessionStorage.getItem(LEGACY_REQUEST_KEY);
-        if (direct && !STRUCTURE_CASES.some((item) => item.id === direct)) sessionStorage.removeItem(REQUEST_KEY);
-        const requested = STRUCTURE_CASES.some((item) => item.id === direct) ? direct : legacy;
-        if (requested && STRUCTURE_CASES.some((item) => item.id === requested)) {
+        if (direct && !availableCases.some((item) => item.id === direct)) sessionStorage.removeItem(REQUEST_KEY);
+        const requested = availableCases.some((item) => item.id === direct) ? direct : legacy;
+        if (requested && availableCases.some((item) => item.id === requested)) {
           sessionStorage.removeItem(REQUEST_KEY);
           sessionStorage.removeItem(LEGACY_REQUEST_KEY);
           setSelectedId(requested);
@@ -478,7 +694,7 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
     };
     window.addEventListener('openApp', onOpen);
     return () => window.removeEventListener('openApp', onOpen);
-  }, []);
+  }, [availableCases]);
 
   useEffect(() => {
     if (!activeCase) return;
@@ -488,22 +704,20 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
     setRedoStack([]);
     setViewState('editing');
     setHighlightIds(new Set());
-    setRelationFrom(null);
-    setMoveFrom(null);
-    nodeDragRef.current = null;
-    dragPositionsRef.current = null;
-    setNodeDrag(null);
-    setDragPositions(null);
+    setSelectedNodeId(null);
     setError('');
     rowIdRef.current = null;
+    editedSinceLoadRef.current = false;
     const fallback = emptyDraft(activeCase);
     const storageKey = `casemate-structures-v2:${sessionId || 'preview'}:${activeCase.id}`;
     try {
       const local = JSON.parse(localStorage.getItem(storageKey) || 'null');
-      if (local?.draft?.nodes?.length) setDraft(local.draft);
-      else setDraft(fallback);
-      if (Array.isArray(local?.submissions)) setSubmissions(local.submissions);
-      else setSubmissions([]);
+      setDraft(local?.draft ? normalizeStoredDraft(local.draft, activeCase) : fallback);
+      const localSubmissions = Array.isArray(local?.submissions)
+        ? local.submissions.map((submission: any) => normalizeSubmission(submission, activeCase, suggestedTree)).filter(Boolean) as Submission[]
+        : [];
+      setSubmissions(localSubmissions);
+      if (localSubmissions.length) setViewState('feedback');
     } catch {
       setDraft(fallback);
       setSubmissions([]);
@@ -517,10 +731,14 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
         const row = rowsOf(response)[0] as ProgressRow | undefined;
         if (!cancelled && row) {
           rowIdRef.current = Number(row.id);
-          const remoteDraft = parseStored<TreeDraft>(row.draft_json, fallback);
-          const remoteSubmissions = parseStored<Submission[]>(row.submissions_json, []);
-          if (remoteDraft?.nodes?.length) setDraft(remoteDraft);
-          setSubmissions(Array.isArray(remoteSubmissions) ? remoteSubmissions : []);
+          const remoteDraft = parseStored<any>(row.draft_json, fallback);
+          const remoteSubmissions = parseStored<any[]>(row.submissions_json, []);
+          setDraft(normalizeStoredDraft(remoteDraft, activeCase));
+          const savedSubmissions = Array.isArray(remoteSubmissions)
+            ? remoteSubmissions.map((submission) => normalizeSubmission(submission, activeCase, suggestedTree)).filter(Boolean) as Submission[]
+            : [];
+          setSubmissions(savedSubmissions);
+          if (!editedSinceLoadRef.current) setViewState(savedSubmissions.length ? 'feedback' : 'editing');
         }
       } catch (loadError) {
         console.warn('[Structures] remote resume failed', loadError);
@@ -530,7 +748,7 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
     };
     void load();
     return () => { cancelled = true; };
-  }, [activeCase?.id, sessionId]);
+  }, [activeCase?.id, sessionId, suggestedTree]);
 
   useEffect(() => {
     if (!hydrated || !activeCase) return;
@@ -566,6 +784,7 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
   }, [draft, submissions, hydrated, activeCase?.id, sessionId]);
 
   const commit = useCallback((next: TreeDraft) => {
+    editedSinceLoadRef.current = true;
     setUndoStack((stack) => [...stack.slice(-49), draft]);
     setRedoStack([]);
     setDraft({ nodes: normalizeOrders(next.nodes), crossLinks: next.crossLinks });
@@ -592,200 +811,43 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
     setViewState('editing');
   }, [draft, redoStack]);
 
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (!(event.ctrlKey || event.metaKey)) return;
-      if (event.key.toLowerCase() === 'z' && !event.shiftKey) { event.preventDefault(); undo(); }
-      if (event.key.toLowerCase() === 'y' || (event.key.toLowerCase() === 'z' && event.shiftKey)) { event.preventDefault(); redo(); }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [undo, redo]);
-
-  const addChild = (parentId: string) => {
-    const siblings = childrenOf(draft.nodes, parentId);
-    const parent = nodeMap.get(parentId);
-    const siblingLayouts = siblings.map((node) => nodeMap.get(node.id)).filter(Boolean) as LayoutNode[];
-    const nextY = siblingLayouts.length ? Math.max(...siblingLayouts.map((node) => node.y)) + Y_GAP : parent?.y;
-    commit({
-      ...draft,
-      nodes: [...draft.nodes, {
-        id: uid('node'),
-        parentId,
-        text: 'New testable sub-question',
-        order: siblings.length,
-        x: parent ? parent.x + X_GAP : undefined,
-        y: nextY,
-      }],
-    });
-  };
-
-  const addSibling = (nodeId: string) => {
-    const node = draft.nodes.find((item) => item.id === nodeId);
-    if (!node || node.parentId === null) return;
-    const siblings = childrenOf(draft.nodes, node.parentId);
-    const siblingLayouts = siblings.map((item) => nodeMap.get(item.id)).filter(Boolean) as LayoutNode[];
-    const current = nodeMap.get(nodeId);
-    commit({
-      ...draft,
-      nodes: [...draft.nodes, {
-        id: uid('node'),
-        parentId: node.parentId,
-        text: 'New parallel branch',
-        order: siblings.length,
-        x: current?.x,
-        y: siblingLayouts.length ? Math.max(...siblingLayouts.map((item) => item.y)) + Y_GAP : current?.y,
-      }],
-    });
-  };
-
-  const deleteNode = (nodeId: string) => {
-    const removing = descendantsOf(draft.nodes, nodeId);
-    commit({
-      nodes: draft.nodes.filter((node) => !removing.has(node.id)),
-      crossLinks: draft.crossLinks.filter((link) => !removing.has(link.from) && !removing.has(link.to)),
-    });
-  };
-
-  const updateText = (nodeId: string, text: string) => commit({ ...draft, nodes: draft.nodes.map((node) => node.id === nodeId ? { ...node, text } : node) });
-
-  const moveNode = (movingId: string, targetId: string, asChild: boolean) => {
-    if (movingId === targetId) return;
-    const moving = draft.nodes.find((node) => node.id === movingId);
-    const target = draft.nodes.find((node) => node.id === targetId);
-    if (!moving || !target || moving.parentId === null || descendantsOf(draft.nodes, movingId).has(targetId)) return;
-    const nextParent = asChild ? target.id : target.parentId;
-    if (nextParent === null) return;
-    const targetSiblings = childrenOf(draft.nodes.filter((node) => node.id !== movingId), nextParent);
-    const targetIndex = asChild ? targetSiblings.length : Math.max(0, targetSiblings.findIndex((node) => node.id === targetId));
-    const next = draft.nodes.map((node) => node.id === movingId ? { ...node, parentId: nextParent, order: targetIndex } : node);
-    next.forEach((node) => {
-      if (node.id !== movingId && node.parentId === nextParent && node.order >= targetIndex) node.order += 1;
-    });
-    commit({ ...draft, nodes: next });
-  };
-
-  const handleMove = (nodeId: string) => {
-    if (!moveFrom) { setMoveFrom(nodeId); setRelationFrom(null); return; }
-    if (moveFrom === nodeId) { setMoveFrom(null); return; }
-    moveNode(moveFrom, nodeId, true);
-    setMoveFrom(null);
-  };
-
-  const handleRelation = (nodeId: string) => {
-    if (!relationFrom) { setRelationFrom(nodeId); setMoveFrom(null); return; }
-    if (relationFrom === nodeId) { setRelationFrom(null); return; }
-    const duplicate = draft.crossLinks.some((link) => (link.from === relationFrom && link.to === nodeId) || (link.from === nodeId && link.to === relationFrom));
-    if (!duplicate) commit({ ...draft, crossLinks: [...draft.crossLinks, { id: uid('link'), from: relationFrom, to: nodeId }] });
-    setRelationFrom(null);
-  };
-
-  const startNodeDrag = (event: ReactPointerEvent<HTMLElement>, nodeId: string) => {
-    if (event.button !== 0 || (event.target as HTMLElement).closest('textarea, [data-node-action]')) return;
-    const basePositions = new Map(layout.nodes.map((node) => [node.id, { x: node.x, y: node.y }]));
-    event.currentTarget.setPointerCapture(event.pointerId);
-    const nextDrag: NodeDragState = {
-      pointerId: event.pointerId,
-      nodeId,
-      startClientX: event.clientX,
-      startClientY: event.clientY,
-      basePositions,
-      movingIds: descendantsOf(draft.nodes, nodeId),
-      moved: false,
-    };
-    setPanning(null);
-    dragPositionsRef.current = null;
-    nodeDragRef.current = nextDrag;
-    setDragPositions(null);
-    setNodeDrag(nextDrag);
-  };
-
-  const moveNodeDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const activeDrag = nodeDragRef.current;
-    if (!activeDrag || event.pointerId !== activeDrag.pointerId) return;
-    const clientDx = event.clientX - activeDrag.startClientX;
-    const clientDy = event.clientY - activeDrag.startClientY;
-    if (!activeDrag.moved && Math.hypot(clientDx, clientDy) < 4) return;
-    event.preventDefault();
-    const movingPositions = Array.from(activeDrag.movingIds)
-      .map((id) => activeDrag.basePositions.get(id))
-      .filter(Boolean) as Array<{ x: number; y: number }>;
-    const minX = Math.min(...movingPositions.map((position) => position.x));
-    const minY = Math.min(...movingPositions.map((position) => position.y));
-    const dx = Math.max(clientDx / zoom, 16 - minX);
-    const dy = Math.max(clientDy / zoom, 16 - minY);
-    const nextPositions = new Map(activeDrag.basePositions);
-    activeDrag.movingIds.forEach((id) => {
-      const start = activeDrag.basePositions.get(id);
-      if (start) nextPositions.set(id, { x: start.x + dx, y: start.y + dy });
-    });
-    dragPositionsRef.current = nextPositions;
-    setDragPositions(nextPositions);
-    if (!activeDrag.moved) {
-      const movedDrag = { ...activeDrag, moved: true };
-      nodeDragRef.current = movedDrag;
-      setNodeDrag(movedDrag);
-    }
-  };
-
-  const finishNodeDrag = (pointerId: number, cancelled = false) => {
-    const activeDrag = nodeDragRef.current;
-    const finalPositions = dragPositionsRef.current;
-    if (!activeDrag || pointerId !== activeDrag.pointerId) return;
-    if (!cancelled && activeDrag.moved && finalPositions) {
-      recentDragRef.current = { nodeId: activeDrag.nodeId, until: Date.now() + 350 };
-      commit({
-        ...draft,
-        nodes: draft.nodes.map((node) => {
-          const position = finalPositions.get(node.id);
-          return position ? { ...node, x: Math.round(position.x), y: Math.round(position.y) } : node;
-        }),
-      });
-    }
-    nodeDragRef.current = null;
-    dragPositionsRef.current = null;
-    setNodeDrag(null);
-    setDragPositions(null);
-  };
-
-  const shouldSuppressNodeEdit = (nodeId: string): boolean => {
-    const recent = recentDragRef.current;
-    if (!recent || Date.now() > recent.until) {
-      recentDragRef.current = null;
-      return false;
-    }
-    return recent.nodeId === nodeId;
-  };
-
-  const fitToScreen = useCallback(() => {
-    const host = canvasRef.current;
-    if (!host) return;
-    const availableW = Math.max(320, host.clientWidth - 32);
-    const availableH = Math.max(360, host.clientHeight - 32);
-    const nextZoom = Math.min(1, Math.max(0.28, Math.min(availableW / layout.width, availableH / layout.height)));
-    setZoom(nextZoom);
-    setPan({ x: 16, y: 16 });
-  }, [layout.height, layout.width]);
+  const treeEditor = useStructureTreeEditing({ draft, commit, undo, redo });
+  const { setSelectedNodeId, commitDraft } = treeEditor;
 
   const requestFeedback = async (): Promise<TreeFeedback> => {
     const token = (window as any).__workspaceDb?.token;
+    const structureRubric = rubricForExercise('structures');
+    const assessment = guide ? assessTreeAgainstGuide(activeCase, guide, scoreableTreeText(draft.nodes)) : null;
+    const gradingBrief = [
+      structureGradingBrief(activeCase, guide),
+      assessment
+        ? `KEYWORD HINTS (advisory only; they can miss synonyms and alternative structures, so judge meaning yourself):\nDrivers detected: ${assessment.matchedDrivers.join('; ') || 'none'}\nDrivers not detected: ${assessment.missedDrivers.join('; ') || 'none'}`
+        : '',
+    ].filter(Boolean).join('\n\n');
+    const suggestedSection = treeVerified
+      ? [
+          `SUGGESTED FIRST-LEVEL BRANCHES (compare semantically${treeOverride ? '; taken from this case\'s published model answer' : ''}):\n${suggestedTree.branches.map((branch) => `[${branch.id}] ${branch.text}: ${(branch.children || []).map((child) => child.text).join(' | ')}`).join('\n')}`,
+          suggestedTree.explanations.length ? `FIXED LOGIC COPY FOR WHY THIS BREAKDOWN WORKS (do not turn this into advice or repeat it elsewhere):\n${suggestedTree.explanations.map((item) => `${item.title}: ${item.explanation}`).join('\n')}` : '',
+          suggestedTree.investigateFirst ? `FIXED ANALYSIS ORDER FOR INVESTIGATE FIRST (do not repeat or paraphrase this in improvements or priorities):\n${suggestedTree.investigateFirst}` : '',
+        ].filter(Boolean).join('\n\n')
+      : 'NO AUTHORED MODEL STRUCTURE: this question has no verified suggested tree. Judge the candidate tree only against the case facts, the central question and the marking contract, and return "coverage": [].';
     if (!token) throw new Error('Sign in so Mate can assess and save this submission.');
     const response = await fetch('/proxy/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Workspace-DB-Token': token },
       body: JSON.stringify({
-        model: 'gpt-5.6-terra',
-        reasoning_effort: 'none',
-        max_completion_tokens: 1800,
+        model: 'gpt-6.1-sol',
+        reasoning_effort: 'medium',
+        max_completion_tokens: 6000,
         response_format: { type: 'json_object' },
         messages: [
           {
             role: 'system',
-            content: 'You are Mate, a consulting case coach. Assess the candidate issue tree on its own merits for this specific case. Accept multiple valid structures; never require a single predetermined framework. Be concrete and actionable. Discuss exact node IDs. Evaluate root alignment, first-level exhaustiveness, mutual exclusivity, missing areas at any depth, testability with data, prioritization, and use of case context/exhibits. Return only JSON: {"summary":"...","strengths":[{"title":"...","detail":"...","nodeIds":["..."]}],"improvements":[same shape],"priorities":[same shape]}. Keep each array to 1-4 items.',
+            content: 'You are Mate, a rigorous consulting case grader. Assess the candidate issue tree on its own merits for this specific case. Accept different wording and multiple coherent structures; the suggested tree is one strong approach, not a mandatory framework. Use the full 0-10 range. Irrelevant, unsupported, fundamentally misunderstood, or mostly empty work must receive 0-2 where warranted. Length and confident wording are not evidence. Internal node IDs may appear in the input, but NEVER include an ID, code, JSON, numeric reference, or placeholder label in any visible text. Refer to a candidate box by quoting its exact human-readable text. Put internal candidate IDs only in nodeIds. Compare first-level ideas semantically, not by exact wording. Follow the MARKING CONTRACT and CASE-SPECIFIC ANSWER GUIDE in the user message. The framework is a guide, not an answer key: give full credit to an alternative issue tree that reaches the material drivers with sound, non-overlapping logic, whatever its labels, depth or branch order. Never penalise a missing branch unless it could change the decision in this case. Never invent case facts, and do not require a final recommendation when the question only asks for a structure. If the guide says no framework fits, judge the tree on its own logic. The visible feedback has four parts that must not repeat each other: covered (what the candidate genuinely covered, quoting their words), material_gap (the single most material missing or weakest driver), why_it_matters (how that gap could change the answer in this case), and next_step (one concrete action specific to this case, naming the data cut, exhibit or analysis to add, never generic framework text). The supplied Why this breakdown works copy is logic only, and Investigate first is analysis order only; never repeat them. For every rubric criterion return: key, score (0-10), evidence (a short quote or faithful paraphrase of what the candidate actually wrote), reason, and stronger_answer. If no meaningful strength exists, say so plainly and respectfully. Do not invent evidence or exhibit numbers. Write all user-facing feedback in English and do not use long em dashes. Return JSON only.',
           },
           {
             role: 'user',
-            content: `STRUCTURES DRILL ID: ${activeCase.id}\nTITLE: ${activeCase.title}\nCASE CONTEXT: ${activeCase.businessContext || activeCase.instruction || activeCase.title}\nCENTRAL QUESTION: ${activeCase.question}\nEXHIBITS AND NUMBERS:\n${exhibitsForPrompt(activeCase)}\n\nCANDIDATE TREE:\n${treeForPrompt(draft.nodes)}\n\nCROSS-BRANCH RELATIONSHIPS:\n${draft.crossLinks.map((link) => `${link.from} <-> ${link.to}`).join('\n') || 'None'}`,
+            content: `STRUCTURES DRILL ID: ${activeCase.id}\nTITLE: ${activeCase.title}\nCASE CONTEXT: ${activeCase.businessContext || activeCase.instruction || activeCase.title}\nCENTRAL QUESTION: ${activeCase.question}\nEXHIBITS AND NUMBERS:\n${exhibitsForPrompt(activeCase)}\n\nSHARED RUBRIC (weights sum to 100):\n${JSON.stringify(structureRubric)}\n\nCANDIDATE TREE:\n${treeForPrompt(draft.nodes)}\n\n${suggestedSection}\n\n${gradingBrief}\n\nCROSS-BRANCH RELATIONSHIPS:\n${draft.crossLinks.map((link) => `${link.from} <-> ${link.to}`).join('\n') || 'None'}\n\nReturn exactly: {"summary":"...","covered":["short sentence naming a driver the candidate genuinely covered, quoting their words"],"material_gap":{"title":"...","detail":"...","nodeIds":["..."]},"why_it_matters":"...","coverage":[{"branchId":"suggested branch id","status":"covered|partial|missed"}],"criteria":[{"key":"exact rubric key","score":0,"evidence":"...","reason":"...","stronger_answer":"..."}],"evidence_to_revisit":["exact fact + miss/misread + why it matters"],"next_step":{"action":"string","why":"string"},"further_improvements":[{"action":"string","why":"string"}]}. Return every rubric criterion exactly once and ${treeVerified ? 'one coverage item for every suggested first-level branch' : 'an empty coverage array'}. covered has one to three items and must contain only correct content already present in the candidate tree, never advice; use [] if nothing material was covered. material_gap is the single most material driver the tree misses or handles weakest, judged against what could change the decision in this case; if the tree already covers every material driver, name its weakest evidence or prioritisation point instead. Put the candidate box that is weakest or closest to the gap in nodeIds, or [] when the driver is absent. why_it_matters explains in one or two sentences how the gap could lead to a wrong or unsupported conclusion in this specific case. next_step.action is one concrete, case-specific step (for example the data cut, exhibit or comparison to add) and next_step.why gives its payoff. Do not repeat the same idea across covered, material_gap, why_it_matters, next_step, the fixed logic copy or the fixed analysis order. evidence_to_revisit must be [] unless a specific case fact or exhibit figure was missed or misread; never flag evidence the candidate used correctly. next_step is the one highest-impact correction, prioritizing conclusion, logic, or case evidence before style. further_improvements has zero to two non-repeating smaller actions.`, 
           },
         ],
         stream: false,
@@ -794,12 +856,22 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
     const body = await response.json().catch(() => null);
     if (!response.ok) throw new Error(body?.error?.message || body?.error || 'Mate could not assess this tree. Please try again.');
     const text = body?.choices?.[0]?.message?.content || '';
-    return cleanFeedback(parseAiJson(text), draft.nodes);
+    const parsed = parseAiJson(text);
+    const visibleCriteria = Array.isArray(parsed.criteria)
+      ? parsed.criteria.map((item: any) => ({
+          ...item,
+          evidence: humanizeFeedbackText(item?.evidence, draft.nodes),
+          reason: humanizeFeedbackText(item?.reason, draft.nodes),
+          stronger_answer: humanizeFeedbackText(item?.stronger_answer, draft.nodes),
+        }))
+      : [];
+    const feedback = cleanFeedback(parsed, draft.nodes, suggestedTree);
+    feedback.scoring = normalizeCriterionScores({ ...parsed, criteria: visibleCriteria }, structureRubric, scoreableTreeText(draft.nodes));
+    return feedback;
   };
 
   const submit = async () => {
-    if (draft.nodes.length < 2) { setError('Add at least one branch before submitting your tree.'); return; }
-    if (draft.nodes.some((node) => !node.text.trim())) { setError('Finish the text in every node before submitting.'); return; }
+    if (draft.nodes.some((node) => !node.text.trim())) { setError('Finish the text in every box before submitting.'); return; }
     setSubmitting(true);
     setError('');
     try {
@@ -813,14 +885,36 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
       };
       setSubmissions((items) => [...items, snapshot]);
       onSubmitted?.();
+      onGraded?.(activeCase.id, feedback.scoring);
+      revealFeedbackRef.current = true;
       setViewState('feedback');
-      setHighlightIds(new Set([...feedback.improvements, ...feedback.priorities].flatMap((item) => item.nodeIds)));
+      setHighlightIds(new Set([...(feedback.materialGap ? [feedback.materialGap] : []), ...feedback.improvements, ...feedback.priorities].flatMap((item) => item.nodeIds)));
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Mate could not assess this tree. Please try again.');
+      onGradeError?.(submitError);
     } finally {
       setSubmitting(false);
     }
   };
+
+  // Submitted versions stay in history, and the cleared tree can be brought back with Undo.
+  const startOver = () => {
+    editedSinceLoadRef.current = true;
+    setUndoStack((stack) => [...stack.slice(-49), draft]);
+    setRedoStack([]);
+    setDraft(emptyDraft(activeCase));
+    setViewState('editing');
+    setHighlightIds(new Set());
+    setSelectedNodeId(null);
+    setError('');
+    setSaveState('editing');
+  };
+
+  useEffect(() => {
+    if (viewState !== 'feedback' || !revealFeedbackRef.current) return;
+    revealFeedbackRef.current = false;
+    feedbackRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }, [viewState, submissions.length]);
 
   const statusLabel = saveState === 'saving' ? 'Saving draft…' : saveState === 'saved' ? 'Saved draft' : saveState === 'error' ? 'Saved on this device' : 'Editing';
   const statusIcon = saveState === 'saving' ? Loader2 : saveState === 'saved' ? Check : saveState === 'error' ? Save : CircleDot;
@@ -833,8 +927,8 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Structures Question Library</p>
-              <h2 className="mt-1 text-lg font-bold text-[var(--space-text-primary)]">Structures exercises · {STRUCTURE_CASES.length} cases</h2>
-              <p className="mt-1 text-sm leading-6 text-[var(--space-text-secondary)]">The case set, IDs, difficulties, charts, and numbers are unchanged. Only the solving method is now an issue tree.</p>
+              <h2 className="mt-1 text-lg font-bold text-[var(--space-text-primary)]">Structures exercises · {availableCases.length} cases</h2>
+              <p className="mt-1 text-sm leading-6 text-[var(--space-text-secondary)]">The case set, difficulties, charts, and numbers are unchanged. Only the solving method is now an issue tree.</p>
             </div>
             <button type="button" onClick={() => setShowLibrary(false)} className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-[var(--space-border-default)] px-3 text-xs font-semibold text-[var(--space-text-secondary)]"><X className="h-4 w-4" /> Close</button>
           </div>
@@ -846,9 +940,9 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
         <ul className="mt-3 grid gap-2 sm:grid-cols-2">
           {filteredCases.map((item) => (
             <li key={item.id}>
-              <button type="button" onClick={() => { setSelectedId(item.id); setShowLibrary(false); }} className="flex h-full w-full items-start gap-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-left hover:border-[var(--space-brand-primary)]">
-                <span className="rounded-lg bg-[var(--space-surface-accent-soft)] px-2 py-1 text-[10px] font-bold text-[var(--space-text-brand)]">{item.id}</span>
-                <span className="min-w-0"><span className="block text-sm font-bold text-[var(--space-text-primary)]">{item.title}</span><span className="mt-1 block line-clamp-2 text-xs leading-5 text-[var(--space-text-secondary)]">{item.question}</span></span>
+              <button type="button" onClick={() => { setSelectedId(item.id); setShowLibrary(false); onCaseSelected?.(item); }} className="flex h-full w-full items-start gap-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-left hover:border-[var(--space-brand-primary)]">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]"><Network className="h-4 w-4" /></span>
+                <span className="min-w-0"><span className="block text-sm font-bold text-[var(--space-text-primary)]">{clarifyUnitText(item.title)}</span><span className="mt-1 block line-clamp-2 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(item.question)}</span></span>
               </button>
             </li>
           ))}
@@ -858,18 +952,17 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
   }
 
   return (
-    <div className="mt-5" data-testid="structures-workspace">
+    <div className="mt-5" data-testid="structures-workspace" data-retry-anchor>
       <header className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-[var(--space-surface-accent-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--space-text-brand)]">Structures v2</span>
-              <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{activeCase.id}</span>
               <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{activeCase.industry || 'Cross-industry'}</span>
               <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{activeCase.drillType || 'Issue Tree'}</span>
-              <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{DIFFICULTY_LABELS[activeCase.difficulty]}</span>
+              <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{DIFFICULTY_LABELS[displayDifficultyOf(activeCase)]}</span>
             </div>
-            <h2 className="mt-2 text-lg font-bold leading-7 text-[var(--space-text-primary)]">{activeCase.title}</h2>
+            <h2 className="mt-2 text-lg font-bold leading-7 text-[var(--space-text-primary)]">{clarifyUnitText(activeCase.title)}</h2>
             <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">Read → Build → Submit → Feedback → Revise → Compare versions</p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -894,18 +987,18 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
         </button>
         {briefOpen ? (
           <div className="border-t border-[var(--space-border-default)] p-4 pt-3">
-            <p className="text-sm leading-6 text-[var(--space-text-secondary)]">{activeCase.businessContext || activeCase.instruction || 'Use the case prompt and any supplied exhibits to build a clear, testable issue tree.'}</p>
+            <p className="text-sm leading-6 text-[var(--space-text-secondary)]">{clarifyUnitText(activeCase.businessContext || activeCase.instruction || 'Use the case prompt and any supplied exhibits to build a clear, testable issue tree.')}</p>
             <div className="mt-3 rounded-xl border-l-4 border-[var(--space-brand-primary)] bg-[var(--space-surface-accent-soft)] p-3">
               <p className="text-[9px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Central question</p>
-              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{activeCase.question}</p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{clarifyUnitText(activeCase.question)}</p>
             </div>
           </div>
         ) : null}
       </section>
 
-      {questionExhibits(activeCase).length ? (
+      {shownExhibits.length ? (
         <div className="mt-3" data-testid="structures-exhibits">
-          <ExhibitRenderer exhibits={questionExhibits(activeCase)} displayMode="advanced" />
+          <ExhibitRenderer exhibits={shownExhibits} />
         </div>
       ) : (
         <p className="mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3 text-xs leading-5 text-[var(--space-text-muted)]">This drill has no exhibit. Build the tree from the case prompt.</p>
@@ -913,106 +1006,13 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
 
       <div className="mt-3">
         <main className="min-w-0 space-y-3">
-          <section className="overflow-hidden rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)]">
-            <div className="flex flex-wrap items-center gap-2 border-b border-[var(--space-border-default)] p-3">
-              <div className="mr-auto">
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">2 · Build your tree</p>
-                <p className="mt-0.5 text-[10px] text-[var(--space-text-muted)]">Click a node to edit. Drag any node to reposition it; moving a parent carries its descendants.</p>
-              </div>
-              {relationFrom ? <span className="rounded-full bg-[color-mix(in_srgb,var(--space-brand-highlight)_14%,transparent)] px-2.5 py-1 text-[10px] font-bold text-[var(--space-text-brand)]">Select a second node for a dashed relationship</span> : null}
-              {moveFrom ? <span className="rounded-full bg-[var(--space-surface-accent-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--space-text-brand)]">Select the new parent node</span> : null}
-              <button type="button" onClick={() => setZoom((value) => Math.max(0.28, value - 0.1))} className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--space-border-default)]"><ZoomOut className="h-4 w-4" /></button>
-              <span className="w-11 text-center text-[10px] font-semibold text-[var(--space-text-muted)]">{Math.round(zoom * 100)}%</span>
-              <button type="button" onClick={() => setZoom((value) => Math.min(1.6, value + 0.1))} className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--space-border-default)]"><ZoomIn className="h-4 w-4" /></button>
-              <button type="button" onClick={fitToScreen} className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[var(--space-border-default)] px-2.5 text-[10px] font-semibold text-[var(--space-text-secondary)]"><Maximize2 className="h-3.5 w-3.5" /> Fit</button>
-            </div>
-
-            <div
-              ref={canvasRef}
-              className={`relative hidden h-[590px] overflow-hidden bg-[var(--space-surface-page)] lg:block ${nodeDrag || panning ? 'cursor-grabbing' : 'cursor-grab'}`}
-              onWheel={(event) => {
-                if (!event.ctrlKey && !event.metaKey) return;
-                event.preventDefault();
-                setZoom((value) => Math.min(1.6, Math.max(0.28, value - event.deltaY * 0.001)));
-              }}
-              onPointerDown={(event) => {
-                if ((event.target as HTMLElement).closest('[data-node-id]')) return;
-                (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
-                setPanning({ x: pan.x, y: pan.y, startX: event.clientX, startY: event.clientY });
-              }}
-              onPointerMove={(event) => {
-                if (nodeDragRef.current) { moveNodeDrag(event); return; }
-                if (!panning) return;
-                setPan({ x: panning.x + event.clientX - panning.startX, y: panning.y + event.clientY - panning.startY });
-              }}
-              onPointerUp={(event) => {
-                if (nodeDragRef.current) finishNodeDrag(event.pointerId);
-                setPanning(null);
-              }}
-              onPointerCancel={(event) => {
-                if (nodeDragRef.current) finishNodeDrag(event.pointerId, true);
-                setPanning(null);
-              }}
-              data-testid="structures-canvas"
-            >
-              <div className="absolute left-0 top-0 origin-top-left" style={{ width: layout.width, height: layout.height, transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
-                <svg className="pointer-events-none absolute inset-0 overflow-visible" width={layout.width} height={layout.height} aria-hidden="true">
-                  {layout.nodes.filter((node) => node.parentId).map((node) => {
-                    const parent = nodeMap.get(node.parentId as string);
-                    if (!parent) return null;
-                    const x1 = parent.x + NODE_WIDTH;
-                    const y1 = parent.y + NODE_HEIGHT / 2;
-                    const x2 = node.x;
-                    const y2 = node.y + NODE_HEIGHT / 2;
-                    const mid = (x1 + x2) / 2;
-                    return <path key={`hierarchy-${node.id}`} d={`M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`} fill="none" stroke="var(--space-border-strong)" strokeWidth="2" />;
-                  })}
-                  {draft.crossLinks.map((link) => {
-                    const from = nodeMap.get(link.from);
-                    const to = nodeMap.get(link.to);
-                    if (!from || !to) return null;
-                    return <path key={link.id} d={`M ${from.x + NODE_WIDTH / 2} ${from.y + NODE_HEIGHT} C ${from.x + NODE_WIDTH / 2} ${from.y + NODE_HEIGHT + 56}, ${to.x + NODE_WIDTH / 2} ${to.y - 56}, ${to.x + NODE_WIDTH / 2} ${to.y}`} fill="none" stroke="var(--space-brand-highlight)" strokeWidth="2" strokeDasharray="7 6" />;
-                  })}
-                </svg>
-                {layout.nodes.map((node) => (
-                  <div key={node.id} className="absolute" style={{ left: node.x, top: node.y, width: NODE_WIDTH, minHeight: NODE_HEIGHT, zIndex: nodeDrag?.movingIds.has(node.id) ? 10 : 1 }}>
-                    <NodeEditor
-                      node={node}
-                      root={node.parentId === null}
-                      highlighted={highlightIds.has(node.id)}
-                      relationSource={relationFrom === node.id}
-                      moveSource={moveFrom === node.id}
-                      onText={(text) => updateText(node.id, text)}
-                      onAddChild={() => addChild(node.id)}
-                      onAddSibling={() => addSibling(node.id)}
-                      onDelete={() => deleteNode(node.id)}
-                      onRelation={() => handleRelation(node.id)}
-                      onMove={() => handleMove(node.id)}
-                      dragging={nodeDrag?.nodeId === node.id && nodeDrag.moved}
-                      onPointerDown={(event) => startNodeDrag(event, node.id)}
-                      shouldSuppressEdit={() => shouldSuppressNodeEdit(node.id)}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="absolute bottom-3 left-3 rounded-lg bg-[var(--space-surface-card)] px-2.5 py-1.5 text-[9px] text-[var(--space-text-muted)] shadow-sm">Drag a node to move its subtree · Drag empty canvas to pan · Ctrl/⌘ + wheel to zoom</div>
-            </div>
-
-            <div className="space-y-2 bg-[var(--space-surface-page)] p-3 lg:hidden" data-testid="structures-mobile-editor">
-              <p className="rounded-xl bg-[var(--space-surface-accent-soft)] p-3 text-xs leading-5 text-[var(--space-text-secondary)]">Mobile vertical editor: indentation shows hierarchy. Use Sub-issue or Related issue, the move button to reconnect a subtree, and the link button for dashed relationships. Drag-and-drop also works where touch dragging is supported.</p>
-              {linearize(draft.nodes).map(({ node, depth }) => (
-                <div key={node.id} draggable={node.parentId !== null} onDragStart={(event) => event.dataTransfer.setData('text/plain', node.id)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); const moving = event.dataTransfer.getData('text/plain'); if (moving) moveNode(moving, node.id, event.shiftKey); }} style={{ marginLeft: `${Math.min(depth, 5) * 14}px` }}>
-                  <NodeEditor node={node} root={node.parentId === null} highlighted={highlightIds.has(node.id)} relationSource={relationFrom === node.id} moveSource={moveFrom === node.id} onText={(text) => updateText(node.id, text)} onAddChild={() => addChild(node.id)} onAddSibling={() => addSibling(node.id)} onDelete={() => deleteNode(node.id)} onRelation={() => handleRelation(node.id)} onMove={() => handleMove(node.id)} />
-                </div>
-              ))}
-            </div>
-          </section>
+          <StructureTreeCanvas draft={draft} editor={treeEditor} highlightIds={highlightIds} formatDisplay={formatRootText} />
 
           {draft.crossLinks.length ? (
             <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3">
               <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]"><Unlink className="h-3.5 w-3.5" /> Cross-branch relationships · dashed, never hierarchy</p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {draft.crossLinks.map((link) => <button key={link.id} type="button" onClick={() => commit({ ...draft, crossLinks: draft.crossLinks.filter((item) => item.id !== link.id) })} className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-[var(--space-brand-highlight)] px-2.5 py-1.5 text-[10px] text-[var(--space-text-secondary)]" title="Remove relationship">{draft.nodes.find((node) => node.id === link.from)?.text.slice(0, 24)} ↔ {draft.nodes.find((node) => node.id === link.to)?.text.slice(0, 24)} <X className="h-3 w-3" /></button>)}
+                {draft.crossLinks.map((link) => <button key={link.id} type="button" onClick={() => commitDraft({ ...draft, crossLinks: draft.crossLinks.filter((item) => item.id !== link.id) })} className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-[var(--space-brand-highlight)] px-2.5 py-1.5 text-[10px] text-[var(--space-text-secondary)]" title="Remove relationship">{draft.nodes.find((node) => node.id === link.from)?.text.slice(0, 24)} ↔ {draft.nodes.find((node) => node.id === link.to)?.text.slice(0, 24)} <X className="h-3 w-3" /></button>)}
               </div>
             </section>
           ) : null}
@@ -1022,36 +1022,84 @@ export default function StructuresWorkspace({ initialCaseId, onSubmitted }: { in
           <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">3 · Submit for case-specific feedback</p><p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">Mate evaluates your actual nodes, accepts multiple valid structures, and highlights the branches it discusses. No model tree is revealed before submission.</p></div>
-              <button type="button" onClick={submit} disabled={submitting || draft.nodes.length < 2} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--space-brand-primary)] px-4 text-sm font-bold text-[var(--space-text-on-primary)] disabled:opacity-45" data-testid="button-submit-structure-tree">{submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}{submitting ? 'Mate is assessing…' : submissions.length ? 'Submit revised tree' : 'Submit my tree'}</button>
+              <button type="button" onClick={submit} disabled={submitting} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--space-brand-primary)] px-4 text-sm font-bold text-[var(--space-text-on-primary)] disabled:opacity-45" data-testid="button-submit-structure-tree">{submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}{submitting ? 'Mate is assessing…' : submissions.length ? 'Submit revised tree' : 'Submit my tree'}</button>
             </div>
           </section>
 
           {latest && viewState === 'feedback' ? (
-            <section className="rounded-2xl border-2 border-[var(--space-brand-primary)] bg-[var(--space-surface-card)] p-4" data-testid="structures-feedback">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">4 · Feedback mode · Version {submissions.length}</p><p className="mt-1 max-w-3xl text-sm leading-6 text-[var(--space-text-primary)]">{latest.feedback.summary}</p></div>
-                <button type="button" onClick={() => { setViewState('editing'); setHighlightIds(new Set()); }} className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-[var(--space-border-default)] px-3 text-xs font-semibold text-[var(--space-text-secondary)]"><RotateCcw className="h-4 w-4" /> Revise tree</button>
-              </div>
-              <div className="mt-4 grid gap-3 md:grid-cols-3">
-                {([
-                  ['What works', latest.feedback.strengths, 'var(--space-semantic-success)'],
-                  ['Improve next', latest.feedback.improvements, 'var(--space-semantic-warning)'],
-                  ['Investigate first', latest.feedback.priorities, 'var(--space-brand-primary)'],
-                ] as const).map(([label, items, tone]) => (
-                  <div key={label} className="rounded-xl bg-[var(--space-surface-muted)] p-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: tone }}>{label}</p>
-                    <div className="mt-2 space-y-2">
-                      {items.length ? items.map((item, index) => <button key={`${item.title}-${index}`} type="button" onClick={() => setHighlightIds(new Set(item.nodeIds))} className="block w-full rounded-lg bg-[var(--space-surface-card)] p-2.5 text-left"><span className="block text-xs font-bold text-[var(--space-text-primary)]">{item.title}</span><span className="mt-1 block text-[11px] leading-4 text-[var(--space-text-secondary)]">{item.detail}</span>{item.nodeIds.length ? <span className="mt-1 block text-[9px] font-bold text-[var(--space-text-brand)]">Highlight {item.nodeIds.length} node{item.nodeIds.length === 1 ? '' : 's'}</span> : null}</button>) : <p className="text-[11px] text-[var(--space-text-muted)]">No item returned in this category.</p>}
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <section ref={feedbackRef} className="scroll-mt-3 rounded-2xl border-2 border-[var(--space-brand-primary)] bg-[var(--space-surface-card)] p-4" data-testid="structures-feedback">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">4 · Feedback · Version {submissions.length}</p>
+              {(() => {
+                const scoring = latest.feedback.scoring;
+                const coverage = coverageFor(latest.feedback, suggestedTree, latest.nodes, guideCoverage);
+                const answered = Boolean(scoreableTreeText(latest.nodes).trim());
+                const outcome = scoring
+                  ? resultOutcome(scoring.overallScore, 10, { answered })
+                  : answered ? coverageOutcome(coverage) : 'not-answered';
+                const parts = fourPartFeedback(latest.feedback);
+                const focus = parts.next?.action || '';
+                // Inside Case Pool the host full case is caseOverride's source; never offer it as the next step.
+                const fullCase = caseOverride && activeCase.source_case_id === caseOverride.source_case_id ? null : sourceFullCase(activeCase.source_case_id);
+                const caseIndex = availableCases.findIndex((item) => item.id === activeCase.id);
+                const nextStructure = availableCases.length > 1 ? availableCases[(caseIndex + 1) % availableCases.length] : null;
+                return (
+                  <CaseResultView
+                    score={scoring ? scoring.overallScore : null}
+                    scale={10}
+                    outcome={outcome}
+                    completedOn={latest.submittedAt}
+                    summaryNote={scoring ? undefined : 'Saved before scores were added; the verdict follows your branch coverage.'}
+                    feedback={buildReasoningFeedback({
+                      criteria: scoring?.criteria || [],
+                      worked: parts.covered,
+                      failed: [parts.gap ? `${parts.gap.title}: ${parts.gap.detail}` : '', parts.why],
+                      evidenceToRevisit: scoring?.evidenceToRevisit || [],
+                      exclude: focus ? [focus] : [],
+                    })}
+                    criteria={scoring?.criteria || []}
+                    layout="stacked"
+                    learnerResponse={answered ? (
+                      <ol className="space-y-1.5" data-testid="structures-submitted-tree">
+                        {linearize(latest.nodes).map(({ node, depth }) => (
+                          <li key={node.id} className="break-words rounded-lg bg-[var(--space-surface-muted)] px-2 py-1.5 text-xs leading-5 text-[var(--space-text-secondary)]" style={{ marginLeft: `${Math.min(depth, 5) * 14}px` }}>
+                            {formatRootText(node.text)}
+                          </li>
+                        ))}
+                      </ol>
+                    ) : undefined}
+                    approachSlot={treeVerified ? (
+                      <div data-testid="structures-tree-comparison">
+                        <div className="flex flex-wrap gap-3 rounded-xl border border-[var(--space-border-default)] p-3" aria-label="Coverage legend">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Coverage of your tree</span>
+                          <CoverageMark status="covered" /><CoverageMark status="partial" /><CoverageMark status="missed" />
+                        </div>
+                        <div className="mt-3 min-w-0">
+                          <SuggestedTreePanel tree={suggestedTree} coverage={coverage} />
+                        </div>
+                      </div>
+                    ) : undefined}
+                    workedAnswer={treeVerified ? structureWorkedAnswer(activeCase, suggestedTree) : null}
+                    unavailableReason={treeVerified ? undefined : `Structures question ${activeCase.id} has no authored model structure yet, so Mate does not show a template tree as its answer.`}
+                    retry={retryAction(startOver, { focus, label: caseOverride ? 'Retry issue tree' : undefined })}
+                    nextAction={chooseNextAction(outcome, {
+                      'full-case': fullCase ? { kind: 'full-case', label: 'Solve the full case', detail: `Use this structure on the full case: ${fullCase.title}.`, onSelect: () => openCasePoolCase(fullCase.id) } : null,
+                      'next-question': nextStructure ? { kind: 'next-question', label: 'Next structure case', detail: `Build a tree for “${nextStructure.title}”.`, onSelect: () => { setSelectedId(nextStructure.id); setShowLibrary(false); onCaseSelected?.(nextStructure); } } : null,
+                    })}
+                    testId="structures-result"
+                  />
+                );
+              })()}
+              {onBackToLibrary ? (
+                <div className="mt-4 flex flex-col gap-2 pb-20 sm:flex-row sm:pb-0">
+                  <button type="button" onClick={onBackToLibrary} className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-[var(--space-border-default)] px-4 text-sm font-bold text-[var(--space-text-secondary)]" data-testid="button-back-structure-library"><ArrowRight className="h-4 w-4 rotate-180" /> Back to case library</button>
+                </div>
+              ) : null}
             </section>
           ) : null}
 
-          {submissions.length ? (
+          {submissions.length && viewState !== 'feedback' ? (
             <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2"><div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">5 · Compare versions</p><p className="mt-1 text-xs text-[var(--space-text-secondary)]">Submission snapshots stay locked while the current tree remains editable.</p></div><button type="button" onClick={() => setViewState(viewState === 'compare' ? 'editing' : 'compare')} className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-[var(--space-border-default)] px-3 text-xs font-semibold text-[var(--space-text-secondary)]"><History className="h-4 w-4" /> {viewState === 'compare' ? 'Hide comparison' : 'Compare versions'}</button></div>
+              <div className="flex flex-wrap items-center justify-between gap-2"><div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">5 · Compare versions</p><p className="mt-1 text-xs text-[var(--space-text-secondary)]">Submission snapshots stay locked while the current tree remains editable.</p></div><div className="flex flex-wrap gap-2"><button type="button" onClick={() => { setViewState('feedback'); setHighlightIds(new Set()); }} className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-[var(--space-brand-primary)] px-3 text-xs font-semibold text-[var(--space-text-brand)]" data-testid="button-view-latest-structure-feedback"><CheckCircle2 className="h-4 w-4" /> View latest feedback</button><button type="button" onClick={() => setViewState(viewState === 'compare' ? 'editing' : 'compare')} className="inline-flex min-h-10 items-center gap-1.5 rounded-xl border border-[var(--space-border-default)] px-3 text-xs font-semibold text-[var(--space-text-secondary)]"><History className="h-4 w-4" /> {viewState === 'compare' ? 'Hide comparison' : 'Compare versions'}</button></div></div>
               {viewState === 'compare' ? <div className="mt-3 grid gap-3 lg:grid-cols-3">{submissions.slice(-2).map((submission, index, shown) => <VersionCard key={submission.id} submission={submission} label={shown.length === 1 ? 'First submission' : index === 0 ? `Earlier · Version ${Math.max(1, submissions.length - 1)}` : `Latest · Version ${submissions.length}`} />)}<DraftVersionCard draft={draft} /></div> : null}
             </section>
           ) : null}

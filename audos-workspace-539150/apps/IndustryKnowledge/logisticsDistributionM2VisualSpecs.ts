@@ -1,0 +1,308 @@
+import type { LogisticsDistributionChapterVisual } from './logisticsDistributionVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Distribution & Market Expansion Services Module 02 (value chain), keyed by visualKind. */
+export const LOGISTICS_DISTRIBUTION_M2_VISUALS: Record<string, LogisticsDistributionChapterVisual> = {
+  'logistics-distribution-m2-1': {
+    heading: 'Market access runs from portfolio appointment to customer feedback as one connected journey',
+    intro: 'After a principal appoints a commercial partner, products reach the market through planning, inventory, selling, delivery and retail execution. Product, information, money and accountability must move in step.',
+    spec: {
+      layout: 'flow', title: '01 From Manufacturer to Market', kicker: '',
+      steps: [
+        { label: 'Portfolio appointment', detail: 'Principal appoints a commercial partner', owner: 'Principal' },
+        { label: 'Planning and inventory', detail: 'Stock prepared ahead of launch', owner: 'Commercial partner' },
+        { label: 'Selling', detail: 'Listings and orders by channel', owner: 'Commercial partner' },
+        { label: 'Delivery', detail: 'Product reaches each outlet', owner: 'Channel' },
+        { label: 'Retail execution', detail: 'Availability and visibility at the outlet', owner: 'Outlet' },
+        { label: 'Customer feedback', detail: 'Demand signal returns up the chain', kind: 'outcome', owner: 'Customer' },
+      ],
+      note: 'A launch fails if stock arrives but listings, field execution or replenishment are not ready. Map GT, MT, digital and B2B routes separately.',
+      takeaway: 'Market access requires synchronized product, information, money and accountability flows.',
+    },
+  },
+  'logistics-distribution-m2-2': {
+    heading: 'Six participants work around the brand owner, each with its own contract and risk',
+    intro: 'Brand owners, distributors, agents, retailers, logistics providers, platforms and finance partners cooperate without becoming interchangeable. A 3PL can store a distributor’s stock without owning or selling it.',
+    spec: {
+      layout: 'ecosystem', title: '02 Participants and Commercial Roles', kicker: '',
+      center: { label: 'Manufacturer', detail: 'Brand owner appointing partners' },
+      actors: [
+        { label: 'Distributor', relation: 'Takes title to stock and resells it', flows: ['product', 'money', 'risk'] },
+        { label: 'Agent', relation: 'Sells for the brand without owning stock', flows: ['information', 'service'] },
+        { label: 'Retailer', relation: 'Sells to shoppers', flows: ['product', 'money'] },
+        { label: '3PL', relation: 'Stores and moves stock it does not own', flows: ['product', 'service'] },
+        { label: 'Platform', relation: 'Hosts digital sales and data', flows: ['information', 'service'] },
+        { label: 'Finance partner', relation: 'Funds credit and working capital', flows: ['money', 'risk'] },
+      ],
+      note: 'Document title, pricing, credit and customer ownership for every participant.',
+      takeaway: 'Each participant has a distinct contract, asset role and risk position.',
+    },
+  },
+  'logistics-distribution-m2-3': {
+    heading: 'Products flow one way, while orders, data and cash follow their own paths',
+    intro: 'Products move downstream while orders, forecasts, claims and demand signals move both ways. Invoices and cash follow contract terms.',
+    spec: {
+      layout: 'table', title: '03 Product, Information and Financial Flows', kicker: '',
+      headers: ['Flow', 'Direction', 'Works only with'],
+      rows: [
+        { label: 'Product', a: 'Downstream to outlets', b: 'Physical movement and stock' },
+        { label: 'Order', a: 'Both ways', b: 'Matching outlet and SKU definitions' },
+        { label: 'Forecast', a: 'Both ways', b: 'Sell-out data that reconciles' },
+        { label: 'Invoice', a: 'Follows contract terms', b: 'Agreed commercial terms' },
+        { label: 'Payment', a: 'Follows contract terms', b: 'Reconciled invoices' },
+        { label: 'Performance data', a: 'Both ways, including claims', b: 'One governed outlet and product master' },
+      ],
+      note: 'Sell-out data can improve replenishment only when outlet and SKU definitions align across partners.',
+      takeaway: 'Commercial flow quality depends on reconciled records as much as physical movement.',
+    },
+  },
+  'logistics-distribution-m2-4': {
+    heading: 'Appoint a new principal only when portfolio, territory and capability all fit',
+    intro: 'Before an appointment, providers check category, channel, service scope, rights, conflicts and the investment required. An exclusive deal the distributor cannot support destroys value.',
+    spec: {
+      layout: 'decision', title: '04 Supplier and Brand Acquisition', kicker: '',
+      root: { label: 'Candidate principal', detail: 'Category, channel, rights and investment reviewed' },
+      question: 'Does the brand fit channel capability and portfolio economics without conflict?',
+      branches: [
+        { condition: 'Fits portfolio and capability', outcome: 'Appoint, then test readiness', detail: 'Prove province and channel readiness before national commitments', tone: 'positive' },
+        { condition: 'Exclusivity beyond capability', outcome: 'Narrow territory or exclusivity', detail: 'Missing working capital or outlet reach destroys value', tone: 'caution' },
+        { condition: 'Conflicts with current portfolio', outcome: 'Resolve the conflict or decline', tone: 'negative' },
+      ],
+      takeaway: 'A new principal should fit channel capability and portfolio economics.',
+    },
+  },
+  'logistics-distribution-m2-5': {
+    heading: 'Market entry turns strategy into an agreement, ready products and a launch gate',
+    intro: 'Market-entry preparation converts strategy into product readiness, channel terms, account plans and launch gates. The commercial agreement allocates who carries each responsibility.',
+    spec: {
+      layout: 'flow', title: '05 Commercial Agreements and Market-Entry Preparation', kicker: '',
+      steps: [
+        { label: 'Entry strategy', detail: 'Chosen model and scope' },
+        { label: 'Commercial agreement', detail: 'Role, price, service level, credit, data, compliance' },
+        { label: 'Product readiness', detail: 'Import and product requirements verified' },
+        { label: 'Channel terms and account plans', detail: 'Set per channel and account' },
+        { label: 'Launch gate', detail: 'Go only when each condition is met', kind: 'decision' },
+      ],
+      note: 'An agency agreement differs from buy-sell distribution in revenue and risk. Verify import and product requirements by current official rules.',
+      takeaway: 'Contracts should allocate inventory, credit, pricing, claims, data and compliance responsibility.',
+    },
+  },
+  'logistics-distribution-m2-6': {
+    heading: 'Demand planning links forecast, lead time and order limits to an inventory policy',
+    intro: 'Demand planning connects launch assumptions, procurement lead times, order constraints, service targets and inventory policy. Each choice trades availability against expiry, obsolescence and cash.',
+    spec: {
+      layout: 'flow', title: '06 Demand Planning, Import and Procurement', kicker: '',
+      steps: [
+        { label: 'Forecast', detail: 'Launch assumptions, seasonality, provincial demand' },
+        { label: 'Lead time', detail: 'Procurement, port and documentation timing' },
+        { label: 'MOQ', detail: 'Order constraints set the lot size' },
+        { label: 'Safety stock', detail: 'Buffer sized to the service target' },
+        { label: 'Import order', detail: 'Lot placed and received' },
+        { label: 'Balanced inventory', detail: 'Availability vs expiry, obsolescence and cash', kind: 'outcome' },
+      ],
+      note: 'A large import lot can improve unit purchase cost but worsen DIO and markdown risk.',
+      takeaway: 'Availability must be balanced against expiry, obsolescence and cash exposure.',
+    },
+  },
+  'logistics-distribution-m2-7': {
+    heading: 'Distributor execution depends on five channel-management levers',
+    intro: 'Territory rights, targets, discounts, service standards and review routines shape how distributors execute. Overlapping territories create price leakage and unclear outlet ownership.',
+    spec: {
+      layout: 'driverTree', title: '07 Channel and Distributor Management', kicker: '',
+      root: { label: 'Distributor execution', detail: 'Aligned with brand and customer objectives' },
+      drivers: [
+        { label: 'Territory', detail: 'Clear rights by area and channel', children: [{ label: 'Clear outlet ownership' }, { label: 'No price leakage' }] },
+        { label: 'Target', detail: 'Agreed objectives per partner' },
+        { label: 'Terms', detail: 'Discounts tied to the role' },
+        { label: 'Governance', children: [{ label: 'Service standards' }, { label: 'Review routines' }] },
+        { label: 'Performance', detail: 'Reviewed against targets and standards' },
+      ],
+      note: 'Use explicit GT, MT and digital rules so distributors do not overlap.',
+      takeaway: 'Channel design aligns partner incentives with brand and customer objectives.',
+    },
+  },
+  'logistics-distribution-m2-8': {
+    heading: 'Every order passes commercial checks before it is invoiced and collected',
+    intro: 'Customer orders are validated against price, credit, stock, allocation and delivery rules before invoicing and collection. Fulfillment is a commercial process, not only a warehouse task.',
+    spec: {
+      layout: 'flow', title: '08 Inventory, Orders and Commercial Operations', kicker: '',
+      steps: [
+        { label: 'Order capture', detail: 'Customer order recorded' },
+        { label: 'Price and credit check', detail: 'Order validated against terms', kind: 'decision' },
+        { label: 'Allocation', detail: 'Stock assigned from inventory' },
+        { label: 'Delivery', detail: 'Shipped under delivery rules' },
+        { label: 'Invoice and collection', detail: 'Billed, then cash collected' },
+        { label: 'Returns', detail: 'Reversed and reconciled' },
+      ],
+      note: 'A high fill rate can coexist with poor margin if substitutions and emergency delivery are unmanaged. Integrate DMS, inventory and finance controls.',
+      takeaway: 'Order fulfillment is a commercial process, not only a warehouse process.',
+    },
+  },
+  'logistics-distribution-m2-9': {
+    heading: 'Productive calls, not visit counts, turn field effort into sell-out',
+    intro: 'Representatives recruit outlets, take orders, execute promotions, check stock and capture market intelligence. More visits help only when calls are planned and productive.',
+    spec: {
+      layout: 'driverTree', title: '09 Sales Force and Trade Marketing Execution', kicker: '',
+      root: { label: 'Outlet availability and sell-out', detail: 'What field execution must deliver' },
+      drivers: [
+        { label: 'Planned coverage', children: [{ label: 'Territory' }, { label: 'Visit plan' }] },
+        { label: 'Productive calls', children: [{ label: 'Order' }, { label: 'Stock check' }] },
+        { label: 'Trade marketing', children: [{ label: 'Promotion' }, { label: 'Merchandising' }] },
+        { label: 'Market intelligence', detail: 'Captured on each visit' },
+      ],
+      note: 'KPI: measure productive calls and channel-specific outcomes, not visit volume.',
+      takeaway: 'Field execution turns route-to-market design into outlet availability and sell-out.',
+    },
+  },
+  'logistics-distribution-m2-10': {
+    heading: 'Outlet development narrows the full outlet universe to priority outlets worth retaining',
+    intro: 'Outlet segmentation prioritizes acquisition, service frequency, assortment and investment. Coverage creates value only in outlets relevant to category demand.',
+    spec: {
+      layout: 'flow', title: '10 Retail Coverage and Outlet Development', kicker: '',
+      steps: [
+        { label: 'Outlet universe', detail: 'Every outlet that could carry the category' },
+        { label: 'Segment by potential', detail: 'Outlet potential weighed against route cost', kind: 'decision' },
+        { label: 'Activation', detail: 'Acquire the priority outlets' },
+        { label: 'Service design', detail: 'Frequency and assortment by segment' },
+        { label: 'Retention', detail: 'Keep productive outlets active', kind: 'outcome' },
+      ],
+      note: 'Adding low-potential outlets can raise numeric coverage without material sell-out; weighted coverage reflects outlets that matter to demand.',
+      takeaway: 'Coverage creates value only in outlets relevant to category demand.',
+    },
+  },
+  'logistics-distribution-m2-11': {
+    heading: 'In-store standards that protect the last steps before purchase',
+    intro: 'Retail teams monitor assortment, stock, placement, pricing, promotion and agreed standards. A listed SKU creates no value if it is unavailable or invisible in store.',
+    spec: {
+      layout: 'taxonomy', title: '11 Merchandising and In-Store Execution', kicker: '',
+      root: 'In-store execution', rootDetail: 'Checked with auditable field evidence',
+      groups: [
+        { label: 'Product present', items: ['Availability', 'Assortment'] },
+        { label: 'Product visible', items: ['Shelf placement', 'Display'] },
+        { label: 'Offer correct', items: ['Price', 'Promotion'] },
+        { label: 'Proven', detail: 'Permissioned, auditable evidence', items: ['Compliance'] },
+      ],
+      takeaway: 'Retail execution protects the last commercial steps before purchase.',
+    },
+  },
+  'logistics-distribution-m2-12': {
+    heading: 'Downstream signals must be reconciled before they change forecasts and portfolio',
+    intro: 'Sales, returns, complaints and outlet observations reveal execution and product issues. They create value only when they feed back into forecasts, service and portfolio decisions.',
+    spec: {
+      layout: 'flow', title: '12 Sell-Out, Returns and Customer Feedback', kicker: '',
+      steps: [
+        { label: 'Collect signals', detail: 'Sell-out, complaints, returns, expiry' },
+        { label: 'Reconcile data', detail: 'Distributor and retailer records aligned' },
+        { label: 'Insight', detail: 'Execution issue or product issue?', kind: 'decision' },
+        { label: 'Corrective action', detail: 'Change forecast, service or portfolio', kind: 'outcome' },
+      ],
+      loop: 'Corrective action reshapes the next forecast and service plan.',
+      note: 'High sell-in followed by returns is channel loading, not durable growth.',
+      takeaway: 'Downstream feedback should change forecasts, service and portfolio decisions.',
+    },
+  },
+  'logistics-distribution-m2-13': {
+    heading: 'Distribution runs on capital, capability and relationships—and working capital can cap growth',
+    intro: 'Core inputs include inventory funding, credit, people, systems, facilities and retailer relationships. Working capital can constrain growth even when demand is strong.',
+    spec: {
+      layout: 'taxonomy', title: '13 Commercial Inputs and Working Capital', kicker: '',
+      root: 'Commercial inputs', rootDetail: 'Converted into availability and customer access',
+      groups: [
+        { label: 'Working capital', detail: 'Can cap growth despite strong demand', items: ['Inventory funding', 'Receivables'] },
+        { label: 'People', items: ['Salespeople'] },
+        { label: 'Infrastructure', items: ['Systems', 'Facilities'] },
+        { label: 'Market access', items: ['Retailer relationships'] },
+      ],
+      note: 'Set limits by principal, SKU, customer and channel.',
+      takeaway: 'Distribution converts capital and commercial capability into availability and customer access.',
+    },
+  },
+  'logistics-distribution-m2-14': {
+    heading: 'Each execution output needs a measure that links it to customer or financial results',
+    intro: 'Useful outputs include productive coverage, in-stock position, fulfilled orders, compliant execution and timely insight. Visit count alone does not prove distribution quality.',
+    spec: {
+      layout: 'table', title: '14 Coverage, Availability and Execution Outputs', kicker: '',
+      headers: ['Output', 'Useful measure', 'Link it to'],
+      rows: [
+        { label: 'Coverage', a: 'Productive coverage', b: 'Sell-out' },
+        { label: 'Availability', a: 'In-stock position', b: 'Sell-out at the outlet' },
+        { label: 'Orders', a: 'Fulfilled orders', b: 'Contribution' },
+        { label: 'Service', a: 'Compliant execution', b: 'Customer outcome' },
+        { label: 'Data', a: 'Timely insight', b: 'Customer and financial decisions' },
+      ],
+      note: 'Link field activity to sell-out and contribution.',
+      takeaway: 'Outputs should connect activity to customer and financial outcomes.',
+    },
+  },
+  'logistics-distribution-m2-15': {
+    heading: 'Contribution is what remains after channel, outlet, trade and credit costs',
+    intro: 'Cost-to-serve attributes field effort, logistics, discounts, returns, credit and overhead to customers and routes. A remote route can grow sales while reducing contribution.',
+    spec: {
+      layout: 'driverTree', title: '15 Cost-to-Serve and Profitable Growth', kicker: '',
+      root: { label: 'Contribution', detail: 'By customer, route or channel' },
+      formula: 'Sales − channel cost − outlet cost − trade spend − credit loss',
+      drivers: [
+        { label: 'Sales', op: '+', detail: 'Revenue from the customer or route' },
+        { label: 'Channel cost', op: '−', children: [{ label: 'Logistics' }, { label: 'Overhead' }] },
+        { label: 'Outlet cost', op: '−', children: [{ label: 'Field effort' }, { label: 'Returns' }] },
+        { label: 'Trade spend', op: '−', children: [{ label: 'Discounts' }] },
+        { label: 'Credit loss', op: '−', detail: 'Receivables not collected' },
+      ],
+      note: 'Review territory and service design using contribution and cash, not sales alone.',
+      takeaway: 'Revenue growth creates value only after channel-specific costs and capital.',
+    },
+  },
+  'logistics-distribution-m2-16': {
+    heading: 'Brands choose an entry model per market and product, trading speed against control',
+    intro: 'Brands choose among export, local distributor, agent, service provider and owned organization by market and product. A distributor-led launch does not guarantee a later move to a subsidiary.',
+    spec: {
+      layout: 'pathway', title: '16 International Market Expansion Models', kicker: '',
+      trunk: [
+        { label: 'Market and product', detail: 'Set what the entry must achieve' },
+        { label: 'Rights, regulation, investment', detail: 'Narrow which models fit' },
+      ],
+      optionsLabel: 'Entry models — alternatives, not stages',
+      options: [
+        { label: 'Export', detail: 'Sell into the market from outside' },
+        { label: 'Importer', detail: 'A local party brings goods in' },
+        { label: 'Distributor', detail: 'Local partner buys and resells' },
+        { label: 'Agent', detail: 'Sells without owning stock' },
+        { label: 'Service provider', detail: 'Runs selected functions for a fee' },
+        { label: 'Subsidiary', detail: 'Owned local organization' },
+      ],
+      note: 'A distributor-led launch can precede a local subsidiary without guaranteeing that transition.',
+      takeaway: 'International models trade speed and flexibility against control and economics.',
+    },
+  },
+  'logistics-distribution-m2-17': {
+    heading: 'In Vietnam, one brand runs GT, MT, digital and B2B routes with different partners and terms',
+    intro: 'Fragmented stores, chains, platforms and B2B customers differ in ordering, terms, data and service. Vietnam needs coordinated channel-specific operations rather than one uniform route.',
+    spec: {
+      layout: 'ecosystem', title: '17 Vietnam GT, MT and Digital Ecosystem', kicker: '',
+      center: { label: 'Brand', detail: 'National standards, provincial adaptation' },
+      actors: [
+        { label: 'Regional distributor', relation: 'Serves GT stores by province', flows: ['product', 'money'] },
+        { label: 'GT stores', relation: 'Ordered and activated in the field', flows: ['product', 'information'] },
+        { label: 'MT key accounts', relation: 'Promotions negotiated centrally', flows: ['money', 'service'] },
+        { label: 'E-commerce platforms', relation: 'Own ordering, terms and data', flows: ['information', 'service'] },
+        { label: 'B2B customers', relation: 'Separate ordering and service terms', flows: ['product', 'money'] },
+      ],
+      note: 'A promotion negotiated centrally in MT differs from a GT field activation.',
+      takeaway: 'Vietnam requires coordinated channel-specific operations rather than one uniform route.',
+    },
+  },
+  'logistics-distribution-m2-18': {
+    heading: 'A city-proven pack and price must pass a regional pilot before it scales',
+    intro: 'Assortment, price architecture, channel partners, service frequency and data practices should fit local demand. What works in a large city may fail on a lower-frequency provincial route.',
+    spec: {
+      layout: 'decision', title: '18 Localization and Regional Access', kicker: '',
+      root: { label: 'City-proven offer', detail: 'Pack, price and assortment from a large city' },
+      question: 'Does it fit provincial demand, service frequency and partner capability?',
+      branches: [
+        { condition: 'Pilot confirms fit', outcome: 'Scale by region', tone: 'positive' },
+        { condition: 'Fit not yet tested', outcome: 'Pilot by channel and region', tone: 'caution' },
+        { condition: 'Pilot shows poor fit', outcome: 'Adapt pack, price or partner', detail: 'Localization is commercial design, not translation', tone: 'negative' },
+      ],
+      takeaway: 'Localization includes commercial design, not translation alone.',
+    },
+  },
+};

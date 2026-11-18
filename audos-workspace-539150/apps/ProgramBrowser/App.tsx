@@ -24,10 +24,9 @@ import {
 } from '../../lib/programIndustries';
 import {
   PROGRAM_TIMELINES,
-  applicationWindowDisplay,
-  deadlineStatus,
   type ProgramTimelineRecord,
 } from '../../lib/programTimelines';
+import { getProgramRecruitmentWindow, MAY_BE_OPEN_LABEL, normalizeManualProgramStatus, programAvailabilityLabel } from '../../lib/programRecruitmentWindow';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 
 type RubricRow = {
@@ -52,6 +51,7 @@ type RubricRow = {
   rounds_json?: string[] | string | null;
   candidate_requirement?: string | null;
   apply_url?: string | null;
+  display_status?: string | null;
 };
 
 type CompanyIntelRow = {
@@ -259,8 +259,15 @@ function annualDay(day: number, month: number) {
 
 function liveApplication(program: BrowseProgram, now = new Date()): LiveApplication | null {
   const row = program.row;
+  const manual = normalizeManualProgramStatus(row?.display_status);
+  if (manual === 'closed') return null;
   const opens = dateParts(row?.open_date);
-  if (!opens.length) return null;
+  if (!opens.length) {
+    if (!manual) return null;
+    return manual === 'open'
+      ? { program, kind: 'open', daysUntilOpen: 0, daysUntilClose: Number.POSITIVE_INFINITY, dateLabel: 'Applications open now' }
+      : { program, kind: 'soon', daysUntilOpen: 0, daysUntilClose: Number.POSITIVE_INFINITY, dateLabel: 'Opening soon' };
+  }
   const today = annualDay(now.getDate(), now.getMonth() + 1);
   const yearDays = 366;
   const close = dateParts(row?.close_date)[0];
@@ -273,7 +280,10 @@ function liveApplication(program: BrowseProgram, now = new Date()): LiveApplicat
       ? today >= openDay && today <= closeDay
       : today >= openDay || today <= closeDay;
   });
-  if (activeOpen) {
+  if (manual === 'open' && !activeOpen) {
+    return { program, kind: 'open', daysUntilOpen: 0, daysUntilClose: Number.POSITIVE_INFINITY, dateLabel: 'Applications open now' };
+  }
+  if (activeOpen && manual !== 'opening_soon') {
     const daysUntilClose = closeDay == null ? Number.POSITIVE_INFINITY : (closeDay - today + yearDays) % yearDays;
     return { program, kind: 'open', daysUntilOpen: 0, daysUntilClose, dateLabel };
   }
@@ -281,29 +291,14 @@ function liveApplication(program: BrowseProgram, now = new Date()): LiveApplicat
     .map((open) => ({ ...open, delta: (annualDay(open.day, open.month) - today + yearDays) % yearDays }))
     .filter((open) => open.delta > 0)
     .sort((a, b) => a.delta - b.delta)[0];
+  if (manual === 'opening_soon') {
+    return { program, kind: 'soon', daysUntilOpen: nextOpen?.delta ?? 0, daysUntilClose: Number.POSITIVE_INFINITY, dateLabel: nextOpen ? dateLabel : 'Opening soon' };
+  }
   if (!nextOpen) return null;
   if (nextOpen.delta <= 14) return { program, kind: 'soon', daysUntilOpen: nextOpen.delta, daysUntilClose: Number.POSITIVE_INFINITY, dateLabel };
   return closeDay == null
     ? { program, kind: 'expected', daysUntilOpen: nextOpen.delta, daysUntilClose: Number.POSITIVE_INFINITY, dateLabel }
     : null;
-}
-
-const EXPECTING_WINDOW_DAYS = 15;
-
-type ExpectingInfo = { daysUntilOpen: number; openLabel: string; closeLabel: string | null };
-
-function expectingToOpen(program: BrowseProgram, now = new Date()): ExpectingInfo | null {
-  const row = program.row;
-  const opens = dateParts(row?.open_date);
-  if (!opens.length) return null;
-  if (liveApplication(program, now)?.kind === 'open') return null;
-  const today = annualDay(now.getDate(), now.getMonth() + 1);
-  const next = opens
-    .map((open) => ({ ...open, delta: (annualDay(open.day, open.month) - today + 366) % 366 }))
-    .filter((open) => open.delta > 0 && open.delta <= EXPECTING_WINDOW_DAYS)
-    .sort((a, b) => a.delta - b.delta)[0];
-  if (!next) return null;
-  return { daysUntilOpen: next.delta, openLabel: next.label, closeLabel: dateParts(row?.close_date)[0]?.label || null };
 }
 
 const REQUIREMENT_CATEGORIES = [
@@ -323,35 +318,14 @@ function requirementCategory(id: string) {
   return 'skills';
 }
 
-function statusFor(program: BrowseProgram) {
-  const opens = dateParts(program.row?.open_date);
-  if (opens.length) {
-    const live = liveApplication(program);
-    if (live?.kind === 'open') return { label: 'Open Now', detail: live.dateLabel, tone: 'success' as const };
-    if (live?.kind === 'soon') return { label: 'Opening Soon', detail: live.dateLabel, tone: 'warning' as const };
-    if (live?.kind === 'expected') return { label: 'Expected', detail: live.dateLabel, tone: 'muted' as const };
-    const today = annualDay(new Date().getDate(), new Date().getMonth() + 1);
-    const firstOpenDay = annualDay(opens[0].day, opens[0].month);
-    const close = dateParts(program.row?.close_date)[0];
-    const closeDay = close ? annualDay(close.day, close.month) : null;
-    const windowHasClosed = closeDay != null && (closeDay >= firstOpenDay ? today > closeDay : today > closeDay && today < firstOpenDay);
-    if (windowHasClosed) return { label: 'Closed', detail: `Closed ${close?.label}`, tone: 'muted' as const };
-    return { label: 'Upcoming', detail: `Opens ${opens.map((date) => date.label).join(' or ')}`, tone: 'warning' as const };
-  }
-  const status = deadlineStatus(program.timeline);
-  if (status.kind === 'countdown') return { label: 'Open', detail: status.label, tone: 'success' as const };
-  if (status.kind === 'closed') return { label: 'Closed', detail: status.closeDateLabel, tone: 'muted' as const };
-  return { label: 'TBC', detail: status.openText || undefined, tone: 'warning' as const };
+function availabilityFor(program: BrowseProgram) {
+  return programAvailabilityLabel(getProgramRecruitmentWindow(program.row?.open_date, program.row?.close_date, undefined, program.row?.display_status));
 }
 
 function StatusBadge({ program }: { program: BrowseProgram }) {
-  const status = statusFor(program);
-  const tone = status.tone === 'success'
-    ? 'border-[color-mix(in_srgb,var(--space-semantic-success-500)_30%,transparent)] bg-[color-mix(in_srgb,var(--space-semantic-success-500)_10%,transparent)] text-[var(--space-semantic-success-700)]'
-    : status.tone === 'warning'
-      ? 'border-[color-mix(in_srgb,var(--space-semantic-warning-500)_30%,transparent)] bg-[color-mix(in_srgb,var(--space-semantic-warning-500)_10%,transparent)] text-[var(--space-semantic-warning-700)]'
-      : 'border-[var(--space-border-default)] bg-[var(--space-surface-muted)] text-[var(--space-text-muted)]';
-  return <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${tone}`}>{status.label}</span>;
+  const label = availabilityFor(program);
+  if (!label) return null;
+  return <span className="rounded-full border border-[color-mix(in_srgb,var(--space-semantic-success-500)_30%,transparent)] bg-[color-mix(in_srgb,var(--space-semantic-success-500)_10%,transparent)] px-2.5 py-1 text-xs font-semibold text-[var(--space-semantic-success-700)]">{label}</span>;
 }
 
 function FitScoreBreakdown({ analysis }: { analysis: ProgramFitAnalysis }) {
@@ -408,11 +382,7 @@ function ProgramDetail({ program, onClose }: { program: BrowseProgram; onClose: 
   const row = program.row;
   const criteria = parseCriteria(row?.criteria_json, program.criteria);
   const timeline = program.timeline;
-  const dbOpenDates = dateParts(row?.open_date);
-  const dbCloseDate = dateParts(row?.close_date)[0];
-  const windowDisplay = dbOpenDates.length
-    ? { openLabel: `Opens ${dbOpenDates.map((date) => date.label).join(' or ')}${dbCloseDate ? '' : ' · No published deadline'}`, closeLabel: dbCloseDate ? `Closes ${dbCloseDate.label}` : null }
-    : applicationWindowDisplay(timeline);
+  const availability = availabilityFor(program);
   const roundNames = stringList(row?.rounds_json).length
     ? stringList(row?.rounds_json)
     : (timeline?.rounds || []).map((round) => round.name);
@@ -453,19 +423,10 @@ function ProgramDetail({ program, onClose }: { program: BrowseProgram; onClose: 
           {analysis && <FitScoreBreakdown analysis={analysis} />}
 
           <section className="rounded-2xl border border-[color-mix(in_srgb,var(--space-brand-primary-500)_24%,transparent)] bg-[color-mix(in_srgb,var(--space-brand-primary-500)_6%,transparent)] p-4 md:p-5">
-            <h3 className="text-sm font-semibold text-[var(--space-text-primary)] md:text-base">Preparation Timeline</h3>
-            <div className={`mt-3 grid gap-3 ${windowDisplay.closeLabel ? 'sm:grid-cols-2' : ''}`}>
-              <div className="rounded-xl bg-[var(--space-surface-card)] p-3 md:p-4">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--space-text-muted)]">Application window</p>
-                <p className="mt-1 text-sm font-bold text-[var(--space-text-primary)]">{windowDisplay.openLabel}</p>
-              </div>
-              {windowDisplay.closeLabel && (
-                <div className="rounded-xl bg-[var(--space-surface-card)] p-3 md:p-4">
-                  <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--space-text-muted)]">Closing date</p>
-                  <p className="mt-1 text-sm font-bold text-[var(--space-text-primary)]">{windowDisplay.closeLabel}</p>
-                </div>
-              )}
-            </div>
+            <h3 className="text-sm font-semibold text-[var(--space-text-primary)] md:text-base">Application Status</h3>
+            <p className="mt-2 text-sm leading-6 text-[var(--space-text-secondary)]">
+              {availability ? 'This program may be open. ' : ''}Check the company’s careers page for the latest application details before you apply.
+            </p>
           </section>
 
           <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5">
@@ -722,35 +683,14 @@ export default function ProgramBrowser() {
     });
   }, [programs, industry, query]);
 
-  const { expectingPrograms, regularPrograms } = useMemo(() => {
-    const expecting: Array<{ program: BrowseProgram; info: ExpectingInfo }> = [];
-    const regular: BrowseProgram[] = [];
-    for (const program of filtered) {
-      const info = expectingToOpen(program);
-      if (info) expecting.push({ program, info });
-      else regular.push(program);
-    }
-    expecting.sort((a, b) => a.info.daysUntilOpen - b.info.daysUntilOpen || a.program.company.localeCompare(b.program.company));
-    return { expectingPrograms: expecting, regularPrograms: regular };
-  }, [filtered]);
+  const regularPrograms = filtered;
 
   const selected = programs.find((program) => program.program_id === selectedId) || null;
-  const applicationGroups = useMemo(() => {
-    const live = programs.map((program) => liveApplication(program)).filter((item): item is LiveApplication => item !== null);
-    const open = live
-      .filter((item) => item.kind === 'open')
-      .sort((a, b) => a.daysUntilClose - b.daysUntilClose || a.program.program.localeCompare(b.program.program));
-    const soon = live
-      .filter((item) => item.kind === 'soon')
-      .sort((a, b) => a.daysUntilOpen - b.daysUntilOpen || a.program.program.localeCompare(b.program.program));
-    const expected = live
-      .filter((item) => item.kind === 'expected')
-      .sort((a, b) => a.daysUntilOpen - b.daysUntilOpen || a.program.program.localeCompare(b.program.program));
-    const visibleOpen = open.slice(0, 8);
-    const visibleSoon = soon.slice(0, Math.max(0, 8 - visibleOpen.length));
-    const visibleExpected = expected.slice(0, Math.max(0, 8 - visibleOpen.length - visibleSoon.length));
-    return { open: visibleOpen, soon: visibleSoon, expected: visibleExpected };
-  }, [programs]);
+  const mayBeOpenPrograms = useMemo(() => programs
+    .map((program) => liveApplication(program))
+    .filter((item): item is LiveApplication => item !== null && item.kind !== 'expected')
+    .sort((a, b) => (a.kind === b.kind ? 0 : a.kind === 'open' ? -1 : 1) || a.program.program.localeCompare(b.program.program))
+    .slice(0, 8), [programs]);
 
   const analyzeProgram = async (program: BrowseProgram) => {
     if (!sessionId || !hasAssessment || !program.row || analyzingId) return;
@@ -810,33 +750,23 @@ export default function ProgramBrowser() {
 
       <main className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-7 md:py-7">
         <div className="mx-auto max-w-7xl">
-          {(applicationGroups.open.length > 0 || applicationGroups.soon.length > 0 || applicationGroups.expected.length > 0) && (
+          {mayBeOpenPrograms.length > 0 && (
             <section className="mb-7 rounded-3xl border border-[color-mix(in_srgb,var(--space-brand-primary-500)_18%,transparent)] bg-[var(--space-surface-card)] p-4 shadow-sm md:p-6" aria-labelledby="live-applications-title">
               <div className="mb-5 text-center">
                 <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[var(--space-text-brand)]">Application updates</p>
-                <h2 id="live-applications-title" className="mt-1 text-xl font-extrabold text-[var(--space-text-primary)] md:text-2xl">MT Programs Now Accepting Applications</h2>
-                <p className="mt-1 text-sm text-[var(--space-text-secondary)]">Live from the program database, based on today’s day and month.</p>
+                <h2 id="live-applications-title" className="mt-1 text-xl font-extrabold text-[var(--space-text-primary)] md:text-2xl">Programs That May Be Open</h2>
+                <p className="mt-1 text-sm text-[var(--space-text-secondary)]">From Casemate’s program data — check each company’s careers page to confirm before you apply.</p>
               </div>
-              {([
-                { key: 'open', title: 'Open Now', items: applicationGroups.open },
-                { key: 'soon', title: 'Opening Soon (within 14 days)', items: applicationGroups.soon },
-                { key: 'expected', title: 'Expected', items: applicationGroups.expected },
-              ] as const).map((group) => group.items.length > 0 && (
-                <div key={group.key} className="mt-5 first:mt-0">
-                  <div className="mb-3 flex items-center gap-2"><h3 className="text-sm font-extrabold text-[var(--space-text-primary)]">{group.title}</h3><span className="text-xs font-semibold text-[var(--space-text-muted)]">{group.items.length}</span></div>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {group.items.map((item) => (
-                      <article key={`${group.key}-${item.program.program_id}`} className={`flex min-h-48 flex-col rounded-2xl border border-[var(--space-border-default)] border-t-4 bg-[var(--space-surface-page-alt)] p-4 shadow-sm ${item.kind === 'open' ? 'border-t-[var(--space-semantic-success)]' : item.kind === 'soon' ? 'border-t-[var(--space-semantic-warning)]' : 'border-t-[var(--space-neutral-500)]'}`}>
-                        <div className="flex items-start justify-between gap-2"><p className="text-xs font-bold text-[var(--space-text-brand)]">{item.program.company}</p><span className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-bold ${item.kind === 'open' ? 'bg-[color-mix(in_srgb,var(--space-semantic-success-500)_10%,transparent)] text-[var(--space-semantic-success-700)]' : item.kind === 'soon' ? 'bg-[color-mix(in_srgb,var(--space-semantic-warning-500)_10%,transparent)] text-[var(--space-semantic-warning-700)]' : 'bg-[var(--space-surface-muted)] text-[var(--space-text-muted)]'}`}>{item.kind === 'open' ? 'Open Now' : item.kind === 'soon' ? 'Opening Soon' : 'Expected'}</span></div>
-                        <h4 className="mt-2 text-sm font-extrabold leading-5 text-[var(--space-text-primary)]">{item.program.program}</h4>
-                        <p className="mt-1 flex-1 text-xs text-[var(--space-text-muted)]">{item.program.row?.program_type || 'Program'}</p>
-                        <p className="mt-3 text-xs font-semibold text-[var(--space-text-secondary)]">{item.dateLabel}</p>
-                        <button type="button" onClick={() => void openProgram(item.program)} className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-xl bg-[var(--space-brand-primary-600)] px-3 py-2 text-xs font-bold text-[var(--space-text-on-primary)] hover:bg-[var(--space-brand-primary-700)]">View program <ChevronRight className="h-3.5 w-3.5" /></button>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {mayBeOpenPrograms.map((item) => (
+                  <article key={item.program.program_id} className="flex min-h-40 flex-col rounded-2xl border border-[var(--space-border-default)] border-t-4 border-t-[var(--space-semantic-success)] bg-[var(--space-surface-page-alt)] p-4 shadow-sm">
+                    <div className="flex items-start justify-between gap-2"><p className="text-xs font-bold text-[var(--space-text-brand)]">{item.program.company}</p><span className="shrink-0 rounded-full bg-[color-mix(in_srgb,var(--space-semantic-success-500)_10%,transparent)] px-2 py-1 text-[10px] font-bold text-[var(--space-semantic-success-700)]">{MAY_BE_OPEN_LABEL}</span></div>
+                    <h4 className="mt-2 text-sm font-extrabold leading-5 text-[var(--space-text-primary)]">{item.program.program}</h4>
+                    <p className="mt-1 flex-1 text-xs text-[var(--space-text-muted)]">{item.program.row?.program_type || 'Program'}</p>
+                    <button type="button" onClick={() => void openProgram(item.program)} className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-xl bg-[var(--space-brand-primary-600)] px-3 py-2 text-xs font-bold text-[var(--space-text-on-primary)] hover:bg-[var(--space-brand-primary-700)]">View program <ChevronRight className="h-3.5 w-3.5" /></button>
+                  </article>
+                ))}
+              </div>
               <button type="button" onClick={() => document.getElementById('all-programs')?.scrollIntoView({ behavior: 'smooth', block: 'start' })} className="mx-auto mt-6 flex min-h-11 items-center gap-1.5 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-page-alt)] px-4 py-2 text-sm font-bold text-[var(--space-text-brand)] hover:bg-[var(--space-surface-muted)]">View all programs <ChevronRight className="h-4 w-4" /></button>
             </section>
           )}
@@ -857,51 +787,6 @@ export default function ProgramBrowser() {
 
           {filtered.length ? (
             <>
-            {expectingPrograms.length > 0 && (
-              <section className="mb-6" aria-labelledby="expecting-programs-title">
-                <div className="mb-3 flex items-center gap-2"><h2 id="expecting-programs-title" className="text-sm font-extrabold text-[var(--space-text-primary)]">Expecting to Open</h2><span className="text-xs font-semibold text-[var(--space-text-muted)]">{expectingPrograms.length}</span></div>
-                <div className="flex flex-col gap-2">
-                  {expectingPrograms.map(({ program, info }) => {
-                    const analysis = program.fitAnalysis;
-                    const isAnalyzing = analyzingId === program.program_id;
-                    const unavailable = !program.row;
-                    return (
-                      <article key={program.program_id} className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 shadow-sm md:px-4">
-                        <span className="inline-flex items-center gap-1 rounded-full border border-[color-mix(in_srgb,var(--space-brand-primary-500)_30%,transparent)] bg-[color-mix(in_srgb,var(--space-brand-primary-500)_10%,transparent)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--space-text-brand)]">🔜 Expecting to Open</span>
-                        <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                          <div className="min-w-0">
-                            <p className="text-xs font-semibold text-[var(--space-text-brand)]">{program.company}</p>
-                            <h3 className="truncate text-sm font-bold text-[var(--space-text-primary)]">{program.program}</h3>
-                            <p className="mt-0.5 text-xs font-semibold text-[var(--space-text-muted)]">Opens {info.openLabel} (in {info.daysUntilOpen} {info.daysUntilOpen === 1 ? 'day' : 'days'}){info.closeLabel ? ` → closes ${info.closeLabel}` : ''}</p>
-                          </div>
-                          <div className="shrink-0">
-                            {analysis ? (
-                              <div className="flex items-center gap-3">
-                                <span className="rounded-full bg-[var(--space-brand-primary)] px-2.5 py-1 text-xs font-extrabold text-[var(--space-text-on-primary)]">{analysis.matching_ratio}% match</span>
-                                <button type="button" onClick={() => void openProgram(program)} className="text-xs font-bold text-[var(--space-text-brand)] hover:underline">View Details</button>
-                              </div>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => void analyzeProgram(program)}
-                                disabled={!hasAssessment || unavailable || isAnalyzing || !!analyzingId}
-                                title={unavailable ? 'No rubric is available for this program yet' : !hasAssessment ? 'Complete Fit Assessment to see your match' : undefined}
-                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--space-brand-primary)] px-4 py-2 text-xs font-bold text-[var(--space-text-on-primary)] transition hover:bg-[var(--space-brand-primary-700)] disabled:cursor-not-allowed disabled:bg-[var(--space-neutral-300)] disabled:text-[var(--space-neutral-600)] sm:w-auto"
-                              >
-                                {isAnalyzing ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing...</> : <><Sparkles className="h-4 w-4" /> Run Analysis</>}
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                        {analysisErrors[program.program_id] && (
-                          <p className="mt-2 flex items-start gap-1.5 text-xs leading-5 text-[var(--space-semantic-danger-700)]"><AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />{analysisErrors[program.program_id]}</p>
-                        )}
-                      </article>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
             {regularPrograms.length > 0 && (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {regularPrograms.map((program) => {
@@ -920,7 +805,6 @@ export default function ProgramBrowser() {
                     <div className="mt-4 flex-1 md:mt-5">
                       <p className="text-sm font-semibold text-[var(--space-text-brand)]">{program.company}</p>
                       <h2 className="mt-1 text-base font-bold leading-snug text-[var(--space-text-primary)] md:text-lg">{program.program}</h2>
-                      <p className="mt-2 text-xs font-semibold text-[var(--space-text-muted)]">Application window: {statusFor(program).detail || statusFor(program).label}</p>
                       <p className="mt-3 line-clamp-2 text-sm leading-6 text-[var(--space-text-muted)]">{program.ideal_profile_text || 'Candidate requirements are being updated.'}</p>
                     </div>
 

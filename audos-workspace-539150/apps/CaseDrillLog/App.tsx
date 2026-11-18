@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
+  ArrowLeft,
   ArrowRight,
   BarChart3,
   BookOpen,
@@ -34,26 +35,46 @@ import {
 } from 'lucide-react';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import { emitLiveSourceEventsOnce } from '../../lib/liveFeatureTracking';
+import { trackMove, trackStepError, trackStepView, useActiveTimeThreshold } from '../../lib/engagementTracking';
 import { tw } from '../../lib/colors';
 import PaywallGate from '../../components/PaywallGate';
-import CasePoolLibrary from '../../components/CasePoolLibrary';
 import type { LibraryGradeResult } from '../../components/CasePoolLibrary';
-import ConsultingToolkit from '../../components/ConsultingToolkit';
+import CriterionScoreTable from '../../components/CriterionScoreTable';
+import CaseResultView from '../../components/CaseResultView';
+import MarketSizingAnswerBuilder, {
+  MarketSizingAttemptSummary,
+  calculateMarketSizingResult,
+  createInitialMarketSizingDraft,
+  parseMarketSizingAttempt,
+  serializeMarketSizingAttempt,
+  type MarketSizingAnswerDraft,
+} from '../../components/MarketSizingAnswerBuilder';
+import { formatNumbersInText } from '../../lib/numberDisplay';
+import { deriveOverallScore, type HonestScoreResult } from '../../lib/caseScoringRubrics';
 import PercentileRankingWidget from '../../components/PercentileRankingWidget';
-import { CASE_POOL_LIBRARY, POOL_INDUSTRY_LABELS, POOL_TYPE_LABELS } from '../../lib/casePoolLibrary';
+import { buildFeedbackPriorities } from '../../lib/feedbackPresentation';
+import { buildReasoningFeedback, chooseNextAction, emptyWorkedAnswer, hasLearnerResponse, marketSizingBankWorkedAnswer, normalizeAttemptHistory, poolCaseEvidence, resultOutcome, retryAction, roomCaseWorkedAnswer } from '../../lib/caseResultModel';
+import { scoreBand } from '../../lib/scorePresentation';
 import type { FullCase } from '../../lib/casePoolLibrary';
-import { CONSULTING_FRAMEWORKS } from '../../lib/consultingFrameworks';
-import { DIFFICULTY_LABELS } from '../../lib/caseLibraryShared';
+import { learnerFacingStoredPrompt, libraryCaseTaskText } from '../../lib/learnerFacingContent';
+import { clarifyUnitText, clarifyUnitsDeep } from '../../lib/unitLabels';
 import { CaseChartVisual } from '../../components/CaseExhibits';
+import { dedupeColumnUnits } from '../../lib/exhibitTableUnits';
 import { callCaseDrillServerFunction } from './serverFunctions';
-import StructuresWorkspace from '../CaseDrill/StructuresWorkspace';
+import { CASE_POOL_REQUEST_KEY, casePoolCaseIdFromHash } from '../../components/SolveFullCaseCta';
 import { CASE_TYPE_CATALOG, relevantCaseTypesForDirection } from './caseTypeCatalog';
 import type { RelevantCaseTypes } from './caseTypeCatalog';
 
-// 'library' - 100 prebuilt cases, readable immediately on open (no AI call).
-// 'toolkit' - reference area with 43 thinking frameworks, diagrams, and examples.
-// 'practice'/'dashboard' - the original Case Room flow generated and graded by Mate, unchanged.
-type Tab = 'library' | 'structures' | 'practice' | 'toolkit' | 'dashboard';
+const CasePoolLibrary = lazy(() => import('../../components/CasePoolLibrary'));
+const CASE_LIBRARY_COUNT = 100;
+const CONSULTING_FRAMEWORK_COUNT = 43;
+
+// 'library' - the Case Library, readable immediately on open (no AI call).
+// 'dashboard' - scores and history, opened from the header's compact Dashboard action.
+// 'practice' - the retired Case Room. It has no navigation entry and stays reachable only for
+// saved Case Room attempts reopened from Dashboard history and for the chat's program-drill preset.
+// The Consulting Toolkit moved to Domain Knowledge > Basic Economics > Consulting Tools.
+type Tab = 'library' | 'practice' | 'dashboard';
 
 type JsonValue = Record<string, any> | any[] | string | null;
 
@@ -144,6 +165,21 @@ function validTarget(value: unknown): number | null {
   return Number.isInteger(parsed) && parsed >= 1 && parsed <= 100 ? parsed : null;
 }
 
+function scoreScaleOf(item: PracticeCase): 5 | 10 {
+  const scoring = asObject(asObject(caseMeta(item).grade_report).scoring);
+  return Number(scoring.scale) === 10 ? 10 : 5;
+}
+
+function validScore(value: unknown, scale: number): number | null {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= scale ? parsed : null;
+}
+
+function scoreOutOfTen(item: PracticeCase): number {
+  const score = validScore(item.score, scoreScaleOf(item));
+  return score === null ? 0 : score * (10 / scoreScaleOf(item));
+}
+
 /* -------------------------------------------------------------------------
  * Case Library attempts
  *
@@ -175,6 +211,23 @@ function toLibraryResult(item: PracticeCase): LibraryGradeResult {
   const report = asObject(caseMeta(item).grade_report);
   const delta = asObject(report.delta);
   const breakdownRaw = asObject(item.score_breakdown_json);
+  const scoringRaw = asObject(report.scoring);
+  const scoring: HonestScoreResult | null = Number(scoringRaw.scale) === 10 && Array.isArray(scoringRaw.criteria)
+    ? {
+        rubricId: String(scoringRaw.rubric_id || ''),
+        scale: 10,
+        overallScore: Number(scoringRaw.overall_score) || 0,
+        criteria: scoringRaw.criteria.map((criterion: any) => ({
+          key: String(criterion.key || ''),
+          label: String(criterion.label || ''),
+          weight: Number(criterion.weight) || 0,
+          score: Number(criterion.score) || 0,
+          evidence: String(criterion.evidence || ''),
+          reason: String(criterion.reason || ''),
+          strongerAnswer: String(criterion.stronger_answer || ''),
+        })),
+      }
+    : null;
   const breakdown = LIBRARY_DIMENSION_LABELS.map(({ key, label }) => {
     const dimension = asObject(breakdownRaw[key]);
     return {
@@ -202,6 +255,16 @@ function toLibraryResult(item: PracticeCase): LibraryGradeResult {
     matched: Array.isArray(delta.matched) ? delta.matched.map((line: unknown) => String(line)) : [],
     missing: Array.isArray(delta.missing) ? delta.missing.map((line: unknown) => String(line)) : [],
     recommendations,
+    evidenceToRevisit: cleanStringList(report.evidence_to_revisit),
+    legacyEvidence: cleanStringList(report.evidence_overlooked_or_misinterpreted),
+    nextStep: report.next_step && typeof report.next_step === 'object' ? report.next_step : null,
+    furtherImprovements: Array.isArray(report.further_improvements) ? report.further_improvements.slice(0, 2) : [],
+    scoring,
+    sectionFeedback: Array.isArray(report.section_feedback) ? report.section_feedback : [],
+    integratedAssessment: asObject(report.integrated_assessment),
+    workedAnswerStatus: String(report.worked_answer_status || (report.model_answer ? 'ready' : 'unavailable')),
+    completedOn: typeof item.completed_on === 'string' ? item.completed_on : undefined,
+    history: normalizeAttemptHistory(caseMeta(item).attempt_history),
   };
 }
 
@@ -252,7 +315,22 @@ function exhibitsToText(item: FullCase): string {
 }
 
 /** Minimal, bounded case payload accepted by the server-side open action. */
-function libraryCasePayload(item: FullCase): Record<string, unknown> {
+async function libraryCasePayload(item: FullCase): Promise<Record<string, unknown>> {
+  const [{ POOL_INDUSTRY_LABELS, POOL_TYPE_LABELS }, { DIFFICULTY_LABELS }, { MARKET_SIZING_REVEAL_NOTICE, getMarketSizingBankCase }, { marketSizingPoolReference, marketSizingWorkedModelForSource }] = await Promise.all([
+    import('../../lib/casePoolLibrary'),
+    import('../../lib/caseLibraryShared'),
+    import('../../lib/marketSizingBank'),
+    import('../../lib/marketSizingWorkedModels'),
+  ]);
+  const sizingModel = item.market_sizing_format ? marketSizingWorkedModelForSource(item.source_case_id) : null;
+  const sizingReference = sizingModel ? marketSizingPoolReference(sizingModel) : null;
+  // The stored grading reference is the exact worked answer the result view shows for this case.
+  const bankAnswer = item.market_sizing_bank
+    ? marketSizingBankWorkedAnswer(getMarketSizingBankCase(item.source_case_id), MARKET_SIZING_REVEAL_NOTICE)
+    : null;
+  const answer = item.model_answer as FullCase['model_answer'] & { situation_analysis?: string; implications?: string[] };
+  // Figures that failed the consistency check are not shown, so they are not graded against either.
+  const trustedFigures = poolCaseEvidence(answer).trustworthy;
   return {
     libraryCase: {
       id: item.id,
@@ -265,14 +343,38 @@ function libraryCasePayload(item: FullCase): Record<string, unknown> {
       difficulty_id: item.difficulty,
       journey_id: item.journey_id || null,
       related_drill_ids: item.related_drill_ids || [],
+      source_case_id: item.source_case_id || null,
+      rounding_rule: item.rounding_rule || null,
+      numeric_checks: item.numeric_checks || [],
+      market_sizing_format: item.market_sizing_format || null,
+      market_sizing_rubric_version: item.market_sizing_rubric_version || null,
+      creativity_category: item.creativity_category || null,
+      creativity_rubric: item.creativity_rubric || null,
+      creativity_what_to_look_for: item.creativity_what_to_look_for || null,
+      creativity_source_rubric: item.creativity_source_rubric || null,
       situation: item.situation,
-      key_question: item.key_question,
+      key_question: libraryCaseTaskText(item),
       exhibits_text: exhibitsToText(item),
-      model_answer: {
-        framework: item.model_answer.framework_applied,
-        key_findings: item.model_answer.key_findings,
-        recommendation: item.model_answer.recommendation,
-      },
+      skill_focus: item.skill_focus || [],
+      model_answer: sizingReference || (bankAnswer
+        ? {
+            framework: bankAnswer.approach.join(' '),
+            key_findings: bankAnswer.checks,
+            recommendation: bankAnswer.conclusion,
+            issue_tree: [],
+            key_calculations: bankAnswer.calculationLines,
+            plausible_alternatives: bankAnswer.alternatives,
+          }
+        : {
+            situation_analysis: answer.situation_analysis || '',
+            framework: answer.framework_applied,
+            key_findings: trustedFigures ? answer.key_findings : [],
+            implications: trustedFigures ? answer.implications || [] : [],
+            recommendation: trustedFigures ? answer.recommendation : '',
+            issue_tree: answer.issue_tree || [],
+            key_calculations: trustedFigures ? answer.key_calculations || [] : [],
+            plausible_alternatives: answer.plausible_alternatives || [],
+          }),
     },
   };
 }
@@ -313,17 +415,24 @@ function caseMeta(item?: PracticeCase | null): Record<string, any> {
   return asObject(asObject(item?.rubric_json)._casemate);
 }
 
+function casePoolModeOf(item?: PracticeCase | null): string | null {
+  const rawMode = String(caseMeta(item).mode || '').toLowerCase();
+  return ['classic', 'guided', 'library'].includes(rawMode) ? rawMode : null;
+}
+
 function emitCasePoolGrade(graded: PracticeCase, sessionId: string): void {
   const rawScore = graded.score;
   const score = rawScore === null || rawScore === undefined ? NaN : Number(rawScore);
   const completedOn = typeof graded.completed_on === 'string' ? graded.completed_on : '';
-  if (graded.status !== 'completed' || !Number.isFinite(score) || score < 1 || score > 5 || !completedOn) return;
+  const scoreScale = scoreScaleOf(graded);
+  if (graded.status !== 'completed' || !Number.isFinite(score) || score < 0 || score > scoreScale || !completedOn) return;
   const rawMode = String(caseMeta(graded).mode || '').toLowerCase();
   const mode = ['classic', 'guided', 'library'].includes(rawMode) ? rawMode : null;
   const completionKey = String(graded.id);
   const properties = {
     mode,
     score,
+    score_scale: scoreScale,
     case_type: graded.case_type || null,
     difficulty: graded.difficulty || null,
   };
@@ -817,7 +926,7 @@ function TrendSparkline({ values }: { values: number[] }) {
   const width = 280;
   const height = 64;
   const xFor = (index: number) => (index / (values.length - 1)) * width;
-  const yFor = (value: number) => height - ((value - 1) / 4) * 52 - 6;
+  const yFor = (value: number) => height - (value / 10) * 52 - 6;
   const points = values.map((value, index) => `${xFor(index)},${yFor(value)}`).join(' ');
   const first = values[0];
   const latest = values[values.length - 1];
@@ -826,12 +935,12 @@ function TrendSparkline({ values }: { values: number[] }) {
     <div>
       <div className="flex items-stretch gap-1.5">
         <div className="flex flex-col justify-between py-px text-right text-[9px] leading-none text-[var(--space-text-muted)]" aria-hidden="true">
+          <span>10</span>
           <span>5</span>
-          <span>3</span>
-          <span>1</span>
+          <span>0</span>
         </div>
         <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" aria-label="Average grade trend" className="min-w-0 flex-1">
-          {[1, 3, 5].map((grade) => (
+          {[0, 5, 10].map((grade) => (
             <line key={grade} x1={0} x2={width} y1={yFor(grade)} y2={yFor(grade)} stroke="var(--space-border-default)" strokeWidth="1" strokeDasharray="3 5" />
           ))}
           <polyline
@@ -843,16 +952,16 @@ function TrendSparkline({ values }: { values: number[] }) {
             strokeLinejoin="round"
           />
           {values.map((value, index) => (
-            <circle key={`${value}-${index}`} cx={xFor(index)} cy={yFor(value)} r="3.5" fill="var(--space-brand-highlight)">
-              <title>{`After case ${index + 1}: average ${value.toFixed(1)}/5`}</title>
+            <circle key={`${value}-${index}`} cx={xFor(index)} cy={yFor(value)} r="3.5" fill={scoreBand(value, 10).fill}>
+              <title>{`After case ${index + 1}: average ${value.toFixed(1)}/10 · ${scoreBand(value, 10).label}`}</title>
             </circle>
           ))}
         </svg>
       </div>
       <p className="mt-2 text-xs text-[var(--space-text-secondary)]">
         Running average after each graded case - started at{' '}
-        <span className="font-semibold text-[var(--space-text-primary)]">{first.toFixed(1)}/5</span>, now at{' '}
-        <span className="font-semibold text-[var(--space-text-primary)]">{latest.toFixed(1)}/5</span>.
+        <span className="font-semibold text-[var(--space-text-primary)]">{first.toFixed(1)}/10 · {scoreBand(first, 10).label}</span>, now at{' '}
+        <span className="font-semibold text-[var(--space-text-primary)]">{latest.toFixed(1)}/10 · {scoreBand(latest, 10).label}</span>.
       </p>
     </div>
   );
@@ -906,27 +1015,26 @@ function ProgressBar({ value, label }: { value: number; label?: string }) {
   );
 }
 
-// Horizontal 0–5 gauge with a tick at the target bar - shows the average
-// grade as a position on the scale instead of only a raw number.
+// Horizontal 0–10 gauge with a tick at the target bar.
 function ScoreGauge({ value, target }: { value: number; target: number }) {
-  const pct = Math.max(0, Math.min(100, (value / 5) * 100));
-  const targetPct = Math.max(0, Math.min(100, (target / 5) * 100));
+  const pct = Math.max(0, Math.min(100, (value / 10) * 100));
+  const targetPct = Math.max(0, Math.min(100, (target / 10) * 100));
+  const band = scoreBand(value, 10);
   return (
-    <div role="img" aria-label={`Average grade ${value.toFixed(1)} of 5 - target bar ${target.toFixed(1)} of 5`}>
+    <div role="img" aria-label={`Average grade ${value.toFixed(1)} of 10 - target bar ${target.toFixed(1)} of 10`}>
       <div className="relative h-2.5 rounded-full bg-[var(--space-surface-muted)]">
         <div
-          className="h-full rounded-full bg-[var(--space-brand-highlight-600)] transition-all duration-500"
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-full transition-all duration-500"
+          style={{ width: `${pct}%`, backgroundColor: band.fill }}
         />
         <div
           className="absolute -top-[3px] h-4 w-0.5 rounded-full bg-[var(--space-text-primary)] opacity-50"
           style={{ left: `calc(${targetPct}% - 1px)` }}
-          title={`Target bar ${target.toFixed(1)}/5`}
+          title={`Target bar ${target.toFixed(1)}/10`}
         />
       </div>
-      <div className="mt-0.5 flex justify-between text-[9px] leading-none text-[var(--space-text-muted)]" aria-hidden="true">
-        <span>0</span>
-        <span>5</span>
+      <div className="mt-1 flex items-center justify-between text-[9px] leading-none text-[var(--space-text-muted)]">
+        <span>0</span><span className="font-bold" style={{ color: band.foreground }}>{value.toFixed(1)}/10 · {band.label}</span><span>10</span>
       </div>
     </div>
   );
@@ -937,20 +1045,24 @@ function ScoreGauge({ value, target }: { value: number; target: number }) {
 function RecentScoreBars({ scores }: { scores: number[] }) {
   const recent = scores.slice(-6);
   if (!recent.length) return null;
+  const latest = recent[recent.length - 1];
   return (
-    <div
-      className="flex h-10 flex-shrink-0 items-end gap-1"
-      role="img"
-      aria-label={`Last ${recent.length} grades: ${recent.map((score) => `${score}/5`).join(', ')}`}
-    >
-      {recent.map((score, index) => (
-        <div
-          key={index}
-          className={`w-2.5 rounded-t ${index === recent.length - 1 ? 'bg-[var(--space-brand-primary)]' : 'bg-[var(--space-brand-highlight-200)]'}`}
-          style={{ height: `${Math.max(12, (score / 5) * 100)}%` }}
-          title={`${score}/5`}
-        />
-      ))}
+    <div className="flex-shrink-0">
+      <div
+        className="flex h-8 items-end justify-end gap-1"
+        role="img"
+        aria-label={`Last ${recent.length} grades: ${recent.map((score) => `${score}/10 · ${scoreBand(score, 10).label}`).join(', ')}`}
+      >
+        {recent.map((score, index) => (
+          <div
+            key={index}
+            className="w-2.5 rounded-t"
+            style={{ height: `${Math.max(12, (score / 10) * 100)}%`, backgroundColor: scoreBand(score, 10).fill, opacity: index === recent.length - 1 ? 1 : 0.72 }}
+            title={`${score}/10 · ${scoreBand(score, 10).label}`}
+          />
+        ))}
+      </div>
+      <p className="mt-1 text-[9px] font-bold" style={{ color: scoreBand(latest, 10).foreground }}>{latest}/10 · {scoreBand(latest, 10).label}</p>
     </div>
   );
 }
@@ -974,11 +1086,11 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
   const leftPad = 26;
   const topPad = 16;
   const plotHeight = 104;
-  const labelBlock = 44;
+  const labelBlock = 56;
   const width = leftPad + data.length * barSlot + 6;
   const height = topPad + plotHeight + labelBlock;
   const baseline = topPad + plotHeight;
-  const yFor = (grade: number) => baseline - (grade / 5) * plotHeight;
+  const yFor = (grade: number) => baseline - (grade / 10) * plotHeight;
   // Wrap a case-type name into at most two short lines (SVG text can't wrap
   // on its own); anything longer is ellipsized - the tooltip has the full name.
   const wrapLabel = (name: string): string[] => {
@@ -1003,10 +1115,10 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
         height={height}
         role="img"
         aria-label={`Average grade by case type: ${data
-          .map((row) => `${row.name} ${row.average !== null ? `${row.average.toFixed(1)} of 5` : 'not graded yet'}`)
+          .map((row) => `${row.name} ${row.average !== null ? `${row.average.toFixed(1)} of 10` : 'not graded yet'}`)
           .join(', ')}`}
       >
-        {[5, 2.5].map((grade) => (
+        {[10, 5].map((grade) => (
           <g key={grade}>
             <line x1={leftPad} x2={width - 2} y1={yFor(grade)} y2={yFor(grade)} stroke="var(--space-border-default)" strokeWidth="1" strokeDasharray="3 5" />
             <text x={leftPad - 6} y={yFor(grade)} textAnchor="end" dominantBaseline="central" fontSize="9" fill="var(--space-text-muted)">
@@ -1028,7 +1140,7 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
             <g key={row.name}>
               <title>
                 {avg !== null
-                  ? `${row.name}: average ${avg.toFixed(1)}/5 across ${row.gradedCount} graded of ${row.count} total`
+                  ? `${row.name}: average ${avg.toFixed(1)}/10 · ${scoreBand(avg, 10).label} across ${row.gradedCount} graded of ${row.count} total`
                   : `${row.name}: ${row.count} case${row.count === 1 ? '' : 's'} - none graded yet`}
               </title>
               <rect
@@ -1037,7 +1149,7 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
                 width={26}
                 height={baseline - barTop}
                 rx={3}
-                fill={avg !== null ? 'var(--space-brand-primary-600)' : 'var(--space-border-strong)'}
+                fill={avg !== null ? scoreBand(avg, 10).fill : 'var(--space-border-strong)'}
                 opacity={avg !== null ? 1 : 0.7}
               />
               <text x={centerX} y={barTop - 5} textAnchor="middle" fontSize="10" fontWeight="700" fill="var(--space-text-primary)">
@@ -1051,6 +1163,7 @@ function TypePerformanceBarChart({ data }: { data: CaseTypeStat[] }) {
               <text x={centerX} y={baseline + 12 + labelLines.length * 11} textAnchor="middle" fontSize="9" fill="var(--space-text-muted)">
                 ×{row.count}
               </text>
+              {avg !== null ? <text x={centerX} y={baseline + 23 + labelLines.length * 11} textAnchor="middle" fontSize="8" fontWeight="700" fill={scoreBand(avg, 10).foreground}>{scoreBand(avg, 10).label}</text> : null}
             </g>
           );
         })}
@@ -1202,7 +1315,7 @@ function deriveGridChartData(
       }
       points.push({ label, value });
     }
-    if (allNumeric && points.length >= 2) return { data: points.slice(0, 8), unit: columns[c] || '' };
+    if (allNumeric && points.length >= 2) return { data: points, unit: columns[c] || '' };
   }
   return null;
 }
@@ -1241,16 +1354,14 @@ function exhibitChartOf(meta: Record<string, any>): ExhibitChartSpec | null {
       label: String(item && typeof item === 'object' ? item.label ?? '' : '').trim(),
       value: Number(item && typeof item === 'object' ? item.value : NaN),
     }))
-    .filter((point) => point.label.length > 0 && Number.isFinite(point.value) && point.value >= 0)
-    .slice(0, 5);
+    // Every supplied point, column and row is kept: the table must show all of the data, even when the chart cannot.
+    .filter((point) => point.label.length > 0 && Number.isFinite(point.value));
   const columns = asList(raw.columns)
     .map((cell) => String(cell ?? '').trim())
-    .filter(Boolean)
-    .slice(0, 5);
+    .filter(Boolean);
   const rows = asList(raw.rows)
     .map((row) => asList(row).map((cell) => String(cell ?? '').trim()))
-    .filter((row) => row.some((cell) => cell.length > 0))
-    .slice(0, 8);
+    .filter((row) => row.some((cell) => cell.length > 0));
   const hasTable = columns.length >= 2 && rows.length >= 2;
   // No usable data in either shape → no exhibit card at all (never an empty shell).
   if (data.length < 2 && !hasTable) return null;
@@ -1265,8 +1376,9 @@ function exhibitChartOf(meta: Record<string, any>): ExhibitChartSpec | null {
   };
 }
 
+// Exact to two decimals in one fixed format, matching every other exhibit table, so a copied value is the stored value.
 function formatExhibitValue(value: number): string {
-  return value.toLocaleString(undefined, { maximumFractionDigits: Math.abs(value) < 100 ? 1 : 0 });
+  return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
 
 // Horizontal bars: label + value per row, bar width proportional to the max.
@@ -1473,10 +1585,12 @@ function ExhibitLine({ data }: { data: ExhibitChartSpec['data'] }) {
 // full columns/rows payload or a simple label/value table from chart points.
 function ExhibitTable({ chart }: { chart: ExhibitChartSpec }) {
   const hasGrid = Boolean(chart.columns && chart.columns.length >= 2 && chart.rows && chart.rows.length > 0);
-  const columns = hasGrid ? (chart.columns as string[]) : ['Item', chart.unit ? `Value (${chart.unit})` : 'Value'];
-  const rows = hasGrid
-    ? (chart.rows as string[][]).map((row) => row.slice(0, columns.length))
+  const rawColumns = hasGrid ? (chart.columns as string[]) : ['Item', chart.unit ? `Value (${chart.unit})` : 'Value'];
+  const rawRows = hasGrid
+    ? (chart.rows as string[][]).map((row) => row.slice(0, rawColumns.length))
     : chart.data.map((point) => [point.label, formatExhibitValue(point.value)]);
+  // A unit that every cell in a column repeats is stated once, in the header.
+  const { columns, rows } = dedupeColumnUnits(rawColumns, rawRows);
   return (
     <div className="overflow-x-auto" data-testid="exhibit-table">
       <table className="w-full border-collapse text-[11px]">
@@ -1689,6 +1803,11 @@ function CaseDrillLogInner() {
     if (!casesLoading && !assessmentLoading) setBootstrapped(true);
   }, [casesLoading, assessmentLoading]);
 
+  useEffect(() => {
+    const loadError = casesError || assessmentError;
+    if (loadError) trackStepError('case-drill-log', 'access', loadError);
+  }, [casesError, assessmentError]);
+
   const [tab, setTab] = useState<Tab>('library');
   // Set when a library attempt is tapped in the dashboard history - the nonce
   // makes tapping the same case twice reopen it.
@@ -1696,6 +1815,7 @@ function CaseDrillLogInner() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [transientCase, setTransientCase] = useState<PracticeCase | null>(null);
   const [answer, setAnswer] = useState('');
+  const [marketSizingDraft, setMarketSizingDraft] = useState<MarketSizingAnswerDraft>(createInitialMarketSizingDraft);
   const [manualTarget, setManualTarget] = useState<number | null>(null);
   const [targetInput, setTargetInput] = useState('');
   const [targetEditing, setTargetEditing] = useState(false);
@@ -1709,6 +1829,9 @@ function CaseDrillLogInner() {
   const [photoNote, setPhotoNote] = useState('');
   const [structured, setStructured] = useState<StructuredAnswer | null>(null);
   const [confirmGiveUp, setConfirmGiveUp] = useState(false);
+  // Gates the destructive Redo in the Case Room saved-feedback view: a graded
+  // case's saved report is only replaced after an explicit confirmation.
+  const [confirmRoomRedo, setConfirmRoomRedo] = useState(false);
   const [programPreset, setProgramPreset] = useState<DrillPreset | null>(null);
   const autoStartedRef = useRef(false);
 
@@ -1771,10 +1894,30 @@ function CaseDrillLogInner() {
     return () => window.removeEventListener('openApp', onOpenApp);
   }, []);
 
+  // A drill feedback CTA or durable URL always targets the exact Case Library
+  // solve workspace, never the library home or the generated Case Room tab.
+  useEffect(() => {
+    const focusRequestedCase = () => {
+      let storedId = '';
+      try { storedId = sessionStorage.getItem(CASE_POOL_REQUEST_KEY) || ''; } catch { /* URL fallback below. */ }
+      if (storedId || casePoolCaseIdFromHash(window.location.hash)) setTab('library');
+    };
+    focusRequestedCase();
+    const onOpenApp = (event: Event) => {
+      if ((event as CustomEvent).detail?.appId === 'case-drill-log') focusRequestedCase();
+    };
+    window.addEventListener('openApp', onOpenApp);
+    window.addEventListener('hashchange', focusRequestedCase);
+    return () => {
+      window.removeEventListener('openApp', onOpenApp);
+      window.removeEventListener('hashchange', focusRequestedCase);
+    };
+  }, []);
+
   // Graded cases only - skipped/revealed cases stay in history but never
   // count toward the average, trend, or readiness metrics.
   const completedCases = useMemo(
-    () => (cases || []).filter((item) => item.status === 'completed' && !caseMeta(item).skipped && validTarget(item.score)),
+    () => (cases || []).filter((item) => item.status === 'completed' && !caseMeta(item).skipped && validScore(item.score, scoreScaleOf(item)) !== null),
     [cases],
   );
   const skippedCount = useMemo(
@@ -1797,7 +1940,7 @@ function CaseDrillLogInner() {
     const map: Record<string, LibraryGradeResult> = {};
     (cases || []).forEach((item) => {
       const libraryId = libraryCaseIdOf(item);
-      if (!libraryId || !validTarget(item.score)) return;
+      if (!libraryId || validScore(item.score, scoreScaleOf(item)) === null) return;
       // Rows are newest-first; keep the first saved attempt so an older
       // duplicate cannot overwrite the latest report for the same library case.
       if (!(libraryId in map)) map[libraryId] = toLibraryResult(item);
@@ -1807,6 +1950,7 @@ function CaseDrillLogInner() {
 
   useEffect(() => {
     if (activeCase?.answer_text && !answer) setAnswer(activeCase.answer_text);
+    setMarketSizingDraft(parseMarketSizingAttempt(activeCase?.answer_text) || createInitialMarketSizingDraft());
   }, [activeCase?.id]);
 
   useEffect(() => {
@@ -1816,6 +1960,7 @@ function CaseDrillLogInner() {
     setPhotoNote('');
     setStructured(null);
     setConfirmGiveUp(false);
+    setConfirmRoomRedo(false);
   }, [activeCase?.id]);
 
   // Percentile ranking (performance-rankings-v1): the clock is stamped when a
@@ -1835,7 +1980,63 @@ function CaseDrillLogInner() {
   }, [activeCase?.id]);
 
   const activeMeta = caseMeta(activeCase);
-  const activeExhibitChart = exhibitChartOf(activeMeta);
+  const isMarketSizingCase = activeMeta.case_type_id === 'market_sizing' || /market sizing/i.test(String(activeCase?.case_type || ''));
+  const nfCase = (value: unknown) => clarifyUnitText(isMarketSizingCase ? formatNumbersInText(value) : String(value ?? ''));
+  const activeExhibitChart = useMemo(() => {
+    const chart = exhibitChartOf(caseMeta(activeCase));
+    return chart ? clarifyUnitsDeep(chart) : null;
+  }, [activeCase]);
+
+  const lastOpenedCaseRef = useRef<string | null>(null);
+  const nextCaseClickRef = useRef(false);
+  const solvingTrackedRef = useRef<Set<string>>(new Set());
+  const trackCaseOpened = useCallback(
+    (caseId: string, mode: string | null, caseType: string | null, caseDifficulty: string | null) => {
+      const previous = lastOpenedCaseRef.current;
+      if (previous && previous !== caseId && !nextCaseClickRef.current) {
+        trackMove('case-drill-log', 'self_exit_choose_other', { mode, properties: { from_item_id: previous, case_id: caseId } });
+      }
+      nextCaseClickRef.current = false;
+      lastOpenedCaseRef.current = caseId;
+      trackStepView('case-drill-log', 'choose_case', {
+        mode,
+        dedupeKey: caseId,
+        properties: { case_id: caseId, case_type: caseType, difficulty: caseDifficulty },
+      });
+    },
+    [],
+  );
+  const roomMode = casePoolModeOf(activeCase);
+  const roomCaseShown = tab === 'practice' && Boolean(activeCase) && busyAction !== 'generate' && bootstrapped && !casesError && !assessmentError;
+  useEffect(() => {
+    if (!roomCaseShown || !activeCase) return;
+    trackCaseOpened(
+      String(activeCase.id),
+      roomMode,
+      String(activeMeta.case_type_id || activeCase.case_type || '') || null,
+      activeCase.difficulty || null,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomCaseShown, activeCase?.id]);
+  const trackRoomSolving = (trigger: 'active_2min' | 'answer_typed', activeSeconds: number | null) => {
+    if (!activeCase || activeCase.status !== 'pending') return;
+    const caseId = String(activeCase.id);
+    if (solvingTrackedRef.current.has(caseId)) return;
+    solvingTrackedRef.current.add(caseId);
+    trackStepView('case-drill-log', 'solving_case', {
+      mode: roomMode,
+      dedupeKey: caseId,
+      properties: {
+        case_id: caseId,
+        trigger,
+        active_seconds: activeSeconds,
+        seconds_since_open: Math.round((Date.now() - caseOpenedAtRef.current) / 1000),
+      },
+    });
+  };
+  useActiveTimeThreshold(roomCaseShown && activeCase?.status === 'pending', activeCase?.id, (activeSeconds) => {
+    trackRoomSolving('active_2min', activeSeconds);
+  });
 
   // History bridge: cases completed in Case Room also count toward the library's
   // “Recommended for you” suggestions. Case Room case types are more detailed than
@@ -1878,9 +2079,9 @@ function CaseDrillLogInner() {
       const key = item.case_type || 'Other';
       const group = groups.get(key) || { count: 0, gradedCount: 0, total: 0 };
       group.count += 1;
-      if (item.status === 'completed' && !caseMeta(item).skipped && validTarget(item.score)) {
+      if (item.status === 'completed' && !caseMeta(item).skipped && validScore(item.score, scoreScaleOf(item)) !== null) {
         group.gradedCount += 1;
-        group.total += Number(item.score);
+        group.total += scoreOutOfTen(item);
       }
       groups.set(key, group);
     });
@@ -1898,7 +2099,7 @@ function CaseDrillLogInner() {
     const chronological = [...completedCases].sort(
       (a, b) => new Date(a.completed_on || a.created_at || 0).getTime() - new Date(b.completed_on || b.created_at || 0).getTime(),
     );
-    const scores = chronological.map((item) => Number(item.score));
+    const scores = chronological.map(scoreOutOfTen);
     const averageTrend = scores.map((_, index) => {
       const values = scores.slice(0, index + 1);
       return values.reduce((sum, score) => sum + score, 0) / values.length;
@@ -1909,7 +2110,7 @@ function CaseDrillLogInner() {
     const recentAverage = recent.length ? recent.reduce((sum, score) => sum + score, 0) / recent.length : 0;
     const priorAverage = prior.length ? prior.reduce((sum, score) => sum + score, 0) / prior.length : recentAverage;
     const trendDelta = recentAverage - priorAverage;
-    const scoreBar = Number(cases?.find((item) => item.readiness_bar)?.readiness_bar || 4);
+    const scoreBar = Number(cases?.find((item) => item.readiness_bar)?.readiness_bar || 4) * 2;
     const countProgress = effectiveTarget ? completedCases.length / effectiveTarget : 0;
     const scoreProgress = scoreBar ? average / scoreBar : 0;
     const readiness = scores.length ? Math.min(100, countProgress * 60 + scoreProgress * 40) : 0;
@@ -1974,19 +2175,29 @@ function CaseDrillLogInner() {
       await refreshCases();
       setTab('practice');
     } catch (error) {
+      nextCaseClickRef.current = false;
+      trackStepError('case-drill-log', 'choose_case', error, { mode });
       setActionError(error instanceof Error ? error.message : 'Mate could not generate a case. Please try again.');
     } finally {
       setBusyAction(null);
     }
   };
 
+  const startNextCase = (mode: 'classic' | 'guided') => {
+    if (lastOpenedCaseRef.current) {
+      trackMove('case-drill-log', 'next_case_button', { mode, properties: { from_item_id: lastOpenedCaseRef.current } });
+      nextCaseClickRef.current = true;
+    }
+    generateCase(mode);
+  };
+
   const gradeAnswer = async (overrideAnswer?: string, meta?: Record<string, unknown>) => {
     if (!activeCase || !sessionId) return;
-    const finalAnswer = (overrideAnswer ?? answer).trim();
-    if (finalAnswer.length < 80) {
-      setActionError('Give Mate a complete answer of at least 80 characters so the grade is useful.');
+    if (isMarketSizingCase && overrideAnswer === undefined && Object.keys(calculateMarketSizingResult(marketSizingDraft.components).errors).length > 0) {
+      setActionError('Fix the invalid Component values before submitting.');
       return;
     }
+    const finalAnswer = (overrideAnswer ?? (isMarketSizingCase ? serializeMarketSizingAttempt(marketSizingDraft, 'VND per year') : answer)).trim();
     const gradeMeta = meta ?? (photoUrl ? { photoUrl, mode: 'photo' } : undefined);
     setBusyAction('grade');
     setActionError('');
@@ -2003,13 +2214,24 @@ function CaseDrillLogInner() {
         setFreshRoomRanking({
           caseId: graded.id,
           key: `case-pool-room:${graded.id}`,
-          scorePercent: Math.round((Number(graded.score) / 5) * 100),
+          scorePercent: Math.round((scoreOutOfTen(graded) / 10) * 100),
           timeSeconds: Math.round((Date.now() - caseOpenedAtRef.current) / 1000),
         });
       }
       emitCasePoolGrade(graded, sessionId);
+      trackStepView('case-drill-log', 'answer', {
+        mode: casePoolModeOf(graded),
+        dedupeKey: String(graded.id),
+        properties: {
+          case_id: String(graded.id),
+          score: validScore(graded.score, scoreScaleOf(graded)),
+          score_scale: scoreScaleOf(graded),
+          trigger: 'graded',
+        },
+      });
       await refreshCases();
     } catch (error) {
+      trackStepError('case-drill-log', 'answer', error, { mode: roomMode });
       setActionError(error instanceof Error ? error.message : 'Mate could not grade this answer. Please try again.');
     } finally {
       setBusyAction(null);
@@ -2027,7 +2249,7 @@ function CaseDrillLogInner() {
       const existing = libraryLogPromisesRef.current[key];
       if (existing) return existing;
       const request = (async () => {
-        const result = await callCaseDrillServerFunction('open_library', libraryCasePayload(item), sessionId);
+        const result = await callCaseDrillServerFunction('open_library', await libraryCasePayload(item), sessionId);
         const rowId = Number(result?.case?.id);
         if (!Number.isFinite(rowId) || rowId <= 0) {
           throw new Error('Mate could not start your drill log. Please reopen the case and try again.');
@@ -2045,9 +2267,10 @@ function CaseDrillLogInner() {
 
   const handleOpenLibraryCase = useCallback(
     async (item: FullCase): Promise<void> => {
+      trackCaseOpened(item.id, 'library', item.type || null, item.difficulty || null);
       await ensureLibraryLogEntry(item);
     },
-    [ensureLibraryLogEntry],
+    [ensureLibraryLogEntry, trackCaseOpened],
   );
 
   const handleGradeLibraryCase = useCallback(
@@ -2080,8 +2303,14 @@ function CaseDrillLogInner() {
       const revealed = result.case as PracticeCase;
       setTransientCase(revealed);
       setSelectedId(revealed.id);
+      trackStepView('case-drill-log', 'answer', {
+        mode: casePoolModeOf(revealed),
+        dedupeKey: String(revealed.id),
+        properties: { case_id: String(revealed.id), trigger: 'gave_up_revealed' },
+      });
       await refreshCases();
     } catch (error) {
+      trackStepError('case-drill-log', 'answer', error, { mode: roomMode });
       setActionError(error instanceof Error ? error.message : 'Mate could not reveal this case. Please try again.');
     } finally {
       setBusyAction(null);
@@ -2157,6 +2386,7 @@ function CaseDrillLogInner() {
       setPhotoStage('review');
     } catch (error) {
       setPhotoStage('idle');
+      trackStepError('case-drill-log', 'solving_case', error, { mode: roomMode });
       setActionError(error instanceof Error ? error.message : 'Mate could not read this photo. Please try again.');
     }
   };
@@ -2172,69 +2402,45 @@ function CaseDrillLogInner() {
   // width; pure prose keeps its own readable measure inside CasePoolLibrary.
   return (
     <div className="flex h-full min-h-0 w-full flex-col bg-transparent">
-      {/* Section nav. Case Pool's tools share one native navigation level so
-          customers can move between the library, room, toolkit, and dashboard. */}
-      <div className="border-b border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-2 sm:px-6 lg:px-8 xl:px-8">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">
-          Everything in Case Pool
-        </p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5" role="tablist" aria-label="Case Pool sections">
-          {([
-            {
-              id: 'library' as Tab,
-              label: 'Case Library',
-              hint: `${CASE_POOL_LIBRARY.length} ready-made cases`,
-              icon: BookOpen,
-            },
-            { id: 'structures' as Tab, label: 'Structures', hint: 'Shared with Case Drill', icon: Network },
-            { id: 'practice' as Tab, label: 'Case Room', hint: 'A case written for you', icon: ClipboardList },
-            {
-              id: 'toolkit' as Tab,
-              label: 'Consulting Toolkit',
-              hint: `${CONSULTING_FRAMEWORKS.length} frameworks`,
-              icon: Wrench,
-            },
-            { id: 'dashboard' as Tab, label: 'Dashboard', hint: 'Your scores & progress', icon: BarChart3 },
-          ]).map(({ id, label, hint, icon: Icon }) => {
-            const isActive = tab === id;
-            return (
-              <button
-                key={id}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setTab(id)}
-                className={`flex flex-col gap-1 rounded-xl border-2 p-2 text-left transition-all ${
-                  isActive
-                    ? 'border-[var(--space-brand-primary)] bg-[var(--space-surface-accent-soft)] shadow-sm'
-                    : 'border-[var(--space-border-default)] bg-[var(--space-surface-card)] hover:border-[var(--space-brand-primary-200)] hover:bg-[var(--space-surface-card-hover)]'
-                }`}
-                data-testid={`case-pool-tab-${id}`}
-              >
-                <span className="flex items-center gap-2">
-                  <span
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg ${
-                      isActive
-                        ? 'bg-[var(--space-brand-primary)] text-[var(--space-text-on-primary)]'
-                        : 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]'
-                    }`}
-                  >
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <span
-                    className={`min-w-0 text-xs font-bold leading-4 sm:text-sm ${
-                      isActive ? 'text-[var(--space-text-brand)]' : 'text-[var(--space-text-primary)]'
-                    }`}
-                  >
-                    {label}
-                  </span>
-                </span>
-                <span className="text-[10px] leading-3 text-[var(--space-text-secondary)] sm:text-[11px] sm:leading-4">
-                  {hint}
-                </span>
-              </button>
-            );
-          })}
+      {/* Case Pool header: the Case Library is the one primary entry point and Dashboard is a
+          compact secondary action on the right, visible at every width. */}
+      <div className="border-b border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-2.5 sm:px-6 lg:px-8 xl:px-8" data-testid="case-pool-header">
+        <div className="flex items-center justify-between gap-3">
+          {tab === 'library' ? (
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]">
+                <BookOpen className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <h1 className="text-sm font-bold leading-5 text-[var(--space-text-primary)] sm:text-base">Case Library</h1>
+                <p className="truncate text-[11px] leading-4 text-[var(--space-text-secondary)]">Full cases with exhibits, tasks and worked answers</p>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setTab('library')}
+              className="inline-flex min-h-10 min-w-0 items-center gap-1.5 rounded-lg px-1 text-sm font-semibold text-[var(--space-text-brand)] hover:underline"
+              data-testid="case-pool-back-to-library"
+            >
+              <ArrowLeft className="h-4 w-4 shrink-0" />
+              <span className="truncate">Back to Case Library</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setTab(tab === 'dashboard' ? 'library' : 'dashboard')}
+            aria-pressed={tab === 'dashboard'}
+            className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg border px-3 text-xs font-semibold transition-colors ${
+              tab === 'dashboard'
+                ? 'border-[var(--space-brand-primary)] bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]'
+                : 'border-[var(--space-border-default)] bg-[var(--space-surface-card)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)] hover:text-[var(--space-text-primary)]'
+            }`}
+            data-testid="case-pool-dashboard-link"
+          >
+            <BarChart3 className="h-4 w-4" />
+            Dashboard
+          </button>
         </div>
       </div>
 
@@ -2319,12 +2525,12 @@ function CaseDrillLogInner() {
               <div className="mt-4 h-24 w-full rounded-xl bg-[var(--space-surface-muted)]" />
             </div>
             <p className="flex items-center justify-center gap-2 text-xs text-[var(--space-text-muted)]">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Mate is opening your case room…
+              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Mate is opening Case Pool…
             </p>
           </div>
         ) : fatalError ? (
           <div className="mx-auto max-w-md px-5 py-16 text-center">
-            <p className="text-sm text-[var(--space-semantic-danger)]">Couldn’t open your case room: {fatalError.message}</p>
+            <p className="text-sm text-[var(--space-semantic-danger)]">Couldn’t open Case Pool: {fatalError.message}</p>
             <button
               onClick={() => {
                 refreshCases();
@@ -2352,11 +2558,11 @@ function CaseDrillLogInner() {
                       Drilling for {programPreset.program || programPreset.company}
                     </span>{' '}
                     - Mate preset your case type to{' '}
-                    {CASE_TYPE_OPTIONS.find((option) => option.id === programPreset.caseType)?.label || 'the most relevant type'}
+                    {CASE_TYPE_OPTIONS.find((option) => option.id === programPreset.caseType)?.label || 'another relevant case type'}
                     {Array.isArray(programPreset.caseTypes) && programPreset.caseTypes.length > 1
                       ? `; also drill ${programPreset.caseTypes
                           .slice(1)
-                          .map((id) => CASE_TYPE_OPTIONS.find((option) => option.id === id)?.label || id)
+                          .map((id) => CASE_TYPE_OPTIONS.find((option) => option.id === id)?.label || 'another relevant type')
                           .join(' and ')} for this program`
                       : ''}
                     . New cases stay tailored to this program until you dismiss this.
@@ -2374,18 +2580,22 @@ function CaseDrillLogInner() {
             )}
 
             {tab === 'library' ? (
-              <CasePoolLibrary
-                sessionId={sessionId || ''}
-                extraHistory={casePracticeHistory}
-                results={libraryResults}
-                onOpen={handleOpenLibraryCase}
-                onGrade={handleGradeLibraryCase}
-                openRequest={libraryOpenRequest}
-              />
-            ) : tab === 'structures' ? (
-              <StructuresWorkspace />
-            ) : tab === 'toolkit' ? (
-              <ConsultingToolkit />
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center py-16" aria-busy="true">
+                    <Loader2 className="h-5 w-5 animate-spin text-[var(--space-brand-primary)]" />
+                  </div>
+                }
+              >
+                <CasePoolLibrary
+                  sessionId={sessionId || ''}
+                  extraHistory={casePracticeHistory}
+                  results={libraryResults}
+                  onOpen={handleOpenLibraryCase}
+                  onGrade={handleGradeLibraryCase}
+                  openRequest={libraryOpenRequest}
+                />
+              </Suspense>
             ) : tab === 'practice' ? (
               <>
                 {/* UX fix #6: the moment "Generate" fires, the previous case is
@@ -2471,7 +2681,7 @@ function CaseDrillLogInner() {
                         </div>
                         <div className="mt-4 space-y-2">
                           <button
-                            onClick={() => generateCase('classic')}
+                            onClick={() => startNextCase('classic')}
                             disabled={busyAction !== null}
                             className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.primary} disabled:cursor-not-allowed disabled:opacity-50`}
                             data-testid="button-generate-another-case"
@@ -2480,7 +2690,7 @@ function CaseDrillLogInner() {
                             {busyAction === 'generate' ? 'Building your case…' : 'Generate another case'}
                           </button>
                           <button
-                            onClick={() => generateCase('guided')}
+                            onClick={() => startNextCase('guided')}
                             disabled={busyAction !== null}
                             className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold ${tw.button.secondary} disabled:cursor-not-allowed disabled:opacity-50`}
                             data-testid="button-guided-case"
@@ -2495,7 +2705,7 @@ function CaseDrillLogInner() {
                         </p>
                       </div>
                     </aside>
-                    <div className="min-w-0 flex-1 space-y-4">
+                    <div className="min-w-0 flex-1 space-y-4" onInput={() => trackRoomSolving('answer_typed', null)}>
                     <div className={`${tw.card.default} rounded-2xl p-3.5 sm:p-5`}>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className={`${tw.badge.default} ${tw.badge.primary}`}>{activeCase.case_type}</span>
@@ -2511,24 +2721,25 @@ function CaseDrillLogInner() {
                               <Flag className="h-3 w-3" /> Skipped · not scored
                             </span>
                           ) : (
-                            <span className={`${tw.badge.default} ${tw.badge.success}`}>Graded {activeCase.score}/5</span>
+                            <span className={`${tw.badge.default} ${scoreBand(Number(activeCase.score) || 0, scoreScaleOf(activeCase)).badgeClassName}`}>Graded {activeCase.score}/{scoreScaleOf(activeCase)} · {scoreBand(Number(activeCase.score) || 0, scoreScaleOf(activeCase)).label}</span>
                           ))}
                       </div>
-                      <h2 className="mt-2 break-words text-base font-bold leading-snug text-[var(--space-text-primary)] sm:mt-3 sm:text-lg">{activeCase.case_title}</h2>
+                      <h2 className="mt-2 break-words text-base font-bold leading-snug text-[var(--space-text-primary)] sm:mt-3 sm:text-lg">{nfCase(activeCase.case_title)}</h2>
                       {activeCase.practice_focus && (
-                        <p className="mt-1 text-xs font-medium text-[var(--space-text-brand)]">Focus: {activeCase.practice_focus}</p>
+                        <p className="mt-1 text-xs font-medium text-[var(--space-text-brand)]">Focus: {nfCase(activeCase.practice_focus)}</p>
                       )}
                       <div className="mt-4 rounded-xl bg-[var(--space-surface-muted)] p-4">
-                        <p className="whitespace-pre-wrap text-[13px] leading-5 text-[var(--space-text-primary)] sm:text-sm sm:leading-6">{activeCase.prompt}</p>
+                        <p className="whitespace-pre-wrap text-[13px] leading-5 text-[var(--space-text-primary)] sm:text-sm sm:leading-6">{nfCase(learnerFacingStoredPrompt(activeCase.prompt))}</p>
                       </div>
                       {activeCase.case_data && (
                         <div className="mt-4">
                           <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Case facts & data</h3>
-                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]">{activeCase.case_data}</p>
+                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]">{nfCase(activeCase.case_data)}</p>
                         </div>
                       )}
                       {activeExhibitChart && <ExhibitChartCard chart={activeExhibitChart} />}
-                      {activeCase.status === 'pending' && (
+                      {/* A retried case already has a grade, and the server only reveals ungraded cases. */}
+                      {activeCase.status === 'pending' && !activeMeta.grade_report && (
                         <div className="mt-4 flex flex-col gap-2 border-t border-[var(--space-border-default)] pt-3 sm:flex-row sm:items-center sm:justify-between">
                           <p className="text-[11px] leading-4 text-[var(--space-text-muted)]">
                             Completely stuck? You can reveal Mate’s model answer - the case stays in your history as skipped and never counts toward your grades.
@@ -2592,27 +2803,46 @@ function CaseDrillLogInner() {
                               <MessageSquareText className="h-3.5 w-3.5 shrink-0 text-[var(--space-brand-primary)]" />
                               <h3 className="text-[13px] font-semibold text-[var(--space-text-primary)] sm:text-sm">Your answer</h3>
                             </div>
-                            <div className="flex w-full rounded-lg border border-[var(--space-border-default)] p-0.5 sm:w-auto">
-                              {([
-                                { id: 'type' as const, label: 'Type it', icon: PenLine },
-                                { id: 'photo' as const, label: 'From a photo', icon: Camera },
-                              ]).map(({ id, label, icon: Icon }) => (
-                                <button
-                                  key={id}
-                                  onClick={() => setAnswerMode(id)}
-                                  className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
-                                    answerMode === id
-                                      ? 'bg-[var(--space-brand-primary)] text-[var(--space-text-on-primary)]'
-                                      : 'text-[var(--space-text-muted)] hover:text-[var(--space-text-secondary)]'
-                                  }`}
-                                >
-                                  <Icon className="h-3.5 w-3.5" />
-                                  {label}
-                                </button>
-                              ))}
-                            </div>
+                            {!isMarketSizingCase ? (
+                              <div className="flex w-full rounded-lg border border-[var(--space-border-default)] p-0.5 sm:w-auto">
+                                {([
+                                  { id: 'type' as const, label: 'Type it', icon: PenLine },
+                                  { id: 'photo' as const, label: 'From a photo', icon: Camera },
+                                ]).map(({ id, label, icon: Icon }) => (
+                                  <button
+                                    key={id}
+                                    onClick={() => setAnswerMode(id)}
+                                    className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                                      answerMode === id
+                                        ? 'bg-[var(--space-brand-primary)] text-[var(--space-text-on-primary)]'
+                                        : 'text-[var(--space-text-muted)] hover:text-[var(--space-text-secondary)]'
+                                    }`}
+                                  >
+                                    <Icon className="h-3.5 w-3.5" />
+                                    {label}
+                                  </button>
+                                ))}
+                              </div>
+                            ) : null}
                           </div>
-                          {answerMode === 'type' ? (
+                          {isMarketSizingCase ? (
+                            <>
+                              <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">Build the issue tree first, then add determinants to Components. The tree is saved with your attempt but never graded.</p>
+                              <div className="mt-4">
+                                <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setActionError(''); }} answerUnit="VND per year" disabled={busyAction === 'grade'} />
+                              </div>
+                              <div className="mt-3 flex justify-end">
+                                <button
+                                  onClick={() => void gradeAnswer()}
+                                  disabled={busyAction !== null}
+                                  className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold sm:inline-flex sm:w-auto sm:px-5 sm:py-3 sm:text-sm ${tw.button.primary} disabled:cursor-not-allowed disabled:opacity-40`}
+                                >
+                                  {busyAction === 'grade' ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
+                                  {busyAction === 'grade' ? 'Mate is grading…' : 'Submit for Mate’s grade'}
+                                </button>
+                              </div>
+                            </>
+                          ) : answerMode === 'type' ? (
                             <>
                               <p className="mt-1 text-xs text-[var(--space-text-muted)]">
                                 Show your structure, calculations, reasoning, and final recommendation. Clear beats long.
@@ -2631,10 +2861,10 @@ function CaseDrillLogInner() {
                                 className={`${tw.input.base} ${tw.input.default} mt-4 min-h-56 resize-y text-sm leading-6`}
                               />
                               <div className="mt-3 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                <span className="text-[11px] text-[var(--space-text-muted)]">{answer.trim().length} characters · 80 minimum</span>
+                                <span className="text-[11px] text-[var(--space-text-muted)]">{answer.trim().length} characters · Empty or near-empty submissions score 0–1/10</span>
                                 <button
                                   onClick={() => gradeAnswer()}
-                                  disabled={busyAction !== null || answer.trim().length < 80}
+                                  disabled={busyAction !== null}
                                   className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-[13px] font-semibold sm:inline-flex sm:w-auto sm:px-5 sm:py-3 sm:text-sm ${tw.button.primary} disabled:cursor-not-allowed disabled:opacity-40`}
                                 >
                                   {busyAction === 'grade' ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
@@ -2746,16 +2976,44 @@ function CaseDrillLogInner() {
                       )
                     ) : (
                       <>
-                        <GradeReport practiceCase={activeCase} />
-                        {freshRoomRanking && freshRoomRanking.caseId === activeCase.id && !activeMeta.skipped ? (
-                          <PercentileRankingWidget
-                            className="mt-3"
-                            app="case_pool"
-                            scorePercent={freshRoomRanking.scorePercent}
-                            timeSeconds={freshRoomRanking.timeSeconds}
-                            submissionKey={freshRoomRanking.key}
-                          />
-                        ) : null}
+                        <GradeReport
+                          practiceCase={activeCase}
+                          onRetry={activeMeta.skipped ? undefined : () => {
+                            setConfirmRoomRedo(false);
+                            setAnswer('');
+                            setMarketSizingDraft(createInitialMarketSizingDraft());
+                            setTransientCase({ ...activeCase, status: 'pending' });
+                            setAnswerMode('type');
+                            setActionError('');
+                            resetPhoto();
+                            setFreshRoomRanking(null);
+                            caseOpenedAtRef.current = Date.now();
+                          }}
+                          onNextCase={() => startNextCase(activeMeta.mode === 'guided' ? 'guided' : 'classic')}
+                          extras={freshRoomRanking && freshRoomRanking.caseId === activeCase.id && !activeMeta.skipped ? (
+                            <PercentileRankingWidget
+                              app="case_pool"
+                              scorePercent={freshRoomRanking.scorePercent}
+                              timeSeconds={freshRoomRanking.timeSeconds}
+                              submissionKey={freshRoomRanking.key}
+                            />
+                          ) : undefined}
+                        />
+                        <div className="mt-3 flex flex-col gap-2 pb-20 sm:flex-row sm:pb-0">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setConfirmRoomRedo(false);
+                              setSelectedId(null);
+                              setTransientCase(null);
+                              setTab('library');
+                            }}
+                            className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.secondary}`}
+                            data-testid="button-back-room-library"
+                          >
+                            <ArrowLeft className="h-4 w-4" /> Back to case library
+                          </button>
+                        </div>
                       </>
                     )}
                     </div>
@@ -2789,12 +3047,12 @@ function CaseDrillLogInner() {
                   <div className={`${tw.card.default} rounded-xl p-4`}>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Average grade</p>
                     <p className="mt-1 text-2xl font-bold text-[var(--space-text-primary)]">
-                      {stats.scores.length ? stats.average.toFixed(1) : '-'}<span className="text-sm font-normal text-[var(--space-text-muted)]">/5</span>
+                      {stats.scores.length ? stats.average.toFixed(1) : '-'}<span className="text-sm font-normal text-[var(--space-text-muted)]">/10{stats.scores.length ? ` · ${scoreBand(stats.average, 10).label}` : ''}</span>
                     </p>
                     <div className="mt-2">
                       <ScoreGauge value={stats.scores.length ? stats.average : 0} target={stats.scoreBar} />
                     </div>
-                    <p className="mt-1 text-xs text-[var(--space-text-secondary)]">Target bar {stats.scoreBar.toFixed(1)}/5 - the tick on the gauge</p>
+                    <p className="mt-1 text-xs text-[var(--space-text-secondary)]">Target bar {stats.scoreBar.toFixed(1)}/10 - the tick on the gauge</p>
                   </div>
                   <div className={`${tw.card.default} rounded-xl p-4`}>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Trend</p>
@@ -2820,22 +3078,6 @@ function CaseDrillLogInner() {
                 </div>
 
                 <div className={`${tw.card.default} rounded-2xl p-3.5 sm:p-5`}>
-                  <div className="flex items-center gap-4">
-                    <ProgressRing percent={stats.readiness} label="Interview readiness" />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Interview readiness</p>
-                      <h2 className="mt-1 text-lg font-bold text-[var(--space-text-primary)]">
-                        {Math.round(stats.readiness)}% ready
-                      </h2>
-                      <p className="mt-0.5 text-xs text-[var(--space-text-muted)]">Volume + grade quality</p>
-                    </div>
-                  </div>
-                  <p className="mt-3 text-xs leading-5 text-[var(--space-text-secondary)]">
-                    This bar closes as you finish your required cases and lift your average toward {stats.scoreBar.toFixed(1)}/5. It is a practice signal, not a hiring guarantee.
-                  </p>
-                </div>
-
-                <div className={`${tw.card.default} rounded-2xl p-3.5 sm:p-5`}>
                   <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">Average grade trend</h3>
                   <div className="mt-4">
                     <TrendSparkline values={stats.averageTrend} />
@@ -2844,7 +3086,7 @@ function CaseDrillLogInner() {
 
                 <div className={`${tw.card.default} rounded-2xl p-3.5 sm:p-5`}>
                   <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">Performance by case type</h3>
-                  <p className="mt-1 text-xs text-[var(--space-text-muted)]">Bar height = your average grade for that type, out of 5 - hover or tap a bar for the exact numbers. Real interviews mix case types - “Mix it up” automatically fills the gaps.</p>
+                  <p className="mt-1 text-xs text-[var(--space-text-muted)]">Bar height = your normalized average grade for that type, out of 10. Historical /5 attempts keep their original display and are normalized only in aggregate charts.</p>
                   {typeMix.length === 0 ? (
                     <p className="mt-3 text-xs text-[var(--space-text-muted)]">No cases yet - your breakdown appears after your first drill.</p>
                   ) : (
@@ -2869,14 +3111,14 @@ function CaseDrillLogInner() {
                 <div>
                   <div className="mb-2 flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">Case history</h3>
-                    <button onClick={() => generateCase('classic')} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs ${tw.button.secondary}`}>
-                      <Sparkles className="h-3.5 w-3.5" /> New case
+                    <button onClick={() => setTab('library')} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs ${tw.button.secondary}`} data-testid="button-dashboard-open-library">
+                      <BookOpen className="h-3.5 w-3.5" /> Find a case
                     </button>
                   </div>
                   {(cases || []).length === 0 ? (
                     <div className={`${tw.card.default} rounded-xl p-6 text-center`}>
                       <p className="text-sm font-medium text-[var(--space-text-primary)]">No cases yet</p>
-                      <p className="mt-1 text-xs text-[var(--space-text-muted)]">Generate your first case to start the trend line.</p>
+                      <p className="mt-1 text-xs text-[var(--space-text-muted)]">Solve a case from the Case Library to start the trend line.</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -2904,14 +3146,14 @@ function CaseDrillLogInner() {
                               caseMeta(item).skipped ? (
                                 <Flag className="h-4 w-4 text-[var(--space-semantic-warning)]" />
                               ) : (
-                                <span className="text-sm font-bold text-[var(--space-text-brand)]">{item.score}/5</span>
+                                <span className={`rounded-lg px-1.5 py-1 text-center text-[10px] font-bold ${scoreBand(Number(item.score) || 0, scoreScaleOf(item)).badgeClassName}`}>{item.score}/{scoreScaleOf(item)}<span className="block">{scoreBand(Number(item.score) || 0, scoreScaleOf(item)).label}</span></span>
                               )
                             ) : (
                               <ClipboardList className="h-4 w-4 text-[var(--space-text-muted)]" />
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold text-[var(--space-text-primary)]">{item.case_title}</p>
+                            <p className="truncate text-sm font-semibold text-[var(--space-text-primary)]">{clarifyUnitText(item.case_title)}</p>
                             <p className="mt-0.5 text-[11px] text-[var(--space-text-muted)]">
                               {caseMeta(item).mode === 'guided'
                                 ? 'Guided · '
@@ -3126,65 +3368,120 @@ function cleanStringList(value: unknown): string[] {
     .filter((item) => item.length > 0);
 }
 
-function GradeReport({ practiceCase }: { practiceCase: PracticeCase }) {
-  const breakdown = asObject(practiceCase.score_breakdown_json);
-  const recommendations = normalizeActionPlan(practiceCase.recommendations_json);
+function GradeReport({
+  practiceCase,
+  onRetry,
+  onNextCase,
+  extras,
+}: {
+  practiceCase: PracticeCase;
+  onRetry?: () => void;
+  onNextCase?: () => void;
+  extras?: ReactNode;
+}) {
+  const breakdown = clarifyUnitsDeep(asObject(practiceCase.score_breakdown_json));
+  const recommendations = clarifyUnitsDeep(normalizeActionPlan(practiceCase.recommendations_json)).slice(0, 3);
   const meta = caseMeta(practiceCase);
+  const isMarketSizingReport = meta.case_type_id === 'market_sizing' || Boolean(meta.market_sizing_format) || /market sizing/i.test(String(practiceCase.case_type || ''));
+  const nf = (value: unknown) => clarifyUnitText(isMarketSizingReport ? formatNumbersInText(value) : String(value ?? ''));
+  const savedMarketSizingDraft = parseMarketSizingAttempt(practiceCase.answer_text);
   // v12 grade report: model answer + delta live under meta.grade_report.
   // Older graded cases have none of it - those sections simply don't render.
-  const report = asObject(meta.grade_report);
+  const report = clarifyUnitsDeep(asObject(meta.grade_report));
   const modelAnswer = asObject(report.model_answer);
-  const modelFramework = String(modelAnswer.framework || '').trim();
+  const modelFramework = isMarketSizingReport ? '' : String(modelAnswer.framework || '').trim();
   const modelFindings = cleanStringList(modelAnswer.key_findings);
-  const modelRecommendation = String(modelAnswer.recommendation || '').trim();
+  const modelRecommendation = isMarketSizingReport ? '' : String(modelAnswer.recommendation || '').trim();
   const hasModelAnswer = Boolean(modelFramework || modelFindings.length > 0 || modelRecommendation);
   const delta = asObject(report.delta);
   const deltaMatched = cleanStringList(delta.matched);
   const deltaMissing = cleanStringList(delta.missing);
-  const hasDelta = deltaMatched.length > 0 || deltaMissing.length > 0;
-  const gradeSummary = String(report.summary || '').trim();
+  const visibleScoringCriteria = Array.isArray(asObject(report.scoring).criteria)
+    ? asObject(report.scoring).criteria
+        .filter((criterion: any) => !isMarketSizingReport || !['scope', 'assumptions', 'reasonableness', 'interpretation_check', 'assumption_rationale'].includes(String(criterion?.key || '')))
+        .map((criterion: any) => ({
+          key: String(criterion.key || ''),
+          label: String(criterion.label || ''),
+          weight: Number(criterion.weight) || 0,
+          score: Number(criterion.score) || 0,
+          evidence: String(criterion.evidence || ''),
+          reason: String(criterion.reason || ''),
+          strongerAnswer: String(criterion.stronger_answer || ''),
+        }))
+    : [];
+  const visibleOverallScore = isMarketSizingReport && visibleScoringCriteria.length
+    ? deriveOverallScore(visibleScoringCriteria)
+    : Number(asObject(report.scoring).overall_score) || Number(practiceCase.score) || 0;
+  const workedAnswerUnavailable = String(report.worked_answer_status || '') === 'unavailable' || !hasModelAnswer;
+  const rankedCriteria = visibleScoringCriteria.slice().sort((a, b) => a.score - b.score || b.weight - a.weight);
+  const feedbackPriorities = buildFeedbackPriorities({
+    evidenceToRevisit: cleanStringList(report.evidence_to_revisit),
+    legacyEvidence: cleanStringList(report.evidence_overlooked_or_misinterpreted),
+    nextStep: report.next_step,
+    furtherImprovements: Array.isArray(report.further_improvements) ? report.further_improvements : [],
+    legacyRecommendations: recommendations,
+    fallbackActions: rankedCriteria.map((item) => ({ action: item.strongerAnswer, why: item.reason })),
+  });
 
-  // Skipped/revealed case: show the model answer instead of a grade and make
-  // it unmistakable that this one is excluded from performance metrics.
+  const answered = savedMarketSizingDraft
+    ? savedMarketSizingDraft.components.some((component: any) => String(component?.value ?? '').trim()) || Boolean(savedMarketSizingDraft.manualResult?.trim())
+    : hasLearnerResponse(practiceCase.answer_text);
+  const nextCaseOption = onNextCase
+    ? { kind: 'next-question' as const, label: 'Generate a new case', detail: `Practise another ${practiceCase.case_type || 'case'} built for you.`, onSelect: onNextCase }
+    : null;
+
+  // Skipped/revealed case: the revealed model answer replaces a grade, and the
+  // case stays excluded from every performance metric.
   if (meta.skipped) {
+    const revealed = typeof meta.model_answer === 'string' ? clarifyUnitText(meta.model_answer.trim()) : '';
     return (
-      <div className={`${tw.card.default} rounded-2xl p-3.5 sm:p-5`} data-testid="skipped-case-report">
-        <div className="flex flex-col gap-3 border-b border-[var(--space-border-default)] pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Answer revealed</p>
-            <h3 className="mt-1 text-lg font-bold text-[var(--space-text-primary)]">Skipped - this one isn’t scored</h3>
-            <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">
-              It stays in your history so you can review it, but it doesn’t count toward your average grade, trend, or readiness.
-            </p>
-          </div>
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[var(--space-surface-muted)] text-[var(--space-text-muted)]">
-            <Flag className="h-6 w-6" />
-          </div>
-        </div>
-        {typeof meta.model_answer === 'string' && meta.model_answer && (
-          <div className="mt-4">
-            <h4 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-              <Eye className="h-3.5 w-3.5" /> Mate’s model answer
-            </h4>
-            <p className="mt-2 whitespace-pre-wrap rounded-xl bg-[var(--space-surface-muted)] p-4 text-sm leading-6 text-[var(--space-text-secondary)]">
-              {String(meta.model_answer)}
-            </p>
-          </div>
-        )}
-        <p className="mt-4 text-xs leading-5 text-[var(--space-text-brand)]">
-          Study the structure, then generate a fresh case of the same type - solving one yourself is what moves your grade.
-        </p>
+      <div data-testid="skipped-case-report">
+        <CaseResultView
+          score={null}
+          scale={scoreScaleOf(practiceCase)}
+          outcome="not-answered"
+          completedOn={practiceCase.completed_on}
+          summaryNote="Answer revealed. This case stays in your history but never counts toward your average grade or trend."
+          feedback={{ worked: [], failed: ['You revealed the answer before submitting, so nothing was graded. Solving one yourself is what moves your grade.'] }}
+          workedAnswer={revealed ? { ...emptyWorkedAnswer('example'), approach: [revealed], note: 'One strong way to solve this case, not the only acceptable answer.' } : null}
+          unavailableReason={`No worked answer was stored for case #${practiceCase.id}.`}
+          nextAction={chooseNextAction('not-answered', { 'next-question': nextCaseOption })}
+          format={nf}
+          testId="case-room-result"
+        />
       </div>
     );
   }
 
+  const legacyCriteria = Object.entries(DIMENSION_LABELS)
+    .map(([key, label]) => {
+      const item = asObject(breakdown[key]);
+      return { key, label, weight: 25, score: (Number(item.score) || 0) * 2, evidence: '', reason: String(item.evidence || ''), strongerAnswer: String(item.next_step || '') };
+    })
+    .filter((item) => item.reason || item.score > 0);
+  const resultCriteria = visibleScoringCriteria.length ? visibleScoringCriteria : legacyCriteria;
+  const outcome = resultOutcome(visibleOverallScore, scoreScaleOf(practiceCase), { answered });
+  const focus = feedbackPriorities.nextStep?.action || '';
+  const workedAnswer = workedAnswerUnavailable ? null : roomCaseWorkedAnswer(modelAnswer, { hideStructure: isMarketSizingReport });
+
   return (
-    <div className={`${tw.card.default} rounded-2xl p-3.5 sm:p-5`}>
-      <div className="flex flex-col gap-3 border-b border-[var(--space-border-default)] pb-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Mate’s grade</p>
-          <h3 className="mt-1 text-lg font-bold text-[var(--space-text-primary)]">Your next rep starts here</h3>
-          {(meta.mode === 'guided' || meta.photo_url) && (
+    <div data-testid="case-room-report">
+      <CaseResultView
+        score={visibleOverallScore}
+        scale={scoreScaleOf(practiceCase)}
+        outcome={outcome}
+        completedOn={practiceCase.completed_on}
+        feedback={buildReasoningFeedback({
+          criteria: resultCriteria,
+          matched: isMarketSizingReport ? [] : deltaMatched,
+          missing: isMarketSizingReport ? [] : deltaMissing,
+          evidenceToRevisit: [...cleanStringList(report.evidence_to_revisit), ...cleanStringList(report.evidence_overlooked_or_misinterpreted)],
+          exclude: focus ? [focus] : [],
+        })}
+        criteria={resultCriteria}
+        learnerResponse={answered ? (
+          <div>
+            {(meta.mode === 'guided' || meta.photo_url) && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
               {meta.mode === 'guided' && (
                 <span className={`${tw.badge.default} ${tw.badge.primary} inline-flex items-center gap-1`}>
@@ -3202,147 +3499,27 @@ function GradeReport({ practiceCase }: { practiceCase: PracticeCase }) {
                 </a>
               )}
             </div>
-          )}
-        </div>
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--space-brand-primary)] text-[var(--space-text-on-primary)]">
-          <span className="text-lg font-bold sm:text-xl">{practiceCase.score}</span><span className="text-[11px] sm:text-xs">/5</span>
-        </div>
-      </div>
-
-      {gradeSummary && (
-        <p className="mt-4 rounded-xl bg-[var(--space-surface-accent-soft)] p-3 text-sm leading-6 text-[var(--space-text-primary)]" data-testid="grade-summary">
-          {gradeSummary}
-        </p>
-      )}
-
-      {typeof practiceCase.answer_text === 'string' && practiceCase.answer_text.trim() && (
-        <div className="mt-4" data-testid="your-answer-summary">
-          <h4 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-            <MessageSquareText className="h-3.5 w-3.5" /> Your answer
-          </h4>
-          <p className="mt-2 max-h-44 overflow-y-auto whitespace-pre-wrap rounded-xl bg-[var(--space-surface-muted)] p-4 text-xs leading-5 text-[var(--space-text-secondary)]">
-            {practiceCase.answer_text}
-          </p>
-        </div>
-      )}
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {Object.entries(DIMENSION_LABELS).map(([key, label]) => {
-          const item = asObject(breakdown[key]);
-          return (
-            <div key={key} className="rounded-xl bg-[var(--space-surface-muted)] p-4">
-              <div className="flex items-center justify-between gap-2">
-                <h4 className="text-xs font-bold text-[var(--space-text-primary)]">{label}</h4>
-                <span className={`${tw.badge.default} ${Number(item.score) >= 4 ? tw.badge.success : tw.badge.warning}`}>
-                  {item.score || '-'}/5
-                </span>
-              </div>
-              <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]">{item.evidence || 'No evidence returned.'}</p>
-              <p className="mt-2 text-xs font-medium leading-5 text-[var(--space-text-brand)]">Next: {item.next_step || 'Make this clearer in your next answer.'}</p>
-            </div>
-          );
+            )}
+            {savedMarketSizingDraft ? (
+              <MarketSizingAttemptSummary value={savedMarketSizingDraft} answerUnit="VND per year" />
+            ) : (
+              <p className="max-h-96 overflow-y-auto whitespace-pre-wrap break-words rounded-xl bg-[var(--space-surface-muted)] p-3 text-sm leading-6 text-[var(--space-text-secondary)]" data-testid="your-answer-summary">
+                {practiceCase.answer_text}
+              </p>
+            )}
+          </div>
+        ) : undefined}
+        workedAnswer={workedAnswer}
+        unavailableReason={`Mate could not load a grounded worked answer for case #${practiceCase.id}.`}
+        retry={onRetry ? retryAction(onRetry, { focus }) : null}
+        nextAction={chooseNextAction(outcome, {
+          'next-question': nextCaseOption,
         })}
-      </div>
-
-      {hasModelAnswer && (
-        <div className="mt-4 rounded-2xl border-2 border-[var(--space-brand-primary)] p-4" data-testid="model-answer-card">
-          <h4 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--space-text-brand)]">
-            <Lightbulb className="h-3.5 w-3.5" /> Model Answer
-          </h4>
-          {modelFramework && (
-            <div className="mt-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Framework</p>
-              <p className="mt-1 flex gap-1.5 text-sm leading-6 text-[var(--space-text-primary)]">
-                <Network className="mt-1 h-3.5 w-3.5 shrink-0 text-[var(--space-brand-primary)]" />
-                <span>{modelFramework}</span>
-              </p>
-            </div>
-          )}
-          {modelFindings.length > 0 && (
-            <div className="mt-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Key findings</p>
-              <ul className="mt-1.5 space-y-1.5">
-                {modelFindings.map((finding, index) => (
-                  <li key={`${finding}-${index}`} className="flex gap-2 text-sm leading-6 text-[var(--space-text-secondary)]">
-                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--space-brand-primary)]" aria-hidden />
-                    <span>{finding}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {modelRecommendation && (
-            <div className="mt-3 rounded-xl bg-[var(--space-surface-accent-soft)] p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Recommendation</p>
-              <p className="mt-1 text-sm leading-6 text-[var(--space-text-primary)]">{modelRecommendation}</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {hasDelta && (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2" data-testid="delta-comparison">
-          <div className="rounded-xl border border-[var(--space-border-default)] p-4">
-            <h4 className="flex items-center gap-1.5 text-xs font-bold text-[var(--space-semantic-success)]">
-              <CheckCircle2 className="h-3.5 w-3.5" /> What you got right
-            </h4>
-            {deltaMatched.length > 0 ? (
-              <ul className="mt-2 space-y-1.5">
-                {deltaMatched.map((item, index) => (
-                  <li key={`${item}-${index}`} className="flex gap-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">
-                    <Check className="mt-0.5 h-3 w-3 shrink-0 text-[var(--space-semantic-success)]" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-2 text-xs leading-5 text-[var(--space-text-muted)]">
-                Nothing matched the model answer this time - check what you missed on the right to see where to start.
-              </p>
-            )}
-          </div>
-          <div className="rounded-xl border border-[var(--space-border-default)] p-4">
-            <h4 className="flex items-center gap-1.5 text-xs font-bold text-[var(--space-semantic-warning)]">
-              <XCircle className="h-3.5 w-3.5" /> What you missed
-            </h4>
-            {deltaMissing.length > 0 ? (
-              <ul className="mt-2 space-y-1.5">
-                {deltaMissing.map((item, index) => (
-                  <li key={`${item}-${index}`} className="flex gap-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">
-                    <ArrowRight className="mt-0.5 h-3 w-3 shrink-0 text-[var(--space-semantic-warning)]" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-2 text-xs leading-5 text-[var(--space-text-muted)]">
-                No major gaps compared to the model answer - keep it up!
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {recommendations.length > 0 && (
-        <div className="mt-5">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Action plan</h4>
-          <ol className="mt-3 space-y-3">
-            {recommendations.map((item, index) => (
-              <li key={`${item.action}-${index}`} className="flex gap-2.5">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--space-surface-accent-soft)] text-[10px] font-bold text-[var(--space-text-brand)]">{index + 1}</span>
-                <div className="min-w-0">
-                  <p className="text-sm leading-5 text-[var(--space-text-secondary)]">{item.action}</p>
-                  {item.why && (
-                    <p className="mt-1 text-xs leading-5 text-[var(--space-text-brand)]">
-                      <span className="font-bold">Why?</span> {item.why}
-                    </p>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
+        history={normalizeAttemptHistory(meta.attempt_history)}
+        extras={extras}
+        format={nf}
+        testId="case-room-result"
+      />
     </div>
   );
 }
@@ -3364,7 +3541,9 @@ function GuidedWalkthrough({
 }) {
   const meta = caseMeta(practiceCase);
   const walkthrough = asObject(meta.walkthrough);
-  const steps = asList(walkthrough.steps);
+  const steps = asList(walkthrough.steps).map((entry) => (
+    entry && typeof entry === 'object' && !Array.isArray(entry) ? { ...clarifyUnitsDeep(entry), response: entry.response } : entry
+  ));
   const currentIndex = Math.min(steps.length, GUIDED_STEPS.length - 1);
   const done = steps.length >= GUIDED_STEPS.length;
   const [input, setInput] = useState('');
@@ -3396,6 +3575,7 @@ function GuidedWalkthrough({
       onUpdated(result.case as PracticeCase);
       setInput('');
     } catch (error) {
+      trackStepError('case-drill-log', 'solving_case', error, { mode: 'guided' });
       onError(error instanceof Error ? error.message : 'Mate could not review this step. Please try again.');
     } finally {
       setSending(false);
@@ -3429,11 +3609,27 @@ function GuidedWalkthrough({
             <div className="rounded-xl border border-[var(--space-border-default)] p-3">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Mate’s coaching</p>
-                <span className={`${tw.badge.default} ${Number(entry.step_score) >= 4 ? tw.badge.success : tw.badge.warning}`}>
-                  {entry.step_score || '-'}/5
+                <span className={`${tw.badge.default} ${scoreBand(Number(entry.step_score) || 0, Number(asObject(entry.step_scoring).scale) === 10 ? 10 : 5).badgeClassName}`}>
+                  {entry.step_score ?? '-'}/{Number(asObject(entry.step_scoring).scale) === 10 ? 10 : 5} · {scoreBand(Number(entry.step_score) || 0, Number(asObject(entry.step_scoring).scale) === 10 ? 10 : 5).label}
                 </span>
               </div>
               <p className="mt-1.5 text-sm leading-6 text-[var(--space-text-secondary)]">{String(entry.feedback || '')}</p>
+              {Number(asObject(entry.step_scoring).scale) === 10 && Array.isArray(asObject(entry.step_scoring).criteria) ? (
+                <CriterionScoreTable
+                  overallScore={Number(asObject(entry.step_scoring).overall_score) || 0}
+                  criteria={asObject(entry.step_scoring).criteria.map((criterion: any) => ({
+                    key: String(criterion.key || ''),
+                    label: String(criterion.label || ''),
+                    weight: Number(criterion.weight) || 0,
+                    score: Number(criterion.score) || 0,
+                    evidence: String(criterion.evidence || ''),
+                    reason: String(criterion.reason || ''),
+                    strongerAnswer: String(criterion.stronger_answer || ''),
+                  }))}
+                  title={`${GUIDED_STEPS[index]?.label || 'Section'} rubric`}
+                  defaultOpen={false}
+                />
+              ) : null}
               {asList(entry.strengths).length > 0 && (
                 <ul className="mt-2 space-y-1">
                   {asList(entry.strengths).map((item, itemIndex) => (
@@ -3468,7 +3664,7 @@ function GuidedWalkthrough({
           <div className="space-y-2 border-t border-[var(--space-border-default)] pt-4 first:border-t-0 first:pt-0">
             <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">{GUIDED_STEPS[currentIndex].label}</p>
             <div className="rounded-xl bg-[var(--space-surface-accent-soft)] p-3 text-sm leading-6 text-[var(--space-text-primary)]">
-              {String(walkthrough.next_question || GUIDED_STEPS[currentIndex].fallback)}
+              {clarifyUnitText(String(walkthrough.next_question || GUIDED_STEPS[currentIndex].fallback))}
             </div>
             <FrameworkToolkit
               caseTypeLabel={practiceCase.case_type}

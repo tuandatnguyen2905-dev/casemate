@@ -1,8 +1,11 @@
 /**
- * casePoolLibrary.ts - 114 prebuilt full consulting cases for Case Pool.
+ * casePoolLibrary.ts - 202 stored full-case definitions for Case Pool.
  *
- * The preserved 100-case core is deterministic here. Fourteen eligible Case
- * Journeys are adapted below by reference to their existing shared records,
+ * The learner selector exposes 173: 24 CM-MS Market Sizing cases, 40 CM-CRE Creativity cases,
+ * 85 retained core/Journey cases, and 24 CM-CALC Cycle 1 adaptations. Twenty-nine retired calculation-focus records
+ * remain addressable for saved history. The preserved 100-case core is
+ * deterministic here. Fourteen eligible Case Journeys are adapted below by
+ * reference to their existing shared records,
  * drills, exhibits, and model sections. data/case-pool-library.json is the
  * audit manifest because the space compiler cannot import it at runtime.
  *
@@ -39,7 +42,29 @@ import {
   casePoolCaseIdForJourney,
   drillsInJourney,
 } from './caseJourneys';
+import { ALL_LIBRARY_QUESTIONS, DRILL_SOURCE_CASE_AUDIT, industryTermNotesForText } from './skillQuestionLibrary';
+import { CHARTS_EASY_CASE_POOL_CASES } from './chartsEasyBank';
+import { STRUCTURES_EASY_CASE_POOL_CASES } from './structuresEasyBank';
+import { toLearnerFacingPoolCase } from './learnerFacingContent';
+import { stripPoolCaseMcq, validateCasePoolOpenEnded } from './casePoolMcqGuard';
+import { calculationFrameworks, creativityApproachTips, marketSizingApproachTips } from './caseGuidance';
 import type { LibraryExhibit, LibraryQuestion, LibrarySkill } from './skillQuestionLibrary';
+import { CALCULATION_CYCLE_1_CASES, calculationWorkedItems } from './calculationsCycle1';
+import type { CalculationWorkedItem } from './calculationWorkedAnswers';
+import { CREATIVITY_CYCLE_2_CASES, creativityRubricForCase, type CreativityCategory } from './creativityCycle2';
+import {
+  MARKET_SIZING_CYCLE_3_CASES,
+  MARKET_SIZING_FORMAT_LABELS,
+  type MarketSizingFormat,
+} from './marketSizingCycle3';
+import {
+  MARKET_SIZING_BANK_ACCEPT_ALTERNATIVES,
+  MARKET_SIZING_BANK_CASES,
+  MARKET_SIZING_BANK_FORMAT,
+  marketSizingBankMeta,
+  marketSizingBankSourceId,
+  type MarketSizingBankMeta,
+} from './marketSizingBank';
 
 export type { CaseDifficulty, CaseExhibit } from './caseLibraryShared';
 
@@ -70,8 +95,13 @@ export interface FullCase {
   difficulty: CaseDifficulty;
   situation: string;
   key_question: string;
+  /** Retired. Case Pool is open-ended: a case never carries answer choices, and the import guard drops any that appear. */
+  answer_choices?: undefined;
   data_exhibits: CaseExhibit[];
+  /** Domain Knowledge toolkit names that fit the case (see lib/caseGuidance.ts); empty hides "Suggested Framework". */
   framework_hints: string[];
+  /** Case-specific reading or workflow tips shown under "How to approach". */
+  approach_tips?: string[];
   model_answer: CaseModelAnswer;
   tags: string[];
   objective?: string;
@@ -84,7 +114,193 @@ export interface FullCase {
   journey_exhibits?: LibraryExhibit[];
   source_status?: 'original-complete' | 'source-aligned';
   data_status?: 'shared-validated';
+  source_case_id?: string;
+  review_status?: 'active' | 'retired';
+  retired_version?: string;
+  rounding_rule?: string;
+  numeric_checks?: Array<{ label: string; value: number; tolerance: number; unit: string }>;
+  /** Calculations bank cases: per-result worked number, formula and plain-English steps, revealed after submission. */
+  worked_answer?: { results: CalculationWorkedItem[]; decision: string };
+  creativity_category?: CreativityCategory;
+  creativity_rubric_version?: string;
+  creativity_rubric?: ReturnType<typeof creativityRubricForCase>;
+  creativity_what_to_look_for?: string;
+  creativity_source_rubric?: string;
+  market_sizing_format?: MarketSizingFormat;
+  market_sizing_rubric_version?: string;
+  /** Market Sizing banks 2-4: label metadata only. The worked solution is revealed after submission. */
+  market_sizing_bank?: MarketSizingBankMeta;
 }
+
+function calculationPoolType(family: string): string {
+  if (/capacity|production|returns|inventory/i.test(family)) return 'operations';
+  if (/expected value|discounted cash flow/i.test(family)) return 'strategy';
+  if (/funnel|subscription/i.test(family)) return 'growth';
+  return 'profitability';
+}
+
+export const CREATIVITY_CYCLE_2_CASE_POOL_LIBRARY: FullCase[] = CREATIVITY_CYCLE_2_CASES.map((item) => ({
+  id: `case-${item.sourceCaseId.toLowerCase()}`,
+  source_case_id: item.sourceCaseId,
+  review_status: 'active',
+  title: `${item.code} · ${item.title}`,
+  industry: item.poolIndustry,
+  type: item.poolType,
+  // Difficulty remains an internal compatibility field for saved Case Pool rows;
+  // the learner selector presents Creativity problem type instead of a ladder.
+  difficulty: 'medium',
+  creativity_category: item.category,
+  creativity_rubric_version: item.rubricVersion,
+  creativity_rubric: creativityRubricForCase(item),
+  creativity_what_to_look_for: item.assessment,
+  creativity_source_rubric: item.sourceRubric,
+  situation: item.brief,
+  key_question: `Develop a complete ${item.categoryLabel} response to the source task, then explain the most important trade-off and decision gate. Source task: ${item.task}`,
+  data_exhibits: [],
+  framework_hints: [],
+  approach_tips: creativityApproachTips(item.responseFields.map((field) => field.label)),
+  objective: item.task,
+  constraints: ['Use only the supplied facts and numbers.', 'Do not invent unsupported claims or capabilities.', 'Treat the published answer as one strong example, not the only acceptable answer.'],
+  estimated_minutes: 20,
+  skill_focus: ['creativity'],
+  related_drill_ids: [item.sourceCaseId],
+  source_status: 'source-aligned',
+  data_status: 'shared-validated',
+  model_answer: {
+    situation_analysis: `This full Case Pool record uses the same ${item.sourceCaseId} source brief and facts as Case Drill, but asks for an integrated response and decision trade-off.`,
+    framework_applied: item.responseFields.map((field) => field.label).join(' → '),
+    key_findings: [item.workedResponse, `What to look for: ${item.assessment}`, `/10 scoring guide: ${item.sourceRubric}`],
+    recommendation: item.workedResponse,
+    implications: [item.assessment],
+    plausible_alternatives: [item.scoringExampleAlternative, 'A different mechanism is valid when it uses the same facts, respects every constraint, and includes a defensible test and success measure.'],
+  },
+  tags: [item.sourceCaseId, item.categoryLabel, item.code, 'Creativity Case Bank'],
+}));
+
+function marketSizingPoolIndustry(industry: string): string {
+  const value = industry.toLowerCase();
+  if (/health|pharmacy/.test(value)) return 'healthcare';
+  if (/technology|software|e-commerce/.test(value)) return 'tech';
+  if (/industrial|warehouse|energy|mobility/.test(value)) return 'logistics';
+  if (/retail|consumer|food|education|media|events|workplace|home/.test(value)) return 'retail';
+  return 'fmcg';
+}
+
+export const MARKET_SIZING_CYCLE_3_CASE_POOL_LIBRARY: FullCase[] = MARKET_SIZING_CYCLE_3_CASES.map((item) => ({
+  id: `case-${item.sourceCaseId.toLowerCase()}`,
+  source_case_id: item.sourceCaseId,
+  review_status: 'active',
+  title: `${item.code} · ${item.title}`,
+  industry: marketSizingPoolIndustry(item.industry),
+  type: 'growth',
+  difficulty: item.difficulty,
+  market_sizing_format: item.format,
+  market_sizing_rubric_version: item.format === 'provided-data' ? 'market-sizing-provided-v2-components' : 'market-sizing-ambiguous-v3-components',
+  situation: item.brief,
+  key_question: item.task,
+  data_exhibits: [],
+  framework_hints: [],
+  approach_tips: marketSizingApproachTips(item.format),
+  objective: item.task,
+  constraints: item.format === 'provided-data'
+    ? ['Use only the supplied case facts as Components.', 'Do not replace supplied values.', 'State the calculated result in VND.']
+    : ['Choose determinant values as Components and state the calculated result in VND.'],
+  estimated_minutes: item.difficulty === 'easy' ? 15 : item.difficulty === 'medium' ? 20 : item.difficulty === 'hard' ? 25 : 30,
+  skill_focus: ['market-sizing'],
+  related_drill_ids: [item.sourceCaseId],
+  source_status: 'source-aligned',
+  data_status: 'shared-validated',
+  model_answer: {
+    situation_analysis: `${MARKET_SIZING_FORMAT_LABELS[item.format]} worked component model.`,
+    framework_applied: `Bottom-up Components: ${item.formula}`,
+    key_calculations: [],
+    key_findings: [
+      `Component model: ${item.formula}`,
+      `Calculated result: ${item.finalAnswer}`,
+      ...(item.modelRoute ? [`Model decomposition (one valid route; your own issue tree is not graded): ${item.modelRoute}`] : []),
+    ],
+    recommendation: item.finalAnswer,
+    implications: [],
+    plausible_alternatives: item.alternatives,
+  },
+  tags: [item.sourceCaseId, MARKET_SIZING_FORMAT_LABELS[item.format], item.difficulty, item.industry, item.original ? 'Original Cycle 3' : 'PDF case bank'],
+}));
+
+const MARKET_SIZING_BANK_POOL_MINUTES = { easy: 15, medium: 20, hard: 25, expert: 30 } as const;
+
+/**
+ * Market Sizing banks 2-4 share one record per exercise with Case Drill. The
+ * model answer is deliberately neutral: the worked solution is revealed from
+ * the shared bank record only after submission. Opening the case sends that same
+ * bank worked answer once as the server-held grading reference (never returned
+ * before submission), so the grade and the revealed solution share one source.
+ */
+export const MARKET_SIZING_BANK_CASE_POOL_LIBRARY: FullCase[] = MARKET_SIZING_BANK_CASES.map((item) => ({
+  id: `case-${marketSizingBankSourceId(item.code).toLowerCase()}`,
+  source_case_id: marketSizingBankSourceId(item.code),
+  review_status: 'active',
+  title: `${item.code} · ${item.title}`,
+  industry: item.poolIndustry,
+  type: 'growth',
+  difficulty: item.difficulty,
+  market_sizing_format: MARKET_SIZING_BANK_FORMAT,
+  market_sizing_rubric_version: 'market-sizing-ambiguous-v3-components',
+  market_sizing_bank: marketSizingBankMeta(item),
+  situation: item.brief,
+  key_question: item.task,
+  data_exhibits: [],
+  framework_hints: [],
+  approach_tips: marketSizingApproachTips(MARKET_SIZING_BANK_FORMAT),
+  objective: item.task,
+  constraints: ['Choose determinant values as Components and state the calculated result in VND.'],
+  estimated_minutes: MARKET_SIZING_BANK_POOL_MINUTES[item.difficulty],
+  skill_focus: ['market-sizing'],
+  related_drill_ids: [marketSizingBankSourceId(item.code)],
+  source_status: 'source-aligned',
+  data_status: 'shared-validated',
+  model_answer: {
+    situation_analysis: 'The worked solution is revealed after you submit.',
+    framework_applied: '',
+    key_findings: [MARKET_SIZING_BANK_ACCEPT_ALTERNATIVES],
+    recommendation: '',
+    plausible_alternatives: [],
+  },
+  tags: [marketSizingBankSourceId(item.code), MARKET_SIZING_FORMAT_LABELS[MARKET_SIZING_BANK_FORMAT], item.difficulty, item.industry, item.geography, 'Market Sizing Bank 2-4'],
+}));
+
+export const CALCULATION_CYCLE_1_CASE_POOL_LIBRARY: FullCase[] = CALCULATION_CYCLE_1_CASES.map((item) => ({
+  id: `case-${item.sourceCaseId.toLowerCase()}`,
+  source_case_id: item.sourceCaseId,
+  review_status: 'active',
+  title: item.title,
+  industry: 'fmcg',
+  type: calculationPoolType(item.family),
+  difficulty: item.difficulty,
+  situation: item.brief,
+  key_question: `Build a concise decision structure, solve every part of the stated task, explain the governing assumptions and thresholds, and recommend what management should do. Original calculation task: ${item.task}`,
+  data_exhibits: [],
+  framework_hints: calculationFrameworks(item.sourceCaseId),
+  objective: item.task,
+  constraints: ['Use only the supplied facts.', item.roundingRule, 'State any alternative method clearly enough to audit.'],
+  estimated_minutes: item.difficulty === 'hard' ? 20 : 30,
+  skill_focus: ['calculations'],
+  related_drill_ids: [item.sourceCaseId],
+  source_status: 'source-aligned',
+  data_status: 'shared-validated',
+  rounding_rule: item.roundingRule,
+  numeric_checks: item.numericChecks,
+  worked_answer: (() => { const worked = calculationWorkedItems(item); return { results: worked.items, decision: worked.decision }; })(),
+  model_answer: {
+    situation_analysis: `This full case uses the same ${item.sourceCaseId} facts as Case Drill while requiring a complete decision structure and recommendation.`,
+    framework_applied: `Model the ${item.family.toLowerCase()} economics, calculate each requested output in sequence, test the threshold, then state the conditional decision and limit.`,
+    key_calculations: [item.answerKey],
+    key_findings: [item.answerKey, item.scoringEmphasis],
+    recommendation: item.decisionAndLimit,
+    implications: [item.decisionAndLimit],
+    plausible_alternatives: ['A different calculation route is valid when it uses the same facts, reaches equivalent values within the stored tolerances, labels units, and supports the same conditional decision.'],
+  },
+  tags: [item.sourceCaseId, item.family, item.difficulty, 'Calculations Cycle 1'],
+}));
 
 export const POOL_INDUSTRY_LABELS: Record<string, string> = {
   fmcg: 'FMCG & Consumer',
@@ -137,8 +353,8 @@ const INDUSTRIES: Record<string, IndustryPack> = {
       ['Vinasoy', 'Fami soy milk', 'plant-based milk'],
       ['Unilever Việt Nam', 'OMO Matic laundry detergent', 'home care'],
     ],
-    segments: ['Tier-1 urban', 'Tier-2 urban', 'Northern rural', 'Southern rural', 'Gifting channel', 'Export'],
-    channels: ['Modern trade (MT)', 'General trade (GT)', 'E-commerce', 'HORECA'],
+    segments: ['Big-city households', 'Other provincial-city households', 'Northern rural households', 'Southern rural households', 'Gift buyers', 'Overseas customers'],
+    channels: ['Modern trade (MT)', 'General trade (GT)', 'E-commerce', 'HORECA (hotels, restaurants, cafés)'],
   },
   banking: {
     label: 'Banking & Finance',
@@ -154,7 +370,7 @@ const INDUSTRIES: Record<string, IndustryPack> = {
       ['Bảo Việt Nhân thọ', 'investment-linked insurance policies', 'insurance'],
       ['VNDirect', 'the DStock trading platform', 'securities'],
     ],
-    segments: ['Priority customers', 'Mass-market customers', 'SME', 'Large corporates', 'Young customers under 30', 'Micro-merchants'],
+    segments: ['Priority customers', 'Mass-market customers', 'SME customers', 'Large corporate customers', 'Young customers under 30', 'Micro-merchants'],
     channels: ['Branches', 'Digital app', 'Distribution partners', 'Telesales'],
   },
   retail: {
@@ -171,7 +387,7 @@ const INDUSTRIES: Record<string, IndustryPack> = {
       ['The Coffee House', 'The Coffee House shops', 'TP.HCM'],
       ['AEON Việt Nam', 'AEON shopping malls', 'Hà Nội'],
     ],
-    segments: ['City-centre stores', 'Residential-area stores', 'Provincial stores', 'Mall stores', 'Franchise stores', 'Mini outlets'],
+    segments: ['City-centre store shoppers', 'Residential-area store shoppers', 'Provincial store shoppers', 'Mall shoppers', 'Franchise-store shoppers', 'Mini-outlet shoppers'],
     channels: ['Physical stores', 'Ordering app', 'E-commerce marketplaces', 'B2B wholesale'],
   },
   tech: {
@@ -181,8 +397,8 @@ const INDUSTRIES: Record<string, IndustryPack> = {
       ['MoMo', 'the MoMo e-wallet', 'fintech'],
       ['VNG', 'Zalo Cloud business plans', 'platforms'],
       ['Grab Việt Nam', 'GrabBike rides', 'ride-hailing'],
-      ['Coolmate', 'D2C fashion orders', 'D2C'],
-      ['KiotViet', 'retail software plans', 'SaaS'],
+      ['Coolmate', 'D2C (direct-to-consumer) fashion orders', 'D2C'],
+      ['KiotViet', 'retail software plans', 'SaaS (software-as-a-service)'],
       ['Base.vn', 'Base Work+ plans', 'SaaS'],
       ['VNPay', 'QR payment transactions', 'fintech'],
       ['be Group', 'beCar rides', 'ride-hailing'],
@@ -212,7 +428,7 @@ const INDUSTRIES: Record<string, IndustryPack> = {
       ['Giao Hàng Nhanh', 'e-commerce orders', 'Hà Nội'],
       ['J&T Express Việt Nam', 'inter-province orders', 'Đồng Nai'],
       ['Gemadept', 'port containers', 'Hải Phòng'],
-      ['Ninja Van Việt Nam', 'COD orders', 'Bình Dương'],
+      ['Ninja Van Việt Nam', 'COD (cash-on-delivery) orders', 'Bình Dương'],
       ['Transimex', 'cold-storage pallets', 'TP.HCM'],
       ['ITL Corp', '5-tonne truck runs', 'Long An'],
     ],
@@ -433,6 +649,79 @@ function pickN<T>(pool: T[], count: number, offset: number): T[] {
   return out;
 }
 
+const SEGMENT_NOTES: Record<string, string> = {
+  'Big-city households': 'households in the largest cities (for example Hà Nội and TP.HCM)',
+  'Other provincial-city households': 'households in other provincial cities',
+  'Northern rural households': 'households in rural areas of northern Vietnam',
+  'Southern rural households': 'households in rural areas of southern Vietnam',
+  'Gift buyers': 'customers who buy mainly as gifts for other people',
+  'Overseas customers': 'customers outside Vietnam who buy the exported product',
+  'Priority customers': 'customers in the top service tier',
+  'Mass-market customers': 'customers who buy standard, mainstream offers rather than premium ones',
+  'SME customers': 'small and medium-sized business customers',
+  'Large corporate customers': 'large companies',
+  'Young customers under 30': 'individual customers aged under 30',
+  'Micro-merchants': 'very small shop and stall owners',
+  'City-centre store shoppers': 'customers who shop at stores in city centres',
+  'Residential-area store shoppers': 'customers who shop at stores in residential areas',
+  'Provincial store shoppers': 'customers who shop at stores in provincial towns',
+  'Mall shoppers': 'customers who shop at stores inside shopping malls',
+  'Franchise-store shoppers': 'customers who shop at franchised stores',
+  'Mini-outlet shoppers': 'customers who shop at small mini outlets',
+  'Urban users': 'individual users living in cities',
+  'Provincial users': 'individual users living in provincial areas',
+  'Household businesses': 'very small family-run businesses',
+  'SMEs': 'small and medium-sized enterprises',
+  'Gen Z users': 'young individual users from Generation Z',
+  'Professional sellers': 'sellers who trade as their main business',
+  'Inner-city patients': 'patients living in inner-city districts',
+  'Provincial patients': 'patients living in provincial areas',
+  'Insurance-covered customers': 'customers whose costs are covered by insurance',
+  'Corporate clients': 'business customers rather than individuals',
+  'Premium customers': 'customers who choose higher-priced offers',
+  'Large e-commerce clients': 'e-commerce companies shipping large volumes',
+  'Small sellers': 'small sellers shipping low volumes',
+  'B2B manufacturing clients': 'manufacturers shipping goods to business customers',
+  'Import-export clients': 'businesses shipping goods across borders',
+  'Retail-chain clients': 'retail chains moving goods to their stores',
+  'Pharma clients': 'pharmaceutical companies',
+  'Owner-occupiers': 'buyers who purchase a property to live in it',
+  'Individual investors': 'individuals who buy property as an investment',
+  'Provincial buyers': 'buyers living in provincial areas',
+  'Foreign buyers': 'buyers who are foreign nationals',
+  'Corporate tenants': 'companies that rent space',
+  'Young first-time buyers': 'young people buying their first home',
+  'FDI clients': 'foreign-invested companies operating in Vietnam',
+  'Vietnamese private conglomerates': 'large privately owned Vietnamese business groups',
+  'State-owned enterprises': 'companies owned or controlled by the Vietnamese state',
+  'Fast-growing SMEs': 'small and medium-sized companies that are growing quickly',
+  'Financial institutions': 'banks, insurers and similar institutions',
+  'Regional clients': 'clients based outside Vietnam in the wider region',
+};
+
+const CHANNEL_NOTES: Record<string, string> = {
+  'Modern trade (MT)': 'supermarkets and chain stores',
+  'General trade (GT)': 'traditional markets and independent small shops',
+  'Marketplace API integrations': 'orders that arrive automatically from e-commerce marketplaces through a direct system connection',
+  'F1 distribution floors': 'distribution firms that sell the developer’s projects on its behalf',
+};
+
+function segmentGloss(segs: string[]): string {
+  const notes = segs.filter((s) => SEGMENT_NOTES[s]).map((s) => `${s} = ${SEGMENT_NOTES[s]}`);
+  return `${notes.length ? `Group definitions: ${notes.join('; ')}. ` : ''}Each customer is counted in one group only.`;
+}
+
+function channelGloss(chans: string[]): string {
+  const notes = chans.filter((ch) => CHANNEL_NOTES[ch]).map((ch) => `${ch} = ${CHANNEL_NOTES[ch]}`);
+  return notes.length ? `Channel terms: ${notes.join('; ')}. ` : '';
+}
+
+function segmentUnits(industry: string): { size: string; spend: string } {
+  return industry === 'fmcg' || industry === 'retail'
+    ? { size: 'million customers', spend: 'million VND/customer/year' }
+    : { size: 'million customers or clients', spend: 'million VND/customer or client/year' };
+}
+
 function sum(values: number[]): number {
   return values.reduce((a, b) => a + b, 0);
 }
@@ -511,7 +800,7 @@ const profSegment: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company} serves four customer segments in its ${c.where} business. This year's operating profit is ${money(opTotal)} on ${money(revTotal)} of revenue - below plan. The CEO suspects some segments are being "subsidized" by the others but has no evidence.`,
+      `${c.company} serves four customer segments in its ${c.where} business. ${segmentGloss(segs)} This year's operating profit is ${money(opTotal)} on ${money(revTotal)} of revenue - below plan. The CEO suspects some segments are being "subsidized" by the others but has no evidence.`,
       'Hint: compute EACH segment’s operating margin - don’t just look at revenue; the biggest-revenue segment is not necessarily the most profitable.',
       `Extra twist: the ${money(fixedTotal)} of fixed costs is currently allocated by revenue, but operations reports that the ${segs[worst]} segment consumes twice its revenue share in service resources. State clearly how your conclusion changes if you reallocate.`,
     ),
@@ -565,9 +854,9 @@ const profChannel: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company} sells ${c.product} through four channels. Total channel revenue reaches ${money(revTotal)} but profit is only ${money(opTotal)}. The biggest-revenue channel also gets the sales team's top priority, and the commercial director wants to know whether that is the right call.`,
+      `${c.company} sells ${c.product} through four channels. ${channelGloss(chans)}Total channel revenue reaches ${money(revTotal)} but profit is only ${money(opTotal)}. The biggest-revenue channel also gets the sales team's top priority, and the commercial director wants to know whether that is the right call.`,
       'Hint: gross revenue tells you nothing - subtract discounts to get net revenue, then subtract the cost of serving each channel.',
-      'Extra twist: the contract with the big retail chain locks its discount level for the next 18 months, so "cut the discount" is not immediately feasible. The answer must respect this constraint.',
+      'Extra twist: contracts with each channel’s large buyers lock the current discount levels for the next 18 months, so "cut the discount" is not immediately feasible. The answer must respect this constraint.',
     ),
     key_question: `How should ${c.company} shift its channel mix to raise profit without losing market coverage?`,
     data_exhibits: [
@@ -755,11 +1044,12 @@ const growthMarketEntry: Builder = (c, k, diff) => {
 
 const growthNewSegment: Builder = (c, k, diff) => {
   const segs = pickN(c.segments, 4, k + 2);
+  const units = segmentUnits(c.industry);
   const pop = [round1(8.2 + k * 0.6), round1(14.5 + k * 0.9), round1(5.1 + k * 0.4), round1(21.3 + k * 1.2)];
   const spend = [round1(4.8 + k * 0.3), round1(2.1 + k * 0.15), round1(9.4 + k * 0.5), round1(1.2 + k * 0.1)];
   const growth = [11 + (k % 4), 18 + (k % 3), 7 + (k % 2), 22 + (k % 5)];
   const cac = [420 + k * 20, 260 + k * 15, 780 + k * 30, 180 + k * 10];
-  // Size (million people) × spend (million VND/person) is already in trillion VND -
+  // Size (million customers) × spend (million VND/customer) is already in trillion VND -
   // don't divide by 1,000 again, or every segment rounds down to 0.
   const value = pop.map((p, i) => round1(p * spend[i]));
   const bestValue = value.indexOf(Math.max(...value));
@@ -773,15 +1063,15 @@ const growthNewSegment: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company}'s core market for ${c.product} has slowed to single-digit growth. Leadership wants the next growth engine to come from under-served customer segments and has commissioned research on four candidates.`,
+      `${c.company}'s core market for ${c.product} has slowed to single-digit growth. Leadership wants the next growth engine to come from under-served customer segments and has commissioned research on four candidates. ${segmentGloss(segs)}`,
       'Hint: a segment’s value = size × average spend. Only then set it against the cost of acquiring a customer.',
-      'Extra twist: the current sales team is trained only for the core segment, and serving the highest-spend segment requires an entirely different advisory skill set. Factor the cost of building that capability into the recommendation.',
+      'Extra twist: the current sales team is trained only for the segment it serves today (the "core segment"), and serving the highest-spend candidate in the table requires an entirely different, more consultative selling skill set. Factor the cost of building that capability into the recommendation.',
     ),
     key_question: `Which segment should ${c.company} prioritise as its growth engine for the next 3 years, and why?`,
     data_exhibits: [
       table(
         'Assessing the four candidate segments',
-        ['Segment', 'Size (million people)', 'Spend (million VND/person/year)', 'Market value (trillion VND)', 'Growth (%/year)', 'Cost per customer acquired (thousand VND)'],
+        ['Segment', `Size (${units.size})`, `Spend (${units.spend})`, 'Market value (trillion VND)', 'Growth (%/year)', 'Cost per customer acquired (thousand VND)'],
         segs.map((s, i) => [s, pop[i], spend[i], value[i], growth[i], cac[i]]),
       ),
       chart('pie', 'Market value by segment (trillion VND)', segs, value, 'trillion VND'),
@@ -819,7 +1109,7 @@ const growthChannelExpansion: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company}'s online revenue from ${c.product} is growing fast while the traditional channel has flattened and started slipping. The board is debating whether to invest heavily in digital or defend the existing network. Figures are in billion VND per quarter.`,
+      `${c.company}'s online revenue from ${c.product} is growing fast while the traditional channel has flattened and started slipping. The board is debating whether to invest heavily in digital or defend the existing network. The traditional channel is the existing sales channel the company already uses, and the online channel is sales made online. Figures are in billion VND per quarter.`,
       'Hint: compute the online channel’s share each quarter and compare its growth with the traditional channel’s decline - that tells you whether this is real growth or just migration.',
       'Extra twist: about 40% of online orders come from customers who already bought in stores, meaning part of the "growth" is just internal migration. The answer must isolate the genuinely new growth.',
     ),
@@ -974,7 +1264,7 @@ const opsBottleneck: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company} cannot keep up with peak-season demand for ${c.product}, even though management believes the ${t.site} still has spare capacity. The operations team has measured each stage's capacity in units per hour and recorded defect rates.`,
+      `${c.company} cannot keep up with peak-season demand for ${c.product}, even though management believes the ${t.site} still has spare capacity. The operations team has measured each stage's capacity in units per hour and recorded defect rates. Stage 1 is where work enters the ${t.line}, Stage 2 the main processing step, Stage 3 the quality check and Stage 4 the final step (${t.lastStep.toLowerCase()}).`,
       `Hint: the capacity of the whole ${t.line} always equals the capacity of its weakest stage - find that stage before considering any solution.`,
       'Extra twist: the weakest stage also has the highest defect rate, and every defective unit must restart from the beginning of the chain. That makes true usable capacity even lower than the measured number.',
     ),
@@ -985,7 +1275,7 @@ const opsBottleneck: Builder = (c, k, diff) => {
         ['Stage', 'Capacity (units/hour)', 'Cycle time (seconds/unit)', 'Defect rate (%)'],
         stations.map((s, i) => [s, capacity[i], cycle[i], round1(defect[i])]),
       ),
-      chart('bar', 'Capacity by stage (units/hour)', stations.map((s) => s.split('-')[0].trim()), capacity, 'units/hr'),
+      chart('bar', 'Capacity by stage (units/hour)', stations, capacity, 'units/hour'),
     ],
     framework_hints: ['Theory of Constraints / bottleneck analysis', 'Value Chain Analysis', 'Issue Tree / Logic Tree'],
     model_answer: ma(
@@ -1023,7 +1313,7 @@ const opsNetwork: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company} runs four ${t.hub}s for ${c.product}. Cost per order is about 15% above competitors and the COO suspects the network is too fragmented. Volume is in thousand orders/day, cost in thousand VND/order.`,
+      `${c.company} runs four ${t.hub}s for ${c.product}. Cost per order is about 15% above competitors and the COO suspects the network is too fragmented. Volume is in thousand orders/day, cost in thousand VND/order. In the table each ${t.hub} is called a hub and named after its region; the Mekong Delta satellite hub is a small hub serving a limited area.`,
       'Hint: compute the network-wide average cost first, then compare each hub against it to see which one is dragging costs up.',
       'Extra twist: the most expensive hub serves the highest-margin customer group, and closing it would nearly double that region’s service time.',
     ),
@@ -1130,11 +1420,11 @@ const opsWorkforce: Builder = (c, k, diff) => {
     data_exhibits: [
       table(
         'Productivity and labour cost by branch',
-        ['Branch', 'Headcount', 'Output (thousand units/month)', 'Productivity (units/person/month)', 'Labour cost (billion VND/month)', 'Cost/unit (thousand VND)'],
+        ['Branch', 'Headcount', 'Output (thousand units/month)', 'Productivity (units/person/month)', 'Labour cost (billion VND/month)', 'Cost/unit (million VND)'],
         units.map((u, i) => [u, staff[i], output[i], productivity[i], laborCost[i], costPerUnit[i]]),
         'Assumes average labour cost of 16.4 million VND/person/month.',
       ),
-      chart('bar', 'Productivity by branch (units/person/month)', units, productivity, 'units/person'),
+      chart('bar', 'Productivity by branch (units/person/month)', units, productivity, 'units/person/month'),
     ],
     framework_hints: ['Internal benchmarking', "McKinsey 7-S Framework", 'Value Chain Analysis'],
     model_answer: ma(
@@ -1142,7 +1432,7 @@ const opsWorkforce: Builder = (c, k, diff) => {
       'Internal benchmarking to size the gap, then McKinsey 7-S to find the cause: looking at "Staff" and "Skills" alone is not enough - examine "Systems" (tools, processes), "Structure" (role design), and "Style" (how shifts are managed) too.',
       fnd(diff, [
         `${units[best]} achieves ${n(productivity[best])} units/person/month, ${pct(gap)} above ${units[worst]}.`,
-        `Labour cost per unit ranges from ${n(costPerUnit[best])} to ${n(costPerUnit[worst])} thousand VND - a direct hit to margin.`,
+        `Labour cost per unit ranges from ${n(costPerUnit[best])} to ${n(costPerUnit[worst])} million VND - a direct hit to margin.`,
         `Scale does not explain the gap: ${units[best]} has ${staff[best]} staff, neither the largest nor the smallest branch.`,
         `If all four branches matched ${units[best]}'s productivity, the system would need only ${n(staffIfBest)} people instead of ${n(totalStaff)} - freeing ${n(staffSaved)} people to serve growth.`,
         `Replicate with care: high attrition at ${units[best]} suggests part of its productivity comes from unsustainable work intensity.`,
@@ -1218,7 +1508,7 @@ const stratPortfolio: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company} has four business units with very different growth rates and profitability. The core still generates most of the profit but its market has nearly stopped growing, while the fastest-growing digital unit is losing money. The board must decide capital allocation for the next three years.`,
+      `${c.company} has four business units with very different growth rates and profitability. The four units are distinct business units of ${c.company}: the traditional core business (its long-established main business), the digital business (its online and digital offers), the premium business (the unit serving higher-priced offers) and the international business (its operations outside Vietnam). The exhibit gives each unit's market growth, relative share, revenue and operating profit. The core still generates most of the profit but its market has nearly stopped growing, while the fastest-growing digital unit is losing money. The board must decide capital allocation for the next three years.`,
       'Hint: place the four units on two axes - market growth rate and relative share versus the largest competitor - then read them through the four cells of the BCG matrix.',
       'Extra twist: cash flow from the core is shrinking about 5% a year, so the window for using it to fund the growth units is narrowing. Sequencing matters more than spend levels.',
     ),
@@ -1267,7 +1557,7 @@ const stratDigital: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company} has four competing digital-transformation proposals totalling ${money(totalInvest)} of requested investment, while the approved budget is only ${money(budget)}. Every department insists its project matters most, and the executive team needs an objective basis for ranking.`,
+      `${c.company} has four competing digital-transformation proposals totalling ${money(totalInvest)} of requested investment, while the approved budget is only ${money(budget)}. Every department insists its project matters most, and the executive team needs an objective basis for ranking. Core process automation means automating the company's existing day-to-day processes, and Core system upgrade means upgrading its main existing IT system; some of the other proposals rely on that system technically, but the table does not say which.`,
       'Hint: convert every proposal to the same yardsticks - annual return on investment and payback time - before comparing them.',
       'Extra twist: the core system upgrade has the slowest payback but is a technical prerequisite for two other projects. Dropping it would reduce the impact of the remaining projects.',
     ),
@@ -1326,7 +1616,7 @@ const mnaTargetValuation: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company} is considering acquiring an industry peer to expand quickly in ${c.where}. The seller is asking an enterprise value of ${money(askEv)}, or ${n(askMultiple, 1)}× EBITDA - above the sector average multiple of ${n(sectorMultiple, 1)}×. Management needs to know whether the price is reasonable.`,
+      `${c.company} is considering acquiring an industry peer to expand quickly in ${c.where}. The seller is asking an enterprise value (EV) of ${money(askEv)}, or ${n(askMultiple, 1)}× EBITDA (earnings before interest, taxes, depreciation and amortisation) - above the sector average multiple of ${n(sectorMultiple, 1)}×. Management needs to know whether the price is reasonable.`,
       'Hint: compare the asking multiple with the sector average to size the premium, then test whether synergies are worth enough to cover it.',
       'Extra twist: about 30% of the target’s revenue comes from three large customers, and two of them are already your customers too - part of that revenue would overlap rather than add.',
     ),
@@ -1488,7 +1778,7 @@ const otherOrg: Builder = (c, k, diff) => {
     difficulty: diff,
     situation: sit(
       diff,
-      `${c.company} is growing ${c.product} revenue well, but margins keep thinning because staff costs are rising faster. The organisation has ${n(totalHeads)} people, with a growing share not directly generating revenue. Costs and revenue are in billion VND/year.`,
+      `${c.company} is growing ${c.product} revenue well, but margins keep thinning because staff costs are rising faster. The organisation has ${n(totalHeads)} people, with a growing share not directly generating revenue. The four functions are the front-line advisory team (staff who work directly with clients), technical specialists (staff with specialist expertise who also work on client assignments), operations support (staff who keep internal operations running) and management & coordination (people who lead and coordinate the teams). Billable hours (%) is the share of working hours charged to clients. Costs and revenue are in billion VND/year.`,
       'Hint: split staff into revenue-generating and support groups, then compute each group’s share of cost.',
       'Extra twist: the front-line team’s billable-hours ratio has dropped 6 percentage points in two years, and managers say the cause is growing internal admin work, not a lack of client work.',
     ),
@@ -1676,6 +1966,7 @@ function buildJourneyCases(): FullCase[] {
     .filter((journey) => CASE_POOL_ELIGIBLE_JOURNEY_IDS.has(journey.id))
     .map((journey) => {
       const drills = drillsInJourney(journey.id);
+      const industryTermNotes = industryTermNotesForText(JSON.stringify(drills));
       const decisionDrill = drills.find((drill) => drill.journeyStageRole === 'Decision') || drills[drills.length - 1];
       const sections = drills.map((drill) => drill.modelAnswerSections).filter(Boolean) as NonNullable<LibraryQuestion['modelAnswerSections']>[];
       const alternatives = uniqueLines(drills.flatMap((drill) => drill.alternativeConclusions || []));
@@ -1700,7 +1991,10 @@ function buildJourneyCases(): FullCase[] {
         industry: journeyIndustry(journey.industry),
         type: journeyType(journey.analyticalApproach, journey.businessProblem),
         difficulty: 'expert' as CaseDifficulty,
-        situation: `${journey.role} ${journey.company} faces ${journey.businessProblem.toLowerCase()} across ${journey.timeframe}. Management must decide ${journey.decision.charAt(0).toLowerCase()}${journey.decision.slice(1)} Work from the shared exhibits as one connected case: diagnose the problem, quantify the implications, test qualitative trade-offs, and defend a recommendation.`,
+        situation: [
+          industryTermNotes.length ? `Plain-language terms: ${industryTermNotes.join(' ')}` : '',
+          `${journey.role} ${journey.company} faces ${journey.businessProblem.toLowerCase()} across ${journey.timeframe}. Management must decide ${journey.decision.charAt(0).toLowerCase()}${journey.decision.slice(1)} Work from the shared exhibits as one connected case: diagnose the problem, quantify the implications, test qualitative trade-offs, and defend a recommendation.`,
+        ].filter(Boolean).join('\n\n'),
         key_question: `Build a tailored issue tree, identify the key problem, analyse the relevant quantitative and qualitative buckets across the exhibits, reconcile the evidence, assess the trade-offs, and recommend how ${journey.company} should proceed. State the risks, decision gates, and the evidence that would change your answer.`,
         data_exhibits: [],
         journey_exhibits: exhibits,
@@ -1759,7 +2053,99 @@ function buildJourneyCases(): FullCase[] {
 
 const CORE_CASE_POOL_LIBRARY = buildLibrary();
 export const JOURNEY_CASE_POOL_LIBRARY: FullCase[] = buildJourneyCases();
-export const CASE_POOL_LIBRARY: FullCase[] = [...JOURNEY_CASE_POOL_LIBRARY, ...CORE_CASE_POOL_LIBRARY];
+const LEGACY_CASE_POOL_LIBRARY: FullCase[] = [...JOURNEY_CASE_POOL_LIBRARY, ...CORE_CASE_POOL_LIBRARY].map((item) =>
+  (item.difficulty === 'hard' || item.difficulty === 'expert') && (item.skill_focus || []).includes('calculations')
+    ? { ...item, review_status: 'retired' as const, retired_version: 'calculations-cycle-1-v1' }
+    : { ...item, review_status: 'active' as const },
+);
+const BANK_KNOWN_POOL_IDS = new Set([...MARKET_SIZING_CYCLE_3_CASE_POOL_LIBRARY, ...CREATIVITY_CYCLE_2_CASE_POOL_LIBRARY, ...CALCULATION_CYCLE_1_CASE_POOL_LIBRARY, ...LEGACY_CASE_POOL_LIBRARY].map((item) => item.id));
+export const CASE_POOL_SOURCE_RECORDS: FullCase[] = [
+  ...MARKET_SIZING_CYCLE_3_CASE_POOL_LIBRARY,
+  ...MARKET_SIZING_BANK_CASE_POOL_LIBRARY.filter((item) => !BANK_KNOWN_POOL_IDS.has(item.id)),
+  ...CREATIVITY_CYCLE_2_CASE_POOL_LIBRARY,
+  ...CALCULATION_CYCLE_1_CASE_POOL_LIBRARY,
+  ...CHARTS_EASY_CASE_POOL_CASES,
+  ...STRUCTURES_EASY_CASE_POOL_CASES,
+  ...LEGACY_CASE_POOL_LIBRARY,
+];
+
+/**
+ * MCQ content (option lists, answer markers, distractor or option-explanation text, retained answer_choices) found
+ * in the stored sources before any guard ran. Empty means every source is already open-ended; a non-empty list
+ * names the source field to repair. The strip below only keeps a future leak from reaching a learner.
+ */
+export const CASE_POOL_MCQ_IMPORT_AUDIT: string[] = validateCasePoolOpenEnded(CASE_POOL_SOURCE_RECORDS);
+
+export const CASE_POOL_LIBRARY: FullCase[] = CASE_POOL_SOURCE_RECORDS.map(toLearnerFacingPoolCase).map(stripPoolCaseMcq);
+export const SELECTABLE_CASE_POOL_LIBRARY: FullCase[] = CASE_POOL_LIBRARY.filter((item) => item.review_status !== 'retired');
+
+export interface DrillFullCaseLink {
+  drillId: string;
+  skill: LibrarySkill;
+  sourceCaseId: string | null;
+  note: string;
+}
+
+const LINK_AUDIT_SKILLS: LibrarySkill[] = ['charts', 'structures', 'calculations', 'creativity', 'market-sizing'];
+
+function caseNamesDrill(item: FullCase, question: Pick<LibraryQuestion, 'id' | 'sourceCaseId'>): boolean {
+  const names = [...(item.related_drill_ids || []), ...(item.journey_stages || []).map((stage) => stage.drillId)];
+  return names.includes(question.id) || Boolean(question.sourceCaseId && names.includes(question.sourceCaseId));
+}
+
+/**
+ * What "Solve the full case" in Case Drill can open. A drill is linked only when
+ * its recorded source_case_id is a selectable Case Pool case that names the drill
+ * back. A recorded source that is retired or withheld is flagged and the button
+ * stays hidden until that case is selectable again. Nothing here infers an id.
+ */
+export const DRILL_FULL_CASE_LINK_AUDIT = (() => {
+  const selectable = new Map(SELECTABLE_CASE_POOL_LIBRARY.map((item) => [item.id, item]));
+  const stored = new Map(CASE_POOL_LIBRARY.map((item) => [item.id, item]));
+  const evidence = new Map(DRILL_SOURCE_CASE_AUDIT.linked.map((entry) => [entry.drillId, entry.evidence]));
+  const linked: DrillFullCaseLink[] = [];
+  const flaggedMissingSource: DrillFullCaseLink[] = [];
+  const standalone: DrillFullCaseLink[] = [];
+  ALL_LIBRARY_QUESTIONS.forEach((question) => {
+    const sourceCaseId = question.source_case_id || null;
+    const entry = { drillId: question.id, skill: question.skill, sourceCaseId };
+    if (!sourceCaseId) {
+      if (question.journeyId) flaggedMissingSource.push({ ...entry, note: `Case Journey ${question.journeyId} has no published Case Pool case yet (pending source alignment).` });
+      else standalone.push({ ...entry, note: 'Standalone drill: no Case Pool case is built from this question.' });
+      return;
+    }
+    const target = selectable.get(sourceCaseId);
+    if (target && caseNamesDrill(target, question)) {
+      linked.push({ ...entry, note: evidence.get(question.id) || '' });
+      return;
+    }
+    const record = stored.get(sourceCaseId);
+    flaggedMissingSource.push({
+      ...entry,
+      note: !record
+        ? `${sourceCaseId} is not a Case Pool case.`
+        : record.review_status === 'retired'
+          ? `${sourceCaseId} is retired from the Case Pool selector (${record.retired_version || 'retired'}), so it cannot be opened.`
+          : `${sourceCaseId} does not list this drill as a related drill.`,
+    });
+  });
+  const bySkill = (items: DrillFullCaseLink[]) => Object.fromEntries(LINK_AUDIT_SKILLS.map((skill) => [skill, items.filter((item) => item.skill === skill).length]));
+  return {
+    linked,
+    flaggedMissingSource,
+    standalone,
+    counts: {
+      questions: ALL_LIBRARY_QUESTIONS.length,
+      linked: linked.length,
+      flaggedMissingSource: flaggedMissingSource.length,
+      flaggedRetiredSource: flaggedMissingSource.filter((item) => item.sourceCaseId).length,
+      flaggedPendingJourney: flaggedMissingSource.filter((item) => !item.sourceCaseId).length,
+      standalone: standalone.length,
+      linkedBySkill: bySkill(linked),
+      flaggedBySkill: bySkill(flaggedMissingSource),
+    },
+  };
+})();
 
 const PENDING_SHARED_CASE_REVIEW_IDS = CASE_JOURNEYS
   .filter((journey) => !CASE_POOL_ELIGIBLE_JOURNEY_IDS.has(journey.id))
@@ -1773,9 +2159,57 @@ const PENDING_SHARED_CASE_REVIEW_IDS = CASE_JOURNEYS
 export function validateCasePoolSharedAlignment(): string[] {
   const errors: string[] = [];
   const caseIds = new Set(CASE_POOL_LIBRARY.map((item) => item.id));
+  const selectableCaseIds = new Set(SELECTABLE_CASE_POOL_LIBRARY.map((item) => item.id));
   const sharedJourneyIds = JOURNEY_CASE_POOL_LIBRARY.map((item) => item.journey_id).filter(Boolean);
   if (caseIds.size !== CASE_POOL_LIBRARY.length) errors.push('Case Pool Contains Duplicate Stable Case IDs.');
+  DRILL_FULL_CASE_LINK_AUDIT.flaggedMissingSource.forEach(({ drillId, sourceCaseId }) => {
+    if (sourceCaseId && !caseIds.has(sourceCaseId)) errors.push(`${drillId} Records Source ${sourceCaseId}, Which Is Not A Case Pool Case.`);
+    if (sourceCaseId && selectableCaseIds.has(sourceCaseId)) errors.push(`${drillId} Records Source ${sourceCaseId}, But That Case Does Not List The Drill.`);
+  });
+  [...CHARTS_EASY_CASE_POOL_CASES, ...STRUCTURES_EASY_CASE_POOL_CASES].forEach((item) => {
+    (item.related_drill_ids || []).forEach((drillId) => {
+      if (!DRILL_FULL_CASE_LINK_AUDIT.linked.some((link) => link.drillId === drillId && link.sourceCaseId === item.id)) errors.push(`${drillId} Must Open Its Easy-Bank Case ${item.id}.`);
+    });
+  });
   if (new Set(sharedJourneyIds).size !== sharedJourneyIds.length) errors.push('A Shared Journey Has More Than One Case Pool Record.');
+  if (CREATIVITY_CYCLE_2_CASE_POOL_LIBRARY.length !== CREATIVITY_CYCLE_2_CASES.length) errors.push('Every Creativity source case must have one linked Case Pool record.');
+  if (CALCULATION_CYCLE_1_CASE_POOL_LIBRARY.length !== CALCULATION_CYCLE_1_CASES.length) errors.push('Every Calculation source case must have one linked Case Pool record.');
+  CALCULATION_CYCLE_1_CASE_POOL_LIBRARY.forEach((item) => {
+    const source = CALCULATION_CYCLE_1_CASES.find((candidate) => candidate.sourceCaseId === item.source_case_id);
+    if (!source) errors.push(`${item.id} has no matching Calculation source case.`);
+    if (item.related_drill_ids?.[0] !== item.source_case_id) errors.push(`${item.id} does not link to the same Calculation source ID.`);
+    if (!item.rounding_rule?.trim()) errors.push(`${item.id} is missing its rounding rule.`);
+    (item.numeric_checks || []).forEach((check, index) => {
+      if (!check.label.trim() || !check.unit.trim() || !Number.isFinite(check.value) || !Number.isFinite(check.tolerance) || check.tolerance < 0) errors.push(`${item.id} / Result ${index + 1} has invalid canonical numeric metadata.`);
+    });
+    if (source && JSON.stringify(item.numeric_checks) !== JSON.stringify(source.numericChecks)) errors.push(`${item.id} does not share the source Calculation units and tolerances.`);
+  });
+  if (MARKET_SIZING_CYCLE_3_CASE_POOL_LIBRARY.length !== MARKET_SIZING_CYCLE_3_CASES.length) errors.push('Every Market Sizing source case must have one linked Case Pool record.');
+  MARKET_SIZING_CYCLE_3_CASE_POOL_LIBRARY.forEach((item) => {
+    const source = MARKET_SIZING_CYCLE_3_CASES.find((candidate) => candidate.sourceCaseId === item.source_case_id);
+    if (!source) errors.push(`${item.id} has no matching Market Sizing source case.`);
+    if (!item.source_case_id || item.related_drill_ids?.[0] !== item.source_case_id) errors.push(`${item.id} does not link to the same Market Sizing source ID.`);
+    if (source && (item.situation !== source.brief || item.key_question !== source.task || item.market_sizing_format !== source.format)) errors.push(`${item.id} does not preserve the source brief, task, and format.`);
+    if (item.data_exhibits.length || item.journey_exhibits?.length) errors.push(`${item.id} must not depend on a chart.`);
+  });
+  if (MARKET_SIZING_BANK_CASE_POOL_LIBRARY.length !== MARKET_SIZING_BANK_CASES.length) errors.push('Every Market Sizing bank case must have one linked Case Pool record.');
+  MARKET_SIZING_BANK_CASE_POOL_LIBRARY.forEach((item) => {
+    const source = MARKET_SIZING_BANK_CASES.find((candidate) => marketSizingBankSourceId(candidate.code) === item.source_case_id);
+    if (!source) {
+      errors.push(`${item.id} has no matching Market Sizing bank case.`);
+      return;
+    }
+    if (item.related_drill_ids?.[0] !== item.source_case_id) errors.push(`${item.id} does not link to the same Market Sizing bank source ID.`);
+    if (item.situation !== source.brief || item.key_question !== source.task || item.difficulty !== source.difficulty || item.market_sizing_format !== MARKET_SIZING_BANK_FORMAT) errors.push(`${item.id} does not preserve the bank brief, task, difficulty, and format.`);
+    if (item.data_exhibits.length || item.journey_exhibits?.length) errors.push(`${item.id} must not depend on a chart.`);
+  });
+  CREATIVITY_CYCLE_2_CASE_POOL_LIBRARY.forEach((item) => {
+    const source = CREATIVITY_CYCLE_2_CASES.find((candidate) => candidate.sourceCaseId === item.source_case_id);
+    if (!source) errors.push(`${item.id} has no matching Creativity source case.`);
+    if (!item.source_case_id || item.related_drill_ids?.[0] !== item.source_case_id) errors.push(`${item.id} does not link to the same Case Drill source ID.`);
+    if (source && (item.situation !== source.brief || item.creativity_category !== source.category || item.creativity_rubric_version !== source.rubricVersion)) errors.push(`${item.id} does not preserve the source brief, category, and rubric version.`);
+    if (source && (item.creativity_what_to_look_for !== source.assessment || item.creativity_source_rubric !== source.sourceRubric)) errors.push(`${item.id} does not preserve the source assessment guidance and /10 scoring guide.`);
+  });
   CASE_POOL_ELIGIBLE_JOURNEY_IDS.forEach((journeyId) => {
     if (sharedJourneyIds.filter((id) => id === journeyId).length !== 1) errors.push(`${journeyId} Must Have Exactly One Shared Case Pool Record.`);
   });
@@ -1805,6 +2239,17 @@ export const SHARED_CASE_ALIGNMENT_AUDIT = {
   validationErrors: validateCasePoolSharedAlignment(),
 };
 
+export const CASE_POOL_NUMERIC_UNIT_AUDIT = {
+  selectableCases: SELECTABLE_CASE_POOL_LIBRARY.length,
+  numericFocusedCases: SELECTABLE_CASE_POOL_LIBRARY.filter((item) =>
+    Boolean(item.numeric_checks?.length) || Boolean(item.market_sizing_format)
+    || (item.skill_focus || []).some((skill) => skill === 'charts' || skill === 'calculations' || skill === 'market-sizing')
+    || Boolean(item.data_exhibits.length || item.journey_exhibits?.length)
+  ).length,
+  deterministicCalculationResults: CALCULATION_CYCLE_1_CASE_POOL_LIBRARY.reduce((sum, item) => sum + (item.numeric_checks?.length || 0), 0),
+  sharedJourneyCases: JOURNEY_CASE_POOL_LIBRARY.length,
+};
+
 export const POOL_TYPES: string[] = TYPE_PLAN.map(([kind]) => kind);
 
 export const POOL_INDUSTRIES: string[] = INDUSTRY_MATRIX.map(([industry]) => industry);
@@ -1827,10 +2272,10 @@ export function pickRandomPoolCase(filters: PoolFilters = {}): FullCase | null {
     (!filters.type || filters.type === 'all' || p.type === filters.type) &&
     (!filters.industry || filters.industry === 'all' || p.industry === filters.industry);
   const exclude = new Set(filters.excludeIds || []);
-  let pool = CASE_POOL_LIBRARY.filter((p) => matches(p) && !exclude.has(p.id));
+  let pool = SELECTABLE_CASE_POOL_LIBRARY.filter((p) => matches(p) && !exclude.has(p.id));
   // If everything in the filter has been practised, drop the exclusion rather than returning empty.
-  if (pool.length === 0) pool = CASE_POOL_LIBRARY.filter(matches);
-  if (pool.length === 0) pool = CASE_POOL_LIBRARY;
+  if (pool.length === 0) pool = SELECTABLE_CASE_POOL_LIBRARY.filter(matches);
+  if (pool.length === 0) pool = SELECTABLE_CASE_POOL_LIBRARY;
   return pool[Math.floor(Math.random() * pool.length)] || null;
 }
 
@@ -1848,8 +2293,8 @@ export interface PoolHistoryRecord {
  */
 export function recommendPoolCases(history: PoolHistoryRecord[], count = 3): FullCase[] {
   const done = new Set(history.map((h) => String(h.case_id || '')).filter(Boolean));
-  const fresh = CASE_POOL_LIBRARY.filter((p) => !done.has(p.id));
-  const source = fresh.length >= count ? fresh : CASE_POOL_LIBRARY;
+  const fresh = SELECTABLE_CASE_POOL_LIBRARY.filter((p) => !done.has(p.id));
+  const source = fresh.length >= count ? fresh : SELECTABLE_CASE_POOL_LIBRARY;
 
   if (history.length === 0) {
     const starters: Array<[string, string, CaseDifficulty]> = [
@@ -1923,6 +2368,6 @@ export function poolRecommendationReason(history: PoolHistoryRecord[], item: Ful
   const sameType = history.filter((h) => h.case_type === item.type).length;
   const sameIndustry = history.filter((h) => h.industry === item.industry).length;
   if (sameIndustry === 0) return `You haven't practised the ${POOL_INDUSTRY_LABELS[item.industry] || item.industry} industry yet`;
-  if (sameType === 0) return `You haven't practised ${POOL_TYPE_LABELS[item.type] || item.type} cases yet`;
-  return `You've practised ${POOL_TYPE_LABELS[item.type] || item.type} only ${sameType} ${sameType === 1 ? 'time' : 'times'}`;
+  if (sameType === 0) return 'A type of case you haven’t practised yet';
+  return `A type of case you've practised only ${sameType} ${sameType === 1 ? 'time' : 'times'}`;
 }

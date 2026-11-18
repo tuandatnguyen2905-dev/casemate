@@ -1,0 +1,1 @@
+import type{AdtechM5VisualKind}from'./adtechM5Core';import{VisualView}from'./fashionVisualKit';import{ADTECH_M5_VISUALS}from'./adtechM5VisualSpecs';export function renderAdtechModule05Visual(kind:AdtechM5VisualKind){const visual=ADTECH_M5_VISUALS[kind];return visual?<VisualView spec={visual.spec}/>:null;}

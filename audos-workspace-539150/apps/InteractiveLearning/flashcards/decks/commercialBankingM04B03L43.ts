@@ -1,0 +1,161 @@
+// Commercial Banking Module 04, Lesson 4.3 (apps/IndustryKnowledge/commercialBankingM04B03.tsx).
+// Excerpts are verbatim. Chapter 2 (four-bank evidence matrix) carries a restriction notice and unverified,
+// source-uneven figures, so it has no cards. Chapter 3's hypothetical numbers are not used.
+
+import type { FlashcardDeckContent } from '../models';
+import { defineLessonDeck } from './factory';
+
+export const CB_LESSON_43_DECK: FlashcardDeckContent = defineLessonDeck({
+  industryId: 'banking-commercial',
+  industryLabel: 'Commercial Banking',
+  moduleId: 'cb-m04',
+  moduleLabel: 'Module 04',
+  moduleKey: 'COMMERCIAL_BANKING_MODULE04',
+  file: 'apps/IndustryKnowledge/commercialBankingM04B03.tsx',
+  readAtSha256: '14ffd4a95f627ae6c4b035344840f3c3acf50969e283bab6c4b8c0232a15604c',
+  readAt: '2026-11-08',
+  chapterMarker: 'bankingChapter({',
+  contentStatus: 'Draft / Ready for Review',
+  deckId: 'commercial-banking-competitor-benchmarking',
+  title: 'Commercial Banking: Competitor Benchmarking',
+  description: 'How to build a bank benchmark on a consistent basis and interpret KPIs as trade-offs rather than rankings.',
+  lessonId: 'cb-m4-l43',
+  lessonTitle: '4.3 Competitor Benchmarking',
+  startMarker: "const L43 = '4.3 Competitor Benchmarking';",
+  endMarker: 'export const CB_LESSON_41: BankingLessonBundle',
+  chapterIdPrefix: 'cb-m4-l43',
+  chapters: [
+    { title: 'Build a bank benchmark that means something', sourceTitle: 'Build a bank benchmark that means something', citations: ['cb-m04-s07', 'cb-m04-s08', 'cb-m04-s09', 'cb-m04-s10', 'cb-m04-s11', 'cb-m04-s12', 'cb-m04-s13'] },
+    { title: 'Compare VCB, TCB, MB and VPBank\u2014without fabrication', sourceTitle: 'Compare VCB, TCB, MB and VPBank\u2014without fabrication', citations: ['cb-m04-s07', 'cb-m04-s08', 'cb-m04-s09', 'cb-m04-s10', 'cb-m04-s11', 'cb-m04-s12', 'cb-m04-s13'] },
+    { title: 'Interpret trade-offs, not winners', sourceTitle: 'Interpret trade-offs, not winners', citations: ['cb-m04-s07', 'cb-m04-s10', 'cb-m04-s11'] },
+  ],
+  mappingNotes: [
+    'Lesson 4.3 has no entry in reviewHolds.ts at read time. Chapter 2 carries a restriction notice (no complete four-bank league table until figures are reconciled) and is deliberately not used. Chapters 1 and 3 carry notices that unverified fields must stay unverified; cards teach only method and interpretation.',
+    'No bank-level figure, ratio value or hypothetical calculation from the chapters appears on any card.',
+  ],
+  cards: [
+    {
+      id: 'cb43-benchmark-is-a-linked-system',
+      ch: 1,
+      front: 'How are the metrics in a bank benchmark linked to one another?',
+      back: 'Scale and funding feed margin; efficiency and credit cost shape ROA; capital constrains leverage and therefore ROE. A meaningful benchmark keeps definitions and links KPIs through the bank\u2019s economic chain.',
+      explanation: 'A polished comparison table can be empty if periods, definitions and consolidation bases differ, so benchmarking starts with a data dictionary, not a ranking.',
+      example: 'Two banks\u2019 NIM figures mean little to compare until it is clear whether both use average earning assets and the same period.',
+      terms: ['Data dictionary', 'Like-for-like'],
+      refs: [
+        [1, 'A bank benchmark is a linked system: scale and funding feed margin; efficiency and credit cost shape ROA; capital constrains leverage and therefore ROE.'],
+        [1, 'A meaningful benchmark preserves definitions and links KPIs through the bank economic chain.'],
+      ],
+    },
+    {
+      id: 'cb43-benchmark-structure-and-fields',
+      ch: 1,
+      front: 'How is the lesson\u2019s bank benchmark structured, and why are some fields added to the mandatory metrics?',
+      back: 'Fourteen mandatory metrics are grouped into scale and growth, funding and margin, efficiency and asset quality, and capital and returns. Credit growth, deposit growth and non-interest income are added to explain movement and diversification.',
+      explanation: 'Each metric family sees one layer of the bank, so the families must be read together.',
+      example: 'Credit growth helps explain why loans moved, and non-interest income shows whether revenue is diversified.',
+      terms: ['Scale', 'Funding', 'Asset quality', 'Capital'],
+      refs: [
+        [1, 'Group them into scale/growth, funding/margin, efficiency/asset quality, and capital/returns.'],
+        [1, 'Add credit growth, deposit growth and non-interest income to explain movement and diversification\u2014seventeen benchmark fields in total.'],
+      ],
+    },
+    {
+      id: 'cb43-data-dictionary-and-missing-evidence',
+      ch: 1,
+      front: 'What should be recorded for every benchmark cell, and what should happen to missing evidence?',
+      back: 'Period, group or standalone basis, formula, units, source and verification status. A data dictionary precedes ranking, and missing evidence should remain missing instead of being filled from another period.',
+      explanation: 'Without these fields it is not clear whether two figures can be compared at all.',
+      example: 'A figure from half a year cannot stand in for a full-year figure that has not been verified.',
+      terms: ['Consolidation basis', 'Data dictionary'],
+      refs: [
+        [1, 'For every cell record period, group or standalone basis, formula, units, source and verification status.'],
+        [1, 'A record of metric formula, period, scope, units, source and verification status.'],
+        [1, 'Missing evidence should remain missing.'],
+      ],
+    },
+    {
+      id: 'cb43-each-metric-sees-one-layer',
+      ch: 1,
+      front: 'Why can no single benchmark metric be trusted on its own?',
+      back: 'Each metric sees one layer. NIM can be high because of mix or risk; low CIR can indicate efficiency or underinvestment; high ROE can reflect strength or leverage; high coverage can reflect prudence or severe NPLs.',
+      explanation: 'Metric families should be interpreted together, and each bank\u2019s own formula definition must be retained and reconciled before comparison.',
+      example: 'A low cost-to-income ratio may reflect disciplined operations or a bank that has not invested enough.',
+      terms: ['NIM', 'CIR', 'ROE', 'Coverage'],
+      refs: [
+        [1, 'Each metric sees one layer. NIM can be high because of mix or risk; low CIR can indicate efficiency or underinvestment; high ROE can reflect strength or leverage; high coverage can reflect prudence or severe NPLs.'],
+        [1, 'Metric families should be interpreted together.'],
+        [1, 'Always retain the bank\u2019s own definition and reconcile it before comparison.'],
+      ],
+    },
+    {
+      id: 'cb43-kpi-interpretation-chain',
+      ch: 1,
+      front: 'Why is PBT unsuitable as a one-column league table, and what do ROA and ROE still require?',
+      back: 'PBT is an amount and naturally favours larger institutions. ROA and ROE are ratios, but they still require a matching period, average denominators and the same group scope.',
+      explanation: 'No metric, amount or ratio, should be used as a one-column league table.',
+      example: 'A very large bank will usually show a larger profit amount than a smaller bank even if its return on assets is lower.',
+      terms: ['PBT', 'ROA', 'ROE'],
+      refs: [
+        [1, 'PBT is an amount and naturally favors larger institutions.'],
+        [1, 'ROA and ROE are ratios, but they still require matching period, average denominators and group scope.'],
+        [1, 'No metric should be used as a one-column league table.'],
+      ],
+    },
+    {
+      id: 'cb43-companion-questions-for-headline-metrics',
+      ch: 3,
+      front: 'If a bank\u2019s NIM, ROE or growth looks strong, what should you inspect next?',
+      back: 'Build paired hypotheses and seek companion evidence. For a high NIM, inspect mix and cost of risk. For a high ROE, inspect ROA and CAR. For fast growth, inspect underwriting cohorts, NPL migration and provisions.',
+      explanation: 'Single-metric ranking rewards visible outcomes while hiding the resources and risks that generated them.',
+      example: 'A very high return on equity is more convincing when return on assets and capital adequacy support it.',
+      terms: ['Companion metric', 'NPL migration'],
+      refs: [
+        [3, 'Build paired hypotheses, then seek companion evidence. If NIM is high, inspect mix and cost of risk. If ROE is high, inspect ROA and CAR. If growth is fast, inspect underwriting cohorts, NPL migration and provisions.'],
+      ],
+    },
+    {
+      id: 'cb43-key-trade-off-pairs',
+      ch: 3,
+      front: 'Which six trade-offs does benchmarking need to explain?',
+      back: 'NIM versus credit risk, CASA versus funding stability, growth versus asset quality, CIR versus technology investment, ROE versus capital adequacy, and provisions versus current profit. Each attractive metric is read beside the risk, cost or capital that can produce it.',
+      explanation: 'A bank can intentionally accept near-term CIR pressure from investment, or near-term PBT pressure from provisions, to strengthen future economics.',
+      example: 'A bank that builds provisions lowers this year\u2019s profit but may be improving resilience.',
+      terms: ['Trade-off', 'Provisions'],
+      refs: [
+        [3, 'Key trade-offs are NIM versus credit risk, CASA versus funding stability, growth versus asset quality, CIR versus technology investment, ROE versus capital adequacy, and provisions versus current profit.'],
+        [3, 'Bank strength is multidimensional; interpret each attractive metric beside the risk, cost or capital that can produce it.'],
+        [3, 'A bank can intentionally accept near-term CIR pressure from investment or near-term PBT pressure from provisions to strengthen future economics.'],
+      ],
+    },
+    {
+      id: 'cb43-no-single-metric-winner',
+      ch: 3,
+      front: 'Why should a benchmark state the decision it serves instead of naming an overall winner?',
+      back: 'Single-metric ranking hides the risks behind visible results. A conclusion should say which bank is better funded, more resilient, more efficient or better suited to a target segment, because different questions can produce different answers.',
+      explanation: 'Rank only for a defined decision and evidence set.',
+      example: 'One bank may be best funded while another is better suited to a particular customer segment.',
+      terms: ['Benchmark', 'Underinvestment'],
+      refs: [
+        [3, 'Single-metric ranking rewards visible outcomes while hiding the resources and risks that generated them.'],
+        [3, 'A strategic conclusion should state the decision: which bank is better funded, more resilient, more efficient, or better suited to a target segment?'],
+        [3, 'Different questions can produce different answers.'],
+      ],
+    },
+    {
+      id: 'cb43-margin-after-risk-heuristic-limits',
+      ch: 3,
+      front: 'What is a margin-after-risk heuristic, and why is it not a formal spread?',
+      back: 'A directional subtraction of credit cost from margin. It is not a formal spread when the ratio denominators differ: NIM uses average earning assets while cost of risk commonly uses average loans, so denominators must be reconciled before formal analysis.',
+      explanation: 'It can prompt better questions but omits fees, operating cost, tax and capital.',
+      example: 'Subtracting a loan-based credit-cost ratio from an earning-asset-based margin mixes two different bases.',
+      terms: ['Margin-after-risk heuristic', 'Cost of risk'],
+      refs: [
+        [3, 'A directional subtraction that is not a formal spread when ratio denominators differ.'],
+        [3, 'NIM uses average earning assets while cost of risk commonly uses average loans; reconcile denominators before formal analysis.'],
+      ],
+    },
+  ],
+});
+
+export const COMMERCIAL_BANKING_M04B03L43_DECKS: FlashcardDeckContent[] = [CB_LESSON_43_DECK];

@@ -1,0 +1,202 @@
+import { F5DeepDive, citeF5, f5Chapter, f5Quiz } from './fashionM5Core';
+import type { FashionM5LessonBundle } from './fashionM5Core';
+
+const LESSON = '3. Market & Channel Trends';
+
+const deck = [
+  f5Chapter({
+    title: 'E-commerce and Digital Retail Expansion', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain what sustained online growth requires beyond a website or marketplace listing.',
+    mateIntro: 'Putting a product online takes an afternoon. Selling it profitably online takes search, clear sizing, reliable delivery and a returns process customers trust. Growth comes from the second list.',
+    keyInsight: 'Online growth depends on more than establishing a website or joining a marketplace. Businesses need to provide relevant product discovery, reliable fulfillment, transparent information, and a convenient purchasing process.',
+    statTiles: [
+      { value: '6', label: 'E-commerce growth activities', subtitle: 'Direct sales to online service', description: 'Direct e-commerce, marketplaces, product content, conversion, digital acquisition and online service.' },
+      { value: 'US$31B', label: 'Vietnam e-commerce market in 2025', subtitle: '+25.5%, about 10% of retail sales', description: 'Department of E-commerce and Digital Economy estimate; another ministry report puts it near US$32 billion and 12%.' },
+      { value: 'VND 222.1T', label: 'Revenue on the four main platforms, H1 2025', subtitle: '+23% year on year', description: 'YouNet ECI figure for Shopee, TikTok Shop, Lazada and Tiki across all categories.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the market figures are ministry and YouNet ECI estimates for all e-commerce categories and use different definitions, so they are not directly comparable.',
+    narrative: [
+      { label: 'What it is', text: 'E-commerce has become an important distribution channel for fashion, sportswear and lifestyle products. Online retail lets consumers explore wider assortments, compare prices, access product information and buy without visiting stores. Digital competition also puts pressure on product presentation, customer acquisition, delivery and returns, and businesses must handle sizing uncertainty, product authenticity and the difficulty of conveying material quality through a screen.' },
+      { label: 'Why it is happening', text: 'Customers start many purchases online, and platforms have lowered the barriers to selling. That raises the standard for everyone: shoppers expect accurate information, fast delivery and easy returns, and sellers compete on how well they deliver them as well as on price.' },
+      { label: 'Real-world example', text: 'Businesses operate brand-owned websites and applications to keep control of the experience, and reach customers through third-party platforms with established traffic and fulfilment. They provide detailed descriptions, accurate sizing, images and reviews, improve search, navigation, checkout and payment convenience, use search marketing, content and paid campaigns to reach relevant audiences, and manage delivery expectations, returns, exchanges and enquiries.' },
+      { label: 'Vietnam example', text: 'Vietnam’s Department of E-commerce and Digital Economy estimated the 2025 e-commerce market at about US$31 billion, up 25.5%, and YouNet ECI counted VND 222.1 trillion on the four main platforms in the first half of 2025, up 23%. The rules are changing too: Decree 85/2021 sets requirements for product information on e-commerce sites, and a new Law on E-commerce, applying to domestic and foreign parties, took effect on 1 July 2026.' },
+      { label: 'Business impact', text: 'E-commerce creates opportunities to expand market reach and improve product accessibility, but it also increases competition and service expectations. Sustainable digital performance requires coordinated investment in product presentation, customer acquisition, fulfilment and after-sales service.' },
+    ],
+    visualKind: 'fashion-m5-31-ecommerce', visualHeading: 'What online growth is built on',
+    visualIntro: 'See six activities that together make online retail grow profitably.',
+    imageAlt: 'Casemate mind map of six e-commerce growth activities and what each builds',
+    keyTerms: [
+      { term: 'Direct e-commerce', definition: 'Selling through a brand’s own website or app.' },
+      { term: 'Marketplace', definition: 'A third-party platform with its own traffic and fulfilment services where many sellers list products.' },
+      { term: 'Conversion', definition: 'The share of visitors who go on to buy.' },
+      { term: 'Product content', definition: 'Descriptions, sizing, images and reviews shown on a product page.' },
+    ],
+    recap: [
+      'E-commerce widens reach and access but raises competition and service expectations.',
+      'Success needs discovery, fulfilment, transparent information and easy purchase.',
+      'Sizing uncertainty and authenticity are specific challenges for fashion.',
+      'Coordinate presentation, acquisition, fulfilment and after-sales service.',
+    ],
+    chapterRecap: 'E-commerce creates opportunities to expand market reach and improve product accessibility, but it also increases competition and service expectations. Sustainable digital performance requires coordinated investment in product presentation, customer acquisition, fulfillment, and after-sales service.',
+    deepDiveTitle: 'Why the product page does most of the selling',
+    body: <F5DeepDive paragraphs={[
+      'In a store, a customer can touch the fabric and try the size. Online, the product page replaces all of that, so photographs, size charts, material descriptions and reviews carry the weight of a sales assistant.' ,
+      'Better pages reduce returns as well as lifting conversion, because customers know what they are buying. That is why content is treated as an operating investment and not as decoration.',
+    ]} evidence="The activities are described qualitatively in the supplied material. The market figures are ministry and YouNet ECI estimates that cover all categories and use different scopes; the legal points are from official or advisory summaries and should be confirmed against the issuing texts." />,
+    sources: citeF5('bofStateOfFashion', 'vietnamNewsEcom', 'vovDomesticReport', 'younetEciPlatforms', 'vnEcommerceLaw', 'vnEcommerceDecree'),
+  }),
+  f5Chapter({
+    title: 'Social Commerce and Influencer-Led Retail', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Separate engagement from commercial results and explain how to evaluate creator-led selling.',
+    mateIntro: 'A video can be watched a million times and sell nothing. Another, seen by a few thousand of the right people, can sell out a size run. The numbers that matter are the ones on the till.',
+    keyInsight: 'Social commerce works best when content creates both discovery and trust. High engagement does not necessarily translate into sales, so brands need to evaluate conversion, customer quality, and repeat purchasing alongside views and interactions.',
+    statTiles: [
+      { value: '6', label: 'Social-commerce activities', subtitle: 'Influencers to measurement', description: 'Influencer partnerships, short-form video, live shopping, affiliate marketing, user-generated content and performance measurement.' },
+      { value: '+148%', label: 'TikTok Shop revenue growth, H1 2025', subtitle: 'Year on year, all categories', description: 'YouNet ECI figure; TikTok Shop reached 42% of revenue on the four main platforms.' },
+      { value: '1% + 0.5%', label: 'VAT and personal income tax withheld on goods sales', subtitle: 'From July 2025 for resident individual sellers', description: 'Platforms with ordering and payment withhold tax per transaction under Decree 117/2025.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the growth figure covers all categories, and the tax rates are as reported in legal summaries of Decree 117/2025, later replaced by Decree 252 from 1 July 2026, so confirm current rates.',
+    narrative: [
+      { label: 'What it is', text: 'Social commerce connects product discovery, brand interaction and purchase through social media and creator-led content. Consumers may find products through short videos, live shopping, influencer recommendations, reviews and community discussion before buying. These channels can be particularly influential for visual and identity-related categories such as fashion, footwear and lifestyle, but results depend on audience relevance, creator credibility, content quality, platform conditions and the ability to turn engagement into profitable sales.' },
+      { label: 'Why it is happening', text: 'Younger shoppers discover products through creators and video, and live formats answer questions about fit and use in real time. Because attention is easy to measure and sales are harder to attribute, brands risk judging campaigns by views rather than by customers won and kept.' },
+      { label: 'Real-world example', text: 'Brands collaborate with creators whose audiences and content align with the target market; use short-form video to show styling, functionality, fit and everyday use; combine product demonstrations, questions and promotional offers in live sessions; reward partners for qualified purchases through trackable referrals; encourage authentic reviews, styling ideas and customer demonstrations; and track conversion rates, acquisition costs, attributable revenue and repeat purchases.' },
+      { label: 'Vietnam example', text: 'YouNet ECI reported TikTok Shop revenue up 148% in the first half of 2025, reaching 42% of revenue on the four main platforms, and found that small brands were using it better than large ones. Social selling is also being formalised: from 1 July 2025 platforms with ordering and payment withhold VAT and personal income tax on sales by individual and household sellers, and Decree 252 replaced the arrangement from 1 July 2026, so margins on creator-led sales now carry tax and compliance costs.' },
+      { label: 'Business impact', text: 'Social commerce can shorten the path from product discovery to purchase and strengthen brand engagement. Businesses should combine compelling content with credible partnerships, convenient checkout and clear performance measurement.' },
+    ],
+    visualKind: 'fashion-m5-32-social', visualHeading: 'Engagement is not the same as sales',
+    visualIntro: 'Compare the numbers that look good with the numbers that pay.',
+    imageAlt: 'Casemate comparison of engagement signals and commercial evidence for social commerce',
+    keyTerms: [
+      { term: 'Social commerce', definition: 'Selling products directly through social and video platforms.' },
+      { term: 'Live shopping', definition: 'Real-time video sessions in which hosts demonstrate products and take orders.' },
+      { term: 'Affiliate marketing', definition: 'Rewarding partners for purchases they drive through trackable referral links.' },
+      { term: 'Attributable revenue', definition: 'Sales that can be credibly linked to a particular campaign or partner.' },
+    ],
+    recap: [
+      'Social content joins discovery, interaction and purchase.',
+      'High engagement does not guarantee sales.',
+      'Evaluate conversion, customer quality and repeat purchasing.',
+      'Pair compelling content with credible partners and easy checkout.',
+    ],
+    chapterRecap: 'Social commerce can shorten the path from product discovery to purchase and strengthen brand engagement. Businesses should combine compelling content with credible partnerships, convenient checkout, and clear performance measurement.',
+    deepDiveTitle: 'Why customer quality matters more than customer count',
+    body: <F5DeepDive paragraphs={[
+      'A live session can bring many first-time buyers on a deep discount, who then return items or never buy again. Another can bring fewer buyers who pay a fair price and come back.' ,
+      'Tracking conversion, return rate and repeat purchases by campaign shows which creators bring customers worth having. Those measures, not follower counts, decide where to spend next.',
+    ]} evidence="The activities are described qualitatively in the supplied material. The platform growth figure is YouNet ECI data across all categories; the tax rules are from legal and advisory summaries, and Decree 117 was replaced by Decree 252 on 1 July 2026, so check current obligations." />,
+    sources: citeF5('bofStateOfFashion', 'younetEciPlatforms', 'eyDecree117', 'kpmgDecree252', 'cimigoEcommerce'),
+  }),
+  f5Chapter({
+    title: 'Omnichannel Integration and Customer Experience', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Show how continuity across touchpoints creates advantage and what integration it depends on.',
+    mateIntro: 'A customer who finds a jacket on the app, tries it in a store and returns it somewhere else should not notice any seams. When they do, it is usually because the data behind the channels does not match.',
+    keyInsight: 'The competitive advantage of omnichannel retail comes from continuity across customer touchpoints. Customers should be able to move between channels with minimal friction, while businesses maintain visibility over inventory, orders, and service performance.',
+    statTiles: [
+      { value: '6', label: 'Omnichannel activities', subtitle: 'Unified inventory to integrated service', description: 'Unified inventory, click-and-collect, ship-from-store, cross-channel returns, consistent customer data and integrated service.' },
+      { value: '100+', label: 'Canifa stores', subtitle: 'With an app and C-Live video service', description: 'Reported to combine online and offline customer data into one view.' },
+      { value: '13', label: 'K&K Fashion showrooms', subtitle: 'Plus an e-commerce platform', description: 'A Vietnamese brand using AI personalisation across channels.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the Canifa and K&K figures come from vendor case studies and describe individual brands, not the industry.',
+    narrative: [
+      { label: 'What it is', text: 'Omnichannel retail integrates physical stores, brand websites, mobile apps, marketplaces and customer service into a coordinated shopping experience. Customers may discover products online, inspect them in stores, buy through another channel and return or exchange through a different location. This needs consistent product information, accurate inventory, integrated order management and coordinated service processes.' },
+      { label: 'Why it is happening', text: 'Customers do not distinguish channels, so any inconsistency, such as different prices, unavailable products or duplicated work, is experienced as a failure of the brand. Retailers that connect their channels turn that inconsistency into an advantage.' },
+      { label: 'Real-world example', text: 'Businesses provide accurate stock information across stores and online channels; allow customers to order online and collect at designated stores; fulfil online orders from suitable store inventory when efficient; enable returns or exchanges across eligible channels; maintain appropriate visibility of customer interactions and preferences across touchpoints; and coordinate product information, promotions, customer support and order tracking.' },
+      { label: 'Vietnam example', text: 'Canifa, with more than 100 stores and an app, describes combining online and offline customer data into one view and offers C-Live, a video call with store staff inside the app. K&K Fashion, with 13 showrooms and an e-commerce platform, reports using Appier’s AI to segment audiences and deliver cross-channel recommendations and personalised email, which lifted click-through and conversion according to the vendor.' },
+      { label: 'Business impact', text: 'Omnichannel integration improves shopping convenience and helps businesses coordinate their operations. Its success depends on system integration, inventory accuracy, employee capabilities and consistent service standards.' },
+    ],
+    visualKind: 'fashion-m5-33-omnichannel', visualHeading: 'One customer, several doors, one experience',
+    visualIntro: 'Follow a customer across six steps and see what must stay consistent at each one.',
+    imageAlt: 'Casemate flow of six omnichannel steps with what must stay consistent at each',
+    keyTerms: [
+      { term: 'Click-and-collect', definition: 'Ordering online and collecting the order at a designated store.' },
+      { term: 'Cross-channel return', definition: 'Returning or exchanging an item through a channel other than the one used to buy.' },
+      { term: 'Unified inventory', definition: 'One accurate view of stock across stores, warehouses and online channels.' },
+      { term: 'Touchpoint', definition: 'Any point where a customer meets the brand, such as an app, store or support chat.' },
+    ],
+    recap: [
+      'Omnichannel links stores, websites, apps, marketplaces and service.',
+      'Customers move between channels and expect continuity.',
+      'Integration is needed for stock, orders, data and service.',
+      'Without it, channels create inconsistent prices and unavailable products.',
+    ],
+    chapterRecap: 'Omnichannel integration improves shopping convenience and helps businesses coordinate their operations. Its success depends on system integration, inventory accuracy, employee capabilities, and consistent service standards.',
+    deepDiveTitle: 'Why omnichannel is an operations problem first',
+    body: <F5DeepDive paragraphs={[
+      'The customer sees an app screen, but the promise behind it is carried by stock records, store staff and order systems. If a store picks goods for online orders without a clear process, availability and service fall for everyone.' ,
+      'That is why retailers usually start by fixing inventory accuracy and order routing, and train store teams on the new tasks, before adding more customer-facing features.',
+    ]} evidence="The activities are described qualitatively in the supplied material. Canifa and K&K details come from vendor case studies, so benefits are as described by the vendors and brands and have not been independently verified." />,
+    sources: citeF5('bofStateOfFashion', 'canifaCleverTap', 'stringeeCanifa', 'appierKk'),
+  }),
+  f5Chapter({
+    title: 'Direct-to-Consumer and Distribution Model Evolution', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Compare channel models on control, cost and reach and explain why many brands choose a hybrid.',
+    mateIntro: 'Selling direct sounds like keeping the whole margin. It also means keeping all the costs: stores, warehouses, ads, returns. The right mix depends on what each channel really costs and earns.',
+    keyInsight: 'DTC is not automatically more profitable than wholesale. The most suitable distribution model depends on customer acquisition costs, channel economics, brand control, geographic reach, and the capabilities required to serve customers effectively.',
+    statTiles: [
+      { value: '6', label: 'Distribution activities', subtitle: 'Brand-owned retail to profitability analysis', description: 'Owned stores, owned e-commerce, wholesale, marketplaces, hybrid distribution and channel profitability analysis.' },
+      { value: '~45%', label: 'Coolmate revenue from returning customers', subtitle: 'Secondary agency analysis', description: 'Illustrates the value of owning the customer relationship in a direct model.' },
+      { value: '−32.1%', label: 'Shopee sellers with revenue, H1 2025', subtitle: 'As platform fees rose', description: 'YouNet ECI figure showing the cost pressure that marketplace dependence can bring.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the Coolmate share is from a secondary analysis, and the seller figure covers all categories on one platform.',
+    narrative: [
+      { label: 'What it is', text: 'Direct-to-consumer models let brands sell through their own stores and digital channels instead of relying entirely on wholesale partners or third-party retailers. This can increase control over pricing, brand presentation, customer relationships and first-party customer data, but it also requires investment in retail operations, customer acquisition, technology, fulfilment and after-sales service. Many brands therefore use a hybrid approach combining owned channels with wholesale partners and selected marketplaces.' },
+      { label: 'Why it is happening', text: 'Control and data are attractive, yet owned channels carry fixed and acquisition costs that not every brand can support everywhere. Marketplaces and wholesale provide reach with less investment but give up some control, so most brands balance the two and adjust as conditions change.' },
+      { label: 'Real-world example', text: 'Brands operate physical stores to control merchandising, service and presentation; sell through brand websites to strengthen direct relationships; use retail partners for broader distribution and established traffic; join marketplaces to reach additional audiences while managing fees and dependencies; combine DTC, wholesale and marketplace channels according to market conditions; and compare margins, acquisition costs, fulfilment expenses and sales productivity by channel.' },
+      { label: 'Vietnam example', text: 'Coolmate, a direct-to-consumer menswear brand, is reported to draw about 45% of its revenue from returning customers, and Calem.Club sells with no offline stores through TikTok content and Shopee and TikTok Shop livestreams. Yody combines a network of 283 stores with online sales, a hybrid model, while YouNet ECI reported that Shopee sellers with revenue fell 32.1% in the first half of 2025 as platform fees rose, a reminder of the cost of depending on one marketplace.' },
+      { label: 'Business impact', text: 'Distribution strategies are evolving toward flexible combinations of owned and partner channels. Businesses should evaluate each channel on its strategic role, customer reach, operational requirements and total economics.' },
+    ],
+    visualKind: 'fashion-m5-34-dtc', visualHeading: 'More control usually costs more to run',
+    visualIntro: 'See how five channel models trade control of brand and data against operating cost.',
+    imageAlt: 'Casemate matrix placing wholesale, marketplaces, hybrid mix, owned e-commerce and brand-owned stores by control and operating cost',
+    keyTerms: [
+      { term: 'Direct-to-consumer (DTC)', definition: 'Selling directly to customers through a brand’s own stores and digital channels.' },
+      { term: 'Hybrid distribution', definition: 'Combining owned channels with wholesale partners and marketplaces.' },
+      { term: 'First-party data', definition: 'Customer information a brand collects directly from its own channels.' },
+      { term: 'Channel profitability', definition: 'The profit a channel earns after its own acquisition, fulfilment and return costs.' },
+    ],
+    recap: [
+      'DTC increases control and data but needs investment in operations.',
+      'Wholesale and marketplaces give reach with less control.',
+      'Many brands use a hybrid of owned and partner channels.',
+      'Judge each channel on total economics, not on margin alone.',
+    ],
+    chapterRecap: 'Distribution strategies are evolving toward flexible combinations of owned and partner channels. Businesses should evaluate each channel based on its strategic role, customer reach, operational requirements, and total economics.',
+    deepDiveTitle: 'Why margin per sale is the wrong comparison',
+    body: <F5DeepDive paragraphs={[
+      'A direct sale shows a higher margin than a wholesale sale, but it excludes the advertising to find the customer, the cost of the store or site, fulfilment and returns. Wholesale shows a lower margin but carries few of those costs.' ,
+      'Comparing contribution after all channel costs, by product and by customer, gives a fair view. It also shows where a hybrid makes sense, for example wholesale for reach in distant markets and owned channels for the core customer.',
+    ]} evidence="The distribution activities are described qualitatively in the supplied material. The Coolmate share is from secondary agency analysis, the Yody count is from a Q&Me Vietnam desktop survey as of March 2025, and the seller figure is YouNet ECI data for all categories on one platform." />,
+    sources: citeF5('bofStateOfFashion', 'scaleCommerceD2c', 'younetFashion', 'younetGrowthRanking', 'qmeStoreCount'),
+  }),
+];
+
+const quiz = f5Quiz('fashion-m5-l3', [
+  { chapter: '1', objective: 'State what online growth depends on', question: 'What does online growth depend on beyond having a website or marketplace listing?', application: 'A brand lists on a marketplace but sales stall. What else is needed?', correct: 'Relevant product discovery, reliable fulfilment, transparent information and a convenient purchase process', wrong: ['A larger logo', 'More physical stores only', 'Fewer product photographs'], explanation: 'Online performance needs discovery, fulfilment, information and convenience together. Review Chapter 1.' },
+  { chapter: '1', objective: 'Name e-commerce challenges', question: 'Which challenges does digital retail create for fashion?', application: 'Customers cannot touch fabric or check size online. Which challenge is this?', correct: 'Sizing uncertainty, product authenticity and difficulty conveying material quality', wrong: ['Lower competition', 'Fewer delivery expectations', 'No need for product information'], explanation: 'Digital competition raises pressure on presentation, acquisition, delivery and returns. Review Chapter 1.' },
+  { chapter: '1', objective: 'Read market estimates carefully', question: 'Why should e-commerce market estimates be compared with care?', application: 'One ministry report says US$31 billion and another US$32 billion. What explains this?', correct: 'They come from different reports and definitions and cover all categories', wrong: ['One of them is certainly fabricated', 'They measure fashion only', 'They measure the same thing exactly'], explanation: 'Estimates differ in scope and definition. Review Chapter 1.' },
+  { chapter: '2', objective: 'State the social commerce principle', question: 'When does social commerce work best?', application: 'A campaign gets many views but few sales. What was missing?', correct: 'When content creates both discovery and trust', wrong: ['When it maximises views alone', 'When it avoids checkout', 'When it removes reviews'], explanation: 'High engagement does not necessarily translate into sales. Review Chapter 2.' },
+  { chapter: '2', objective: 'Choose the right measures', question: 'What should brands evaluate alongside views and interactions?', application: 'A team wants to judge a creator partnership. What should it check?', correct: 'Conversion, customer quality and repeat purchasing', wrong: ['Only follower count', 'Only the creator’s fee', 'Only the number of posts'], explanation: 'Track conversion rates, acquisition costs, attributable revenue and repeat purchases. Review Chapter 2.' },
+  { chapter: '2', objective: 'Recognise tax effects on social selling', question: 'What changed for individual sellers on e-commerce platforms with ordering and payment in Vietnam from July 2025?', application: 'A creator sells through a platform. What is now done per transaction?', correct: 'The platform withholds, declares and pays VAT and personal income tax on the seller’s behalf', wrong: ['Sellers stopped paying any tax', 'Platforms stopped recording orders', 'Only foreign sellers pay tax'], explanation: 'Decree 117/2025 introduced platform withholding, later replaced by Decree 252 from 1 July 2026. Review Chapter 2.' },
+  { chapter: '3', objective: 'State the omnichannel advantage', question: 'Where does the competitive advantage of omnichannel retail come from?', application: 'A customer moves from app to store to another return location. What creates the advantage?', correct: 'Continuity across customer touchpoints', wrong: ['The number of channels alone', 'Separate pricing in each channel', 'Hiding stock information'], explanation: 'Customers should move between channels with minimal friction. Review Chapter 3.' },
+  { chapter: '3', objective: 'List omnichannel capabilities', question: 'Which of these is an omnichannel activity?', application: 'A customer orders online and collects in a store. Which activity is this?', correct: 'Click-and-collect', wrong: ['Closing all stores', 'Selling only through wholesale', 'Removing order tracking'], explanation: 'Click-and-collect, ship-from-store and cross-channel returns are omnichannel activities. Review Chapter 3.' },
+  { chapter: '4', objective: 'Assess DTC economics', question: 'Is DTC automatically more profitable than wholesale?', application: 'A brand moves everything to its own channels. What must it check?', correct: 'No; the best model depends on acquisition cost, channel economics, brand control, reach and capabilities', wrong: ['Yes; direct selling always earns more', 'Yes; wholesale has no benefits', 'No; channel costs do not matter'], explanation: 'DTC adds control and data but also cost and complexity. Review Chapter 4.' },
+  { chapter: '4', objective: 'Describe hybrid distribution', question: 'Why do many brands use a hybrid approach?', application: 'A brand combines its own stores, wholesale partners and marketplaces. What is it balancing?', correct: 'Control, reach and operating costs', wrong: ['Only logo size', 'Only product colour', 'Only legal names'], explanation: 'Hybrid distribution balances control, reach and operating cost. Review Chapter 4.' },
+]);
+
+export const LESSON_5_3: FashionM5LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can explain what sustained online growth requires, how to judge social commerce by commercial results, why omnichannel advantage comes from continuity and why distribution models should be chosen on total economics.',
+    keyTakeaways: [
+      'Online growth needs discovery, fulfilment, transparent information and easy purchase.',
+      'Engagement is not sales: measure conversion, customer quality and repeat purchases.',
+      'Omnichannel advantage comes from continuity across touchpoints.',
+      'DTC is not automatically more profitable than wholesale.',
+      'Most brands will use a hybrid of owned and partner channels.',
+    ],
+    businessImplications: 'Invest in product content and fulfilment before more traffic, judge creators and channels on contribution after all costs, fix inventory accuracy and order routing before adding features, and review the channel mix as economics change.',
+    remember: 'Judge every channel by what it earns after all its costs, and keep the customer experience seamless across them.',
+    nextLesson: 'Regulatory & Sustainability Trends',
+  },
+};

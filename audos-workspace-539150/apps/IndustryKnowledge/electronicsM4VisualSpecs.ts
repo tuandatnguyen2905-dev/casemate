@@ -1,0 +1,270 @@
+import type { VisualSpec } from './fashionVisualKit';
+
+export interface ElectronicsChapterVisual { heading: string; intro: string; spec: VisualSpec }
+
+/** Chapter-specific Learning Visuals for Consumer Electronics & Semiconductors Module 04, keyed by visualKind. */
+export const ELECTRONICS_M4_VISUALS: Record<string, ElectronicsChapterVisual> = {
+  'electronics-m4-1': {
+    heading: 'Durable device advantage is built from six reinforcing competitive levers',
+    intro: 'Comparable hardware specifications make it hard to win through components alone. Software support, compatibility, distribution, repair, warranties and brand reputation increasingly decide purchase and retention.',
+    spec: {
+      layout: 'driverTree', title: 'Competition in Consumer Electronics', kicker: '',
+      root: { label: 'Durable advantage in a category', detail: 'Hardware, software, services, support and trust reinforcing one another' },
+      drivers: [
+        { label: 'Product innovation', detail: 'Beyond one specification', children: [{ label: 'Camera performance' }, { label: 'Proprietary silicon' }, { label: 'Battery efficiency' }] },
+        { label: 'Ecosystem competition', detail: 'Connected devices and services', children: [{ label: 'Software updates' }, { label: 'Accessories' }, { label: 'Links to computers and wearables' }] },
+        { label: 'Brand differentiation', detail: 'Design, quality and reputation' },
+        { label: 'Price competition', detail: 'Competitive cost, especially in mature categories' },
+        { label: 'Channel competition', detail: 'Distribution and financing access' },
+        { label: 'Customer retention', detail: 'Repair, warranties and lifecycle support' },
+      ],
+      note: 'Example from the chapter: a smartphone brand differentiates through several of these levers at once.',
+      takeaway: 'Consumer electronics competition is increasingly ecosystem-based: durable advantage requires hardware, software, services, support, trust, and user experience to reinforce one another.',
+    },
+  },
+  'electronics-m4-2': {
+    heading: 'Even a leading AI-chip designer depends on specialists in other segments',
+    intro: 'Semiconductors are not one homogeneous market. Design, foundry, memory, equipment, materials, packaging and testing each compete differently, and leadership in one layer does not remove dependencies in others.',
+    spec: {
+      layout: 'ecosystem', title: 'Competition in the Semiconductor Industry', kicker: '',
+      center: { label: 'AI-chip designer', detail: 'Competes on processor design, performance and software' },
+      actors: [
+        { label: 'Foundry', relation: 'External capacity, yield and process capability', flows: ['product', 'money'] },
+        { label: 'Memory suppliers', relation: 'Including high-bandwidth memory', flows: ['product', 'money'] },
+        { label: 'Advanced packaging', relation: 'Integrates dies into one package', flows: ['service', 'product'] },
+        { label: 'EDA', relation: 'Design software', flows: ['service', 'money'] },
+        { label: 'Semiconductor IP', relation: 'Licensed design blocks', flows: ['information', 'money'] },
+        { label: 'Equipment suppliers', relation: 'Enable the manufacturing it relies on', flows: ['product', 'risk'] },
+      ],
+      note: 'Compare firms only within the same segment, then map dependencies like these. Mature-node products remain essential for automotive, industrial, power-management and consumer uses.',
+      takeaway: 'Semiconductor advantage is segment-specific and combines technology, scale, yield, IP, customer qualification, manufacturing access, software, and supply reliability.',
+    },
+  },
+  'electronics-m4-3': {
+    heading: 'Six kinds of entry barrier — and the disruption that can still erode them',
+    intro: 'Concentration varies sharply by segment. Barriers range from capital and technology to switching costs and brand, but transitions and weak execution can still shift positions.',
+    spec: {
+      layout: 'taxonomy', title: 'Market Concentration, Barriers to Entry, and Competitive Intensity', kicker: '',
+      root: 'Barriers to entry', rootDetail: 'Barrier types — they protect incumbents but do not make them invulnerable',
+      groups: [
+        { label: 'Capital barriers', items: ['R&D cost', 'Facilities and equipment'] },
+        { label: 'Technology barriers', items: ['Proprietary technology', 'Patents', 'Process expertise'] },
+        { label: 'Scale advantages', items: ['Production yield', 'Years of learning'] },
+        { label: 'Switching cost', items: ['Chip redesign and revalidation', 'Ecosystem apps, data and habits'] },
+        { label: 'Brand and channel barriers', items: ['Brand recognition', 'Channels', 'After-sales support'] },
+        { label: 'Disruptive competition', detail: 'Technology transitions, alternative architectures, policy, new customer needs, weak execution' },
+      ],
+      note: 'Device entry can be easier in selected categories; trusted global brands and distribution are hard to build.',
+      takeaway: 'High entry barriers protect incumbents but do not make them invulnerable: technological transitions, alternative architectures, policy, new customer needs, and weak execution can still shift competitive positions.',
+    },
+  },
+  'electronics-m4-4': {
+    heading: 'Leading device companies draw advantage from different portfolios',
+    intro: 'Global consumer electronics includes portfolio companies, category specialists and value-oriented brands. Company-wide size does not equal leadership in every category.',
+    spec: {
+      layout: 'table', title: 'Leading Consumer Electronics Companies', kicker: '',
+      headers: ['Company', 'Portfolio described in the chapter', 'Source of advantage'],
+      rows: [
+        { label: 'Apple', a: 'Integrated devices, proprietary silicon, software, services', b: 'Ecosystem and premium brand' },
+        { label: 'Samsung Electronics', a: 'Devices, displays, appliances, memory', b: 'Breadth and vertical capability' },
+        { label: 'Xiaomi', a: 'Value-oriented devices and connected products', b: 'Broad price tiers' },
+        { label: 'Lenovo, HP and Dell', a: 'Important in PCs', b: 'Category strength in computing' },
+        { label: 'Sony and LG Electronics', a: 'Selected categories', b: 'Category expertise' },
+      ],
+      note: 'Listed in chapter order, not ranked. Apple and Samsung may meet in premium smartphones, yet their overall business models differ.',
+      takeaway: 'Consumer-electronics leadership must be evaluated at the category and customer level because strengths in smartphones, PCs, entertainment, displays, appliances, and ecosystems are not interchangeable.',
+    },
+  },
+  'electronics-m4-5': {
+    heading: 'Semiconductor leaders sit in different arenas that need separate comparisons',
+    intro: 'Leaders operate in AI processors, memory, CPUs, mobile chipsets, networking, foundry manufacturing and equipment. Chip-vendor revenue tables do not cover foundries or equipment makers.',
+    spec: {
+      layout: 'taxonomy', title: 'Leading Semiconductor Companies', kicker: '',
+      root: 'Semiconductor leaders by arena', rootDetail: 'Arenas, not a single ranking',
+      groups: [
+        { label: 'AI computing', items: ['NVIDIA'] },
+        { label: 'Memory', items: ['Samsung Electronics', 'SK hynix', 'Micron'] },
+        { label: 'Computing', items: ['Intel', 'AMD'] },
+        { label: 'Mobile and connectivity', items: ['Qualcomm', 'MediaTek'] },
+        { label: 'Networking and specialized', items: ['Broadcom'] },
+        { label: 'Foundry and equipment', detail: 'Compared differently from chip-vendor revenue', items: ['TSMC (foundry)', 'ASML (equipment)'] },
+      ],
+      note: 'Gartner’s preliminary January 2026 table: US$793.449B worldwide semiconductor vendor revenue for 2025; NVIDIA US$125.703B (15.8%). It measures vendor revenue, not universal technology leadership.',
+      takeaway: 'Semiconductor leadership is segment-specific; commercial scale, technology, market position, manufacturing access, profitability, and customer dependence must be interpreted together.',
+    },
+  },
+  'electronics-m4-6': {
+    heading: 'Vietnam builds from its manufacturing base toward selected semiconductor niches',
+    intro: 'Vietnam is more visible in manufacturing and selected semiconductor activities than in leading-edge fabrication. It can complement regional specialists through manufacturing, design, engineering and back-end services.',
+    spec: {
+      layout: 'pathway', title: 'Competitive Position of Vietnam and Regional Participants', kicker: '',
+      trunk: [
+        { label: 'Electronics manufacturing base', detail: 'Foreign investment, suppliers and exports' },
+        { label: 'Strategic investment', detail: 'Only where it transfers durable capability' },
+      ],
+      optionsLabel: 'Selective specialisation paths — options, not a sequence',
+      options: [
+        { label: 'Semiconductor backend opportunities', detail: 'Packaging and testing' },
+        { label: 'Chip design and verification', detail: 'Building on existing design firms' },
+        { label: 'Local supplier development', detail: 'Supplier quality and automation' },
+        { label: 'Engineering capability building', detail: 'Test engineering and product industrialization' },
+      ],
+      afterLabel: 'Measure of success',
+      after: [{ label: 'Retained capability and value', detail: 'Not announcements or gross output', kind: 'outcome' }],
+      note: 'Regional specialisation: Taiwan in foundry, South Korea in memory and electronics, Japan in materials and equipment, China in a large electronics ecosystem. OECD 2025: about 50 chip-design firms, seven assembly, packaging and testing facilities, no operational foundry.',
+      takeaway: 'Vietnam’s competitiveness should be measured by reliable capability and retained learning and value—not investment announcements or gross output alone.',
+    },
+  },
+  'electronics-m4-7': {
+    heading: 'Shipment share, revenue, profit and loyalty answer different benchmark questions',
+    intro: 'A company can lead shipments while another captures more revenue or profit through premium pricing. Each measure needs a defined category, geography, channel and period.',
+    spec: {
+      layout: 'table', title: 'Consumer Electronics Benchmarking: Brand, Scale, and Ecosystem', kicker: '',
+      headers: ['Measure', 'What it captures', 'Do not read it as'],
+      rows: [
+        { label: 'Shipment share', a: 'Units shipped into channels in a period', b: 'Sell-through, revenue or profit' },
+        { label: 'Revenue share', a: 'Value captured, including premium pricing', b: 'Unit reach' },
+        { label: 'Profitability', a: 'Margins after product and channel costs', b: 'Market size' },
+        { label: 'Ecosystem integration', a: 'Cross-device and service fit', b: 'Volume leadership' },
+        { label: 'Customer loyalty', a: 'Repeat purchase and retention', b: 'Short-term share' },
+      ],
+      note: 'Counterpoint’s preliminary 2025 global smartphone sell-in shares: Apple 20%, Samsung 19%, Xiaomi 13% — smartphones only, not all consumer electronics.',
+      takeaway: 'Shipment share, revenue share, profitability, ecosystem strength, and customer loyalty measure different dimensions and should never be treated as interchangeable rankings.',
+    },
+  },
+  'electronics-m4-8': {
+    heading: 'Each semiconductor business model needs its own benchmark measures',
+    intro: 'Chip designers, foundries, memory makers and equipment suppliers do different work. A fair benchmark starts from the company’s segment and value-chain role.',
+    spec: {
+      layout: 'table', title: 'Semiconductor Benchmarking: Technology, Specialization, and Scale', kicker: '',
+      headers: ['Peer group', 'Benchmark on', 'Reading the evidence'],
+      rows: [
+        { label: 'Design firms', a: 'Performance, power efficiency, design wins, software', b: 'Design and software leverage, not asset ownership' },
+        { label: 'Foundries', a: 'Process capability, yield, capacity, service', b: 'Read investment with yield and utilization' },
+        { label: 'Memory firms', a: 'Technology, product mix, cost, supply-demand execution', b: 'Growth reflects memory conditions' },
+        { label: 'Equipment firms', a: 'Precision, reliability, differentiation', b: 'Not comparable with chip-vendor revenue' },
+      ],
+      note: 'Gartner preliminary 2025: NVIDIA 15.8% of measured vendor revenue; SK hynix revenue up 37.2%; Micron up 50.2%. These reflect AI and memory conditions, not universal superiority.',
+      takeaway: 'Revenue and growth show commercial scale, but technology, yield, product fit, qualification, software, manufacturing access, customer diversity, and capital efficiency explain competitive strength.',
+    },
+  },
+  'electronics-m4-9': {
+    heading: 'Group benchmark indicators by the question each one answers',
+    intro: 'Market share, growth, margins, R&D intensity, capital spending, yield, delivery and concentration answer different questions. No single headline metric separates scale, efficiency, innovation and resilience.',
+    spec: {
+      layout: 'taxonomy', title: 'Quantitative Benchmarking Through Market Indicators', kicker: '',
+      root: 'Benchmark indicators', rootDetail: 'Use several compatible indicators together',
+      groups: [
+        { label: 'Scale', items: ['Market share', 'Revenue growth'] },
+        { label: 'Profitability', items: ['Gross margin', 'Operating margin'] },
+        { label: 'Innovation', items: ['R&D intensity'] },
+        { label: 'Capital efficiency', items: ['Capital expenditure', 'Return on invested capital', 'Utilization'] },
+        { label: 'Operational performance', items: ['Yield', 'Defect rates', 'Delivery', 'Cycle time'] },
+        { label: 'Concentration', items: ['Customer concentration', 'Supplier concentration'] },
+      ],
+      note: 'Record source, date, currency, geography, product definition, denominator and preliminary or final status. Adjust for business model: fabless firms, foundries, brands and contract manufacturers own different assets.',
+      takeaway: 'Robust quantitative benchmarking uses several compatible indicators and explains their definitions rather than treating one ranking as a complete competitive verdict.',
+    },
+  },
+  'electronics-m4-10': {
+    heading: 'An innovation system runs from research to commercial validation',
+    intro: 'Innovation creates value only when research, IP, engineering, manufacturing and validation connect to something customers will pay for. Features competitors can copy quickly give only temporary advantage.',
+    spec: {
+      layout: 'flow', title: 'Technology Innovation and Product Differentiation', kicker: '',
+      steps: [
+        { label: 'Research and development', detail: 'Architectures, materials and process innovation' },
+        { label: 'Intellectual property management', detail: 'Protect what is hard to reproduce' },
+        { label: 'Prototyping and qualification', detail: 'Prove the design works reliably' },
+        { label: 'Design-to-manufacturing coordination', detail: 'Make it buildable at acceptable cost' },
+        { label: 'Commercial validation', detail: 'Is it useful at a price customers support?', kind: 'decision' },
+        { label: 'Product differentiation', detail: 'Defensible value in the market', kind: 'outcome' },
+      ],
+      note: 'Govern innovation investment by customer need, technical feasibility, manufacturability, time to market, defensibility and expected return.',
+      takeaway: 'Sustainable innovation combines technical advancement with commercial relevance, manufacturability, defensibility, and a price customers will support.',
+    },
+  },
+  'electronics-m4-11': {
+    heading: 'Cost and reliability come from five operating drivers managed as one system',
+    intro: 'Operational excellence depends on sourcing, forecasting, manufacturing, inventory, logistics, quality systems and data, not factory speed alone. Over-dependence on one supplier or site turns local disruption into lost output.',
+    spec: {
+      layout: 'driverTree', title: 'Operational Excellence, Cost Efficiency, and Supply-Chain Resilience', kicker: '',
+      root: { label: 'Competitive cost and reliable supply', detail: 'Efficiency and resilience reinforcing one another' },
+      drivers: [
+        { label: 'Manufacturing efficiency', children: [{ label: 'Yield' }, { label: 'Throughput' }, { label: 'Utilization' }] },
+        { label: 'Cost control', children: [{ label: 'Materials and energy' }, { label: 'Logistics' }, { label: 'Warranty cost' }] },
+        { label: 'Quality management', children: [{ label: 'Process control' }, { label: 'Defect prevention' }] },
+        { label: 'Demand and inventory planning', children: [{ label: 'Forecasting' }, { label: 'Strategic stock' }] },
+        { label: 'Supplier diversification', children: [{ label: 'Qualified alternatives' }, { label: 'Contingency planning' }] },
+      ],
+      note: 'Excess redundancy also costs money, so resilience choices need impact and feasibility analysis. Risk monitoring and continuous improvement keep the drivers aligned.',
+      takeaway: 'Efficient and resilient operations reinforce one another when firms understand dependencies, qualify alternatives, and improve the processes that determine cost and reliability.',
+    },
+  },
+  'electronics-m4-12': {
+    heading: 'Consumer loyalty and semiconductor customer trust are earned differently',
+    intro: 'Consumers use brand, quality, design and ecosystem fit to reduce purchase uncertainty. Semiconductor customers rely on technical collaboration, qualification, delivery and engineering support over long product cycles.',
+    spec: {
+      layout: 'compare', title: 'Brand, Customer Relationships, and Ecosystem Development', kicker: '',
+      leftTitle: 'Consumer buyers', rightTitle: 'Semiconductor customers',
+      rows: [
+        { label: 'What reduces uncertainty', a: 'Brand, quality, design, familiarity, ecosystem fit', b: 'Technical collaboration, qualification, delivery, continuity' },
+        { label: 'Core capabilities', a: 'Positioning, service, updates, accessories, customer care', b: 'Roadmap collaboration, design wins, integration support, documentation' },
+        { label: 'Why it sticks', a: 'Connected ecosystems create convenience and switching costs', b: 'Qualified chips stay embedded in systems for years' },
+        { label: 'How it is retained', a: 'Repeat purchases across phones, computers, wearables, services', b: 'Trusted design support and product continuity' },
+        { label: 'What destroys it', a: 'Weak support', b: 'Unreliable delivery' },
+      ],
+      note: 'Retention should still be balanced against excessive dependence on a few accounts or ecosystem partners.',
+      takeaway: 'Brand reputation and technical trust are both earned through sustained product value, reliability, support, and innovation—not communications alone.',
+    },
+  },
+  'electronics-m4-13': {
+    heading: 'The sector’s strengths and its risks come from the same sources',
+    intro: 'Consumer electronics and semiconductors share technology and supply networks but face different economics. The same specialization that supports performance can also create dependency.',
+    spec: {
+      layout: 'taxonomy', title: 'Industry SWOT Analysis', kicker: '',
+      root: 'Industry SWOT', rootDetail: 'Four quadrants to turn into choices, not a list',
+      groups: [
+        { label: 'Strengths', items: ['Global ecosystems', 'Brands', 'Engineering', 'IP', 'Established networks'] },
+        { label: 'Weaknesses', items: ['Capital intensity', 'Complex dependencies', 'Cyclicality', 'Commoditization'] },
+        { label: 'Opportunities', items: ['AI', 'Advanced packaging', 'Efficient devices', 'Connectivity', 'Diversification'] },
+        { label: 'Threats', items: ['Geopolitics', 'Controls', 'Shortages', 'Volatility', 'Rapid change'] },
+      ],
+      note: 'Vietnam: manufacturing and integration strengths create upgrading opportunities, while imported technology, supplier gaps, talent, infrastructure and limited domestic IP remain vulnerabilities.',
+      takeaway: 'Technological opportunity and structural risk are inseparable: firms need financial discipline, resilient operations, and customer execution to turn innovation into sustainable value.',
+    },
+  },
+  'electronics-m4-14': {
+    heading: 'How each strategic risk is triggered and what it can cause',
+    intro: 'Not every technology or capacity expansion earns an adequate return. Demand, trade, talent and security shocks can combine, so risks are best read as linked scenarios.',
+    spec: {
+      layout: 'table', title: 'Strategic Challenges and Risk Factors', kicker: '',
+      headers: ['Risk', 'Trigger', 'Possible consequence'],
+      rows: [
+        { label: 'Demand volatility', a: 'Demand slowdown', b: 'Overcapacity and financial pressure' },
+        { label: 'Capital allocation risk', a: 'Weaker demand or delayed qualification', b: 'A large new facility loses appeal' },
+        { label: 'Technology disruption', a: 'A new architecture', b: 'Target market shifts' },
+        { label: 'Trade and regulatory uncertainty', a: 'Export restrictions', b: 'Limited technology or customers' },
+        { label: 'Talent shortages', a: 'Scarce engineers', b: 'Delayed operations' },
+        { label: 'Cybersecurity and data risks', a: 'Unsupported connected devices', b: 'Security and brand damage' },
+      ],
+      note: 'Also in scope: supply-chain concentration, energy and water needs, and e-waste and repair obligations. Track leading indicators and decision thresholds rather than static risk lists.',
+      takeaway: 'Strategic risks amplify one another, so investment, technology, procurement, operations, security, compliance, and market decisions need coordinated scenarios.',
+    },
+  },
+  'electronics-m4-15': {
+    heading: 'Prioritise opportunities where existing strengths reinforce one another',
+    intro: 'Resources are finite and technology choices are consequential. Opportunities aligned with existing strengths, customer demand, partners and feasible learning paths are more likely to earn defensible returns.',
+    spec: {
+      layout: 'decision', title: 'Strategic Priorities for Sustained Competitiveness', kicker: '',
+      root: { label: 'Candidate opportunity', detail: 'An application, segment or capability to invest in' },
+      question: 'Do engineering, IP, customer access and manufacturing partners reinforce one another here?',
+      branches: [
+        { condition: 'Strong fit with strengths and demand', outcome: 'Focus investment here', detail: 'Focused innovation with financial discipline', tone: 'positive' },
+        { condition: 'Fit depends on missing capability', outcome: 'Build capability first', detail: 'Workforce, research and supplier development', tone: 'caution' },
+        { condition: 'Unrelated technology race', outcome: 'Do not spread capital here', tone: 'negative' },
+      ],
+      note: 'Track market position, profitability, productivity, retention, technical milestones, supplier development, workforce capability and domestic value capture.',
+      takeaway: 'Companies and countries create stronger positions through focused specialization and continuous capability development—not scale or investment announcements alone.',
+    },
+  },
+};

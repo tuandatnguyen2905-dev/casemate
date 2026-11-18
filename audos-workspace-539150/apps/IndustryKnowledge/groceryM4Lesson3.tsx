@@ -1,0 +1,202 @@
+import { G4DeepDive, citeG4, g4Chapter, g4Quiz } from './groceryM4Core';
+import type { GroceryM4LessonBundle } from './groceryM4Core';
+
+const LESSON = '3. Competitor Benchmarking';
+
+const deck = [
+  g4Chapter({
+    title: 'Benchmarking Framework and Evaluation Criteria', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Build a benchmarking framework that separates the scale of a retailer from the quality of its business.',
+    mateIntro: 'Having more stores does not by itself make a retailer better. A fair comparison looks at reach, but also at what each store earns and what it costs to deliver.',
+    keyInsight: 'Benchmarking should compare businesses with similar formats and operating conditions. Store counts, revenue, and market share are useful indicators, but they do not independently establish which retailer has the strongest business model.',
+    statTiles: [
+      { value: '7', label: 'Benchmarking dimensions', subtitle: 'Market position to expansion efficiency', description: 'Market position, financial performance, store productivity, customer proposition, supply-chain capability, digital maturity and expansion efficiency.' },
+      { value: '1.3%', label: 'WinCommerce profit margin in 2025', subtitle: 'VND 501B on VND 38,979B of revenue', description: 'A company-reported margin, showing how thin retail profit can be.' },
+      { value: 'VND 1.5B+', label: 'Bách Hóa Xanh average monthly revenue per store in 2025', subtitle: 'Down from over VND 2.1B', description: 'Expansion diluted the average as 789 new stores opened.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the margin and store revenue are company-reported figures from Masan Group and VnExpress and describe different formats, so they illustrate the framework and are not a ranking.',
+    narrative: [
+      { label: 'What it is', text: 'Competitor benchmarking compares retailers using a consistent set of financial, operational, commercial and customer indicators. The purpose is to understand how businesses compete, identify performance gaps and decide which capabilities may transfer to another market or format. A useful framework distinguishes between business scale and business quality: a large store network gives broad reach, but performance also depends on sales productivity, profitability, inventory efficiency, customer loyalty and the cost of delivering the proposition.' },
+      { label: 'Why it is happening', text: 'Raw size is easy to see and report, so it is easy to over-weight. Quality shows up in productivity, margin, stock efficiency and loyalty, which are harder to compare and are often reported differently.' },
+      { label: 'Real-world example', text: 'Analysts compare relevant market share, coverage and presence; revenue growth, gross margin, operating profit and cash generation; sales per store, per square metre and transactions per location where data exist; price positioning, assortment, quality, convenience and loyalty; sourcing, availability, delivery reliability and spoilage control; e-commerce, engagement, payments and omnichannel fulfilment; and whether new stores and channels reach sustainable performance.' },
+      { label: 'Vietnam example', text: 'WinCommerce reported 2025 revenue of VND 38,979 billion from 4,592 stores and a profit margin of about 1.3%, with 90.3% of new stores above store-level breakeven. Bách Hóa Xanh reported about VND 46.9 trillion from 2,559 stores, but average monthly revenue per store fell from over VND 2.1 billion to just over VND 1.5 billion as it opened 789 stores. The two measure expansion efficiency differently, so each metric needs context before it is used to judge the stronger model.' },
+      { label: 'Business impact', text: 'A consistent benchmarking framework helps distinguish competitive scale from operational effectiveness. Comparisons should use reliable, comparable data and account for differences in retail format and market scope.' },
+    ],
+    visualKind: 'grocery-m4-31-framework', visualHeading: 'Seven dimensions of a retail benchmark',
+    visualIntro: 'See seven benchmarking dimensions around the centre and what each shows.',
+    imageAlt: 'Casemate orbit mind map of seven competitor benchmarking dimensions and what each shows',
+    keyTerms: [
+      { term: 'Benchmarking', definition: 'Comparing performance with that of rivals or leaders on consistent measures.' },
+      { term: 'Store productivity', definition: 'Sales earned per store, per square metre or per employee.' },
+      { term: 'Like-for-like comparison', definition: 'Comparing businesses with similar formats, markets and periods.' },
+      { term: 'Expansion efficiency', definition: 'Whether new stores and channels reach sustainable returns.' },
+    ],
+    recap: [
+      'Benchmarking uses a consistent set of financial, operational, commercial and customer indicators.',
+      'Scale and quality are different things.',
+      'Compare retailers with similar formats and conditions.',
+      'Store count, revenue and share do not alone prove the best model.',
+    ],
+    chapterRecap: 'A consistent benchmarking framework helps distinguish competitive scale from operational effectiveness. Comparisons should use reliable, comparable data and account for differences in retail format and market scope.',
+    deepDiveTitle: 'Why expansion can lower the average without being a mistake',
+    body: <G4DeepDive paragraphs={[
+      'New stores usually sell less in their first months than mature ones, so a chain that opens many stores in a year will see its average sales per store fall even if each new store is on track.',
+      'That is why benchmarking looks at like-for-like growth and new-store breakeven alongside the average, to separate dilution from a real weakness.',
+    ]} evidence="The framework dimensions are described qualitatively in the supplied material. WinCommerce figures are company-reported by Masan Group, and Bách Hóa Xanh figures are company results reported by VnExpress." />,
+    sources: citeG4('masanFy2025', 'masanAr2025', 'vnexpressBhx'),
+  }),
+  g4Chapter({
+    title: 'Global Competitor Benchmark: Business Model Comparison', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Compare global business models and decide which practices can be transferred without copying the whole structure.',
+    mateIntro: 'You can learn from Aldi without opening an Aldi. The aim is to see which capability makes each model work and whether it fits your market.',
+    keyInsight: 'The strongest benchmark is the capability behind the business model, not simply the retailer’s size. Retailers can learn from global leaders in purchasing efficiency, private-label development, fulfilment, and loyalty without copying their entire operating structure.',
+    statTiles: [
+      { value: '6', label: 'Global business models compared', subtitle: 'Walmart to Carrefour', description: 'Walmart, Amazon, Schwarz Group, Aldi, Costco and Carrefour, each with a different benchmarking focus.' },
+      { value: 'US$246B', label: 'Costco total company revenue in 2024', subtitle: 'From 890 stores', description: 'Higher than Schwarz Group or Aldi, yet Costco ranks fifth by NRF points.' },
+      { value: '13,877', label: 'Aldi stores worldwide', subtitle: 'US$155B company revenue', description: 'A very large network built on a limited, simple range.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; revenue and store counts are as listed by NRF and Kantar for 2024 and should be read with the note that the ranking is points-based.',
+    narrative: [
+      { label: 'What it is', text: 'Global retailers show several distinct ways of winning in grocery and general merchandise. Walmart emphasises scale and omnichannel reach, Aldi a lean discount model, Costco membership and bulk purchasing, and Schwarz Group a mix of discount retail and larger formats, while Amazon competes through digital commerce, marketplace infrastructure and logistics. These models are not interchangeable, because performance depends on local purchasing power, shopping habits, supplier structures, property costs and the maturity of logistics and digital infrastructure.' },
+      { label: 'Why it is happening', text: 'Each model solves a specific problem, such as low cost, member loyalty or delivery speed, and works only where the conditions that support it exist. Comparing capabilities is therefore more useful than comparing sizes.' },
+      { label: 'Real-world example', text: 'Walmart is benchmarked for scale, procurement and store-based fulfilment; Amazon for customer experience, logistics and digital infrastructure; Schwarz Group for supply-chain efficiency, private labels and format management; Aldi for limited assortment, cost discipline and operational simplicity; Costco for bulk purchasing, a curated range and member loyalty; and Carrefour for format adaptation, franchise expansion and omnichannel development.' },
+      { label: 'Vietnam example', text: 'Vietnamese retailers already use versions of these capabilities. Saigon Co.op builds private-label tiers (Co.op Happy, Select and Finest) with over 100 domestic manufacturers, WinCommerce’s WiN membership brings in 55% of revenue, Bach Hoa Xanh serves online orders from its store network, and Circle K and GS25 expand through licensing and franchising. Conditions differ from those of the global leaders: logistics cost is 16–17% of Vietnam’s GDP, and about 60% of urban consumers in one survey use both traditional and modern trade, so practices need to be adapted rather than copied.' },
+      { label: 'Business impact', text: 'Global benchmarks offer different lessons in cost leadership, digital integration, customer retention and assortment strategy. Retailers should select practices that fit their own customers, capabilities and competitive environment.' },
+    ],
+    visualKind: 'grocery-m4-32-global-benchmark', visualHeading: 'What each global model teaches',
+    visualIntro: 'See six global retailers as cards with their core positioning and the benchmarking focus for each.',
+    imageAlt: 'Casemate cards of six global retailers with core positioning and benchmarking focus',
+    keyTerms: [
+      { term: 'Cost leadership', definition: 'Winning by operating at lower cost than rivals and passing part of the saving to customers.' },
+      { term: 'Membership model', definition: 'A model where customers pay to join, creating loyalty and a stable income stream.' },
+      { term: 'Format adaptation', definition: 'Changing store formats and ranges to suit local markets.' },
+      { term: 'Transferable capability', definition: 'A practice that can work in another market without copying the whole structure.' },
+    ],
+    recap: [
+      'Walmart, Amazon, Schwarz, Aldi, Costco and Carrefour use distinct models.',
+      'Models depend on local purchasing power, habits, suppliers, property cost and infrastructure.',
+      'The capability behind the model is the benchmark, not size.',
+      'Learn without copying the whole operating structure.',
+    ],
+    chapterRecap: 'Global benchmarks offer different lessons in cost leadership, digital integration, customer retention, and assortment strategy. Retailers should select practices that fit their own customers, capabilities, and competitive environment.',
+    deepDiveTitle: 'Why a model that works abroad may not work at home',
+    body: <G4DeepDive paragraphs={[
+      'A limited-assortment discounter depends on shoppers accepting a narrow range, while a membership warehouse depends on customers who can store bulk goods and travel to a large site. Where shoppers prefer fresh products bought often and nearby, those assumptions weaken.',
+      'Benchmarking therefore asks which underlying capability, such as buying efficiency or private-label quality, can be used locally, and which conditions must exist first.',
+    ]} evidence="The model descriptions are from the supplied material. Revenue and store counts are NRF and Kantar figures for 2024, Vietnamese examples are company statements reported by Vietnam.vn, a Vietnamese business magazine, Masan Group and VnExpress, logistics cost is from the Ministry of Industry and Trade logistics portal, and the channel-use figure is from a small Q&Me survey of 200 women." />,
+    sources: citeG4('nrfTop50', 'nrfBlog', 'coopPrivateLabel2500', 'masanAr2025', 'logisticsCostPortal', 'qandmeChannels'),
+  }),
+  g4Chapter({
+    title: 'Vietnam Competitor Benchmark: Grocery and Minimart Retail', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Benchmark WinCommerce and Bách Hóa Xanh and explain why store economics matter more than expansion alone.',
+    mateIntro: 'Two chains, both growing fast, took different routes: one with thousands of small rural stores, the other with fewer, bigger, fresh-focused stores. The numbers show different strengths.',
+    keyInsight: 'Competitive positioning in Vietnam is strongly influenced by geographic coverage and the economics of each store format. A retailer’s ability to expand is valuable only if new outlets can maintain adequate sales, supply reliability, and profitability.',
+    statTiles: [
+      { value: '7', label: 'Competitor groups benchmarked', subtitle: 'WinCommerce to convenience chains', description: 'WinCommerce, Bách Hóa Xanh, Saigon Co.op, Central Retail Vietnam, AEON Vietnam, LOTTE Mart and Circle K, GS25 and 7-Eleven.' },
+      { value: '4,592 vs 2,559', label: 'WinCommerce and Bách Hóa Xanh stores at the end of 2025', subtitle: 'Company-reported', description: 'WinCommerce has about 1.8 times as many stores.' },
+      { value: '~VND 8.5B vs ~18.3B', label: 'Revenue per year-end store in 2025: WinCommerce versus Bách Hóa Xanh', subtitle: 'Simple calculation, not like for like', description: 'Revenue divided by year-end store count; formats, store sizes and opening dates differ.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the third tile is our own division of reported 2025 revenue by year-end store counts, which ignores the timing of openings and the different sizes and formats of the two chains.',
+    narrative: [
+      { label: 'What it is', text: 'Vietnam’s modern grocery market includes competitors with different strengths in network reach, store format, fresh-food assortment, brand positioning and regional coverage. WinCommerce and Bách Hóa Xanh are important competitors in minimarts and neighbourhood grocery, while Saigon Co.op, Central Retail, AEON and LOTTE Mart matter in supermarket and large-format retail. Industry commentary has highlighted the competition between WinCommerce and Bách Hóa Xanh, including regional expansion and efforts to strengthen supply chains and store-level performance.' },
+      { label: 'Why it is happening', text: 'Both chains chase the same shift from traditional to modern trade, but from different starting points: WinCommerce from a very large set of small stores and rural reach, Bách Hóa Xanh from larger neighbourhood stores built around fresh food.' },
+      { label: 'Real-world example', text: 'WinCommerce is compared on network reach, regional coverage, procurement and membership; Bách Hóa Xanh on fresh assortment, sourcing, store productivity and regional expansion; Saigon Co.op on local customer relationships, assortment and its cooperative network; Central Retail on large-format operations, supplier relationships and regional growth; AEON on customer experience, assortment and store environment; LOTTE Mart on assortment breadth, promotions and shopping experience; and Circle K, GS25 and 7-Eleven on location density, ready-to-eat range, speed and hours.' },
+      { label: 'Vietnam example', text: 'In 2025 WinCommerce earned VND 38,979 billion from 4,592 stores, directing about 80% of openings to rural minimarts where daily sales reached about 93% of urban ones, with new stores breaking even in about a month and 55% of revenue coming from WiN members. Bách Hóa Xanh earned about VND 46.9 trillion from 2,559 stores after opening 789, with nearly half of the new stores in Central Vietnam, 150–200 square metre stores, fresh food at about 40% of products, and monthly revenue per store of over VND 1.5 billion. WinCommerce reported its profit (VND 501 billion), while Bách Hóa Xanh reported only that 2025 was its second profitable year, so profit cannot be compared directly.' },
+      { label: 'Business impact', text: 'Vietnamese retailers compete through distinct combinations of regional reach, format, assortment and service. Benchmarking should compare operators within relevant segments and use verified, time-consistent operating data wherever possible.' },
+    ],
+    visualKind: 'grocery-m4-33-vietnam-benchmark', visualHeading: 'WinCommerce and Bách Hóa Xanh across six dimensions',
+    visualIntro: 'Compare the two chains side by side on revenue, stores, expansion, format, productivity and profit disclosure.',
+    imageAlt: 'Casemate comparison of WinCommerce and Bach Hoa Xanh across six dimensions in 2025',
+    keyTerms: [
+      { term: 'Network reach', definition: 'The number and spread of locations a retailer serves.' },
+      { term: 'Store-level breakeven', definition: 'The point at which a store covers its own operating costs.' },
+      { term: 'Rural minimart', definition: 'A small store serving a village or district centre outside big cities.' },
+      { term: 'Time-consistent data', definition: 'Figures for the same period and basis so they can be compared fairly.' },
+    ],
+    recap: [
+      'WinCommerce and Bách Hóa Xanh compete in minimarts and neighbourhood grocery.',
+      'Other players matter in supermarket, large-format and convenience segments.',
+      'Geographic coverage and format economics drive positioning.',
+      'Expansion is valuable only if new stores stay sales-, supply- and profit-sound.',
+    ],
+    chapterRecap: 'Vietnamese retailers compete through distinct combinations of regional reach, format, assortment, and service. Benchmarking should compare operators within relevant segments and use verified, time-consistent operating data wherever possible.',
+    deepDiveTitle: 'Why more stores and higher sales per store tell different stories',
+    body: <G4DeepDive paragraphs={[
+      'A chain with many small stores can reach customers broadly and still show a lower revenue per store than a chain with fewer, larger stores. Neither number is wrong; they measure reach and per-store productivity.',
+      'The useful question is whether each added store reaches sustainable sales quickly, which is why new-store breakeven and like-for-like growth carry more information than the store count alone.',
+    ]} evidence="The competitor descriptions are from the supplied material. WinCommerce results are company-reported by Masan Group; Bách Hóa Xanh results are company results reported by VnExpress, with a broker estimate of profit from NH Securities and store-format details from VnExpress International; other chains’ counts are from the Ministry of Industry and Trade’s 2025 report. Revenue per store is our own calculation." />,
+    sources: citeG4('masanFy2025', 'masanAr2025', 'mwgBusiness2025', 'vnexpressBhx', 'nhsvMwg', 'vnexpressFirstProfits', 'moitDomestic2025'),
+  }),
+  g4Chapter({
+    title: 'Benchmarking Gaps and Data Limitations', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Identify the main causes of unreliable retail comparisons and the steps that make a benchmark defensible.',
+    mateIntro: 'Ask five sources how big modern retail is in Vietnam and you may get five different numbers. The difference is usually in what was counted, not in who is right.',
+    keyInsight: 'Benchmarking is only as reliable as its underlying data. Analysts should clearly identify the period, geography, business segment, and metric used before drawing conclusions about competitive leadership.',
+    statTiles: [
+      { value: '6', label: 'Key data-quality activities', subtitle: 'Definition alignment to data gap disclosure', description: 'Definition alignment, period alignment, metric standardisation, corporate scope adjustment, evidence quality review and data gap disclosure.' },
+      { value: '13–33%', label: 'Range of estimates of modern trade’s share of Vietnamese retail', subtitle: 'Five sources, different scopes and years', description: 'From about 13% of food retail value to 33% of all retail.' },
+      { value: '2,559 vs ~2,000', label: 'Bách Hóa Xanh stores at the end of 2025 by source', subtitle: 'Mobile World Group versus the ministry and VCCI', description: 'A reminder to name the source and date of every count.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the range and the store counts show differences between publishers and are not a ranking of which source is right.',
+    narrative: [
+      { label: 'What it is', text: 'Retailer comparisons are complicated by differences in reporting periods, corporate structures, business portfolios and market definitions. Some companies report consolidated revenue across several business lines, while others disclose little about individual formats or markets. Market-share estimates also vary because analysts define the market differently: a study of all retail sales is not directly comparable with one limited to modern grocery, supermarkets, hypermarkets or convenience stores.' },
+      { label: 'Why it is happening', text: 'There is no single official definition of modern trade or grocery that every publisher uses, and companies report what suits their disclosure rules. Comparisons therefore need adjustments before numbers are placed side by side.' },
+      { label: 'Real-world example', text: 'Analysts separate total retail, grocery retail, modern grocery and individual formats; compare results from the same financial year or flag different periods; distinguish revenue, gross merchandise value, market share, store count and operating profit; adjust for businesses that combine grocery with electronics, malls or e-commerce; prioritise company disclosures, regulatory sources and credible research; and mark unavailable figures instead of substituting unsupported estimates.' },
+      { label: 'Vietnam example', text: 'Estimates of modern trade’s share of Vietnamese retail range from about 13% of food retail value (Euromonitor), about 15% (Kantar, 2025), 22.2% of retail sales for supermarkets and shopping malls (Ministry of Industry and Trade, 2025), about 25% in the text of the ministry’s 2025 report and 33% of all retail (FiinGroup, 2023 estimate). The ministry’s own table gives 30% for 2025 when e-commerce, at 12%, is counted as modern. Counts differ too: Bách Hóa Xanh had 2,559 stores by Mobile World Group’s report but about 2,000 in the ministry and VCCI texts, and Circle K had over 500 stores by its own count in July 2025 but over 460 in the ministry report. Corporate scope matters as well: Bach Hoa Xanh is about 30% of Mobile World’s consolidated revenue, and Saigon Co.op’s revenue is federation-wide.' },
+      { label: 'Business impact', text: 'Robust benchmarking requires consistent definitions and transparent evidence. When comparable data are unavailable, qualitative analysis is more defensible than presenting false precision.' },
+    ],
+    visualKind: 'grocery-m4-34-data-limits', visualHeading: 'Five estimates of modern trade’s share of Vietnamese retail',
+    visualIntro: 'Compare five published estimates of modern trade’s share and see how scope and year change the answer.',
+    imageAlt: 'Casemate bar chart of five published estimates of the modern trade share of Vietnamese retail',
+    keyTerms: [
+      { term: 'Market definition', definition: 'The choice of products, formats and geography that a figure covers.' },
+      { term: 'Corporate scope', definition: 'The businesses included in a reported company figure, such as retail, electronics or malls.' },
+      { term: 'Gross merchandise value (GMV)', definition: 'The total value of goods sold through a platform before costs.' },
+      { term: 'Data gap disclosure', definition: 'Stating that a figure is unavailable instead of replacing it with an unsupported estimate.' },
+    ],
+    recap: [
+      'Reporting periods, corporate structures and market definitions differ between sources.',
+      'Total retail, grocery, modern grocery and single formats are different markets.',
+      'State the period, geography, segment and metric before concluding.',
+      'Qualitative analysis beats false precision when data are not comparable.',
+    ],
+    chapterRecap: 'Robust benchmarking requires consistent definitions and transparent evidence. When comparable data are unavailable, qualitative analysis is more defensible than presenting false precision.',
+    deepDiveTitle: 'Why a missing number is better than a made-up one',
+    body: <G4DeepDive paragraphs={[
+      'A table filled with estimates from different years and scopes looks complete but can mislead decision-makers. Marking a figure as unavailable shows where evidence is thin and prompts a targeted search or a clearly labelled assumption.',
+      'Prioritising company disclosures, regulatory publications and credible industry research, and noting which is used, lets others check and update the comparison later.',
+    ]} evidence="The data-quality practices are described qualitatively in the supplied material. Share estimates are from Euromonitor (via USDA), Kantar (via Masan Group’s annual report), the Ministry of Industry and Trade as reported by The Hanoi Times and in its 2025 report, and FiinGroup; store counts are from Mobile World Group, VCCI, Circle K and the ministry; the consolidated-revenue share is a broker estimate from NH Securities." />,
+    sources: citeG4('usdaRetailFoods', 'masanAr2025', 'hanoitimesModern', 'moitDomestic2025', 'fiinModernTrade', 'mwgBusiness2025', 'vcciDomestic', 'circleK', 'nhsvMwg', 'coop2025'),
+  }),
+];
+
+const quiz = g4Quiz('grocery-m4-l3', [
+  { chapter: '1', objective: 'Separate scale from quality', question: 'What distinction should a useful benchmarking framework make?', application: 'A retailer has a very large store network. What else should be checked?', correct: 'Between business scale and business quality, such as sales productivity, profitability and inventory efficiency', wrong: ['Between store colour and logo', 'Between city and village names', 'Between opening hours only'], explanation: 'Reach does not show performance. Review Chapter 1.' },
+  { chapter: '1', objective: 'Choose comparable peers', question: 'With whom should a retailer be benchmarked?', application: 'A hypermarket operator wants to compare itself. Who should it compare with?', correct: 'Businesses with similar formats and operating conditions', wrong: ['Any retailer in any country', 'Only the largest company', 'Only online retailers'], explanation: 'Like-for-like comparison is essential. Review Chapter 1.' },
+  { chapter: '1', objective: 'Interpret store counts', question: 'Do store counts, revenue and market share alone show the strongest business model?', application: 'One chain has the most stores. Does that prove it is best?', correct: 'No; they are useful indicators but do not independently establish the strongest model', wrong: ['Yes, always', 'Yes, if revenue is high', 'No; they are irrelevant'], explanation: 'Quality and fit also matter. Review Chapter 1.' },
+  { chapter: '2', objective: 'Describe Aldi’s benchmark focus', question: 'What is Aldi mainly benchmarked for?', application: 'A retailer wants to learn from a lean discounter. What does Aldi teach?', correct: 'Limited assortment, cost discipline and operational simplicity', wrong: ['Membership fees', 'Marketplace infrastructure', 'Format franchising'], explanation: 'Aldi is value-oriented discount retail. Review Chapter 2.' },
+  { chapter: '2', objective: 'Describe Costco’s benchmark focus', question: 'What is Costco mainly benchmarked for?', application: 'A retailer wants to learn from a membership warehouse. What does it study?', correct: 'Bulk purchasing, curated assortment and member loyalty', wrong: ['Limited-assortment discounting', 'Franchise expansion', 'Social commerce'], explanation: 'Costco is membership warehouse retail. Review Chapter 2.' },
+  { chapter: '2', objective: 'State the right benchmark', question: 'What is the strongest benchmark from global leaders?', application: 'A retailer wants to copy a leader. What should it focus on?', correct: 'The capability behind the model, not simply the leader’s size', wrong: ['The leader’s store count', 'The leader’s logo', 'The leader’s home country'], explanation: 'Capabilities can be adapted without copying structure. Review Chapter 2.' },
+  { chapter: '3', objective: 'Recognise a competitive pair', question: 'Which two chains are highlighted as competitors in minimarts and neighbourhood grocery?', application: 'A report discusses Vietnam’s neighbourhood grocery competition. Who is compared?', correct: 'WinCommerce and Bách Hóa Xanh', wrong: ['Walmart and Amazon', 'Costco and Aldi', 'Lotte Mart and AEON only'], explanation: 'They compete in minimart and neighbourhood grocery. Review Chapter 3.' },
+  { chapter: '3', objective: 'State when expansion is valuable', question: 'When is a retailer’s ability to expand valuable?', application: 'A chain opens many stores. What must be true for this to help?', correct: 'Only if new outlets can maintain adequate sales, supply reliability and profitability', wrong: ['Whenever it opens more stores', 'Whenever revenue rises', 'Whenever competitors expand'], explanation: 'Store economics decide value. Review Chapter 3.' },
+  { chapter: '4', objective: 'Identify what to state before concluding', question: 'What should analysts identify before drawing conclusions about competitive leadership?', application: 'A table compares chains from different years. What is missing?', correct: 'The period, geography, business segment and metric used', wrong: ['The logo colour', 'The CEO’s name', 'The number of staff photos'], explanation: 'Data context decides reliability. Review Chapter 4.' },
+  { chapter: '4', objective: 'Handle missing data', question: 'What should analysts do when comparable data are unavailable?', application: 'A figure cannot be found for one retailer. What is the defensible approach?', correct: 'Mark it as unavailable and use qualitative analysis instead of unsupported estimates', wrong: ['Invent a figure', 'Copy a rival’s figure', 'Drop the retailer from the comparison without saying so'], explanation: 'Avoid false precision. Review Chapter 4.' },
+]);
+
+export const LESSON_G4_3: GroceryM4LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can build a benchmarking framework, learn from global models without copying them, compare Vietnam’s grocery chains by format economics and recognise the limits of the data.',
+    keyTakeaways: [
+      'Benchmark scale and quality separately, using like-for-like peers.',
+      'Store count, revenue and share are indicators, not proof of the best model.',
+      'Learn the capability behind global models and adapt it locally.',
+      'In Vietnam, coverage and store economics shape positioning; expansion must stay sales-, supply- and profit-sound.',
+      'State period, geography, segment and metric, and disclose gaps rather than invent numbers.',
+    ],
+    businessImplications: 'Use like-for-like peers, add productivity and breakeven measures to store counts, adapt rather than copy global practices and label every source, period and definition.',
+    remember: 'Compare like with like, and say what the number really measures.',
+    nextLesson: 'Key Success Factors',
+  },
+};

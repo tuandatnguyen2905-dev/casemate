@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "name": "Casemate — the prebuilt full consulting case library (Case Pool)",
   "count": 114,
   "core_count": 100,
@@ -22,6 +22,70 @@
     "shared_record_changes": 0,
     "reason": "The revised Easy/Medium items are standalone calculation drills. The 14 Case Pool shared records map only to Hard/Expert Case Journey drills, so linking a revised lower-tier item to one would create a false scenario identity. Existing shared records remain direct references to their source drills and exhibits.",
     "dataset_changes": 0
+  },
+  "shared_data_integrity": {
+    "audit_date": "2026-10-29",
+    "shared_case_records": 14,
+    "mapped_case_drill_questions": 42,
+    "shared_case_ids": "case-jrn-11 to case-jrn-24",
+    "canonical_source": "lib/caseJourneys.ts and the referenced caseJourneyContent modules",
+    "case_pool_behavior": "lib/casePoolLibrary.ts references the same drill and exhibit objects; it does not copy shared figures",
+    "automated_guard": "SHARED_CASE_DATA_INTEGRITY_AUDIT and validateSharedCaseDataIntegrity() in lib/caseJourneys.ts",
+    "rounding_convention": "±0.1 in the displayed unit; percentage compositions within ±2 points when displayed inputs are rounded",
+    "corrected_records": ["case-jrn-11", "case-jrn-14", "case-jrn-15", "case-jrn-20"],
+    "correction_notes": {
+      "case-jrn-15": "Value-growth waterfall now includes the 1,590.0 billion VND opening value and reconciles through all drivers to 1,738.2 billion VND.",
+      "case-jrn-20": "Regional format mix now stores percentages rather than tonnes in the 100% stacked chart; underlying tonnes remain labelled in the footnote."
+    },
+    "notation_only_record": "case-jrn-12"
+  },
+  "market_sizing_bank": {
+    "count": 24,
+    "codes": "C01-C08, D01-D08, E01-E08",
+    "source_case_ids": "CM-MS-C01 to CM-MS-E08",
+    "case_pool_ids": "case-cm-ms-c01 to case-cm-ms-e08",
+    "case_drill_ids": "market-sizing-bank-c01 to market-sizing-bank-e08",
+    "source_of_truth": "lib/marketSizingBank.ts",
+    "consumed_by": [
+      "lib/skillQuestionLibrary.ts (Case Drill, Market Sizing)",
+      "lib/casePoolLibrary.ts (Case Pool, Sizing)",
+      "components/MarketSizingBankReveal.tsx (post-submission reveal)"
+    ],
+    "note": "One shared record per exercise. Learners see only the brief and task before submission; the worked solution, driver logic, common mistakes, alternatives and the 10-point rubric are revealed after submission."
+  },
+  "open_ended_policy": {
+    "rule": "Case Pool cases are open-ended. A task, description, objective, constraint, tip, exhibit caption or separate field never carries multiple-choice options, the keyed option, distractors or option explanations. Options exist only in Case Drill's separate options field.",
+    "affected_and_repaired": {
+      "charts_easy": "case-e-ch-001 to case-e-ch-026 and case-e-ch-044 to case-e-ch-068 (51 cases)",
+      "structures_easy": "case-structures-easy-001 to case-structures-easy-034 (34 cases)"
+    },
+    "import_guard": "lib/casePoolMcqGuard.ts: casePoolTaskFromDrill() builds every drill-derived task; stripPoolCaseMcq() strips at import; CASE_POOL_MCQ_IMPORT_AUDIT in lib/casePoolLibrary.ts lists any source field that needed stripping",
+    "tests": "lib/casePoolOpenEnded.test.ts"
+  },
+  "label_definition_policy": {
+    "rule": "Every category name used in a chart, table or task is either a descriptive name the source supports, or a neutral label (Business Line A, Segment A, Site A, Option A) that the case brief defines in one sentence. Stage names such as Core, Growth, Pilot and Adjacency never label a set of segments or lines, because they imply product types or maturity stages the source does not give.",
+    "yonder_farms": "E-CH-050 / case-e-ch-050: Business Line A, B and C are three distinct aquaculture operating lines of Yonder Farms; the exhibits give each line's revenue and gross margin and do not describe the lines further. Revenue and gross margin rank current gross profit only; they do not show where a feed-efficiency investment would add the most incremental profit.",
+    "shared_definition": "chartsEasyContext() in lib/chartsEasyBank.ts feeds both Case Drill and Case Pool",
+    "detector": "lib/vagueLabelAudit.ts",
+    "tests": "lib/vagueLabels.test.ts"
+  },
+  "business_problem_filter": {
+    "audit_date": "2026-11-15",
+    "source_of_truth": "lib/casePoolBusinessProblems.ts",
+    "ui": "components/CasePoolFilters.tsx",
+    "rule": "Each selectable full case carries one primary business problem from its central decision (brief + task). The Skill focus filter was removed because a full case usually needs several skills; skill_focus and type stay in the case data for grading, Case Drill links, recommendations, Case Room history and saved drill-log rows.",
+    "selectable_cases": 282,
+    "tagged": 171,
+    "counts": {"profitability": 21, "growth": 58, "market-entry": 16, "pricing": 15, "operations": 31, "investment": 14, "competitive-response": 5, "mna": 11},
+    "flagged_for_content_review": 111,
+    "flagged_groups": {
+      "market_sizing_estimates": "48 CM-MS cases: estimation only, no client decision",
+      "charts_easy": "51 E-CH cases: one-line decision context that the chart task does not test",
+      "creativity_big_idea_briefs": "10 CM-CRE-BI cases: message brief, no commercial decision",
+      "case-cm-calc-h04": "cohort calculation with no stated decision",
+      "case-structures-easy-014": "contract farmers could be suppliers or customers"
+    },
+    "guard": "unclassifiedPoolCaseIds() must return no ids for SELECTABLE_CASE_POOL_LIBRARY"
   },
   "source_of_truth": "lib/casePoolLibrary.ts",
   "consumed_by": [

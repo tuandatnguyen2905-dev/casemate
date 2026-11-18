@@ -1,0 +1,1 @@
+import type{AdtechM4VisualKind}from'./adtechM4Core';import{VisualView}from'./fashionVisualKit';import{ADTECH_M4_VISUALS}from'./adtechM4VisualSpecs';export function renderAdtechModule04Visual(kind:AdtechM4VisualKind){const visual=ADTECH_M4_VISUALS[kind];return visual?<VisualView spec={visual.spec}/>:null;}

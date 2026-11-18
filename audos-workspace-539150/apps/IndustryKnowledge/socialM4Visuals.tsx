@@ -1,0 +1,1 @@
+import type{SocialM4VisualKind}from'./socialM4Core';import{VisualView}from'./fashionVisualKit';import{SOCIAL_M4_VISUALS}from'./socialM4VisualSpecs';export function renderSocialModule04Visual(kind:SocialM4VisualKind){const visual=SOCIAL_M4_VISUALS[kind];return visual?<VisualView spec={visual.spec}/>:null;}

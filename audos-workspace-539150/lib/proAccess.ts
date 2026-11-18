@@ -44,7 +44,7 @@
 
 export const CASEMATE_WORKSPACE_ID = 'workspace-539150';
 export const ACCESS_HOOK_NAME = 'casemate-access-v1';
-export const ACCESS_RULES_VERSION = 'access-v13-session-cache-no-false-paywall';
+export const ACCESS_RULES_VERSION = 'access-v14-verified-email-earliest-trial';
 
 // Client-side mirror of the server defaults (server reads trial_config live).
 export const TRIAL_DEFAULTS = {
@@ -568,29 +568,49 @@ async function resolveCasemateAccess() {
   }
 
   // Only accounts registered on or after 2026-08-29 receive the standard
-  // trial. Its immutable start is the server-owned registration timestamp.
+  // trial. Verified accounts are keyed by normalized email, never by the
+  // browser/session that happens to be active. Historical user_trials rows
+  // remain immutable evidence and can only move the effective start earlier.
   const accountState = await proAccountState(boundEmail);
   const registrationMs = Date.parse(accountState.trialStartDate || accountState.trial_start_date || '');
   if (!Number.isFinite(registrationMs) || registrationMs < LEGACY_CUTOFF.getTime()) return access;
 
-  let trialResult = await db.query('user_trials', { where: { user_id: sessionId }, limit: 1 });
-  let trial = trialResult.rows && trialResult.rows[0] ? trialResult.rows[0] : null;
+  const emailKey = 'email:' + boundEmail;
+  const historyResult = await db.rawQuery(
+    'WITH mapped_sessions AS (' +
+      'SELECT identity_session_ref AS trial_session FROM app_feature_events WHERE user_id = $1 AND identity_status = $3 AND identity_session_ref IS NOT NULL ' +
+      'UNION SELECT session_id AS trial_session FROM app_feature_events WHERE user_id = $1 AND identity_status = $3 AND session_id IS NOT NULL ' +
+      'UNION SELECT session_id AS trial_session FROM app_session_tracking WHERE user_id = $1 AND session_id IS NOT NULL' +
+    ') SELECT min(t.trial_start) AS earliest_trial_start FROM app_user_trials t ' +
+      'WHERE t.user_id = $2 OR t.session_id = $2 OR t.user_id IN (SELECT trial_session FROM mapped_sessions) OR t.session_id IN (SELECT trial_session FROM mapped_sessions)',
+    [emailKey, sessionId, 'resolved'],
+  );
+  const historicalRow = historyResult.rows && historyResult.rows[0] ? historyResult.rows[0] : null;
+  const historicalStartMs = Date.parse(historicalRow && historicalRow.earliest_trial_start || '');
+
+  let accountResult = await db.query('user_trial_accounts', { where: { email: boundEmail }, limit: 1 });
+  let trial = accountResult.rows && accountResult.rows[0] ? accountResult.rows[0] : null;
   if (!trial) {
+    const initialStartMs = Number.isFinite(historicalStartMs) ? historicalStartMs : registrationMs;
     try {
-      const inserted = await db.insert('user_trials', {
-        user_id: sessionId,
-        trial_start: new Date(registrationMs).toISOString(),
-        trial_type: 'standard',
+      const inserted = await db.insert('user_trial_accounts', {
+        email: boundEmail,
+        trial_start: new Date(initialStartMs).toISOString(),
+        source_session_id: sessionId,
+        source: 'verified_email_trial_v1',
         session_id: sessionId,
       });
       trial = inserted.insertedRows && inserted.insertedRows[0] ? inserted.insertedRows[0] : null;
     } catch (error) {
-      trialResult = await db.query('user_trials', { where: { user_id: sessionId }, limit: 1 });
-      trial = trialResult.rows && trialResult.rows[0] ? trialResult.rows[0] : null;
+      accountResult = await db.query('user_trial_accounts', { where: { email: boundEmail }, limit: 1 });
+      trial = accountResult.rows && accountResult.rows[0] ? accountResult.rows[0] : null;
     }
   }
-  if (!trial) throw new Error('Could not create or load standard trial');
-  const startMs = Date.parse(trial.trial_start || trial.created_at || '');
+  if (!trial) throw new Error('Could not create or load verified-email trial');
+  const accountStartMs = Date.parse(trial.trial_start || trial.created_at || '');
+  const startMs = Number.isFinite(historicalStartMs) && Number.isFinite(accountStartMs)
+    ? Math.min(historicalStartMs, accountStartMs)
+    : Number.isFinite(historicalStartMs) ? historicalStartMs : accountStartMs;
   const durationDays = Number.isFinite(parseInt(rules.founding_member_days, 10)) ? parseInt(rules.founding_member_days, 10) : 14;
   const expiryMs = Number.isFinite(startMs) ? startMs + durationDays * 86400000 : NaN;
   if (Number.isFinite(expiryMs) && nowMs < expiryMs) return grant('standard', 'standard_trial', boundEmail, expiryMs);
@@ -634,7 +654,7 @@ async function ensureCasemateAccessForGenerate(featureLabel, upgradeAppId, upgra
 // ==== end Casemate access boundary ==========================================
 `;
 
-const ACCESS_HOOK_DESCRIPTION = `Casemate access resolver: active plan-aware Pro first; temporary tester grants use their stored trial_end_date; founding rows claimed before 2026-08-29 remain capped; then one server-recorded fourteen-day trial for every other verified account (${ACCESS_RULES_VERSION})`;
+const ACCESS_HOOK_DESCRIPTION = `Casemate access resolver: active plan-aware Pro first; temporary tester grants use their stored trial_end_date; founding rows claimed before 2026-08-29 remain capped; then one fourteen-day trial per verified email from the earliest linked historical session (${ACCESS_RULES_VERSION})`;
 
 const ACCESS_HOOK_CODE =
   String.raw`

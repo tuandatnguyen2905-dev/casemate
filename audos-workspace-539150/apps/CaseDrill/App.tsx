@@ -19,7 +19,7 @@
 // close). Rendered by CaseMathBriefView / CaseMathSolutionView below; old
 // plain-text Case Math rows degrade to the generic prompt/model-answer view.
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   BarChart3,
@@ -44,12 +44,49 @@ import {
 } from 'lucide-react';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import { emitLiveSourceEventsOnce, logLiveTrackingFailure, workspaceRows } from '../../lib/liveFeatureTracking';
+import { trackStepError, trackStepView, useActiveTimeThreshold } from '../../lib/engagementTracking';
 import { tw } from '../../lib/colors';
 import PaywallGate from '../../components/PaywallGate';
-import QuestionLibrary from '../../components/QuestionLibrary';
+const QuestionLibrary = lazy(() => import('../../components/QuestionLibrary')); 
 import PercentileRankingWidget from '../../components/PercentileRankingWidget';
 import ExhibitRenderer from '../../components/ExhibitRenderer';
-import { ALL_LIBRARY_QUESTIONS, type LibraryExhibit } from '../../lib/skillQuestionLibrary';
+import CaseResultView from '../../components/CaseResultView';
+import CalculationAnswerBuilder, { CalculationResultSummaryView } from '../../components/CalculationAnswerBuilder';
+import MarketSizingAnswerBuilder, {
+  MarketSizingAttemptSummary,
+  calculateMarketSizingResult,
+  createInitialMarketSizingDraft,
+  parseMarketSizingAttempt,
+  serializeMarketSizingAttempt,
+  type MarketSizingAnswerDraft,
+} from '../../components/MarketSizingAnswerBuilder';
+import { formatNumbersInText } from '../../lib/numberDisplay';
+import { clarifyUnitLabel, clarifyUnitText, clarifyUnitsDeep } from '../../lib/unitLabels';
+import {
+  createCalculationAnswerPayload,
+  serializeCalculationAnswer,
+  type CalculationAnswerPayload,
+  type CalculationFinalAnswerSpec,
+} from '../../lib/calculationAnswerModel';
+import { deriveOverallScore, type HonestScoreResult } from '../../lib/caseScoringRubrics';
+import type { LibraryExhibit } from '../../lib/skillQuestionLibrary';
+import { buildFeedbackPriorities, type FeedbackPriorities } from '../../lib/feedbackPresentation';
+import { buildReasoningFeedback, chooseNextAction, emptyWorkedAnswer, hasLearnerResponse, hasWorkedAnswer, resultOutcome, type WorkedAnswerModel } from '../../lib/caseResultModel';
+import { DrillScoreBadge, parseDrillScore } from './drillScoreBadge';
+
+let skillQuestionLibraryPromise: Promise<typeof import('../../lib/skillQuestionLibrary')> | null = null;
+function loadSkillQuestionLibrary() {
+  skillQuestionLibraryPromise ??= import('../../lib/skillQuestionLibrary').catch((error) => {
+    skillQuestionLibraryPromise = null;
+    throw error;
+  });
+  return skillQuestionLibraryPromise;
+}
+
+async function findLibraryQuestion(predicate: (question: any) => boolean) {
+  const { ALL_LIBRARY_QUESTIONS } = await loadSkillQuestionLibrary();
+  return ALL_LIBRARY_QUESTIONS.find(predicate) ?? null;
+}
 import {
   MICRO_SKILLS,
   callMicroDrillServerFunction,
@@ -66,6 +103,7 @@ interface MicroDrill {
   drill_data?: string;
   chart_json?: JsonValue;
   time_limit_seconds: number;
+  source_case_id?: string | null;
   answer_text?: string;
   elapsed_seconds?: number;
   timed_out?: boolean;
@@ -89,6 +127,69 @@ interface DrillFeedback {
   improvements: string[];
 }
 
+function calculationSubject(prompt: string): string {
+  const forMatch = prompt.match(/\bfor\s+([A-Z][A-Za-z0-9&' -]{2,60})(?:[.?]|$)/);
+  if (forMatch) return forMatch[1].trim();
+  const leading = prompt.match(/^([A-Z][A-Za-z0-9&' -]{2,60}?)\s+(?:increased|decreased|grew|reduced|raised)/);
+  return leading?.[1]?.trim() || '';
+}
+
+function descriptiveCalculationLabel(line: string, prompt: string, index: number): string {
+  const clean = line.replace(/^\s*\d+[.)]\s*/, '').replace(/^[-•]\s*/, '').trim();
+  const context = `${clean} ${prompt}`;
+  const subject = calculationSubject(prompt);
+  const prefix = subject ? `${subject} ` : '';
+  if (/percentage growth|growth rate|what (?:is|was) the percentage growth/i.test(context)) return `${prefix}Growth Rate`;
+  if (/revenue.*end value|end value.*revenue|total revenue after/i.test(context)) return `${prefix}Revenue End Value`;
+  if (/yield.*end|end yield/i.test(context)) return `${prefix}End Yield`;
+  if (/total amount due/i.test(context)) return `${prefix}Total Amount Due`;
+  if (/selling price|price per ton/i.test(context)) return `${prefix}Selling Price`;
+  if (/cost price/i.test(context)) return `${prefix}Cost Price`;
+  if (/profit margin|margin percentage/i.test(context)) return `${prefix}Profit Margin`;
+  if (/profit amount|what is the profit\b/i.test(context)) return `${prefix}Profit`;
+  if (/break-even.*patients|number of patients/i.test(context)) return `${prefix}Break-Even Patients`;
+  if (/break-even.*transactions|transactions are needed/i.test(context)) return `${prefix}Break-Even Transactions`;
+  if (/break-even.*loans|loans to break even/i.test(context)) return `${prefix}Break-Even Loans`;
+  if (/break-even.*units|how many units/i.test(context)) return `${prefix}Break-Even Units`;
+  if (/break-even point|break-even value/i.test(context)) return `${prefix}Break-Even Result`;
+  if (/capacity|square meters.*use/i.test(context)) return `${prefix}Capacity in Use`;
+  if (/\d+(?:\.\d+)?%\s+of/i.test(context)) return `${prefix}Percentage Amount`;
+  return `${prefix || 'Calculation '}${index + 1} Result`;
+}
+
+function generatedCalculationAnswer(drillData?: string, prompt = '', rawMeta?: JsonValue): CalculationAnswerPayload {
+  const meta = asObject(rawMeta);
+  const storedResults = meta.format === 'calculation_results_v1' && Array.isArray(meta.results)
+    ? meta.results
+        .filter((result: any) => result && String(result.label || '').trim())
+        .map((result: any, index: number): CalculationFinalAnswerSpec => ({
+          id: String(result.id || `item-${index + 1}`),
+          label: String(result.label).trim(),
+          unit: String(result.unit || '').trim() || undefined,
+        }))
+    : [];
+  if (storedResults.length) return createCalculationAnswerPayload(storedResults, storedResults.length);
+
+  const dataLines = String(drillData || '').split('\n').map((line) => line.trim()).filter(Boolean);
+  const numbered = dataLines.filter((line) => /^\d+[.)]\s*/.test(line));
+  const resultLines = (numbered.length ? numbered : [/\?|calculate|what is|what was/i.test(prompt) ? prompt : '', ...dataLines]).filter(Boolean).slice(0, 4);
+  const specs = resultLines.map((line, index): CalculationFinalAnswerSpec => {
+    const currency = line.match(/\b(VND|USD)\b/i)?.[1]?.toUpperCase();
+    const quantity = line.match(/\b(units?|orders?|buyers?|customers?|packs?|bottles?|patients?|loans?|transactions?|tons?|square meters?)\b/i)?.[1];
+    const percent = /margin|growth rate|percentage growth|what percent|percentage/i.test(`${line} ${prompt}`);
+    return {
+      id: `item-${index + 1}`,
+      label: descriptiveCalculationLabel(line, prompt, index),
+      unit: percent ? '%' : currency || quantity,
+    };
+  });
+  return createCalculationAnswerPayload(specs, specs.length);
+}
+
+function displayCalculationSpecs<T extends CalculationFinalAnswerSpec>(specs: T[]): T[] {
+  return specs.map((spec) => ({ ...spec, label: clarifyUnitText(spec.label), unit: spec.unit ? clarifyUnitLabel(spec.unit) : spec.unit }));
+}
+
 interface DrillResult {
   skipped: boolean;
   score: number | null;
@@ -100,8 +201,10 @@ interface DrillResult {
   solution: CaseMathSolution | null;
   /** How to approach this TYPE of drill - 3-5 concrete method steps. */
   approach: string[];
-  /** 1-3 concrete things to practice next. */
-  nextSteps: string[];
+  /** Grounded evidence plus one priority and at most two smaller improvements. */
+  feedbackPriorities: FeedbackPriorities;
+  /** Weighted criterion detail; absent only for legacy rows or explicit skips. */
+  scoring: HonestScoreResult | null;
 }
 
 /* Case Math linked mini-case (micro-drill-v1.4) - the structured case brief
@@ -150,7 +253,7 @@ function parseCaseMathBrief(raw: JsonValue | undefined): CaseMathBrief | null {
     : [];
   const context = capitaliseLineStarts(String(spec.context || '').trim());
   if (!context || dataTable.length < 2 || questions.length < 2) return null;
-  return { title: capitaliseLineStarts(String(spec.title || '').trim()) || 'Case Math', context, dataTable, questions };
+  return clarifyUnitsDeep({ title: capitaliseLineStarts(String(spec.title || '').trim()) || 'Case Math', context, dataTable, questions });
 }
 
 function parseCaseMathSolution(raw: unknown): CaseMathSolution | null {
@@ -214,6 +317,11 @@ function capitaliseLineStarts(value: unknown): string {
     .join('\n');
 }
 
+function scoreScaleOf(row: Pick<MicroDrill, 'feedback_json'>): 5 | 10 {
+  const scoring = asObject(asObject(row.feedback_json).scoring);
+  return Number(scoring.scale) === 10 ? 10 : 5;
+}
+
 function emitPracticeGrade(drillId: number, sessionId: string): void {
   void (async () => {
     try {
@@ -229,12 +337,13 @@ function emitPracticeGrade(drillId: number, sessionId: string): void {
       const rawScore = row?.score;
       const score = rawScore === null || rawScore === undefined || rawScore === '' ? NaN : Number(rawScore);
       const completedOn = typeof row?.completed_on === 'string' ? row.completed_on : '';
-      if (!row || row.status !== 'completed' || !Number.isFinite(score) || score < 1 || score > 5 || !completedOn) {
+      if (!row || row.status !== 'completed' || !Number.isFinite(score) || score < 0 || score > 10 || !completedOn) {
         throw new Error('micro_drills_completed_source_unavailable');
       }
       const completionKey = `practice:${row.id}`;
       const properties = {
         score,
+        score_scale: scoreScaleOf(row),
         skill: row.skill || null,
         status: 'completed',
         timed_out: row.timed_out === true,
@@ -357,13 +466,13 @@ function parseChart(raw: JsonValue | undefined): ChartSpec | null {
   const data = Array.isArray(chart.data)
     ? chart.data
         .filter((p: any) => p && typeof p === 'object' && Number.isFinite(Number(p.value)))
-        .map((p: any) => ({ label: capitaliseLineStarts(String(p.label || '')), value: Number(p.value) }))
+        .map((p: any) => ({ label: clarifyUnitText(capitaliseLineStarts(String(p.label || ''))), value: Number(p.value) }))
     : [];
   if (data.length < 2) return null;
   return {
     type: String(chart.type || 'bar'),
-    title: capitaliseLineStarts(String(chart.title || 'Exhibit')),
-    unit: capitaliseLineStarts(String(chart.unit || '')),
+    title: clarifyUnitText(capitaliseLineStarts(String(chart.title || 'Exhibit'))),
+    unit: clarifyUnitLabel(capitaliseLineStarts(String(chart.unit || ''))),
     data: data.slice(0, 5),
   };
 }
@@ -639,6 +748,27 @@ function CaseMathSolutionView({ solution }: { solution: CaseMathSolution }) {
   );
 }
 
+/** The coach worked answer is the stored model answer the grader marked against. */
+function coachWorkedAnswer(drill: MicroDrill, result: DrillResult): WorkedAnswerModel | null {
+  if (!result.solution && !result.modelAnswer) return null;
+  const openEnded = drill.skill === 'creativity' || drill.skill === 'structures' || drill.skill === 'market_sizing';
+  const model = emptyWorkedAnswer(openEnded ? 'example' : 'reference');
+  model.approach = result.approach;
+  if (result.solution) {
+    model.calculationLines = result.solution.steps.map((step) => `${step.label ? `${step.label}: ` : ''}${step.work} → ${step.result}`);
+    model.conclusion = result.solution.close || result.solution.steps[result.solution.steps.length - 1].result;
+    model.checks = result.solution.steps.map((step) => step.tip).filter(Boolean);
+  } else {
+    model.conclusion = result.modelAnswer;
+  }
+  if (openEnded) {
+    model.note = drill.skill === 'creativity'
+      ? 'Creativity questions can have many strong answers - this is one structured route, not a required framework.'
+      : 'One well-reasoned route, not the only acceptable answer.';
+  }
+  return hasWorkedAnswer(model) ? model : null;
+}
+
 /* ---------------------------------------------------------------------------
  * Main app
  * ------------------------------------------------------------------------- */
@@ -672,37 +802,67 @@ function CaseDrillInner() {
     limit: 1,
   });
 
-  // Case Drill has two practice modes.
-  //   'library' - 500 prebuilt questions across five consulting skills (default,
-  //               no AI call, so every question opens instantly).
-  //   'coach'   - the existing micro-drill flow generated and graded by Mate.
+  // The Question Library (prebuilt questions across consulting skills, no AI
+  // call) is the only practice entry point; the "Practice with Mate" tab was
+  // removed, so nothing switches this to 'coach' any more.
   const [mode, setMode] = useState<'library' | 'coach'>('library');
+  const [libraryCompact, setLibraryCompact] = useState(false);
   const [phase, setPhase] = useState<Phase>('pick');
   const [drill, setDrill] = useState<MicroDrill | null>(null);
   const [answer, setAnswer] = useState('');
+  const [marketSizingDraft, setMarketSizingDraft] = useState<MarketSizingAnswerDraft>(createInitialMarketSizingDraft);
+  const [calculationAnswer, setCalculationAnswer] = useState<CalculationAnswerPayload>(() => generatedCalculationAnswer());
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
   const [result, setResult] = useState<DrillResult | null>(null);
+  // True when the result on screen was reopened from the saved log (a completed
+  // rep tapped in the history) rather than freshly graded this session. It
+  // suppresses the ranking widget and shows the stored submitted answer.
+  const [reopened, setReopened] = useState(false);
+  const nfDrill = (value: string) => {
+    const clear = clarifyUnitText(value);
+    return drill?.skill === 'market_sizing' ? formatNumbersInText(clear) : clear;
+  };
+  // Gates the destructive Redo: the saved feedback is only replaced after the
+  // learner explicitly confirms a fresh attempt.
+  const [confirmRedo, setConfirmRedo] = useState(false);
   const [error, setError] = useState('');
   const [prioritySkillId, setPrioritySkillId] = useState<string | null>(null);
   const startedAtRef = useRef<number>(0);
   // Last explicitly requested skill - powers the retry button and the
   // case-math-specific generating copy (null = "surprise me").
   const lastSkillRef = useRef<string | null>(null);
+  const structuresFocusRequestRef = useRef(0);
 
   useEffect(() => {
     const applyFocus = (skillId: unknown) => {
       const id = typeof skillId === 'string' && MICRO_SKILLS.some((skill) => skill.id === skillId) ? skillId : null;
       if (!id) return;
+      const focusRequest = ++structuresFocusRequestRef.current;
       setPrioritySkillId(id);
       if (id === 'structures') {
-        const firstStructure = ALL_LIBRARY_QUESTIONS.find((question) => question.skill === 'structures');
-        try { if (firstStructure) sessionStorage.setItem('casemate-open-case-drill', firstStructure.id); } catch { /* best effort */ }
-        setMode('library');
-        window.setTimeout(() => window.dispatchEvent(new CustomEvent('openApp', { detail: { appId: 'case-drill' } })), 0);
-      } else {
-        setMode('coach');
+        void findLibraryQuestion((question) => question.skill === 'structures').then((firstStructure) => {
+          if (focusRequest !== structuresFocusRequestRef.current) return;
+          try {
+            if (
+              firstStructure &&
+              !sessionStorage.getItem('casemate-open-structures-case') &&
+              !sessionStorage.getItem('casemate-open-case-drill')
+            ) {
+              sessionStorage.setItem('casemate-open-case-drill', firstStructure.id);
+            }
+          } catch { /* best effort */ }
+          setMode('library');
+          setPhase('pick');
+          setDrill(null);
+          setResult(null);
+          window.dispatchEvent(new CustomEvent('openApp', { detail: { appId: 'case-drill' } }));
+        }).catch(() => {
+          if (focusRequest === structuresFocusRequestRef.current) setMode('library');
+        });
+        return;
       }
+      setMode('library');
       setPhase('pick');
       setDrill(null);
       setResult(null);
@@ -718,25 +878,38 @@ function CaseDrillInner() {
     }
     const onFocus = (event: Event) => applyFocus((event as CustomEvent<{ skillId?: string }>).detail?.skillId);
     window.addEventListener('casemateCaseDrillFocus', onFocus);
-    return () => window.removeEventListener('casemateCaseDrillFocus', onFocus);
+    return () => {
+      structuresFocusRequestRef.current += 1;
+      window.removeEventListener('casemateCaseDrillFocus', onFocus);
+    };
   }, [sessionId]);
 
   useEffect(() => {
     const openRequestedStructure = () => {
-      try {
-        const directCaseId = sessionStorage.getItem('casemate-open-structures-case');
-        const legacyDrillId = sessionStorage.getItem('casemate-open-case-drill');
-        const directQuestion = directCaseId ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === directCaseId) : null;
-        const legacyQuestion = legacyDrillId ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === legacyDrillId) : null;
-        if (directCaseId && directQuestion?.skill !== 'structures') sessionStorage.removeItem('casemate-open-structures-case');
-        if (directQuestion?.skill !== 'structures' && legacyQuestion?.skill !== 'structures') return;
-        setMode('library');
-        setPhase('pick');
-        setDrill(null);
-        setResult(null);
-      } catch {
-        /* sessionStorage can be unavailable in strict browser modes */
-      }
+      void (async () => {
+        try {
+          const directCaseId = sessionStorage.getItem('casemate-open-structures-case');
+          const legacyDrillId = sessionStorage.getItem('casemate-open-case-drill');
+          if (!directCaseId && !legacyDrillId) return;
+          const { ALL_LIBRARY_QUESTIONS } = await loadSkillQuestionLibrary();
+          const directQuestion = directCaseId ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === directCaseId) : null;
+          const legacyQuestion = legacyDrillId ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === legacyDrillId) : null;
+          if (
+            directCaseId &&
+            directQuestion?.skill !== 'structures' &&
+            sessionStorage.getItem('casemate-open-structures-case') === directCaseId
+          ) {
+            sessionStorage.removeItem('casemate-open-structures-case');
+          }
+          if (directQuestion?.skill !== 'structures' && legacyQuestion?.skill !== 'structures') return;
+          setMode('library');
+          setPhase('pick');
+          setDrill(null);
+          setResult(null);
+        } catch {
+          /* sessionStorage can be unavailable in strict browser modes */
+        }
+      })();
     };
     openRequestedStructure();
     const onOpenApp = (event: Event) => {
@@ -760,6 +933,23 @@ function CaseDrillInner() {
     return () => clearInterval(interval);
   }, [phase, timedOut, drill]);
 
+  const coachSolvingTrackedRef = useRef<number | null>(null);
+  const trackCoachSolving = (trigger: 'active_2min' | 'answer_typed', activeSeconds: number | null = null) => {
+    if (phase !== 'active' || !drill || coachSolvingTrackedRef.current === drill.id) return;
+    coachSolvingTrackedRef.current = drill.id;
+    trackStepView('case-drill', 'solving_case', {
+      mode: 'coach',
+      dedupeKey: String(drill.id),
+      properties: {
+        question_id: String(drill.id),
+        trigger,
+        active_seconds: activeSeconds,
+        seconds_since_open: Math.round((Date.now() - startedAtRef.current) / 1000),
+      },
+    });
+  };
+  useActiveTimeThreshold(phase === 'active' && Boolean(drill), drill?.id ?? null, (activeSeconds) => trackCoachSolving('active_2min', activeSeconds));
+
   const direction = asObject(assessments?.[0]?.result_json);
   const skillOrder = useMemo(() => {
     const ordered = orderedSkills(direction);
@@ -776,7 +966,7 @@ function CaseDrillInner() {
       bucket.reps += 1;
       if (row.status === 'completed' && Number.isFinite(Number(row.score))) {
         bucket.scored += 1;
-        bucket.totalScore += Number(row.score);
+        bucket.totalScore += Number(row.score) * (10 / scoreScaleOf(row));
       }
     });
     return stats;
@@ -785,13 +975,13 @@ function CaseDrillInner() {
   const totalReps = (drills || []).length;
   const gradedDrills = (drills || []).filter((row) => row.status === 'completed' && Number.isFinite(Number(row.score)));
   const averageScore = gradedDrills.length
-    ? gradedDrills.reduce((sum, row) => sum + Number(row.score), 0) / gradedDrills.length
+    ? gradedDrills.reduce((sum, row) => sum + Number(row.score) * (10 / scoreScaleOf(row)), 0) / gradedDrills.length
     : null;
 
   const startDrill = async (skillId: string | null) => {
     lastSkillRef.current = skillId;
     if (skillId === 'structures') {
-      const firstStructure = ALL_LIBRARY_QUESTIONS.find((question) => question.skill === 'structures');
+      const firstStructure = await findLibraryQuestion((question) => question.skill === 'structures');
       try { if (firstStructure) sessionStorage.setItem('casemate-open-case-drill', firstStructure.id); } catch { /* best effort */ }
       setMode('library');
       setPhase('pick');
@@ -805,24 +995,38 @@ function CaseDrillInner() {
     }
     setError('');
     setResult(null);
+    setReopened(false);
+    setConfirmRedo(false);
     setPhase('generating');
     try {
       const response = await callMicroDrillServerFunction('generate', skillId ? { skill: skillId } : {}, sessionId);
       const fresh = response.drill as MicroDrill;
       setDrill(fresh);
       setAnswer('');
+      setMarketSizingDraft(createInitialMarketSizingDraft());
+      setCalculationAnswer(generatedCalculationAnswer(fresh.drill_data, fresh.prompt, fresh.chart_json));
       setTimedOut(false);
       setSecondsLeft(fresh.time_limit_seconds);
       startedAtRef.current = Date.now();
       setPhase('active');
+      trackStepView('case-drill', 'choose_case', {
+        mode: 'coach',
+        dedupeKey: String(fresh.id),
+        properties: { question_id: String(fresh.id), skill: fresh.skill, difficulty: null },
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Mate could not generate this drill. Please try again.');
       setPhase('pick');
+      trackStepError('case-drill', 'choose_case', e, { mode: 'coach' });
     }
   };
 
   const finishDrill = async (skip: boolean) => {
     if (!drill || !sessionId) return;
+    if (!skip && drill.skill === 'market_sizing' && Object.keys(calculateMarketSizingResult(marketSizingDraft.components).errors).length > 0) {
+      setError('Fix the invalid Component values before submitting.');
+      return;
+    }
     const elapsed = Math.min(drill.time_limit_seconds, Math.round((Date.now() - startedAtRef.current) / 1000));
     setError('');
     setPhase('grading');
@@ -831,7 +1035,12 @@ function CaseDrillInner() {
         'grade',
         {
           drillId: drill.id,
-          answer: skip ? '' : answer.trim(),
+          answer: drill.skill === 'calculations'
+            ? serializeCalculationAnswer(calculationAnswer)
+            : drill.skill === 'market_sizing'
+              ? serializeMarketSizingAttempt(marketSizingDraft, 'VND per year')
+              : answer.trim(),
+          skip,
           elapsedSeconds: elapsed,
           timedOut,
         },
@@ -845,7 +1054,29 @@ function CaseDrillInner() {
               .filter(Boolean)
               .slice(0, max)
           : [];
-      setResult({
+      const criterionFallback = Array.isArray(feedbackRaw?.scoring?.criteria)
+        ? feedbackRaw.scoring.criteria
+            .slice()
+            .sort((a: any, b: any) => Number(a?.score || 0) - Number(b?.score || 0) || Number(b?.weight || 0) - Number(a?.weight || 0))
+            .map((item: any) => ({
+              action: capitaliseLineStarts(String(item?.stronger_answer || '').trim()),
+              why: capitaliseLineStarts(String(item?.reason || '').trim()),
+            }))
+            .filter((item: any) => item.action)
+        : [];
+      const feedbackPriorities = buildFeedbackPriorities({
+        evidenceToRevisit: asList(feedbackRaw?.evidence_to_revisit, 4),
+        legacyEvidence: asList(feedbackRaw?.evidence_overlooked_or_misinterpreted, 4),
+        nextStep: feedbackRaw?.next_step || response.next_step,
+        furtherImprovements: Array.isArray(feedbackRaw?.further_improvements) ? feedbackRaw.further_improvements : [],
+        legacyRecommendations: [
+          ...(Array.isArray(response.next_steps) ? response.next_steps : []),
+          ...(Array.isArray(feedbackRaw?.next_steps) ? feedbackRaw.next_steps : []),
+          ...(Array.isArray(feedbackRaw?.improvements) ? feedbackRaw.improvements : []),
+        ],
+        fallbackActions: criterionFallback,
+      });
+      setResult(clarifyUnitsDeep<DrillResult>({
         skipped: !!response.skipped,
         score: Number.isFinite(Number(response.score)) ? Number(response.score) : null,
         elapsedSeconds: elapsed,
@@ -859,17 +1090,134 @@ function CaseDrillInner() {
         modelAnswer: capitaliseLineStarts(String(response.model_answer || '')),
         solution: parseCaseMathSolution(response.solution ?? response.model_answer),
         approach: asList(response.approach, 5),
-        nextSteps: asList(response.next_steps, 3),
-      });
+        feedbackPriorities,
+        scoring: feedbackRaw?.scoring && Number(feedbackRaw.scoring.scale) === 10
+          ? {
+              rubricId: String(feedbackRaw.scoring.rubric_id || ''),
+              scale: 10,
+              overallScore: Number(feedbackRaw.scoring.overall_score),
+              criteria: Array.isArray(feedbackRaw.scoring.criteria)
+                ? feedbackRaw.scoring.criteria
+                    .filter((item: any) => drill.skill !== 'market_sizing' || !['scope', 'assumptions', 'reasonableness', 'interpretation_check', 'assumption_rationale'].includes(String(item?.key || '')))
+                    .map((item: any) => ({
+                    key: String(item.key || ''),
+                    label: String(item.label || ''),
+                    weight: Number(item.weight) || 0,
+                    score: Number(item.score) || 0,
+                    evidence: capitaliseLineStarts(String(item.evidence || '')),
+                    reason: capitaliseLineStarts(String(item.reason || '')),
+                    strongerAnswer: capitaliseLineStarts(String(item.stronger_answer || '')),
+                  }))
+                : [],
+            }
+          : null,
+      }));
       if (response.score !== null && response.score !== undefined && response.score !== '' && !response.skipped && Number.isFinite(Number(response.score))) {
         emitPracticeGrade(drill.id, sessionId);
       }
+      trackStepView('case-drill', 'answer', {
+        mode: 'coach',
+        dedupeKey: String(drill.id),
+        properties: {
+          question_id: String(drill.id),
+          score: !response.skipped && response.score !== null && response.score !== undefined && response.score !== '' && Number.isFinite(Number(response.score)) ? Number(response.score) : null,
+          score_scale: Number(feedbackRaw?.scoring?.scale) === 10 ? 10 : 5,
+          skipped: !!response.skipped,
+        },
+      });
       setPhase('result');
       refreshDrills();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Mate could not grade this drill. Please try again.');
       setPhase('active');
+      trackStepError('case-drill', 'answer', e, { mode: 'coach' });
     }
+  };
+
+  // Reopen a completed / revealed rep from the saved log. Everything the result
+  // screen needs is already stored on the micro_drills row (answer, score,
+  // feedback, approach, next steps, scoring, model answer), so the saved
+  // feedback is reconstructed verbatim - it survives reloads, sign-out/in, and
+  // a device switch because it comes from the workspace DB, not local state.
+  const reopenDrill = (row: MicroDrill) => {
+    setError('');
+    setConfirmRedo(false);
+    const fb = asObject(row.feedback_json);
+    const scoringRaw = asObject(fb.scoring);
+    const scale = Number(scoringRaw.scale) === 10 ? 10 : 5;
+    const rawScore = row.score === null || row.score === undefined ? null : Number(row.score);
+    const normalizedScore = rawScore === null || !Number.isFinite(rawScore) ? null : Math.round(rawScore * (10 / scale));
+    const toList = (value: unknown, max: number): string[] =>
+      Array.isArray(value)
+        ? value.map((item) => capitaliseLineStarts(String(item ?? '').trim())).filter(Boolean).slice(0, max)
+        : [];
+    const feedbackText = capitaliseLineStarts(String(fb.feedback || ''));
+    const strengths = toList(fb.strengths, 3);
+    const improvements = toList(fb.improvements, 3);
+    setDrill(row);
+    setAnswer(String(row.answer_text || ''));
+    setMarketSizingDraft(parseMarketSizingAttempt(row.answer_text) || createInitialMarketSizingDraft());
+    setTimedOut(row.timed_out === true);
+    setResult(clarifyUnitsDeep<DrillResult>({
+      skipped: row.status === 'skipped',
+      score: row.status === 'skipped' ? null : normalizedScore,
+      elapsedSeconds: Number.isFinite(Number(row.elapsed_seconds)) ? Number(row.elapsed_seconds) : 0,
+      feedback: (feedbackText || strengths.length || improvements.length)
+        ? { feedback: feedbackText, strengths, improvements }
+        : null,
+      modelAnswer: capitaliseLineStarts(String(row.model_answer || '')),
+      solution: parseCaseMathSolution(row.model_answer),
+      approach: toList(fb.approach, 5),
+      feedbackPriorities: buildFeedbackPriorities({
+        evidenceToRevisit: toList(fb.evidence_to_revisit, 4),
+        legacyEvidence: toList(fb.evidence_overlooked_or_misinterpreted, 4),
+        nextStep: fb.next_step,
+        furtherImprovements: Array.isArray(fb.further_improvements) ? fb.further_improvements : [],
+        legacyRecommendations: [...toList(fb.next_steps, 3), ...improvements],
+        fallbackActions: Array.isArray(scoringRaw.criteria)
+          ? scoringRaw.criteria
+              .slice()
+              .sort((a: any, b: any) => Number(a?.score || 0) - Number(b?.score || 0) || Number(b?.weight || 0) - Number(a?.weight || 0))
+              .map((item: any) => ({ action: capitaliseLineStarts(String(item?.stronger_answer || '')), why: capitaliseLineStarts(String(item?.reason || '')) }))
+          : [],
+      }),
+      scoring: scale === 10 && Array.isArray(scoringRaw.criteria)
+        ? {
+            rubricId: String(scoringRaw.rubric_id || ''),
+            scale: 10,
+            overallScore: Number(scoringRaw.overall_score),
+            criteria: scoringRaw.criteria
+              .filter((item: any) => row.skill !== 'market_sizing' || !['scope', 'assumptions', 'reasonableness', 'interpretation_check', 'assumption_rationale'].includes(String(item?.key || '')))
+              .map((item: any) => ({
+              key: String(item.key || ''),
+              label: String(item.label || ''),
+              weight: Number(item.weight) || 0,
+              score: Number(item.score) || 0,
+              evidence: capitaliseLineStarts(String(item.evidence || '')),
+              reason: capitaliseLineStarts(String(item.reason || '')),
+              strongerAnswer: capitaliseLineStarts(String(item.stronger_answer || '')),
+            })),
+          }
+        : null,
+    }));
+    setReopened(true);
+    setPhase('result');
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Start a fresh attempt at the drill currently on screen. The new submission
+  // overwrites the stored row, so this only runs after an explicit confirm.
+  const redoDrill = () => {
+    if (!drill) return;
+    setConfirmRedo(false);
+    setReopened(false);
+    setResult(null);
+    setAnswer('');
+    setCalculationAnswer(generatedCalculationAnswer(drill.drill_data, drill.prompt, drill.chart_json));
+    setTimedOut(false);
+    setSecondsLeft(drill.time_limit_seconds);
+    startedAtRef.current = Date.now();
+    setPhase('active');
   };
 
   const activeCase = drill && drill.skill === 'case_math' ? parseCaseMathBrief(drill.chart_json) : null;
@@ -887,6 +1235,9 @@ function CaseDrillInner() {
       }
     : null;
   const timerFraction = drill ? secondsLeft / Math.max(drill.time_limit_seconds, 1) : 0;
+  const displayedResultScore = result && drill
+    ? (drill.skill === 'market_sizing' && result.scoring ? deriveOverallScore(result.scoring.criteria) : result.score)
+    : null;
   const timerTone = timedOut
     ? 'text-[var(--space-semantic-danger)]'
     : timerFraction <= 0.25
@@ -897,7 +1248,7 @@ function CaseDrillInner() {
     <div className="h-full overflow-y-auto bg-[var(--space-surface-page)] [&_button]:min-h-11 [&_button]:min-w-11">
       {/* Full-bleed case workspace: chart grids, prompts, answers, and review
           panels use the entire app width with modest responsive gutters. */}
-      <div className="w-full px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
+      <div className="w-full px-3 py-4 sm:px-6 lg:px-8">
         {/* ------------------------------------------------ header */}
         <header className="flex items-start gap-3">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--space-surface-accent-soft)] sm:h-10 sm:w-10">
@@ -905,8 +1256,8 @@ function CaseDrillInner() {
           </div>
           <div className="min-w-0">
             <h1 className="text-lg font-bold text-[var(--space-text-primary)] sm:text-xl">Case Drill</h1>
-            <p className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)] sm:text-sm">
-              A question library across Charts, Structures, Calculations, Creativity, and Market Sizing - plus Case Journeys, where one business decision runs across linked Hard and Expert drills from diagnosis to recommendation. Timed micro-drills graded by Mate sit under Practice with Mate. Full open-ended cases live in{' '}
+            <p className={`mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)] sm:text-sm ${libraryCompact && mode === 'library' ? 'lg:hidden' : ''}`}>
+              Practise one focused skill in the Question Library. Full open-ended cases live in{' '}
               <button
                 type="button"
                 className="font-semibold text-[var(--space-text-brand)] underline-offset-2 hover:underline"
@@ -937,40 +1288,18 @@ function CaseDrillInner() {
           </div>
         )}
 
-        {/* ---------------------------------- question library / practice with Mate */}
-        {phase === 'pick' && (
-          <div
-            className="mt-4 flex rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-0.5 sm:mt-5"
-            role="tablist"
-            aria-label="Choose a practice mode"
+        {/* ---------------------------------- question library */}
+        {phase === 'pick' && mode === 'library' && (
+          <Suspense
+            fallback={
+              <div className="mt-4 flex justify-center py-8" aria-busy="true">
+                <Loader2 className="h-6 w-6 animate-spin text-[var(--space-text-brand)]" />
+              </div>
+            }
           >
-            {([
-              { id: 'library' as const, label: 'Question Library', hint: 'Instant' },
-              { id: 'coach' as const, label: 'Practice with Mate', hint: 'Graded' },
-            ]).map(({ id, label, hint }) => (
-              <button
-                key={id}
-                type="button"
-                role="tab"
-                aria-selected={mode === id}
-                onClick={() => setMode(id)}
-                className={`flex-1 rounded-lg px-3 py-2 text-center transition-colors ${
-                  mode === id
-                    ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]'
-                    : 'text-[var(--space-text-secondary)] hover:bg-[var(--space-surface-muted)]'
-                }`}
-                data-testid={`tab-drill-${id}`}
-              >
-                <span className="block text-xs font-semibold">{label}</span>
-                <span className={`block text-[10px] ${mode === id ? 'opacity-80' : 'text-[var(--space-text-muted)]'}`}>
-                  {hint}
-                </span>
-              </button>
-            ))}
-          </div>
+            <QuestionLibrary onCompactLayoutChange={setLibraryCompact} />
+          </Suspense>
         )}
-
-        {phase === 'pick' && mode === 'library' && <QuestionLibrary />}
 
         {/* ------------------------------------------------ picker */}
         {phase === 'pick' && mode === 'coach' && (
@@ -1019,10 +1348,9 @@ function CaseDrillInner() {
                     <span className="mt-2 text-sm font-bold text-[var(--space-text-primary)]">{spec.label}</span>
                     <span className="mt-0.5 text-[11px] leading-4 text-[var(--space-text-muted)]">{spec.hint}</span>
                     <span className="mt-2 text-[10px] font-medium text-[var(--space-text-muted)]">
-                      {stats && stats.reps > 0
-                        ? `Reps: ${stats.reps}${avg ? ` · Average: ${avg.toFixed(1)}/5` : ''}`
-                        : 'No Reps Yet'}
+                      {stats && stats.reps > 0 ? `Reps: ${stats.reps}` : 'No Reps Yet'}
                     </span>
+                    {avg !== null ? <DrillScoreBadge average score={avg} className="mt-1 self-start" /> : null}
                   </button>
                 );
               })}
@@ -1046,31 +1374,57 @@ function CaseDrillInner() {
                     Reps: <strong className="text-[var(--space-text-primary)]">{totalReps}</strong> Total
                   </span>
                   {averageScore !== null && (
-                    <span>
-                      Average: <strong className="text-[var(--space-text-primary)]">{averageScore.toFixed(1)}/5</strong>
-                    </span>
+                    <DrillScoreBadge average score={averageScore} />
                   )}
                 </div>
                 <ul className="mt-2 divide-y divide-[var(--space-border-default)] rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)]">
                   {(drills || []).slice(0, 8).map((row) => {
                     const Icon = SKILL_ICONS[row.skill] || Zap;
-                    return (
-                      <li key={row.id} className="flex items-center gap-3 px-3.5 py-2.5">
+                    // A completed or revealed rep can be reopened to its saved
+                    // feedback; an unfinished rep keeps its existing read-only row.
+                    const reviewable = row.status === 'completed' || row.status === 'skipped';
+                    const rawRowScore = parseDrillScore(row.score);
+                    const rowScore10 = rawRowScore === null ? null : rawRowScore * (10 / scoreScaleOf(row));
+                    const statusBadge = row.status === 'completed' ? (
+                      <>
+                        <span className={`${tw.badge.default} ${tw.badge.neutral}`} data-testid={`badge-completed-${row.id}`}>Completed</span>
+                        <DrillScoreBadge score={rowScore10} testId={`badge-score-${row.id}`} />
+                      </>
+                    ) : row.status === 'skipped' ? (
+                      <span className={`${tw.badge.default} ${tw.badge.neutral}`}>Skipped</span>
+                    ) : (
+                      <span className={`${tw.badge.default} ${tw.badge.neutral}`}>Unfinished</span>
+                    );
+                    const rowInner = (
+                      <>
                         <Icon className="h-4 w-4 flex-shrink-0 text-[var(--space-text-brand)]" />
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-xs font-semibold text-[var(--space-text-primary)]">
                             {capitaliseLineStarts(row.skill_label || row.skill)}
                           </p>
-                          <p className="text-[10px] text-[var(--space-text-muted)]">{timeAgo(row.created_at)}</p>
+                          <p className="text-[10px] text-[var(--space-text-muted)]">
+                            {reviewable
+                              ? `${row.status === 'completed' ? '' : 'Answer revealed \u00b7 '}${timeAgo(row.completed_on || row.created_at)}`
+                              : timeAgo(row.created_at)}
+                          </p>
                         </div>
-                        {row.status === 'completed' && Number.isFinite(Number(row.score)) ? (
-                          <span className={`${tw.badge.default} ${Number(row.score) >= 4 ? tw.badge.success : Number(row.score) >= 3 ? tw.badge.primary : tw.badge.warning}`}>
-                            {row.score}/5
-                          </span>
-                        ) : row.status === 'skipped' ? (
-                          <span className={`${tw.badge.default} ${tw.badge.neutral}`}>Skipped</span>
+                        <div className="flex min-w-0 max-w-[55%] flex-shrink-0 flex-wrap items-center justify-end gap-1">{statusBadge}</div>
+                        {reviewable ? <Eye className="h-3.5 w-3.5 flex-shrink-0 text-[var(--space-text-muted)]" /> : null}
+                      </>
+                    );
+                    return (
+                      <li key={row.id}>
+                        {reviewable ? (
+                          <button
+                            type="button"
+                            onClick={() => reopenDrill(row)}
+                            className="flex w-full items-center gap-3 px-3.5 py-2.5 text-left transition-colors hover:bg-[var(--space-surface-muted)]"
+                            data-testid={`button-reopen-drill-${row.id}`}
+                          >
+                            {rowInner}
+                          </button>
                         ) : (
-                          <span className={`${tw.badge.default} ${tw.badge.neutral}`}>Unfinished</span>
+                          <div className="flex items-center gap-3 px-3.5 py-2.5">{rowInner}</div>
                         )}
                       </li>
                     );
@@ -1131,7 +1485,7 @@ function CaseDrillInner() {
                 <>
                   {drill.drill_data ? (
                     <pre className="whitespace-pre-wrap rounded-xl bg-[var(--space-surface-muted)] p-3 font-[inherit] text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="drill-data">
-                      {capitaliseLineStarts(drill.drill_data)}
+                      {nfDrill(capitaliseLineStarts(drill.drill_data))}
                     </pre>
                   ) : null}
                   {activeExhibit ? (
@@ -1142,7 +1496,7 @@ function CaseDrillInner() {
                   <div className={`${drill.drill_data || activeExhibit ? 'mt-3 border-t border-[var(--space-border-default)] pt-3' : ''}`}>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Question</p>
                     <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-primary)]" data-testid="drill-prompt">
-                      {capitaliseLineStarts(drill.prompt)}
+                      {nfDrill(capitaliseLineStarts(drill.prompt))}
                     </p>
                   </div>
                 </>
@@ -1151,23 +1505,33 @@ function CaseDrillInner() {
 
             {/* answer */}
             <div className="mt-3">
-              <textarea
-                value={answer}
-                onChange={(event) => setAnswer(event.target.value)}
-                readOnly={timedOut || phase === 'grading'}
-                rows={6}
-                placeholder={
-                  drill.skill === 'creativity'
-                    ? 'One idea per line - go for volume and variety…'
-                    : drill.skill === 'structures'
-                      ? 'Your MECE branches - short lines, one branch per line with its sub-points…'
-                      : drill.skill === 'case_math'
-                        ? 'Answer each question in order - show the arithmetic for every step…'
-                        : 'Type your answer - show your working in short lines…'
-                }
-                className={`${tw.input.base} ${tw.input.default} min-h-[110px] text-sm leading-6 sm:min-h-[130px] ${timedOut ? 'opacity-80' : ''}`}
-                data-testid="input-drill-answer"
-              />
+              {drill.skill === 'calculations' ? (
+                <CalculationAnswerBuilder
+                  value={calculationAnswer}
+                  onChange={(next) => { setCalculationAnswer(next); trackCoachSolving('answer_typed'); }}
+                  disabled={timedOut || phase === 'grading'}
+                />
+              ) : drill.skill === 'market_sizing' ? (
+                <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setError(''); trackCoachSolving('answer_typed'); }} answerUnit="VND per year" disabled={timedOut || phase === 'grading'} />
+              ) : (
+                <textarea
+                  value={answer}
+                  onChange={(event) => { setAnswer(event.target.value); trackCoachSolving('answer_typed'); }}
+                  readOnly={timedOut || phase === 'grading'}
+                  rows={6}
+                  placeholder={
+                    drill.skill === 'creativity'
+                      ? 'One idea per line - go for volume and variety…'
+                      : drill.skill === 'structures'
+                        ? 'Your MECE branches - short lines, one branch per line with its sub-points…'
+                        : drill.skill === 'case_math'
+                          ? 'Answer each question in order - show the arithmetic for every step…'
+                          : 'Type your answer - show your working in short lines…'
+                  }
+                  className={`${tw.input.base} ${tw.input.default} min-h-[110px] text-sm leading-6 sm:min-h-[130px] ${timedOut ? 'opacity-80' : ''}`}
+                  data-testid="input-drill-answer"
+                />
+              )}
               {timedOut && (
                 <p className="mt-1.5 text-xs text-[var(--space-semantic-danger)]">
                   The clock hit zero - submit what you have (strong partials still score) or reveal the model answer.
@@ -1177,8 +1541,8 @@ function CaseDrillInner() {
                 <button
                   type="button"
                   onClick={() => void finishDrill(false)}
-                  disabled={phase === 'grading' || !answer.trim()}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.primary} ${phase === 'grading' || !answer.trim() ? tw.button.disabled : ''}`}
+                  disabled={phase === 'grading'}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.primary} ${phase === 'grading' ? tw.button.disabled : ''}`}
                   data-testid="button-submit-drill"
                 >
                   {phase === 'grading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
@@ -1200,190 +1564,118 @@ function CaseDrillInner() {
         )}
 
         {/* ------------------------------------------------ result */}
-        {phase === 'result' && result && drill && (
+        {phase === 'result' && result && drill && (() => {
+          const answerText = reopened ? String(drill.answer_text || '') : answer;
+          const sizingAttempt = drill.skill === 'market_sizing'
+            ? (reopened ? parseMarketSizingAttempt(drill.answer_text) : marketSizingDraft)
+            : null;
+          const answered = !result.skipped && (drill.skill === 'calculations'
+            ? reopened
+              ? /\d/.test(answerText.replace(/^[\s\S]*?FINAL NUMERICAL ANSWERS/i, '').replace(/\b(?:result|step|row)\s*\d+/gi, ''))
+              : calculationAnswer.finalAnswers.some((item) => item.value.trim()) || calculationAnswer.formulaRows.some((row) => row.numbers.some((slot) => slot.value.trim()))
+            : sizingAttempt
+              ? sizingAttempt.components.some((component: any) => String(component?.value ?? '').trim()) || Boolean(sizingAttempt.manualResult?.trim())
+              : hasLearnerResponse(answerText));
+          const outcome = result.skipped ? 'not-answered' as const : resultOutcome(displayedResultScore, 10, { answered });
+          const focus = result.feedbackPriorities.nextStep?.action || '';
+          const nextAction = chooseNextAction(outcome, {
+            retry: result.skipped ? null : { kind: 'retry', label: 'Try this drill again', detail: focus ? `Focus on one thing: ${focus}` : 'Answer it again, using what the worked answer showed.', onSelect: () => setConfirmRedo(true) },
+            'next-question': { kind: 'next-question', label: `New ${drill.skill_label || 'drill'}`, detail: 'Mate builds a fresh drill on the same skill.', onSelect: () => void startDrill(drill.skill) },
+          });
+          return (
           <div className="mt-4 sm:mt-5" data-testid="drill-result">
-            <div className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4">
-              <div className="flex items-center gap-3">
-                {result.skipped ? (
-                  <>
-                    <Flag className="h-6 w-6 text-[var(--space-text-muted)]" />
-                    <div>
-                      <p className="text-sm font-bold text-[var(--space-text-primary)]">Answer revealed - not scored</p>
-                      <p className="text-xs text-[var(--space-text-muted)]">Skipping a rep is part of learning. Study the key, then go again.</p>
-                    </div>
-                  </>
+            <CaseResultView
+              score={result.skipped ? null : displayedResultScore}
+              scale={10}
+              outcome={outcome}
+              completedOn={reopened ? drill.completed_on : undefined}
+              summaryNote={result.skipped ? 'Answer revealed - not scored. Study the worked answer, then take a fresh rep.' : timedOut ? `Submitted after the ${formatClock(drill.time_limit_seconds)} buzzer.` : undefined}
+              feedback={result.skipped
+                ? { worked: [], failed: ['You revealed the model answer before submitting, so nothing was graded.'] }
+                : buildReasoningFeedback({
+                    criteria: result.scoring?.criteria || [],
+                    worked: result.feedback?.strengths || [],
+                    failed: result.feedback?.improvements || [],
+                    evidenceToRevisit: result.feedbackPriorities.evidenceToRevisit,
+                    exclude: focus ? [focus] : [],
+                  })}
+              criteria={result.skipped ? [] : result.scoring?.criteria || []}
+              learnerResponse={answered && drill.skill === 'calculations' ? (
+                reopened ? (
+                  <CalculationResultSummaryView
+                    serialized={answerText}
+                    specs={displayCalculationSpecs(generatedCalculationAnswer(drill.drill_data, drill.prompt, drill.chart_json).finalAnswers)}
+                    title="Your submitted results"
+                  />
                 ) : (
-                  <>
-                    <div
-                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-base font-extrabold sm:h-12 sm:w-12 sm:rounded-2xl sm:text-lg ${
-                        (result.score || 0) >= 4
-                          ? 'bg-[var(--space-semantic-success-100,#dcfce7)] text-[var(--space-semantic-success-700,#15803d)]'
-                          : (result.score || 0) >= 3
-                            ? 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]'
-                            : 'bg-[var(--space-semantic-warning-100,#fef3c7)] text-[var(--space-semantic-warning-700,#b45309)]'
-                      }`}
-                      data-testid="drill-score"
-                    >
-                      {result.score}/5
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-[var(--space-text-primary)]">{drill.skill_label || drill.skill} rep graded</p>
-                      <p className="text-xs text-[var(--space-text-muted)]">
-                        {timedOut ? 'Submitted after the buzzer - ' : ''}
-                        {formatClock(drill.time_limit_seconds)} limit
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Percentile ranking vs every other user's graded drill. Only a
-                  scored rep counts - a skipped rep records nothing. The drill id
-                  keys the submission, so re-renders never double-count. */}
-              {!result.skipped && result.score != null && (
+                  <CalculationResultSummaryView value={{ ...calculationAnswer, finalAnswers: displayCalculationSpecs(calculationAnswer.finalAnswers) }} title="Your submitted results" />
+                )
+              ) : answered && sizingAttempt ? (
+                <MarketSizingAttemptSummary value={sizingAttempt} answerUnit="VND per year" />
+              ) : undefined}
+              learnerResponseText={answered && drill.skill !== 'calculations' && !sizingAttempt ? capitaliseLineStarts(answerText) : ''}
+              workedAnswer={coachWorkedAnswer(drill, result)}
+              unavailableReason={`Mate could not load the worked answer for drill #${drill.id}.`}
+              nextAction={confirmRedo ? null : nextAction}
+              extras={!reopened && !result.skipped && result.score != null ? (
                 <PercentileRankingWidget
-                  className="mt-3"
                   app="case_drill"
-                  scorePercent={Math.round((result.score / 5) * 100)}
+                  scorePercent={Math.round((result.score / 10) * 100)}
                   timeSeconds={result.elapsedSeconds}
                   submissionKey={`case-drill:${drill.id}`}
                 />
-              )}
+              ) : undefined}
+              format={nfDrill}
+              testId="drill-result-view"
+            />
 
-              {/* 1 - the reusable method for this drill type */}
-              {result.approach.length > 0 && (
-                <div className="mt-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3" data-testid="drill-approach">
-                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">
-                    <Compass className="h-3.5 w-3.5 flex-shrink-0" />
-                    How to approach {drill.skill_label ? drill.skill_label : 'these'} drills
-                  </p>
-                  <ol className="mt-2 space-y-1.5">
-                    {result.approach.map((step, index) => (
-                      <li key={index} className="flex gap-2 text-xs leading-5 text-[var(--space-text-secondary)]">
-                        <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-[var(--space-surface-accent-soft)] text-[9px] font-bold text-[var(--space-text-brand)]">
-                          {index + 1}
-                        </span>
-                        <span className="min-w-0">{step}</span>
-                      </li>
-                    ))}
-                  </ol>
+            {confirmRedo ? (
+              <div className="mt-3 flex flex-col gap-2 rounded-xl border border-[var(--space-semantic-warning)] bg-[var(--space-surface-card)] p-3 sm:flex-row sm:items-center" data-testid="drill-redo-confirm">
+                <p className="min-w-0 flex-1 text-xs leading-5 text-[var(--space-text-secondary)]">
+                  Start over? This clears the current answer fields. Your next successful submission will replace this saved feedback.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setConfirmRedo(false)}
+                    className={`rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.ghost}`}
+                    data-testid="button-cancel-redo-drill"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={redoDrill}
+                    className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.primary}`}
+                    data-testid="button-confirm-redo-drill"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5" />
+                    Yes, start over
+                  </button>
                 </div>
-              )}
-
-              {/* 2 - what good looks like on THIS drill (Case Math renders the
-                  structured step-by-step solution; other skills the text key) */}
-              {result.solution ? (
-                <CaseMathSolutionView solution={result.solution} />
-              ) : result.modelAnswer ? (
-                <div className="mt-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3">
-                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-                    <Eye className="h-3.5 w-3.5 flex-shrink-0" />
-                    {drill.skill === 'creativity' ? "Mate's one possible approach" : "Mate's model answer"}
-                  </p>
-                  {drill.skill === 'creativity' ? (
-                    <p className="mt-1.5 text-xs leading-5 text-[var(--space-text-muted)]">
-                      Creativity questions can have many strong answers - this is one structured route, not a required framework.
-                    </p>
-                  ) : null}
-                  <pre className="mt-1.5 whitespace-pre-wrap font-[inherit] text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="drill-model-answer">
-                    {result.modelAnswer}
-                  </pre>
-                </div>
-              ) : null}
-
-              {/* 3 - feedback on their own answer (degrades gracefully on a skip) */}
-              <div className="mt-3 rounded-xl border border-[var(--space-border-default)] p-3" data-testid="drill-answer-feedback">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Feedback on your answer</p>
-                {result.skipped || !result.feedback ? (
-                  <p className="mt-1.5 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="drill-feedback">
-                    Nothing went in this rep, so there's no grade - compare the model answer above against how you would have attacked it, note the one step you'd have missed, then take another rep.
-                  </p>
-                ) : (
-                  <>
-                    {result.feedback.feedback ? (
-                      <p className="mt-1.5 text-sm leading-6 text-[var(--space-text-secondary)]" data-testid="drill-feedback">
-                        {result.feedback.feedback}
-                      </p>
-                    ) : null}
-                    {(result.feedback.strengths.length > 0 || result.feedback.improvements.length > 0) && (
-                      <div className="mt-2.5 grid gap-3 sm:grid-cols-2">
-                        {result.feedback.strengths.length > 0 && (
-                          <div className="rounded-xl bg-[var(--space-surface-muted)] p-3">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-semantic-success)]">What worked</p>
-                            <ul className="mt-1.5 space-y-1">
-                              {result.feedback.strengths.map((item, index) => (
-                                <li key={index} className="flex gap-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">
-                                  <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-[var(--space-semantic-success)]" />
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        {result.feedback.improvements.length > 0 && (
-                          <div className="rounded-xl bg-[var(--space-surface-muted)] p-3">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">What was missing</p>
-                            <ul className="mt-1.5 space-y-1">
-                              {result.feedback.improvements.map((item, index) => (
-                                <li key={index} className="flex gap-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">
-                                  <Zap className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-[var(--space-text-brand)]" />
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </>
-                )}
               </div>
-
-              {/* 4 - where to take it next */}
-              {result.nextSteps.length > 0 && (
-                <div className="mt-3 rounded-xl border border-[var(--space-border-default)] p-3" data-testid="drill-next-steps">
-                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">
-                    <Target className="h-3.5 w-3.5 flex-shrink-0" />
-                    What to do next
-                  </p>
-                  <ul className="mt-1.5 space-y-1">
-                    {result.nextSteps.map((item, index) => (
-                      <li key={index} className="flex gap-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">
-                        <Flag className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-[var(--space-text-brand)]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <button
-                type="button"
-                onClick={() => void startDrill(drill.skill)}
-                className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.primary}`}
-                data-testid="button-drill-again"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Go again - {drill.skill_label || 'same skill'}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setPhase('pick');
-                  setDrill(null);
-                  setResult(null);
-                }}
-                className={`flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.secondary}`}
-                data-testid="button-switch-skill"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Switch skill
-              </button>
+            ) : null}
+            <div className="mt-3 flex flex-col gap-2 pb-20 sm:flex-row sm:pb-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPhase('pick');
+                    setMode('library');
+                    setDrill(null);
+                    setResult(null);
+                    setReopened(false);
+                    setConfirmRedo(false);
+                  }}
+                  className={`flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.secondary}`}
+                  data-testid="button-back-case-library"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to drills
+                </button>
             </div>
           </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );

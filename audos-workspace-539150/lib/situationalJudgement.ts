@@ -9,7 +9,17 @@
 // credit; the references publish model orders but no proprietary numeric
 // scoring formula.
 
-export type SituationalDifficulty = 'easy' | 'medium' | 'hard';
+import { loadAssessmentDaySjtTests } from './assessmentDaySjtTests';
+
+export type SituationalDifficulty = 'easy' | 'medium' | 'hard' | 'mixed';
+
+/**
+ * rated: five responses, each given a different rating (the generated bank and
+ * the AssessmentDay Rated Responses scenarios).
+ * ranked: four responses put in order from most to least effective.
+ * most_least: four responses, pick the most and the least likely/effective one.
+ */
+export type SituationalFormat = 'rated' | 'ranked' | 'most_least';
 
 export const SITUATIONAL_OPTION_LABELS = ['A', 'B', 'C', 'D', 'E'] as const;
 export const SITUATIONAL_RATING_LABELS = [
@@ -28,9 +38,26 @@ export interface SituationalQuestion {
   options: string[];
   optionLabels: string[];
   correctAnswer: string;
+  /** Model order, best response first. For most_least questions: most, then the middle two, then least. */
   optimalRanking: string[];
   competency: string;
   explanation: string;
+  hint?: string;
+  /** Absent means the generated five-rating format. */
+  format?: SituationalFormat;
+  /** Role and company briefing shared by the four situations of one scenario. */
+  scenario?: string;
+  sectionTitle?: string;
+  instruction?: string;
+  mostLabel?: string;
+  leastLabel?: string;
+  /** Official commentary on each response, in option order. */
+  optionNotes?: string[];
+  /** Short model grade of each response, in option order (most_least questions). */
+  optionGrades?: string[];
+  sourceOrganization?: string;
+  sourceQuestionNumber?: number;
+  answerKeySource?: 'official' | 'derived';
 }
 
 export interface SituationalTest {
@@ -459,6 +486,26 @@ const DILEMMAS: Dilemma[] = [
   },
 ];
 
+// Themes 31-45 extend the bank to 45 generated tests; each reuses the same 30
+// computed-quality dilemmas in a different order and workplace.
+const EXTRA_THEMES: WorkplaceTheme[] = [
+  { organisation: 'Phoenix Insurance Vietnam', role: 'claims process graduate', project: 'motor claims fast-track', counterpart: 'the claims director, Ms Diep', colleague: 'Hoa', manager: 'Mr Cuong', location: 'Ho Chi Minh City', pressure: 'a typhoon-season claims peak is approaching' },
+  { organisation: 'Golden Rice Foods', role: 'supply chain trainee', project: 'regional warehouse consolidation', counterpart: 'the logistics head, Mr Tai', colleague: 'Khanh', manager: 'Ms Van', location: 'Long An', pressure: 'the harvest season starts in ten days' },
+  { organisation: 'Lac Hong Pharmacy Group', role: 'retail excellence associate', project: 'pharmacy loyalty-card relaunch', counterpart: 'the marketing director, Ms Bich', colleague: 'Dung', manager: 'Mr Hai', location: 'Hanoi', pressure: 'a competitor has just announced a similar scheme' },
+  { organisation: 'Sao Mai Airlines', role: 'ground operations graduate', project: 'self-service check-in rollout', counterpart: 'the airport station manager, Mr Binh', colleague: 'Trinh', manager: 'Ms Loan', location: 'Da Nang', pressure: 'the summer travel peak is only weeks away' },
+  { organisation: 'Viet Green Energy', role: 'project finance analyst', project: 'rooftop solar financing package', counterpart: 'the head of partnerships, Ms Tam', colleague: 'Lam', manager: 'Mr Quan', location: 'Binh Duong', pressure: 'a subsidy deadline is near' },
+  { organisation: 'Hoa Binh Hotels and Resorts', role: 'revenue management trainee', project: 'dynamic pricing pilot', counterpart: 'the general manager, Mr Lap', colleague: 'Ngoc', manager: 'Ms Thu', location: 'Nha Trang', pressure: 'a large tour operator is negotiating rates' },
+  { organisation: 'Thang Long Education Group', role: 'programme operations associate', project: 'blended-learning curriculum launch', counterpart: 'the academic director, Dr Hung', colleague: 'Vy', manager: 'Ms Oanh', location: 'Hanoi', pressure: 'enrolment closes at the end of the month' },
+  { organisation: 'Blue Delta Seafood Exports', role: 'quality and compliance graduate', project: 'EU export certification upgrade', counterpart: 'the export director, Ms Chau', colleague: 'Tin', manager: 'Mr Dat', location: 'Ca Mau', pressure: 'an overseas buyer audit is scheduled' },
+  { organisation: 'Sunrise Property Development', role: 'sales operations graduate', project: 'show-apartment launch event', counterpart: 'the sales director, Mr Nghia', colleague: 'Phuong', manager: 'Ms Giang', location: 'Ho Chi Minh City', pressure: 'invitations have already gone to key buyers' },
+  { organisation: 'FutureCode Software', role: 'product operations analyst', project: 'customer support chatbot release', counterpart: 'the engineering manager, Mr Viet', colleague: 'An', manager: 'Ms Huong', location: 'Da Nang', pressure: 'the release is promised in the next sprint' },
+  { organisation: 'Cuu Long Agricultural Bank', role: 'rural lending graduate', project: 'smallholder credit scoring pilot', counterpart: 'the regional credit head, Mr Sang', colleague: 'Thuy', manager: 'Ms Nga', location: 'Dong Thap', pressure: 'a provincial review meeting is next week' },
+  { organisation: 'Orchid Fashion Retail', role: 'merchandising trainee', project: 'seasonal range reset', counterpart: 'the head of buying, Ms Kim', colleague: 'Duc', manager: 'Mr Phat', location: 'Ho Chi Minh City', pressure: 'new stock is arriving earlier than planned' },
+  { organisation: 'Saigon Port Services', role: 'terminal operations graduate', project: 'gate appointment system', counterpart: 'the terminal manager, Mr Toan', colleague: 'Hanh', manager: 'Ms Lieu', location: 'Vung Tau', pressure: 'truck queues have started to affect shipping lines' },
+  { organisation: 'Minh Tam Medical Devices', role: 'regulatory affairs associate', project: 'new device registration file', counterpart: 'the quality director, Dr Lien', colleague: 'Bach', manager: 'Mr Tri', location: 'Hanoi', pressure: 'a distributor contract depends on the approval date' },
+  { organisation: 'Everbright Media Group', role: 'content strategy graduate', project: 'short-video advertising package', counterpart: 'the commercial director, Ms Xuan', colleague: 'Hieu', manager: 'Mr Loc', location: 'Ho Chi Minh City', pressure: 'a major advertiser is deciding its budget this week' },
+];
+
 function fill(template: string, theme: WorkplaceTheme): string {
   return template.replace(/\{(\w+)\}/g, (_match, key: keyof WorkplaceTheme) => theme[key] || key);
 }
@@ -486,17 +533,18 @@ function shuffled<T>(values: T[], seed: number): T[] {
   return result;
 }
 
-export function encodeSituationalRatings(slots: Array<string | null>): string {
-  return Array.from({ length: 5 }, (_, index) => slots[index] || '-').join('>');
+export function encodeSituationalRatings(slots: Array<string | null>, count = 5): string {
+  return Array.from({ length: count }, (_, index) => slots[index] || '-').join('>');
 }
 
-export function parseSituationalRatings(value: string | null | undefined): Array<string | null> {
+export function parseSituationalRatings(value: string | null | undefined, count = 5): Array<string | null> {
   const parts = value ? value.split('>') : [];
-  if (parts.length > 5) return new Array(5).fill(null);
+  if (parts.length > count) return new Array(count).fill(null);
+  const allowed: readonly string[] = SITUATIONAL_OPTION_LABELS.slice(0, count);
   const seen = new Set<string>();
-  return Array.from({ length: 5 }, (_, index) => {
+  return Array.from({ length: count }, (_, index) => {
     const label = parts[index] || '';
-    if (!SITUATIONAL_OPTION_LABELS.includes(label as (typeof SITUATIONAL_OPTION_LABELS)[number]) || seen.has(label)) {
+    if (!allowed.includes(label) || seen.has(label)) {
       return null;
     }
     seen.add(label);
@@ -504,14 +552,14 @@ export function parseSituationalRatings(value: string | null | undefined): Array
   });
 }
 
-export function isCompleteSituationalRating(value: string | null | undefined): boolean {
-  const slots = parseSituationalRatings(value);
-  return slots.every(Boolean) && new Set(slots).size === 5;
+export function isCompleteSituationalRating(value: string | null | undefined, count = 5): boolean {
+  const slots = parseSituationalRatings(value, count);
+  return slots.every(Boolean) && new Set(slots).size === count;
 }
 
 export interface SituationalScore {
   points: number;
-  maxPoints: 12;
+  maxPoints: number;
   distance: number;
   credit: number;
   exact: boolean;
@@ -526,17 +574,67 @@ export function scoreSituationalRatings(
   candidateValue: string | null | undefined,
   optimalRanking: string[],
 ): SituationalScore {
-  const candidate = parseSituationalRatings(candidateValue);
-  if (!candidate.every(Boolean) || new Set(candidate).size !== 5) {
-    return { points: 0, maxPoints: 12, distance: 12, credit: 0, exact: false };
+  const count = optimalRanking.length;
+  const maxDistance = Math.floor((count * count) / 2);
+  const candidate = parseSituationalRatings(candidateValue, count);
+  if (!candidate.every(Boolean) || new Set(candidate).size !== count) {
+    return { points: 0, maxPoints: maxDistance, distance: maxDistance, credit: 0, exact: false };
   }
   const ranking = candidate as string[];
   const distance = optimalRanking.reduce(
     (sum, label, expectedIndex) => sum + Math.abs(ranking.indexOf(label) - expectedIndex),
     0,
   );
-  const points = Math.max(0, 12 - distance);
-  return { points, maxPoints: 12, distance, credit: points / 12, exact: distance === 0 };
+  const points = Math.max(0, maxDistance - distance);
+  return { points, maxPoints: maxDistance, distance, credit: points / maxDistance, exact: distance === 0 };
+}
+
+export const SITUATIONAL_RANK_LABELS = ['Most effective', '2nd most effective', '3rd most effective', 'Least effective'] as const;
+
+type SituationalAnswerShape = Pick<SituationalQuestion, 'optionLabels' | 'optimalRanking' | 'correctAnswer'> & { format?: SituationalFormat };
+
+export function situationalFormatOf(question: { format?: SituationalFormat }): SituationalFormat {
+  return question.format || 'rated';
+}
+
+/** Labels for the slots of a rated or ranked question, best first. */
+export function situationalRatingLabels(question: { format?: SituationalFormat }): readonly string[] {
+  return situationalFormatOf(question) === 'ranked' ? SITUATIONAL_RANK_LABELS : SITUATIONAL_RATING_LABELS;
+}
+
+export function encodeMostLeast(most: string | null, least: string | null): string {
+  return `${most || '-'}>${least || '-'}`;
+}
+
+export function parseMostLeast(value: string | null | undefined, optionCount: number): { most: string | null; least: string | null } {
+  const parts = value ? value.split('>') : [];
+  const allowed: readonly string[] = SITUATIONAL_OPTION_LABELS.slice(0, optionCount);
+  const most = allowed.includes(parts[0] || '') ? parts[0] : null;
+  const leastRaw = allowed.includes(parts[1] || '') ? parts[1] : null;
+  return { most, least: leastRaw && leastRaw !== most ? leastRaw : null };
+}
+
+export function isCompleteSituationalAnswer(question: SituationalAnswerShape, value: string | null | undefined): boolean {
+  const count = question.optionLabels.length;
+  if (situationalFormatOf(question) === 'most_least') {
+    const answer = parseMostLeast(value, count);
+    return Boolean(answer.most && answer.least);
+  }
+  return isCompleteSituationalRating(value, count);
+}
+
+export function scoreSituationalAnswer(question: SituationalAnswerShape, value: string | null | undefined): SituationalScore {
+  if (situationalFormatOf(question) === 'most_least') {
+    const count = question.optionLabels.length;
+    const answer = parseMostLeast(value, count);
+    if (!answer.most || !answer.least) {
+      return { points: 0, maxPoints: 2, distance: 2, credit: 0, exact: false };
+    }
+    const key = parseMostLeast(question.correctAnswer, count);
+    const hits = (answer.most === key.most ? 1 : 0) + (answer.least === key.least ? 1 : 0);
+    return { points: hits, maxPoints: 2, distance: 2 - hits, credit: hits / 2, exact: hits === 2 };
+  }
+  return scoreSituationalRatings(value, question.optimalRanking);
 }
 
 function makeQuestion(theme: WorkplaceTheme, themeIndex: number, dilemma: Dilemma, dilemmaIndex: number, questionIndex: number): SituationalQuestion {
@@ -567,10 +665,10 @@ function makeQuestion(theme: WorkplaceTheme, themeIndex: number, dilemma: Dilemm
 
 let cachedLibrary: SituationalTest[] | null = null;
 
-/** 30 deterministic tests × 30 unique situations = 900 questions. */
+/** 45 deterministic generated tests × 30 situations, plus the 5 AssessmentDay tests. */
 export function loadSituationalJudgementLibrary(): SituationalTest[] {
   if (cachedLibrary) return cachedLibrary;
-  cachedLibrary = THEMES.map((theme, themeIndex) => {
+  const generatedTests = [...THEMES, ...EXTRA_THEMES].map((theme, themeIndex) => {
     const questions = Array.from({ length: 30 }, (_, questionIndex) => {
       // A coprime stride changes the order in every test while retaining the
       // exact 9 Easy / 12 Medium / 9 Hard mix.
@@ -588,5 +686,6 @@ export function loadSituationalJudgementLibrary(): SituationalTest[] {
       questions,
     };
   });
+  cachedLibrary = [...loadAssessmentDaySjtTests(), ...generatedTests];
   return cachedLibrary;
 }

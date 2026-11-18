@@ -1,25 +1,36 @@
-import { useState, Suspense, LazyExoticComponent, ComponentType, useEffect, useRef, useMemo, useCallback, Component, ErrorInfo, ReactNode } from 'react';
+import { lazy, useState, Suspense, LazyExoticComponent, ComponentType, useEffect, useRef, useMemo, useCallback, Component, ErrorInfo, ReactNode } from 'react';
 import { Bot, Folder, X, Plus, Menu, PanelLeftClose, PanelLeftOpen, ChevronLeft, Activity, Maximize2, Minimize2, Moon, Heart, Calendar, Users, FileText, BarChart, Settings as SettingsIcon, ArrowUp, MessageCircle, Plane, TrendingUp, LineChart, Dumbbell, Brain, Target, Zap, Star, Clock, CheckCircle, List, BookOpen, Coffee, Music, Camera, MapPin, Wallet, ShoppingCart, Gift, Lightbulb, Sparkles, Rocket, Home, Building, Globe, Mail, Phone, Video, Mic, Image, Play, Pause, Volume2, Wifi, Cloud, Sun, Umbrella, Thermometer, Wind, Droplets, Leaf, Flower2, Mountain, Waves, Compass, Map, Navigation, Car, Bike, Ship, Award, Trophy, Medal, Crown, Diamond, Gem, Key, Lock, Unlock, Shield, Eye, Search, Filter, SortAsc, Download, Upload, Share2, Link, ExternalLink, Copy, Clipboard, ClipboardCheck, Trash2, Edit, Pencil, PenTool, Scissors, Bookmark, Flag, Bell, AlertCircle, Info, HelpCircle, XCircle, CheckCircle2, Circle, Square, Triangle, Hexagon, Octagon, Hash, AtSign, DollarSign, Percent, Calculator, Code, Terminal, Database, Server, Cpu, Monitor, Smartphone, Tablet, Laptop, Watch, Headphones, Speaker, Radio, Tv, Printer, Scan, QrCode, Barcode, CreditCard, Receipt, Banknote, PiggyBank, TrendingDown, AreaChart, PieChart, ClipboardList } from 'lucide-react';
 import type { SpaceConfig, DesktopBranding, DesktopThemeTokens } from './types';
 import { useSpaceRuntime } from './SpaceRuntimeContext';
 import AgentChat from './components/AgentChat';
 import FileBrowser from './components/FileBrowser';
-import EmailGate from './components/EmailGate';
 import Settings from './components/Settings';
 import { isTenantDelegationCanvas } from './lib/tenant-delegation-canvas';
 import { isFounderEmailSession } from './lib/founderAccess';
 import ViewportToastHost from './components/ViewportToast';
 import FloatingFeedbackWidget from './components/FloatingFeedbackWidget';
+import OnboardingTour from './components/OnboardingTour';
 import BrandSplash from './components/BrandSplash';
 import BrandLogoMark from './components/BrandLogoMark';
+import PwaInstallPrompt from './components/PwaInstallPrompt';
+import ApplicationOutcomePrompt from './components/ApplicationOutcomePrompt';
 import { applyBrandLoaderSplash } from './lib/loaderSplash';
+import { applyCasemateFavicons } from './lib/siteFavicon';
+import { applyPublicSeo, publicSeoKeyForPath } from './lib/publicSeo';
+import { installMetaPixel } from './lib/metaPixel';
 import { CasemateEntitlement, fetchCasemateEntitlement } from './lib/proAccess';
+import { hasPendingCasemateCardCheckout } from './lib/casemateCheckout';
 import { useSessionDurationTracking } from './hooks/useSessionDurationTracking';
+import { configureEngagementTracking, noteAppAccess } from './lib/engagementTracking';
+
+const PublicEntry = lazy(() => import('./components/PublicEntry'));
 
 // The compiled bundle paints its own loading shell, with a loading message in
 // it, before any of this evaluates. Take it over on the first tick we control
 // so the whole wait is the branded splash instead.
 applyBrandLoaderSplash();
+applyCasemateFavicons();
+installMetaPixel();
 
 // v4: agent-first shell (thread sidebar + primary chat + side app panel).
 const DESKTOP_VERSION = 4;
@@ -52,6 +63,11 @@ const APP_NAV_LABELS: Record<string, string> = {
   'case-drill': 'Rapid case practice',
   'industry-knowledge': 'Industry knowledge library',
   'aptitude-test': 'Practice aptitude tests',
+  'aptitude-simulation': 'Full-length timed aptitude rounds',
+  'pepsico-test': 'PepsiCo online test answer key',
+  'shopee-test': 'Shopee round 1 test answer key',
+  'hsbc-test': 'HSBC online assessment answer key',
+  'aptitude-bank': 'Question bank from Ultimate Aptitude Tests',
   feedback: 'Share feedback',
 };
 const START_HERE_APP_ID = 'fit-assessment';
@@ -309,6 +325,16 @@ function hashAppId(hash: string): string {
   return hash.replace(/^#/, '').split('/')[0].toLowerCase();
 }
 
+function hasPaymentReturnQuery() {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  return params.has('payment_success')
+    || params.has('payment_cancelled')
+    || params.has('payos')
+    || params.get('cancel') === 'true'
+    || (params.has('status') && (params.has('orderCode') || params.has('order_code')));
+}
+
 interface FileAccessLog {
   timestamp: number;
   path: string;
@@ -347,6 +373,23 @@ export default function SpaceDesktop({
   const isMobile = useIsMobile(); // JS-based media query to prevent double-mounting AgentChat
 
   useEffect(() => {
+    const restoreShellAfterCheckoutBack = (event: PageTransitionEvent) => {
+      if (!event.persisted || !hasPendingCasemateCardCheckout()) return;
+      const restoreUrl = new URL(window.location.href);
+      if (!['www.casemateaud.com', 'casemateaud.com', 'app.casemateaud.com'].includes(restoreUrl.hostname)) return;
+      restoreUrl.pathname = '/';
+      restoreUrl.search = '';
+      restoreUrl.hash = '#settings';
+      // Chrome can revive the pre-Stripe document from its back/forward cache.
+      // Reloading this one pending-checkout case rebuilds the full app-first
+      // shell instead of leaving only the underlying Fit Assessment canvas.
+      window.location.replace(restoreUrl.toString());
+    };
+    window.addEventListener('pageshow', restoreShellAfterCheckoutBack);
+    return () => window.removeEventListener('pageshow', restoreShellAfterCheckoutBack);
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     if (mode !== 'customer' || !sessionId) {
       setShellEntitlement(null);
@@ -365,6 +408,8 @@ export default function SpaceDesktop({
   // Role-gated app registry: apps registered with `allowedRoles` in
   // config.json are hidden from customers everywhere the sidebar renders.
   const visibleApps = config.apps.filter(app => {
+    if (app.id === 'about-page') return false;
+    if (isMobile && app.id === 'case-arena') return false;
     const allowedRoles = (app as any).allowedRoles as string[] | undefined;
     if (checkRoleAccess(allowedRoles)) return true;
     return !!allowedRoles && allowedRoles.includes('founder') && isFounderEmailSession(spaceId);
@@ -478,6 +523,7 @@ export default function SpaceDesktop({
   // action, never as a sidebar or as the default customer surface.
   const [showMateSupport, setShowMateSupport] = useState(false);
   const [showAccountPanel, setShowAccountPanel] = useState(false);
+  const [showMobileMore, setShowMobileMore] = useState(false);
 
   // --- Thread state ----------------------------------------------------
   const threadStorageKey = `space_thread_${spaceId}`;
@@ -685,6 +731,16 @@ export default function SpaceDesktop({
     setMobileView('chat');
   };
 
+  useEffect(() => {
+    configureEngagementTracking({ sessionId: sessionId || null, spaceId });
+  }, [sessionId, spaceId]);
+
+  useEffect(() => {
+    if (!activePanelId || !sessionId) return;
+    if (!config.apps.some(app => app.id === activePanelId)) return;
+    noteAppAccess(activePanelId);
+  }, [activePanelId, sessionId, config.apps]);
+
   // Papa Principle (app-vs-agent default face). Every product here is part
   // app + part agent; the v0 planning agent decides which face it leads with
   // and records it as desktop.layout.defaultLandingView in config.json:
@@ -716,7 +772,11 @@ export default function SpaceDesktop({
     trackEvent('agent_view_opened', { source: 'app_home_header' });
   };
 
-  // Show email gate for customer mode if no session (from context)
+  // Public marketing routes must always render the public entry, even when a
+  // visitor already has a signed-in session. Otherwise legacy `?app=...`
+  // sitelinks can bypass the public page and open the app shell instead.
+  const publicMarketingRoute =
+    typeof window !== 'undefined' && !hasPaymentReturnQuery() && !!publicSeoKeyForPath(window.location.pathname);
   const publicAppBypass = (() => {
     if (typeof window === 'undefined') return false;
     // space-app-only mode: the config designates a specific app as the public
@@ -726,6 +786,7 @@ export default function SpaceDesktop({
     if (configEntryMode === 'space-app-only' && configEntryAppId) {
       return true;
     }
+    if (publicSeoKeyForPath(window.location.pathname)) return false;
     const params = new URLSearchParams(window.location.search);
     const requestedAppId = params.get('app') || (window as any).__DEEP_LINK_APP_ID__ || initialAppId;
     if (!requestedAppId) return false;
@@ -736,7 +797,12 @@ export default function SpaceDesktop({
     typeof window !== 'undefined' && (window as any).__AUDOS_FORCE_VISITOR__ === true;
   const showEmailGate =
     mode === 'customer' &&
-    (forceVisitor || (!sessionId && !isBootstrappingSession && !publicAppBypass));
+    (forceVisitor || publicMarketingRoute || (!sessionId && !isBootstrappingSession && !publicAppBypass));
+
+  useEffect(() => {
+    const seoKey = publicSeoKeyForPath(window.location.pathname);
+    if (seoKey) applyPublicSeo(seoKey);
+  }, []);
 
   // Track space_entered when session becomes available (first entry after email gate)
   useEffect(() => {
@@ -760,7 +826,7 @@ export default function SpaceDesktop({
     const hash = hashAppId(window.location.hash);
     const urlAppParam = new URLSearchParams(window.location.search).get('app') || (window as any).__DEEP_LINK_APP_ID__ || initialAppId;
 
-    const deepLinkId = hash || urlAppParam?.toLowerCase() || '';
+    const deepLinkId = hasPaymentReturnQuery() ? 'settings' : hash || urlAppParam?.toLowerCase() || '';
 
     if (deepLinkId) {
       const matchingApp = config.apps.find(
@@ -931,7 +997,9 @@ export default function SpaceDesktop({
   // Resolve the active panel's metadata
   const isAppPanel = activePanelId && !['files', 'settings'].includes(activePanelId);
   const currentAppConfig = isAppPanel ? config.apps.find(app => app.id === activePanelId) : null;
-  const CurrentApp = isAppPanel && activePanelId ? apps[activePanelId] : null;
+  const CurrentApp = isAppPanel && activePanelId && !(isMobile && activePanelId === 'case-arena')
+    ? apps[activePanelId]
+    : null;
 
   const runtimeTheme = resolveGenesisRuntimeTheme(config);
   const themeVariables = (runtimeTheme.themeTokens.cssVariables || {}) as Record<string, string>;
@@ -958,14 +1026,16 @@ export default function SpaceDesktop({
     return <BrandSplash />;
   }
 
-  // Show email gate if no session in customer mode
+  // Show the public entry for signed-out visitors and every public marketing route.
   if (showEmailGate) {
     return (
-      <EmailGate
-        spaceId={spaceId}
-        branding={runtimeTheme.branding}
-        themeTokens={runtimeTheme.themeTokens}
-      />
+      <Suspense fallback={<BrandSplash />}>
+        <PublicEntry
+          spaceId={spaceId}
+          branding={runtimeTheme.branding}
+          themeTokens={runtimeTheme.themeTokens}
+        />
+      </Suspense>
     );
   }
 
@@ -1326,6 +1396,16 @@ export default function SpaceDesktop({
       {activePanelId === 'settings' && (
         <Settings spaceId={spaceId} />
       )}
+      {isMobile && activePanelId === 'case-arena' && (
+        <div className="flex min-h-full items-center justify-center bg-[var(--space-surface-page)] p-5" data-testid="case-arena-mobile-note">
+          <div className="w-full max-w-sm rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-6 text-center shadow-sm">
+            <Monitor className="mx-auto h-8 w-8 text-[var(--space-text-brand)]" />
+            <h2 className="mt-4 text-xl font-extrabold text-[var(--space-text-primary)]">Case Arena is available on desktop</h2>
+            <p className="mt-2 text-base leading-6 text-[var(--space-text-secondary)]">Its live team format needs a larger screen. On your phone, continue with Domain Knowledge or Aptitude Test.</p>
+            <button type="button" onClick={() => openPanel('industry-knowledge')} className="mt-5 min-h-12 w-full rounded-xl bg-[var(--space-brand-primary)] px-4 text-base font-bold text-[var(--space-text-on-primary)]">Open Domain Knowledge</button>
+          </div>
+        </div>
+      )}
       {isAppPanel && CurrentApp && currentAppConfig && (
         <AppErrorBoundary key={currentAppConfig.id} appName={currentAppConfig.name}>
           <Suspense fallback={<LoadingSpinner />}>
@@ -1375,17 +1455,28 @@ export default function SpaceDesktop({
     const topNavApps = topNavIds
       .map(id => visibleApps.find(app => app.id === id))
       .filter(Boolean) as typeof visibleApps;
+    const mobilePrimaryNavIds = ['fit-assessment', 'my-roadmap', 'industry-knowledge', 'aptitude-test'];
+    const mobilePrimaryApps = mobilePrimaryNavIds
+      .map(id => visibleApps.find(app => app.id === id))
+      .filter(Boolean) as typeof visibleApps;
+    const mobileMoreApps = journeyApps.filter(app => !mobilePrimaryNavIds.includes(app.id));
     const fallbackApp = defaultLandingApp || visibleApps[0] || null;
     const shellPanelId = activePanelId || fallbackApp?.id || null;
     const shellAppConfig = shellPanelId && !['files', 'settings'].includes(shellPanelId)
       ? config.apps.find(app => app.id === shellPanelId)
       : null;
-    const ShellApp = shellAppConfig ? apps[shellAppConfig.id] : null;
+    const ShellApp = shellAppConfig && !(isMobile && shellPanelId === 'case-arena')
+      ? apps[shellAppConfig.id]
+      : null;
     const openTopDestination = (id: string) => {
       setShowMateSupport(false);
       setShowAccountPanel(false);
+      setShowMobileMore(false);
       openPanel(id);
     };
+    const mobileActiveIsMore = Boolean(
+      !showMateSupport && shellPanelId && !mobilePrimaryNavIds.includes(shellPanelId),
+    );
 
     return (
       <>
@@ -1398,7 +1489,7 @@ export default function SpaceDesktop({
           />
         )}
         <div className="fixed inset-0 flex flex-col overflow-hidden bg-[var(--space-surface-page)]" style={rootStyle} data-testid="casemate-app-first-shell">
-          <header className="z-40 flex-shrink-0 border-b border-[var(--space-border-default)] bg-[var(--space-surface-card)] shadow-[0_2px_12px_color-mix(in_srgb,var(--space-shell-shadow)_18%,transparent)]">
+          <header className="z-40 flex-shrink-0 border-b border-[var(--space-border-default)] bg-[var(--space-surface-card)] pt-[env(safe-area-inset-top)] shadow-[0_2px_12px_color-mix(in_srgb,var(--space-shell-shadow)_18%,transparent)] md:pt-0">
             <div className="flex h-14 items-center gap-2 px-2.5 sm:h-16 sm:gap-3 sm:px-5">
               <button
                 type="button"
@@ -1412,7 +1503,11 @@ export default function SpaceDesktop({
                 </span>
               </button>
 
-              <nav className="flex min-w-0 flex-1 snap-x snap-mandatory items-center gap-1 overflow-x-auto overscroll-x-contain px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Casemate tools">
+              <span className="min-w-0 flex-1 truncate text-center text-sm font-extrabold text-[var(--space-text-primary)] md:hidden">
+                {showMateSupport ? 'Mate' : showAccountPanel ? 'Account' : shellAppConfig?.name || runtimeTheme.branding.name}
+              </span>
+
+              <nav className="hidden min-w-0 flex-1 snap-x snap-mandatory items-center gap-1 overflow-x-auto overscroll-x-contain px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:flex" aria-label="Casemate tools">
                 {topNavApps.map(app => {
                   const Icon = app.icon && iconMap[app.icon] ? iconMap[app.icon] : Activity;
                   const active = !showMateSupport && shellPanelId === app.id;
@@ -1439,7 +1534,7 @@ export default function SpaceDesktop({
               <div className="flex flex-shrink-0 items-center gap-1">
                 <button
                   type="button"
-                  onClick={() => { setShowAccountPanel(false); setShowMateSupport(true); }}
+                  onClick={() => { setShowMobileMore(false); setShowAccountPanel(false); setShowMateSupport(true); }}
                   className={`flex items-center gap-1 rounded-xl px-2 py-1.5 text-[11px] font-bold transition sm:gap-1.5 sm:px-2.5 sm:py-2 sm:text-xs ${
                     showMateSupport
                       ? 'bg-[var(--space-brand-primary)] text-[var(--space-text-on-primary)]'
@@ -1453,7 +1548,7 @@ export default function SpaceDesktop({
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setShowMateSupport(false); setShowAccountPanel((value) => !value); }}
+                  onClick={() => { setShowMobileMore(false); setShowMateSupport(false); setShowAccountPanel((value) => !value); }}
                   className={`rounded-xl p-1.5 transition sm:p-2 ${
                     showAccountPanel
                       ? 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]'
@@ -1503,6 +1598,15 @@ export default function SpaceDesktop({
               <div className="h-full overflow-y-auto bg-[var(--space-surface-card)]">
                 <Settings spaceId={spaceId} />
               </div>
+            ) : isMobile && shellPanelId === 'case-arena' ? (
+              <div className="flex h-full items-center justify-center bg-[var(--space-surface-page)] p-5" data-testid="case-arena-mobile-note">
+                <div className="w-full max-w-sm rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-6 text-center shadow-sm">
+                  <Monitor className="mx-auto h-8 w-8 text-[var(--space-text-brand)]" />
+                  <h2 className="mt-4 text-xl font-extrabold text-[var(--space-text-primary)]">Case Arena is available on desktop</h2>
+                  <p className="mt-2 text-base leading-6 text-[var(--space-text-secondary)]">Its live team format needs a larger screen. On your phone, continue with Domain Knowledge or Aptitude Test.</p>
+                  <button type="button" onClick={() => openTopDestination('industry-knowledge')} className="mt-5 min-h-12 w-full rounded-xl bg-[var(--space-brand-primary)] px-4 text-base font-bold text-[var(--space-text-on-primary)]">Open Domain Knowledge</button>
+                </div>
+              </div>
             ) : ShellApp && shellAppConfig ? (
               <div className="h-full overflow-y-auto bg-[var(--space-surface-page)]" data-testid="app-first-content">
                 <AppErrorBoundary key={shellAppConfig.id} appName={shellAppConfig.name}>
@@ -1517,6 +1621,52 @@ export default function SpaceDesktop({
               </div>
             )}
           </main>
+
+          {showMobileMore && (
+            <>
+              <button
+                type="button"
+                className="fixed inset-0 bottom-[calc(68px+env(safe-area-inset-bottom))] z-40 bg-[color-mix(in_srgb,var(--space-text-primary)_28%,transparent)] md:hidden"
+                onClick={() => setShowMobileMore(false)}
+                aria-label="Close more tools"
+              />
+              <aside className="fixed inset-x-3 bottom-[calc(72px+env(safe-area-inset-bottom))] z-50 max-h-[min(60vh,480px)] overflow-y-auto rounded-3xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-2xl md:hidden" aria-label="More Casemate tools" data-testid="mobile-more-sheet">
+                <div className="flex items-center justify-between gap-3 px-1 pb-3">
+                  <div><p className="text-base font-extrabold text-[var(--space-text-primary)]">More tools</p><p className="text-xs text-[var(--space-text-muted)]">Everything else, in one place</p></div>
+                  <button type="button" onClick={() => setShowMobileMore(false)} className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--space-surface-muted)] text-[var(--space-text-secondary)]" aria-label="Close"><X className="h-4 w-4" /></button>
+                </div>
+                <div className="grid gap-2">
+                  {mobileMoreApps.map(app => {
+                    const Icon = app.icon && iconMap[app.icon] ? iconMap[app.icon] : Activity;
+                    const active = !showMateSupport && shellPanelId === app.id;
+                    return (
+                      <button key={app.id} type="button" onClick={() => openTopDestination(app.id)} className={`flex min-h-14 items-center gap-3 rounded-2xl border px-4 text-left ${active ? 'border-[var(--space-brand-primary-500)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] bg-[var(--space-surface-card)]'}`} data-testid={`mobile-more-${app.id}`}>
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]"><Icon className="h-5 w-5" /></span>
+                        <span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--space-text-primary)]">{app.name}</span><span className="block truncate text-xs text-[var(--space-text-muted)]">{APP_NAV_LABELS[app.id] || 'Open tool'}</span></span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </aside>
+            </>
+          )}
+
+          <nav className="z-30 grid flex-shrink-0 grid-cols-5 border-t border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-1 pb-[max(6px,env(safe-area-inset-bottom))] pt-1 shadow-[0_-4px_18px_color-mix(in_srgb,var(--space-shell-shadow)_18%,transparent)] md:hidden" aria-label="Primary mobile navigation">
+            {mobilePrimaryApps.map(app => {
+              const Icon = app.icon && iconMap[app.icon] ? iconMap[app.icon] : Activity;
+              const active = !showMateSupport && !showAccountPanel && shellPanelId === app.id;
+              const label = app.id === 'fit-assessment' ? 'Fit' : app.id === 'my-roadmap' ? 'Roadmap' : app.id === 'industry-knowledge' ? 'Domain' : 'Aptitude';
+              return (
+                <button key={app.id} type="button" onClick={() => openTopDestination(app.id)} aria-current={active ? 'page' : undefined} className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-bold ${active ? 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]' : 'text-[var(--space-text-muted)]'}`} data-testid={`mobile-nav-${app.id}`}>
+                  <Icon className="h-5 w-5" /><span className="truncate">{label}</span>
+                </button>
+              );
+            })}
+            <button type="button" onClick={() => setShowMobileMore((value) => !value)} aria-expanded={showMobileMore} className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-bold ${showMobileMore || mobileActiveIsMore ? 'bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]' : 'text-[var(--space-text-muted)]'}`} data-testid={mobileActiveIsMore && shellPanelId ? `mobile-nav-${shellPanelId}` : 'mobile-nav-more'}>
+              <Menu className="h-5 w-5" /><span>More</span>
+            </button>
+          </nav>
+
           {showAccountPanel && (
             <>
               <button
@@ -1537,7 +1687,13 @@ export default function SpaceDesktop({
               </aside>
             </>
           )}
+          <OnboardingTour
+            activeAppId={showMateSupport || showAccountPanel ? null : shellPanelId}
+            onOpenApp={openTopDestination}
+          />
           {sessionId && <FloatingFeedbackWidget autoOpen={showFeedbackNudge} />}
+          {sessionId && <ApplicationOutcomePrompt />}
+          <PwaInstallPrompt />
           <ViewportToastHost />
         </div>
       </>
@@ -1555,7 +1711,7 @@ export default function SpaceDesktop({
           rel="stylesheet"
         />
       )}
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
       {/* Unified responsive shell — a single layout tree (sidebar | chat |
           app panel) that reflows via CSS across the mobile/desktop threshold.
@@ -1692,7 +1848,10 @@ export default function SpaceDesktop({
             notification in the space renders here — fixed at the viewport
             bottom-right, above the composer on small screens. */}
         <ViewportToastHost />
+        <OnboardingTour activeAppId={activePanelId} onOpenApp={openPanel} />
         {sessionId && <FloatingFeedbackWidget autoOpen={showFeedbackNudge} />}
+        {sessionId && <ApplicationOutcomePrompt />}
+        <PwaInstallPrompt />
 
       </div>
     </>

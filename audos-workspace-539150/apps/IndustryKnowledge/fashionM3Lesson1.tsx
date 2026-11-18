@@ -1,0 +1,202 @@
+import { F3DeepDive, citeF3, f3Chapter, f3Quiz } from './fashionM3Core';
+import type { FashionM3LessonBundle } from './fashionM3Core';
+
+const LESSON = '1. Industry Business Models';
+
+const deck = [
+  f3Chapter({
+    title: 'Brand-Owned Business Model', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how brand owners create value through design, positioning and customer experience, and what the model demands in investment.',
+    mateIntro: 'Some companies make the shoes, some run the shops, and some do neither: they own the name. Here is why owning the brand is a different job from owning the factory or the store.',
+    keyInsight: 'Brand ownership enables companies to differentiate products, build customer loyalty, and influence pricing. However, it also requires sustained investment in product development, marketing, brand management, and distribution. Commercial success depends on translating brand recognition into customer demand and profitable sales.',
+    statTiles: [
+      { value: '6', label: 'Core brand activities', description: 'Brand development, design, marketing, supplier management, pricing and merchandising, and retail and distribution.' },
+      { value: 'Flexible', label: 'Where production sits', subtitle: 'Internal or outsourced', description: 'The brand controls the product; manufacturing may be done in-house or by third-party producers.' },
+      { value: 'Brand → demand', label: 'The conversion test', description: 'Recognition only pays when it becomes customer demand and profitable sales.' },
+    ],
+    statsNote: 'Counts describe the activity framework used in this lesson; the supplied material gives no measured revenue or margin split between activities.',
+    narrative: [
+      { label: 'What it is', text: 'In the brand-owned model a company develops and manages its own brands, product portfolios and brand identities. It typically controls product design, positioning, marketing, pricing strategy and customer experience, while manufacturing may be handled internally or outsourced. The model is common across fashion, sportswear, footwear and lifestyle retail, and sells through branded stores, e-commerce websites, wholesale partnerships, or a combination.' },
+      { label: 'Why it is happening', text: 'The brand, rather than the factory, is the hardest asset for a competitor to copy, so companies invest to own it. The trade-off is that the advantage only lasts while the investment continues: product development, marketing, brand management and distribution all have to be funded year after year.' },
+      { label: 'Real-world example', text: 'Nike, Adidas and Zara illustrate different approaches to brand ownership, product differentiation and retail distribution. Across them the same activities recur: establishing identity and target customers, developing collections, building awareness through advertising, sponsorships and collaborations, coordinating suppliers and quality standards, setting price points and seasonal launches, and selling through owned stores, websites, department stores and authorised partners.' },
+      { label: 'Vietnam example', text: 'Vietnam shows both halves of a brand-owned model. Nike produced about 50% of its footwear and 28% of its apparel in Vietnam in fiscal 2024, and Adidas sourced about 39% of its footwear and 18% of its apparel there in 2024, yet the same brands are sold to Vietnamese shoppers in stores and online. A domestic example of owning the brand end to end is Canifa, which was founded in 1997 and sells its own label through more than 100 stores and an app.' },
+      { label: 'Business impact', text: 'Brand ownership lets a company shape price, range and experience, but it also makes the company responsible for every one of them. A brand that cannot keep funding product development and marketing finds recognition fading faster than it was built, so the real test is whether recognition keeps converting into demand and profitable sales.' },
+    ],
+    visualKind: 'fashion-m3-11-brand-owned', visualHeading: 'What a brand owner actually does',
+    visualIntro: 'Compare each brand activity with the decision it gives the company control over.',
+    imageAlt: 'Casemate table of brand-owner activities and what each activity controls',
+    keyTerms: [
+      { term: 'Brand equity', definition: 'The commercial value of a brand’s recognition and reputation, shown in customer preference and pricing.' },
+      { term: 'Merchandising', definition: 'Choosing the assortment, display and timing of products so they sell at the intended price.' },
+      { term: 'Brand owner', definition: 'The company that controls positioning, product standards, pricing and marketing, whether or not it manufactures.' },
+      { term: 'Authorised partner', definition: 'A retailer allowed to sell a brand’s products under agreed conditions.' },
+    ],
+    recap: [
+      'A brand owner controls product, positioning, pricing and customer experience, not necessarily the factory.',
+      'The advantage lasts only while product development, marketing and brand management stay funded.',
+      'Brands sell through owned stores, websites, department stores and authorised partners.',
+      'Recognition has to be converted into demand and profitable sales.',
+    ],
+    chapterRecap: 'The brand-owned model creates value through brand identity, product development, and customer relationships. Its performance depends on differentiation, operational execution, and the ability to convert brand equity into sustainable revenue and profitability.',
+    deepDiveTitle: 'Owning the brand is not the same as owning the supply chain',
+    body: <F3DeepDive paragraphs={[
+      'A common mistake is to assume a brand owner makes what it sells. Many of the best-known sportswear and fashion brands outsource most production and concentrate on design, marketing and distribution. What they own is the thing the customer pays for: the name, the product idea and the experience around it.',
+      'That is why two brand owners can look alike from the street and be very different on the balance sheet. One may run hundreds of owned stores and carry the rent and payroll that come with them; another may sell mostly through partners and carry far less fixed cost. Both are brand-owned, but they need different capabilities to succeed.',
+    ]} evidence="The supplied material names Nike, Adidas and Zara as examples of different brand-ownership approaches but gives no figures for them. The Vietnam production shares come from the companies’ own annual reports." />,
+    sources: citeF3('bofStateOfFashion', 'nikeAnnual', 'adidasReport', 'canifaCleverTap'),
+  }),
+  f3Chapter({
+    title: 'Wholesale and Third-Party Retail Model', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe how brands sell through independent retailers and distributors, and which kinds of control they trade for market coverage.',
+    mateIntro: 'Not every brand runs its own shops. Selling through someone else’s shelf buys reach quickly, and it costs you a say in how the product is priced and shown.',
+    keyInsight: 'Wholesale distribution supports market expansion and reduces the need for direct investment in retail infrastructure. However, brands generally have less control over final retail pricing, product presentation, customer data, and the overall shopping experience than they do through directly operated channels.',
+    statTiles: [
+      { value: '5', label: 'Wholesale activities', description: 'Orders, distributor partnerships, retail merchandising, commercial negotiations and market expansion.' },
+      { value: 'Less', label: 'Control of price and data', description: 'Retail partners set final prices and presentation, and hold the customer relationship.' },
+      { value: 'More', label: 'Market coverage', description: 'Brands reach new regions and retail customers without operating every store.' },
+    ],
+    statsNote: 'Counts describe the activity framework used in this lesson; the supplied material gives no measured wholesale share of sales.',
+    narrative: [
+      { label: 'What it is', text: 'In the wholesale and third-party retail model, brands sell to independent retailers, distributors, department stores or specialty stores, which then resell to consumers. The brand focuses on product development, manufacturing coordination and marketing, while retail partners manage consumer-facing sales.' },
+      { label: 'Why it is happening', text: 'The model lets a brand expand market coverage without operating every store, which makes it especially useful when entering new geographies or serving a wide range of retail customers. The cost is indirect contact with the shopper.' },
+      { label: 'Real-world example', text: 'Retail partners place orders based on assortments, expected demand and seasonal buying plans; local distributors support market entry, logistics and account management; and brands and partners negotiate wholesale prices, order quantities, payment terms, promotional support and delivery schedules. Nike and Puma distribute through third-party retailers alongside their own channels, and Foot Locker illustrates the role of a multi-brand specialist retailer.' },
+      { label: 'Vietnam example', text: 'In Vietnam the route a foreign brand chooses decides who controls price and customer data. Uniqlo opened its first Vietnam store in Ho Chi Minh City on 6 December 2019 and H&M opened at Vincom Dong Khoi in 2017, so both entered by operating their own stores. A brand that relies on distributors or multi-brand retailers instead hands those retail decisions to a partner, which is why the entry model has to be identified before comparing brands.' },
+      { label: 'Business impact', text: 'Wholesale gives scale and reduces capital tied up in stores, but the brand cannot easily correct pricing, display or service in a partner’s shop. The practical question is how much distribution scale is worth against the control and customer data that are given up.' },
+    ],
+    visualKind: 'fashion-m3-12-wholesale', visualHeading: 'Wholesale: what the brand gains and gives up',
+    visualIntro: 'Read each row as a trade: what wholesale buys, and what it costs in control.',
+    imageAlt: 'Casemate comparison of what a brand gains and gives up by selling through wholesale',
+    keyTerms: [
+      { term: 'Wholesale', definition: 'Selling products in volume to a retailer or distributor that resells them to consumers.' },
+      { term: 'Distributor', definition: 'A business that buys from a brand and handles logistics, account management and sales in a market.' },
+      { term: 'Multi-brand retailer', definition: 'A retailer that sells products from many brands side by side.' },
+      { term: 'Payment terms', definition: 'The agreed timing and conditions under which a retailer pays a brand for goods delivered.' },
+    ],
+    recap: [
+      'Wholesale sells through independent retailers, distributors, department stores and specialty stores.',
+      'It supports market expansion with less direct retail investment.',
+      'Brands give up control of final price, presentation, customer data and shopping experience.',
+      'The balance between distribution scale and control is the core trade-off.',
+    ],
+    chapterRecap: 'Wholesale and third-party retail models help brands reach broader markets by leveraging established retail networks. Their main trade-off is the balance between distribution scale and control over pricing, customer relationships, and brand presentation.',
+    deepDiveTitle: 'Why control is the real price of reach',
+    body: <F3DeepDive paragraphs={[
+      'Reach and control pull in opposite directions. Every additional partner extends the number of places a product can be bought, but each one also decides how the product is displayed, how long it sits at full price and what the shopper is told about it. A brand cannot see most of that, and cannot easily change it.',
+      'Customer data is the quiet cost. A retailer that owns the till owns the purchase history, so a brand selling only through partners learns about demand from order books rather than from customers. That is a large part of why brands that start in wholesale often add direct channels later.',
+    ]} evidence="The supplied material describes the trade-off qualitatively and gives no measured price, margin or data-access figures. The Uniqlo and H&M entry details come from company and press reports." />,
+    sources: citeF3('deloitteRetail', 'fastRetailingVn', 'hmVietnam'),
+  }),
+  f3Chapter({
+    title: 'Direct-to-Consumer (DTC) and Omnichannel Model', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how DTC and omnichannel models give brands customer data and control, and what operating burden they take on.',
+    mateIntro: 'Selling directly means you hear the customer first-hand and you also pick up every returned parcel yourself. This chapter shows what that bargain looks like.',
+    keyInsight: 'DTC can improve control over customer experience, product presentation, and access to consumer insights. However, it also transfers more retail responsibilities to the brand, including store operations, customer acquisition, fulfillment, returns, and customer service. Omnichannel integration creates value when channels work together rather than operate as separate systems.',
+    statTiles: [
+      { value: '7', label: 'DTC activities', description: 'E-commerce, physical retail, customer data, omnichannel services, digital marketing, fulfilment and returns, and examples.' },
+      { value: 'First-party', label: 'Customer data', description: 'Direct sales give the brand its own purchase history, browsing behaviour and feedback.' },
+      { value: 'One system', label: 'The omnichannel test', description: 'Channels create value only when they work together rather than as separate operations.' },
+    ],
+    statsNote: 'Counts describe the activity framework used in this lesson; the supplied material gives no measured DTC share of sales.',
+    narrative: [
+      { label: 'What it is', text: 'Direct-to-consumer lets brands sell directly to end customers through their own stores, websites, mobile applications and other brand-controlled channels. An omnichannel model connects these physical and digital touchpoints into a more integrated shopping experience. Unlike a purely wholesale model, DTC lets the brand interact directly with consumers, collect first-party data and manage more of the purchasing journey.' },
+      { label: 'Why it is happening', text: 'Brands want the customer relationship that wholesale hides. Direct sales provide purchase history, browsing behaviour and feedback, which support personalisation and demand forecasting, but they also make the brand responsible for store operations, customer acquisition, fulfilment, returns and service.' },
+      { label: 'Real-world example', text: 'Typical DTC activities are brand-owned e-commerce, flagship and concept stores, customer-data management, omnichannel services such as online ordering with in-store collection and store-based returns, digital marketing and membership programmes, and the fulfilment and returns that follow every order. Lululemon uses branded retail and digital channels to build customer relationships, and Nike combines direct sales with wholesale distribution.' },
+      { label: 'Vietnam example', text: 'Vietnamese brands show the range. Canifa pairs more than 100 stores with an app and, according to a vendor case study, built a unified view of customers from online and offline data. Coolmate, founded in 2019, was built as a direct-to-consumer menswear brand selling mainly through its own website, and Biti’s, an established footwear brand, rebuilt its online selling system to run direct sales alongside its other channels.' },
+      { label: 'Business impact', text: 'DTC works when the extra control is worth the extra cost. The effectiveness of the model depends on customer acquisition costs, retail execution, inventory integration and the quality of the whole shopping experience, because a customer who finds different stock or prices online and in store experiences two businesses rather than one.' },
+    ],
+    visualKind: 'fashion-m3-13-dtc', visualHeading: 'One customer, five touchpoints',
+    visualIntro: 'Follow one customer through the five steps an omnichannel brand has to connect.',
+    imageAlt: 'Casemate flow of the five customer touchpoints in a direct-to-consumer and omnichannel model',
+    keyTerms: [
+      { term: 'Direct-to-consumer (DTC)', definition: 'Selling straight to end customers through channels the brand controls.' },
+      { term: 'Omnichannel', definition: 'Connecting physical and digital channels so stock, price and customer records are shared.' },
+      { term: 'First-party data', definition: 'Information a brand collects directly from its own customers, such as purchases and browsing.' },
+      { term: 'Click and collect', definition: 'Ordering online and collecting the goods from a store.' },
+    ],
+    recap: [
+      'DTC sells through brand-controlled stores, websites and apps and produces first-party customer data.',
+      'It shifts store operations, acquisition, fulfilment, returns and service onto the brand.',
+      'Omnichannel integration creates value only when channels work as one system.',
+      'Effectiveness depends on acquisition cost, execution and inventory integration.',
+    ],
+    chapterRecap: 'DTC and omnichannel models allow brands to strengthen customer relationships and gain greater visibility into consumer behavior. Their effectiveness depends on customer acquisition costs, retail execution, inventory integration, and the quality of the overall shopping experience.',
+    deepDiveTitle: 'Why more channels do not make an omnichannel business',
+    body: <F3DeepDive paragraphs={[
+      'A retailer with a website, an app and a chain of stores has several channels but not necessarily an omnichannel model. If each channel keeps its own stock record, its own price file and its own customer list, the customer meets three different businesses, and the company cannot say who its best customers are.',
+      'The test is whether a service that crosses channels actually works: collecting an online order in a store, returning a web purchase at a counter, or checking whether the shop down the road has a size. Each of those needs shared stock and customer data, which is a systems and discipline problem long before it is a marketing one.',
+    ]} evidence="The supplied material describes DTC and omnichannel activities qualitatively. Canifa details come from a vendor case study and Coolmate and Biti’s details from secondary agency analysis, so they are illustrative rather than audited." />,
+    sources: citeF3('bofStateOfFashion', 'canifaCleverTap', 'scaleCommerceD2c'),
+  }),
+  f3Chapter({
+    title: 'Contract Manufacturing and Private Label Model', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Distinguish contract manufacturing from private label, and show how each moves responsibility between producers, brands and retailers.',
+    mateIntro: 'A factory that makes a famous shoe usually does not own the name on it, and a retailer that sells its own brand usually does not own the factory. Those are two different models with two different risks.',
+    keyInsight: 'Contract manufacturing allows producers to focus on production efficiency and technical execution without necessarily owning the final consumer brand. Private label enables retailers to differentiate their assortments and exercise greater control over product specifications and pricing, but it also increases their responsibility for quality, sourcing, and brand reputation.',
+    statTiles: [
+      { value: 'OEM / ODM', label: 'Two contract models', description: 'Production to a buyer’s design, or with the supplier contributing design and development.' },
+      { value: '2', label: 'Related but distinct models', subtitle: 'Contract versus private label', description: 'One is a way of producing; the other is a way of branding and selling.' },
+      { value: 'Buyer', label: 'Where private-label risk lands', description: 'Quality, sourcing and reputation sit with the retailer whose name is on the product.' },
+    ],
+    statsNote: 'Counts describe the framework used in this lesson. Vietnam export figures below are reported by industry associations and are not shares of any single brand model.',
+    narrative: [
+      { label: 'What it is', text: 'Contract manufacturers produce goods for another company according to agreed specifications, while private label products are sold under a retailer’s or another buyer’s own brand. In fashion, sports and lifestyle retail, manufacturers may provide production expertise and technical capability while brands and retailers control product positioning, pricing and market access to varying degrees.' },
+      { label: 'Why it is happening', text: 'Producers specialise in efficiency and technical execution without carrying the cost of building a consumer brand, and retailers use private label to differentiate their assortments and control specifications and price. Each side gains focus, and each takes on a different risk.' },
+      { label: 'Real-world example', text: 'The model includes contract manufacturing to agreed specifications, OEM production from buyer-provided designs, ODM production in which the supplier contributes design and development, private label development under a retailer-owned brand, and the coordination of capacity, materials, quality, cost targets and delivery. Decathlon develops and sells products under its own portfolio of sports brands, whereas contract manufacturers may produce goods for international brands without owning them.' },
+      { label: 'Vietnam example', text: 'Vietnam is mainly on the contract-manufacturing side. Its textile and garment exports reached about US$44 billion in 2024, and footwear and leather exports reached US$27.04 billion, including US$23.24 billion of footwear. Industry reporting notes that domestic added value remains limited because Vietnam mainly does contract manufacturing and imports many raw materials. H&M reports working with 103 partner factories in Vietnam.' },
+      { label: 'Business impact', text: 'Contract manufacturing and private label spread responsibility differently, so competitiveness depends on production capability, cost management, quality control, product differentiation and access to markets. A producer wants pricing power and a retailer wants quality assurance, and neither can assume the other will provide it.' },
+    ],
+    visualKind: 'fashion-m3-14-contract', visualHeading: 'Who carries what',
+    visualIntro: 'Compare how a contract manufacturer and a private-label retailer each take on design, risk and margin.',
+    imageAlt: 'Casemate comparison of a contract manufacturer and a private-label retailer',
+    keyTerms: [
+      { term: 'OEM', definition: 'Original equipment manufacturing: the producer builds a product to the buyer’s design and specification.' },
+      { term: 'ODM', definition: 'Original design manufacturing: the producer contributes design and development as well as production.' },
+      { term: 'Private label', definition: 'A product sold under a retailer’s or buyer’s own brand, often made by an external producer.' },
+      { term: 'Contract manufacturer', definition: 'A producer that makes goods for another company rather than selling under its own brand.' },
+    ],
+    recap: [
+      'Contract manufacturing is a way of producing; private label is a way of branding and selling.',
+      'OEM builds to the buyer’s design while ODM adds the supplier’s design and development.',
+      'Private label gives retailers control of specification and price but also the quality and reputation risk.',
+      'Competitiveness rests on production capability, cost, quality, differentiation and market access.',
+    ],
+    chapterRecap: 'Contract manufacturing and private label models distribute responsibilities differently between producers, brands, and retailers. Their competitiveness depends on production capabilities, cost management, quality control, product differentiation, and access to markets.',
+    deepDiveTitle: 'Why Vietnam’s export figures are not its domestic fashion market',
+    body: <F3DeepDive paragraphs={[
+      'Export value counts what Vietnamese factories ship to buyers abroad. It says nothing about what Vietnamese shoppers spend in Vietnamese stores. The two sit on different parts of the same industry map: one in the contract-manufacturing layer, the other in domestic brands and retail.',
+      'Because contract manufacturers usually do not own the consumer brand, a large share of the retail value of the goods they make is captured elsewhere. That is why industry bodies stress moving up the chain through design, materials and brand ownership rather than volume alone.',
+    ]} evidence="Export figures are those reported by VITAS and LEFASO for 2024. Nike and Adidas production shares are from their annual reports. None of these figures describes Vietnam’s domestic fashion retail market." />,
+    sources: citeF3('vietnamPlusTextile', 'lefasoFootwear', 'hmVietnam', 'nikeAnnual'),
+  }),
+];
+
+const quiz = f3Quiz('fashion-m3-l1', [
+  { chapter: '1', objective: 'Define the brand-owned model', question: 'What does a company control in the brand-owned business model?', application: 'A firm designs and markets its products but outsources manufacturing. Is it still brand-owned?', correct: 'Brand identity, product design, positioning, marketing, pricing and customer experience', wrong: ['Only the factories that make its products', 'Only the stores that sell its products', 'Only the freight that moves its products'], explanation: 'Brand owners control brand identity, design, positioning, marketing, pricing and customer experience, while manufacturing may be internal or outsourced. Review Chapter 1.' },
+  { chapter: '1', objective: 'Identify the model’s requirement', question: 'What does the brand-owned model require to keep its advantage?', application: 'A brand stops funding product development and marketing. What happens to its edge?', correct: 'Sustained investment in product development, marketing, brand management and distribution', wrong: ['A one-off investment in a flagship store', 'Ownership of every supplier in the chain', 'Selling only through third-party retailers'], explanation: 'Brand ownership enables differentiation and pricing influence but needs sustained investment in development, marketing, brand management and distribution. Review Chapter 1.' },
+  { chapter: '1', objective: 'Measure brand success', question: 'What decides commercial success for a brand owner?', application: 'A well-known brand has weak sales. What step has failed?', correct: 'Converting brand recognition into customer demand and profitable sales', wrong: ['How many factories it owns', 'How many distributors it signs', 'How low it sets every price'], explanation: 'Commercial success depends on translating recognition into demand and profitable sales. Review Chapter 1.' },
+  { chapter: '2', objective: 'Describe the wholesale model', question: 'Who does the brand sell to in the wholesale and third-party retail model?', application: 'A brand enters a new country through local partners. Which model is it using?', correct: 'Independent retailers, distributors, department stores or specialty stores that resell to consumers', wrong: ['Only end consumers through its own app', 'Only contract factories and material suppliers', 'Only licensing partners that use its trademark'], explanation: 'In wholesale, brands sell to retail partners that then resell to consumers. Review Chapter 2.' },
+  { chapter: '2', objective: 'Identify the trade-off', question: 'What does a brand give up by relying on wholesale?', application: 'A partner store discounts a brand heavily without asking. What control was missing?', correct: 'Control of final retail price, presentation, customer data and shopping experience', wrong: ['The ability to design its own products', 'The ownership of its brand name', 'The right to set wholesale prices at all'], explanation: 'Brands generally have less control over retail pricing, presentation, customer data and experience through wholesale. Review Chapter 2.' },
+  { chapter: '2', objective: 'Name what wholesale supports', question: 'What does wholesale distribution support?', application: 'A brand wants to reach many regions without building stores. Which model fits?', correct: 'Market expansion with less direct investment in retail infrastructure', wrong: ['Complete control of customer data', 'Elimination of all inventory risk', 'Guaranteed full-price sales'], explanation: 'Wholesale supports market expansion and reduces the need for direct retail investment. Review Chapter 2.' },
+  { chapter: '3', objective: 'Define DTC', question: 'How does a DTC brand reach its customers?', application: 'A brand sells only on its own website and app. Which model is it?', correct: 'Directly, through its own stores, websites, apps and other brand-controlled channels', wrong: ['Only through department stores', 'Only through distributors in each country', 'Only through contract manufacturers'], explanation: 'DTC sells directly to end customers through brand-controlled channels. Review Chapter 3.' },
+  { chapter: '3', objective: 'Recognise the DTC burden', question: 'Which responsibilities does DTC transfer to the brand?', application: 'A brand moves from wholesale to DTC. Which new tasks must it staff?', correct: 'Store operations, customer acquisition, fulfilment, returns and customer service', wrong: ['Only product design', 'Only raw material purchasing', 'Only trademark licensing'], explanation: 'DTC improves control and insight but moves more retail responsibilities onto the brand. Review Chapter 3.' },
+  { chapter: '4', objective: 'Distinguish contract and private label', question: 'How do contract manufacturing and private label differ?', application: 'A factory makes goods to a buyer’s design; a retailer sells them under its own name. Which part is which?', correct: 'Contract manufacturers produce to specification; private label is sold under the buyer’s own brand', wrong: ['They are two names for the same model', 'Contract manufacturers own the consumer brand', 'Private label means no external producer is used'], explanation: 'They are related but distinct: one is production for another company, the other is a product sold under a retailer’s brand. Review Chapter 4.' },
+  { chapter: '4', objective: 'Compare OEM and ODM', question: 'What separates OEM from ODM production?', application: 'A supplier contributes design and development as well as production. Which model is that?', correct: 'OEM builds to buyer-provided designs; ODM adds the supplier’s design and development', wrong: ['OEM means the producer owns the brand; ODM does not', 'OEM is for footwear only; ODM is for apparel only', 'There is no difference between them'], explanation: 'OEM manufactures from buyer designs and specifications, while ODM provides some combination of design, development and manufacturing. Review Chapter 4.' },
+]);
+
+export const LESSON_3_1: FashionM3LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can compare the four main operating models in Fashion, Sports & Lifestyle Retail, explain what each one controls and gives up, and identify where a given company sits.',
+    keyTakeaways: [
+      'Brand owners control product, positioning, pricing and customer experience, not necessarily manufacturing.',
+      'Wholesale buys reach and speed at the cost of price, presentation and customer-data control.',
+      'DTC adds control and first-party data but moves operations, acquisition and returns onto the brand.',
+      'Omnichannel creates value only when channels work as one connected system.',
+      'Contract manufacturing and private label split responsibility differently between producer and retailer.',
+    ],
+    businessImplications: 'Before benchmarking any company, identify its operating model: the same revenue figure means something different for a brand owner, a wholesale-led brand, a DTC business and a contract manufacturer.',
+    remember: 'Every model trades control against capital and risk; none is free.',
+    nextLesson: 'Products, Services & Segmentation',
+  },
+};

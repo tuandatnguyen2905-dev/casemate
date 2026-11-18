@@ -181,7 +181,7 @@ const profQuarterly: Builder = (i, diff) => {
     type: 'profitability',
     scenario:
       `${name} has just closed its financial year in the ${city} market. Management sees revenue rising steadily across four quarters ` +
-      'but isn’t sure profit rose to match. You have 5 minutes to read the condensed P&L and answer.',
+      'but isn’t sure profit rose to match. You have 5 minutes to read the condensed P&L (profit and loss statement) and answer.',
     data_exhibits: [
       table(
         'Revenue and costs by quarter (billion VND)',
@@ -253,7 +253,7 @@ const profSku: Builder = (i, diff) => {
     difficulty: diff,
     type: 'profitability',
     scenario:
-      `${name} is reviewing its ${cat} portfolio, whose flagship product is ${product}. The category director wants to know which SKUs ` +
+      `${name} is reviewing its ${cat} portfolio, whose flagship product is ${product}. The category director wants to know which SKUs (stock-keeping units, i.e. individual product variants) ` +
       'genuinely create profit before deciding what to cut. Prices and costs are in thousand VND/unit; volumes in million units/year.',
     data_exhibits: [
       table(
@@ -261,7 +261,7 @@ const profSku: Builder = (i, diff) => {
         ['SKU', 'Price (thousand VND)', 'Variable cost (thousand VND)', 'Volume (million units)'],
         skus.map((s, j) => [s, price[j], vcost[j], vol[j]]),
       ),
-      chart('bar', 'Total contribution by SKU (billion VND)', ['SKU A', 'SKU B', 'SKU C', 'SKU D'], totalCm, 'billion VND'),
+      chart('bar', 'Total contribution by SKU (billion VND)', skus, totalCm, 'billion VND'),
     ],
     questions,
     tags: ['contribution-margin', 'profitability', 'FMCG', 'portfolio'],
@@ -292,7 +292,7 @@ const profStore: Builder = (i, diff) => {
       'Which store is most efficient per m² of selling space?',
       `${stores[best]} — ${n(perM2[best], 2)} million VND profit/m²/year`,
       ['Profit per m² = Profit / Area (convert billions to millions by multiplying by 1,000):'].concat(
-        stores.map((s, j) => `${s}: ${n(profit[j], 2)} bn / ${n(area[j])} m² = ${n(perM2[j], 2)} million VND/m²`),
+        stores.map((s, j) => `${s}: ${n(profit[j], 2)} billion / ${n(area[j])} m² = ${n(perM2[j], 2)} million VND/m²`),
       ),
     ),
   ];
@@ -346,7 +346,7 @@ const profStore: Builder = (i, diff) => {
 
 const profChannel: Builder = (i, diff) => {
   const [name, product] = FMCG[(i + 5) % FMCG.length];
-  const ch = ['Modern trade (supermarkets)', 'General trade (mom-and-pop)', 'Online', 'HORECA'];
+  const ch = ['Modern trade (supermarkets)', 'General trade (mom-and-pop)', 'Online', 'HORECA (hotels, restaurants, cafés)'];
   const share = [34, 41, 17, 8];
   const revTotal = 640 + 55 * i;
   const rev = share.map((s) => round1((revTotal * s) / 100));
@@ -528,10 +528,10 @@ const msPopulation: Builder = (i, diff) => {
   const share = 6 + (i % 7);
 
   const questions = [
-    q(`Estimate the target user base for ${prod} in ${city}.`, `≈ ${n(users, 2)} million people`, [
+    q(`Estimate the target user base for ${prod} in ${city}: the urban residents with suitable income who actually consume it.`, `≈ ${n(users, 2)} million people`, [
       `${city} population ≈ ${n(pop, 1)} million`,
-      `Share of urban residents with suitable income ≈ ${pct(urban * 100, 0)} → ${n(pop * urban, 2)} million`,
-      `Of those, the group that actually consumes ${prod} ≈ ${pct(targetShare * 100, 0)} → ${n(users, 2)} million people`,
+      `Share of the population that are urban residents with suitable income (income level makes them potential buyers of ${prod}; interview assumption) ≈ ${pct(urban * 100, 0)} → ${n(pop * urban, 2)} million`,
+      `Of those, the group that actually consumes ${prod} (target consumers) ≈ ${pct(targetShare * 100, 0)} → ${n(users, 2)} million people`,
     ]),
     q(`What is the annual market size for ${prod} in ${city}?`, money(market, 'billion VND', 0), [
       `Consumption frequency ≈ ${n(freq, 1)} ${unit}s/person/month → ${n(freq * 12, 1)} ${unit}s/person/year`,
@@ -556,12 +556,12 @@ const msPopulation: Builder = (i, diff) => {
     questions.push(
       q(
         'Which three assumptions are most fragile in this estimate, and how would you verify each?',
-        'Penetration rate, consumption frequency, and average price',
+        'Share consuming (penetration rate), consumption frequency, and average price',
         [
-          `(1) Penetration ${pct(targetShare * 100, 0)}: verify with a survey or Nielsen/Kantar district-level data.`,
+          `(1) Share consuming (penetration) ${pct(targetShare * 100, 0)}: verify with a survey or Nielsen/Kantar district-level data.`,
           `(2) Frequency ${n(freq, 1)} ${unit}s/month: verify with an existing chain’s transaction data (membership cards).`,
           `(3) Average price ${n(price)} thousand VND: survey prices at 20–30 outlets and take a volume-weighted average.`,
-          `Sensitivity: if penetration drops to ${pct((targetShare - 0.05) * 100, 0)}, the market falls to ${money((market * (targetShare - 0.05)) / targetShare, 'billion VND', 0)} — down ${pct((0.05 / targetShare) * 100)}.`,
+          `Sensitivity: if the share consuming drops to ${pct((targetShare - 0.05) * 100, 0)}, the market falls to ${money((market * (targetShare - 0.05)) / targetShare, 'billion VND', 0)} — down ${pct((0.05 / targetShare) * 100)}.`,
         ],
       ),
     );
@@ -572,20 +572,20 @@ const msPopulation: Builder = (i, diff) => {
     difficulty: diff,
     type: 'market-sizing',
     scenario:
-      `An F&B chain is weighing expansion in ${city} and needs a market-size number for ${prod} before facing the investment committee. ` +
+      `A client is weighing expansion in ${city} and needs a market-size number for ${prod} before facing the investment committee. ` +
       'No market report exists — you must estimate top-down.',
     data_exhibits: [
       table('Input assumptions', ['Assumption', 'Value', 'Source'], [
         [`${city} population (million)`, pop, 'General Statistics Office (rounded)'],
-        ['Share of urban residents with suitable income', `${Math.round(urban * 100)}%`, 'Interview assumption'],
-        [`Share consuming ${prod}`, `${Math.round(targetShare * 100)}%`, 'Interview assumption'],
+        [`Share of the population that are urban residents with suitable income (income level makes them potential buyers of ${prod})`, `${Math.round(urban * 100)}%`, 'Interview assumption'],
+        [`Share consuming ${prod} (target consumers, as a share of the urban residents with suitable income)`, `${Math.round(targetShare * 100)}%`, 'Interview assumption'],
         [`Frequency (${unit}s/person/month)`, freq, 'Interview assumption'],
         [`Average price (thousand VND/${unit})`, price, 'Price survey'],
       ]),
       chart(
         'bar',
         'Estimation funnel (million people)',
-        ['Population', 'Suitable urban residents', 'Target consumers'],
+        ['Population', 'Urban residents with suitable income', 'Target consumers'],
         [round2(pop), round2(pop * urban), round2(users)],
         'million people',
       ),
@@ -693,7 +693,7 @@ const msBottomUp: Builder = (i, diff) => {
       `Annual revenue = ${n(tickets * aov)} × ${days} days = ${n(tickets * aov * days)} thousand VND = ${money(revStore, 'billion VND', 2)}`,
     ]),
     q('What is the whole chain’s annual revenue?', money(revChain, 'billion VND', 0), [
-      `Chain revenue = ${n(revStore, 2)} bn × ${n(stores)} stores = ${money(revChain, 'billion VND', 0)}`,
+      `Chain revenue = ${n(revStore, 2)} billion × ${n(stores)} stores = ${money(revChain, 'billion VND', 0)}`,
     ]),
   ];
   if (diff !== 'easy') {
@@ -764,11 +764,11 @@ const msB2B: Builder = (i, diff) => {
 
   const questions = [
     q(`How many companies sit in the target segment for ${product}?`, `≈ ${n(target, 0)} companies`, [
-      `Active companies ≈ ${n(firms)}`,
-      `Target segment (SMEs with 20+ office staff) ≈ ${targetPct}% → ${n(target, 0)} companies`,
+      `Active companies (registered companies currently operating in Vietnam) ≈ ${n(firms)}`,
+      `Target segment (active companies that fit the intended customer profile of ${product}) ≈ ${targetPct}% → ${n(target, 0)} companies`,
     ]),
     q(`What is the annual revenue market size for ${product}?`, money(market, 'billion VND', 0), [
-      `Share willing to pay for software ≈ ${pct(adopt * 100, 0)} → ${n(customers, 0)} potential customers`,
+      `Willing to pay (share of target-segment companies that would buy a per-seat subscription) ≈ ${pct(adopt * 100, 0)} → ${n(customers, 0)} potential customers`,
       `Average licences = ${seats} seats/company; price ${n(priceSeat)} thousand VND/seat/month`,
       `Annual revenue = ${n(customers, 0)} × ${seats} × ${n(priceSeat)} thousand × 12 = ${money(market, 'billion VND', 0)}`,
     ]),
@@ -807,20 +807,22 @@ const msB2B: Builder = (i, diff) => {
     difficulty: diff,
     type: 'market-sizing',
     scenario:
-      `${name} is preparing a Series B raise and needs TAM/SAM numbers for ${product} in Vietnam. ` +
-      'Investors demand a bottom-up calculation from company counts — no generic report citations accepted.',
+      `${name} is preparing a Series B raise and needs TAM/SAM (total addressable market / serviceable addressable market) numbers for ${product} in Vietnam. ` +
+      'Investors demand a bottom-up calculation from company counts — no generic report citations accepted. ' +
+      `Definitions: active companies are registered companies currently operating in Vietnam; the target segment is the share of active companies that fit the intended customer profile of ${product}; ` +
+      `"willing to pay" is the share of target-segment companies that would buy ${product} as a per-seat monthly subscription. Each paying company buys a number of seats (user licences).`,
     data_exhibits: [
       table('Bottom-up assumptions', ['Assumption', 'Value'], [
-        ['Active companies', n(firms)],
-        ['Share in the target segment', `${targetPct}%`],
-        ['Share willing to pay for software', `${Math.round(adopt * 100)}%`],
-        ['Average seats/customer', seats],
+        ['Active companies (registered and operating in Vietnam)', n(firms)],
+        [`Target segment (% of active companies fitting the intended customer profile of ${product})`, `${targetPct}%`],
+        ['Willing to pay (% of target-segment companies that would buy a per-seat subscription)', `${Math.round(adopt * 100)}%`],
+        ['Average seats per paying company', seats],
         ['Price (thousand VND/seat/month)', priceSeat],
       ]),
       chart(
         'bar',
         'Market funnel (thousand companies)',
-        ['All companies', 'Target segment', 'Willing to pay'],
+        ['All active companies', 'Target-segment companies', 'Companies willing to pay'],
         [round1(firms / 1000), round1(target / 1000), round1(customers / 1000)],
         'thousand companies',
       ),
@@ -980,7 +982,7 @@ const prTiers: Builder = (i, diff) => {
     type: 'pricing',
     scenario:
       `${name} sells ${product} in three price tiers. Revenue is growing more slowly than the customer count, and management suspects ` +
-      'the tier mix is dragging ARPU down. Units: thousand VND/month.',
+      'the tier mix is dragging ARPU (average revenue per user) down. Units: thousand VND/month.',
     data_exhibits: [
       table('Price tiers and customer mix', ['Plan', 'Price (thousand VND/month)', 'Customer share (%)'], tiers.map((t, j) => [t, price[j], users[j]])),
       chart('pie', 'Customer mix by plan', tiers, users, '%'),
@@ -1585,7 +1587,7 @@ const opInventory: Builder = (i, diff) => {
         ['Cost per order (VND)', n(orderCost)],
         ['Holding cost (thousand VND/unit/year)', hold],
       ]),
-      metric('EOQ', `${n(eoq, 0)} units`, `≈ ${n(orders, 1)} orders per year`),
+      metric('EOQ (economic order quantity)', `${n(eoq, 0)} units`, `≈ ${n(orders, 1)} orders per year`),
     ],
     questions,
     tags: ['operations', 'inventory', 'EOQ', 'logistics'],
@@ -1625,7 +1627,7 @@ const grDecomp: Builder = (i, diff) => {
         'Decompose the target into customers and ARPU: how many more customers are needed if ARPU stays flat?',
         `${n(cust)} thousand more customers (doubling to ${n(cust * 2)} thousand)`,
         [
-          `Current ARPU = ${n(y[3])} bn / ${n(cust)} thousand customers = ${n(arpu, 2)} million VND/customer/year`,
+          `Current ARPU = ${n(y[3])} billion / ${n(cust)} thousand customers = ${n(arpu, 2)} thousand VND/customer/year`,
           `With ARPU flat, doubling revenue ⇒ doubling customers: ${n(cust)} → ${n(cust * 2)} thousand`,
           `That means adding ${n(cust)} thousand customers in 3 years ≈ ${n(cust / 36, 1)} thousand new customers a month (before churn).`,
         ],

@@ -1,0 +1,138 @@
+import type { ViLesson } from '../localizationTypes';
+
+// Vietnamese General Info for Commercial Banking lesson 4.2. Translated from commercialBankingM04B03.tsx
+// (version 1794943276406542) and commercialBankingM04VisualSpecs.ts (version 1794930600329714); takeaways from commercialBankingM04B03.tsx.
+// Chapter 2 (Vietnam archetypes) is a held visual kind, so it carries no visualHeading/visualIntro; its restriction stays restricted.
+
+export const CB_VI_L42: ViLesson = {
+  enTitle: '4.2 Key Industry Players',
+  chapters: [
+    {
+      en: 'Read global players by model—not fame',
+      title: 'Đọc các ngân hàng toàn cầu theo mô hình — không theo danh tiếng',
+      objective: 'Phân loại các ngân hàng thương mại toàn cầu lớn theo quy mô, phân khúc, mô hình và kết quả hoạt động được công bố, thay vì dựa vào các bảng xếp hạng thiếu căn cứ.',
+      mateIntro: 'Bảng xếp hạng tài sản toàn cầu cho biết bảng cân đối kế toán lớn đến đâu. Nó không cho biết nền tảng khách hàng nào mạnh nhất, ngân hàng nào an toàn nhất hay mức sinh lời nào tốt nhất.',
+      keyInsight: 'Hãy dùng quy mô để thiết lập bối cảnh, rồi phân tích riêng mô hình, địa bàn, nguồn vốn, rủi ro và lợi nhuận.',
+      what: 'ICBC (Ngân hàng Công thương Trung Quốc), Agricultural Bank of China, China Construction Bank và Bank of China dẫn đầu bảng xếp hạng tài sản năm 2024 được trích dẫn; JPMorgan là ngân hàng lớn nhất của Mỹ trong nguồn đó. Tất cả đều là các tổ chức đa năng, nhưng quyền sở hữu, địa bàn và cơ cấu kinh doanh khác nhau.',
+      how: 'Hãy lập hồ sơ một ngân hàng toàn cầu theo tài sản, dư nợ cho vay và tiền gửi, phân khúc khách hàng, phạm vi địa lý, các hoạt động ngoài lãi, vốn, chất lượng tài sản, hiệu quả và lợi nhuận.',
+      why: 'Quy mô có lợi cho nguồn vốn, đầu tư và đa dạng hóa, nhưng có thể làm tăng độ phức tạp, quy định và nghĩa vụ hệ thống. Thứ hạng tài sản không phải thứ hạng lợi nhuận, cũng không phải thứ hạng an toàn.',
+      global: 'Bốn ngân hàng hàng đầu của Trung Quốc và JPMorgan minh họa các mô hình ngân hàng đa năng quy mô lớn được định hình bởi những hệ thống trong nước và dấu ấn quốc tế khác nhau.',
+      vietnam: 'Các ngân hàng toàn cầu hoạt động tại Việt Nam thường tập trung nhiều hơn vào nhu cầu của doanh nghiệp đa quốc gia, thương mại và ngoại hối (FX) so với tiền gửi bán lẻ đại chúng trong nước; nghiên cứu chưa lượng hóa vị thế này.',
+      visualHeading: 'Sáu câu hỏi biến quy mô của một ngân hàng toàn cầu thành một hồ sơ',
+      visualIntro: 'Bảng xếp hạng tài sản cho biết bảng cân đối kế toán lớn đến đâu, chứ không cho biết ngân hàng mạnh, an toàn hay sinh lời ra sao. Hãy đặt cùng những câu hỏi với mọi tổ chức trước khi đánh giá.',
+      imageAlt: 'Khung sáu góc nhìn để so sánh các ngân hàng toàn cầu.',
+      statTiles: [
+        { label: 'Tài sản của ICBC', subtitle: '2024', description: 'Quy mô khoảng theo bảng xếp hạng của S&P.' },
+        { label: 'Các ngân hàng Trung Quốc', subtitle: 'Bảng xếp hạng tài sản 2024 được trích dẫn', description: 'Chỉ mang tính bối cảnh xếp hạng.' },
+        { label: 'JPMorgan', subtitle: 'Trong bảng xếp hạng được trích dẫn', description: 'Không phải khẳng định về khả năng sinh lời hay an toàn toàn cầu.' },
+      ],
+      statsNote: 'Mọi bảng xếp hạng đều giữ nguồn và kỳ; không bổ sung bảng xếp hạng hiện hành nào thiếu căn cứ.',
+      keyTerms: [
+        { term: 'Tổng tài sản', definition: 'Giá trị kế toán của các nguồn lực do ngân hàng kiểm soát tại ngày báo cáo.' },
+        { term: 'Ngân hàng đa năng', definition: 'Ngân hàng quy mô rộng kết hợp nhiều mảng khách hàng và sản phẩm.' },
+        { term: 'Tầm quan trọng hệ thống', definition: 'Khả năng sự đổ vỡ của một tổ chức ảnh hưởng đến toàn bộ hệ thống tài chính.' },
+      ],
+      recap: [
+        'Thứ hạng tài sản đo quy mô.',
+        'Mô hình và địa bàn định hình kinh tế của ngân hàng.',
+        'Quy mô kéo theo độ phức tạp về quy định và vận hành.',
+      ],
+      chapterRecap: 'Hãy lập hồ sơ các ngân hàng toàn cầu qua những góc nhìn có thể so sánh; đừng bao giờ thay phân tích bằng danh tiếng hay thứ hạng tài sản.',
+      deepDiveTitle: 'Chuẩn hóa trước khi so sánh',
+      deepDive: [
+        'Quy đổi tiền tệ, ngày báo cáo, phạm vi hợp nhất và chuẩn mực kế toán có thể làm méo mó các so sánh xuyên biên giới. Hãy sử dụng cẩn thận các giá trị do nguồn báo cáo và tập trung vào định nghĩa tỷ lệ và xu hướng.',
+        'Một ngân hàng có thể dẫn đầu về tài sản nhờ hệ thống trong nước và bối cảnh chính sách của mình; điều đó không tự động mang lại cùng lợi thế ở một thị trường khác.',
+      ],
+      evidence: 'Đoạn trích của S&P chỉ hỗ trợ bảng xếp hạng tài sản năm 2024 được trích dẫn.',
+    },
+    {
+      en: 'Vietnam’s leading bank archetypes',
+      title: 'Các hình mẫu ngân hàng hàng đầu của Việt Nam',
+      objective: 'Mô tả định vị của Vietcombank, BIDV, VietinBank, Agribank, Techcombank, MB, VPBank và ACB mà không dựa vào các bảng xếp hạng thiếu căn cứ.',
+      mateIntro: 'Tám ngân hàng nổi bật không phải là tám phiên bản của cùng một đối thủ. Quyền sở hữu, nền tảng khách hàng, hệ sinh thái và các lựa chọn rủi ro - lợi nhuận của họ tạo nên những hình mẫu khác biệt.',
+      keyInsight: 'Định vị mô tả nơi và cách một ngân hàng cạnh tranh; không được thổi phồng thành một thứ hạng thiếu căn cứ hay một đánh giá đầy đủ về kết quả hoạt động.',
+      what: 'Nhóm Big 4 kết hợp vai trò quốc gia rộng và quy mô: Agribank gắn với độ phủ nông thôn; BIDV và VietinBank gắn với quan hệ doanh nghiệp lớn và các đối tác liên quan đến nhà nước; Vietcombank gắn với truyền thống thương mại và chất lượng tài sản tốt theo số liệu được trích dẫn. Các ngân hàng tư nhân theo đuổi những đề xuất giá trị tập trung khác nhau.',
+      how: 'Techcombank nhấn mạnh CASA, bán lẻ, quản lý tài sản và các quan hệ hệ sinh thái; MB kết hợp một hệ sinh thái tập đoàn rộng; VPBank kết hợp bán lẻ, SME và dư nợ tài chính tiêu dùng có lợi suất cao hơn; ACB thường được định vị xoay quanh ngân hàng bán lẻ và SME nhưng ở đây chưa có bộ chỉ tiêu được xác minh.',
+      why: 'Các hình mẫu giải thích những lựa chọn chiến lược và độ nhạy KPI có thể xảy ra. Chúng không bù đắp cho bằng chứng còn thiếu và không biện minh cho kết luận “ngân hàng tốt nhất” mang tính phổ quát.',
+      global: 'Các bản đồ cạnh tranh thường nhóm ngân hàng theo nền tảng nguồn vốn, phân khúc và mô hình rủi ro thay vì một thứ hạng tài sản duy nhất.',
+      vietnam: 'Bằng chứng FY2024 hỗ trợ một số dữ kiện được chọn về lợi nhuận trước thuế (PBT), CASA và nợ xấu (NPL) của VCB, TCB, MB và VPBank, nhưng chất lượng nguồn và mức độ sẵn có của chỉ tiêu không đồng đều.',
+      imageAlt: 'Ma trận khái niệm định vị tám ngân hàng hàng đầu Việt Nam theo độ rộng và chiều sâu hệ sinh thái.',
+      statTiles: [
+        { label: 'PBT của Vietcombank', subtitle: 'FY2024 · theo số liệu do ngân hàng công bố', description: 'Báo cáo thường niên 2024 của Vietcombank (khoảng +2,2% so với 2023).' },
+        { label: 'Tỷ lệ CASA của Techcombank', subtitle: 'Cuối năm 2024 · theo số liệu do ngân hàng công bố', description: 'Thông cáo kết quả kinh doanh FY2024 của Techcombank (tháng 1 năm 2025); Auto-earning được tính là tiền gửi tiết kiệm.' },
+        { label: 'Tỷ lệ CASA của MB', subtitle: 'Cuối năm 2024 · theo số liệu do ngân hàng công bố', description: 'Báo cáo thường niên 2024 của MB (VND281tn); cơ sở tính khác với Techcombank nên không được xếp hạng hai ngân hàng này.' },
+        { label: 'PBT của VPBank', subtitle: 'Hợp nhất FY2024 · theo số liệu do ngân hàng công bố', description: 'Báo cáo thường niên 2024 của VPBank; bao gồm FE CREDIT.' },
+      ],
+      statsNote: 'Các dữ kiện được chọn có chất lượng bằng chứng khác nhau và không tạo thành một bảng xếp hạng đầy đủ. Agribank, BIDV, VietinBank và ACB ở đây không có bộ chỉ tiêu được xác minh thống nhất.',
+      keyTerms: [
+        { term: 'Định vị', definition: 'Không gian khách hàng, sản phẩm và năng lực mà ngân hàng chọn để cạnh tranh.' },
+        { term: 'Ngân hàng hệ sinh thái', definition: 'Hoạt động ngân hàng được lồng vào một tập đoàn hoặc mạng lưới đối tác rộng hơn, có thể hỗ trợ thu hút khách hàng và hoạt động giao dịch.' },
+        { term: 'Tài chính tiêu dùng', definition: 'Tín dụng bán lẻ có lợi suất cao hơn, thường phục vụ các nhu cầu giá trị nhỏ, thường ít có bảo đảm hơn, với kinh tế rủi ro riêng.' },
+      ],
+      recap: [
+        'Các ngân hàng hàng đầu của Việt Nam theo những mô hình khác biệt.',
+        'Định vị không phải là xếp hạng.',
+        'Các chỉ tiêu được chọn không thể lấp đầy một bảng điểm chưa đầy đủ.',
+        'Các nhận định về ACB và nhóm Big 4 vẫn mang tính định tính khi thiếu bằng chứng.',
+      ],
+      chapterRecap: 'Hãy dùng các hình mẫu để hình thành giả thuyết; dùng bằng chứng so sánh cùng cơ sở để kiểm chứng kết quả hoạt động.',
+      deepDiveTitle: 'Cách diễn đạt an toàn về các ngân hàng',
+      deepDive: [
+        'Hãy nói “được định vị theo hướng” hoặc “công bố FY2024 được trích dẫn cho biết”, rồi nêu nguồn và kỳ. Tránh các từ “tốt nhất”, “mạng lưới lớn nhất”, “dẫn đầu về phí” hay “thận trọng nhất” trừ khi một chỉ tiêu được xác định và xác minh chứng minh điều đó.',
+        'Các số liệu FY2024 nêu trên đều do chính ngân hàng công bố trong thông cáo kết quả kinh doanh hoặc báo cáo thường niên của mình (CASA của Techcombank 40,9%, CASA của MB 39,3%, PBT của Vietcombank VND42,236bn, PBT hợp nhất của VPBank VND20,013bn), nhưng mỗi ngân hàng dùng định nghĩa riêng nên không thể xếp hạng ngân hàng này với ngân hàng khác. Bộ nguồn hiện tại không đủ cơ sở để xếp hạng đầy đủ cho tám ngân hàng.',
+      ],
+      evidence: 'Chương này giữ nguyên mọi hạn chế về chất lượng nguồn và dùng định vị định tính khi các chỉ tiêu chưa đầy đủ.',
+      restriction: 'Không đưa vào các bảng xếp hạng thiếu căn cứ và các nhận định chưa được xác minh về quy mô mạng lưới, vị thế dẫn đầu về phí hay chất lượng tài sản thận trọng.',
+    },
+    {
+      en: 'What market position really means',
+      title: 'Vị thế thị trường thực sự có nghĩa là gì',
+      objective: 'Đánh giá vị thế thị trường qua quy mô, đa dạng hóa, sức mạnh nguồn vốn, kết quả hoạt động và mức độ phù hợp chiến lược.',
+      mateIntro: 'Một ngân hàng có thể lớn về tài sản, mạnh về tiền gửi, có lãi trong một năm mà vẫn yếu ở một phân khúc mục tiêu. “Dẫn đầu thị trường” là vô nghĩa cho đến khi nêu rõ thị trường và chỉ tiêu.',
+      keyInsight: 'Vị thế thị trường mang tính đa chiều: hãy xác định thị trường, mẫu số, ngày và cơ chế kinh tế trước khi dùng một thị phần hay một thứ hạng.',
+      what: 'Các góc nhìn hữu ích gồm tổng tài sản, dư nợ cho vay và tiền gửi khách hàng, thị phần theo phân khúc, hoạt động giao dịch, cơ cấu nguồn vốn, đa dạng hóa doanh thu, chất lượng tài sản, vốn, khả năng sinh lời và sức mạnh phân phối.',
+      how: 'Hãy xác định thị trường và mẫu, tính thị phần cùng ngày, so sánh tăng trưởng và hiệu quả kinh tế, rồi giải thích vị thế đó có tạo ra lợi thế bền vững về khách hàng hoặc nguồn vốn hay không.',
+      why: 'Thị phần tài sản cao có thể phản ánh hoạt động có biên lợi nhuận thấp hoặc đòi hỏi nhiều vốn; một ngân hàng nhỏ hơn có thể có lợi nhuận cao hơn hoặc một ngách có giá trị hơn.',
+      global: 'Thứ hạng tài sản toàn cầu và vị thế dẫn đầu phân khúc tại địa phương trả lời những câu hỏi khác nhau; cả hai đều cần phạm vi được xác định rõ.',
+      vietnam: 'Thị phần tài sản 47,57% của nhóm Big 4 tính trên 30 ngân hàng báo cáo tại ngày 30 tháng 6 năm 2025 — không phải toàn hệ thống theo mọi định nghĩa. Thị phần dư nợ và tiền gửi cuối năm 2023 dùng một kỳ khác.',
+      visualHeading: '“Dẫn đầu thị trường” về cái gì, đo vào thời điểm nào?',
+      visualIntro: 'Một nhận định về vị thế dẫn đầu vô nghĩa cho đến khi nêu rõ thị trường, chỉ tiêu và ngày. Hãy cố định phạm vi trước, rồi kiểm tra từng góc nhìn xem có lợi thế kinh tế thực sự hay không.',
+      imageAlt: 'Khung năm bước để đánh giá vị thế thị trường của một ngân hàng.',
+      statTiles: [
+        { label: 'Tài sản của nhóm Big 4', subtitle: 'Mẫu 30 ngân hàng, 30/6/2025', description: 'Giữ nguyên phạm vi và ngày.' },
+        { label: 'Thị phần của nhóm Big 4', subtitle: 'Cùng mẫu 30 ngân hàng', description: 'Không phải thị phần chung của toàn hệ thống.' },
+        { label: 'Tài sản của VPBank', subtitle: '30/6/2025', description: 'Không thể đưa vào bảng FY2024.' },
+      ],
+      statsNote: 'Các giá trị quy mô này chỉ hỗ trợ góc nhìn về vị thế tại ngày 30 tháng 6 năm 2025; chúng không phải bằng chứng về khả năng sinh lời FY2024.',
+      keyTerms: [
+        { term: 'Thị phần', definition: 'Một thước đo của tổ chức hoặc nhóm được xác định, chia cho tổng thị trường được xác định, cùng ngày và cùng cơ sở.' },
+        { term: 'Đa dạng hóa', definition: 'Sự phân bổ thu nhập hoặc rủi ro qua các sản phẩm, khách hàng, địa bàn hoặc hoạt động.' },
+        { term: 'Kỷ luật về mẫu số', definition: 'Sử dụng tổng số đúng và có thể so sánh khi tính một tỷ lệ hoặc thị phần.' },
+      ],
+      recap: [
+        'Hãy nêu rõ thị trường và chỉ tiêu.',
+        'Khớp ngày và cơ sở tính.',
+        'Quy mô không đồng nghĩa với khả năng sinh lời.',
+        'Vị thế phải gắn với một lợi thế kinh tế.',
+      ],
+      chapterRecap: 'Một nhận định về vị thế thị trường có thể bảo vệ được phải có phạm vi rõ ràng, có thể so sánh và gắn với giá trị kinh tế.',
+      deepDiveTitle: 'Vị thế không phải là kết quả hoạt động',
+      deepDive: [
+        'Hãy tách vị thế — ngân hàng đứng ở đâu — khỏi kết quả hoạt động — lợi nhuận và rủi ro mà ngân hàng tạo ra. Tài sản, tiền gửi và dư nợ là số dư (stock); PBT và thu nhập là dòng chảy (flow). Mối quan hệ giữa chúng đòi hỏi các tỷ lệ được xác định rõ.',
+        'Đa dạng hóa cần được kiểm chứng, không nên mặc định từ độ rộng của sản phẩm. Một ngân hàng có thể cung cấp nhiều sản phẩm nhưng về mặt kinh tế vẫn phụ thuộc vào một nguồn vốn hoặc một phân khúc rủi ro.',
+      ],
+      evidence: 'VietnamNet cung cấp mẫu và ngày chính xác cho các dữ kiện về tài sản. Không thay thế bằng một mẫu số hệ thống tổng thể thiếu căn cứ.',
+    },
+  ],
+  takeaways: {
+    learned: 'Bạn có thể lập hồ sơ các ngân hàng toàn cầu và Việt Nam theo mô hình, và đánh giá vị thế thị trường mà không dựa vào các bảng xếp hạng thiếu căn cứ.',
+    keyTakeaways: [
+      'Bảng xếp hạng tài sản chỉ thiết lập bối cảnh.',
+      'Các ngân hàng hàng đầu của Việt Nam theo những hình mẫu khác biệt.',
+      'Định vị không phải là kết quả hoạt động.',
+      'Mọi nhận định về thị phần đều cần phạm vi và ngày.',
+    ],
+    businessImplications: 'Hãy dùng các hình mẫu để hình thành giả thuyết, rồi kiểm chứng bằng bằng chứng khớp nhau về nguồn vốn, rủi ro, hiệu quả, vốn và lợi nhuận.',
+    remember: 'Hãy nêu rõ thị trường, chỉ tiêu và kỳ trước khi gọi bất kỳ ngân hàng nào là người dẫn đầu.',
+  },
+};

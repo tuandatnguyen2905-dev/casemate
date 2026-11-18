@@ -1,0 +1,133 @@
+import type { ViLesson } from '../localizationTypes';
+
+// Vietnamese General Info for Commercial Banking lesson 3.2. Translated from commercialBankingM03B01.tsx (CB_LESSON_32)
+// (version 1794943205907480) and commercialBankingM03VisualSpecs.ts (version 1794024643597385). Held chapter visuals are omitted.
+
+export const CB_VI_L32: ViLesson = {
+  enTitle: '3.2 Products, Services & Segmentation',
+  chapters: [
+    {
+      en: 'The banking product system',
+      title: 'Hệ thống sản phẩm ngân hàng',
+      objective: 'Phân loại các sản phẩm tiền gửi, cho vay, giao dịch, thương mại, ngân quỹ và tư vấn theo nhu cầu của khách hàng.',
+      mateIntro: 'Danh mục sản phẩm chỉ hữu ích khi nó trả lời một vấn đề của khách hàng và cho thấy ngân hàng kiếm tiền, huy động vốn và kiểm soát giải pháp đó như thế nào.',
+      keyInsight: 'Các sản phẩm ngân hàng tạo thành một hệ thống liên kết: nợ phải trả tài trợ cho tài sản, trong khi dịch vụ làm sâu sắc quan hệ khách hàng và tạo ra thu nhập phí hoặc thu nhập thị trường.',
+      what: 'Sản phẩm nợ phải trả gồm tiền gửi thanh toán, tiết kiệm và có kỳ hạn. Sản phẩm tài sản gồm cho vay thế chấp, thẻ và tín dụng cá nhân, SME hoặc doanh nghiệp. Dịch vụ gồm thanh toán, quản lý dòng tiền, tài trợ thương mại, bảo lãnh, ngoại hối, quản lý tài sản và phân phối bảo hiểm.',
+      how: 'Tiền gửi cung cấp nguồn vốn và thanh khoản; cho vay đưa vốn vào các khoản tín dụng; sản phẩm giao dịch và tư vấn kiếm tiền từ hoạt động và thông tin. Bộ phận ngân quỹ quản lý thanh khoản và các vị thế thị trường của chính ngân hàng, đồng thời phục vụ nhu cầu ngoại hối và lãi suất của khách hàng.',
+      why: 'Thiết kế đa sản phẩm có thể cải thiện khả năng giữ chân khách hàng, dữ liệu và hiệu quả kinh tế, nhưng cũng tạo ra rủi ro về hành vi kinh doanh, mức độ phù hợp, vận hành và tập trung.',
+      global: 'Các ngân hàng đa năng toàn cầu kết nối cho vay doanh nghiệp với quản lý dòng tiền, tài trợ thương mại và ngoại hối, tạo ra một mối quan hệ chứ không phải việc bán một sản phẩm đơn lẻ.',
+      vietnam: 'Nhóm Big 4 của Việt Nam phục vụ các phân khúc rộng; các ngân hàng tư nhân nhấn mạnh một số đề xuất giá trị chọn lọc về thẻ, số hóa, khách hàng giàu có, SME, quản lý tài sản hoặc bancassurance. Đây là các ví dụ về định vị, không phải bảng xếp hạng doanh thu đã được kiểm chứng.',
+      imageAlt: 'Sơ đồ tư duy về danh mục sản phẩm ngân hàng xoay quanh mối quan hệ khách hàng.',
+      statTiles: [
+        { label: 'Sản phẩm nợ phải trả', subtitle: 'Tiền gửi', description: 'Tài trợ cho bảng cân đối kế toán đồng thời đáp ứng nhu cầu thanh khoản và tiết kiệm.' },
+        { label: 'Sản phẩm tài sản', subtitle: 'Cho vay và chứng khoán', description: 'Đưa vốn vào tài sản sinh lời kèm rủi ro tín dụng và rủi ro thị trường.' },
+        { label: 'Sản phẩm dịch vụ', subtitle: 'Thanh toán, thương mại, ngoại hối, phân phối', description: 'Tạo ra phí ròng và thu nhập ngoài lãi khác.' },
+      ],
+      statsNote: 'Một sản phẩm có thể tạo ra nhiều tác động kinh tế; sơ đồ nêu cơ chế chính.',
+      keyTerms: [
+        { term: 'Nghĩa vụ nợ tiềm tàng', definition: 'Nghĩa vụ có thể trở thành khoản chịu rủi ro trên bảng cân đối kế toán nếu một sự kiện cụ thể xảy ra, như với một số khoản bảo lãnh.' },
+        { term: 'Quản lý dòng tiền', definition: 'Các dịch vụ giúp doanh nghiệp thu, giữ, dự báo và chi trả tiền.' },
+        { term: 'Bancassurance (phân phối bảo hiểm qua ngân hàng)', definition: 'Ngân hàng phân phối sản phẩm của công ty bảo hiểm, thường hưởng hoa hồng thay vì ghi nhận phí bảo hiểm của công ty bảo hiểm.' },
+      ],
+      recap: [
+        'Tiền gửi, tài sản và dịch vụ đóng những vai trò khác nhau.',
+        'Sản phẩm cần gắn với nhu cầu của khách hàng và kinh tế học của ngân hàng.',
+        'Bán chéo chỉ tạo giá trị khi có kiểm soát phù hợp.',
+      ],
+      chapterRecap: 'Một danh mục ngân hàng kết nối nhu cầu khách hàng với nguồn vốn, việc sử dụng vốn chịu rủi ro và thu nhập dịch vụ.',
+      deepDiveTitle: 'Vì sao ranh giới sản phẩm quan trọng',
+      deepDive: [
+        'Tài trợ thương mại bao gồm các công cụ và dịch vụ hỗ trợ thương mại; bảo lãnh tạo ra rủi ro tiềm tàng ngay cả trước khi một khoản vay bằng tiền được giải ngân. Bộ phận ngân quỹ phải phân biệt thu nhập từ dòng giao dịch của khách hàng với lãi hoặc lỗ trên các vị thế tự doanh của ngân hàng.',
+        'Dịch vụ thanh toán do ngân hàng cung cấp thuộc danh mục dịch vụ của ngân hàng, nhưng bài học này không định nghĩa lại ngành Payments & Fintech riêng biệt.',
+      ],
+      evidence: 'NHNN xác nhận phân loại định chế và phạm vi pháp lý; kinh tế học sản phẩm chi tiết là cấu trúc kế toán mang tính giáo dục.',
+      restriction: 'Các quyền hoạt động pháp lý cụ thể ngoài định nghĩa ngân hàng ở mức khái quát không được khẳng định dựa trên bình luận thứ cấp.',
+    },
+    {
+      en: 'Interest income versus non-interest income',
+      title: 'Thu nhập lãi so với thu nhập ngoài lãi',
+      objective: 'Phân biệt NII với phí ròng, ngoại hối, kinh doanh, hoa hồng bancassurance và thu nhập từ công ty con.',
+      mateIntro: 'Một tiêu đề nói rằng “thu nhập phí tăng” có thể che giấu những bản chất kinh tế rất khác nhau. Đó là hoạt động giao dịch định kỳ, đánh giá lại ngoại hối, kinh doanh, một khoản thanh toán bảo hiểm trả trước — hay doanh thu tính gộp vốn không thuộc về ngân hàng?',
+      keyInsight: 'Thu nhập phải được phân loại trên cơ sở ròng, ở cấp ngân hàng trước khi có thể so sánh hoặc gọi là định kỳ.',
+      what: 'NII là thu nhập lãi trừ chi phí lãi. Thu nhập ngoài lãi có thể gồm thu nhập phí và hoa hồng ròng, ngoại hối, kết quả kinh doanh hoặc đầu tư, thu nhập từ công ty liên kết hoặc công ty con, các khoản thu hồi và thu nhập hoạt động khác.',
+      how: 'Phí ròng lấy phí nhận được trừ phí đã trả. Dịch vụ thẻ, tài khoản, chuyển tiền, quản lý dòng tiền, thương mại và bảo lãnh có thể tạo ra phí. Bancassurance thường ghi nhận hoa hồng của ngân hàng — không phải tổng phí bảo hiểm của công ty bảo hiểm. Các dòng ngoại hối và ngân quỹ có thể phản ánh dòng giao dịch của khách hàng, biến động thị trường và cách phân loại kế toán.',
+      why: 'Các dòng khác nhau có mức độ bền vững, biến động, mức sử dụng vốn và rủi ro hành vi kinh doanh khác nhau. Một khoản hoa hồng trả trước một lần không nên được định giá như khối lượng thanh toán định kỳ.',
+      global: 'Các ngân hàng đa năng công bố nhiều dòng thu nhập ngoài lãi vì quản lý tài sản, thanh toán, thị trường và dịch vụ doanh nghiệp có diễn biến khác nhau qua các chu kỳ.',
+      vietnam: 'Vietcombank và FWD công bố quan hệ đối tác bancassurance độc quyền kéo dài 15 năm vào tháng 11 năm 2019, theo đó Vietcombank phân phối các sản phẩm bảo hiểm nhân thọ của FWD. Các điều khoản tài chính không được tiết lộ, vì vậy không đưa ra con số hoa hồng theo từng ngân hàng; xem tình huống thực tế bên dưới.',
+      imageAlt: 'Bảng phân loại các dòng thu nhập của ngân hàng và những sai lầm diễn giải thường gặp.',
+      statTiles: [
+        { label: 'Thu nhập lãi thuần (NII)', subtitle: 'Thu nhập lãi − chi phí lãi', description: 'Một dòng thu nhập chịu chi phối bởi bảng cân đối kế toán.' },
+        { label: 'Thu nhập phí ròng', subtitle: 'Phí nhận được − phí đã trả', description: 'Thước đo phí có thể so sánh được.' },
+        { label: 'Bancassurance', subtitle: 'Hoa hồng, không phải phí bảo hiểm', description: 'Tổng phí bảo hiểm thuộc về công ty bảo hiểm trừ khi kế toán hợp nhất quy định khác.' },
+      ],
+      statsNote: 'Không hiển thị con số hoa hồng hay tỷ trọng phí theo từng ngân hàng chưa được kiểm chứng.',
+      keyTerms: [
+        { term: 'Thu nhập phí và hoa hồng ròng', definition: 'Thu nhập phí và hoa hồng sau khi trừ chi phí phí và hoa hồng liên quan.' },
+        { term: 'Tổng phí bảo hiểm', definition: 'Phí bảo hiểm do công ty bảo hiểm thu; đó không mặc nhiên là doanh thu của ngân hàng.' },
+        { term: 'Thu nhập định kỳ (run-rate)', definition: 'Thu nhập dự kiến lặp lại trong hoạt động bình thường, chứ không phải từ một sự kiện một lần.' },
+      ],
+      recap: [
+        'NII không phải là tổng doanh thu.',
+        'So sánh phí ròng, không so sánh phí tính gộp thu của khách hàng.',
+        'Hoa hồng bancassurance và phí bảo hiểm là hai khái niệm khác nhau.',
+      ],
+      chapterRecap: 'Phân loại thu nhập đúng là nền tảng của phân tích chất lượng doanh thu.',
+      deepDiveTitle: 'Các câu hỏi về chất lượng doanh thu',
+      deepDive: [
+        'Với mỗi dòng thu nhập ngoài lãi, hãy hỏi: Nó có định kỳ không? Nó có phải số ròng không? Nó có tiêu tốn bảng cân đối không? Rủi ro hành vi kinh doanh hay rủi ro thị trường nào đi kèm? Nó được hợp nhất từ công ty con hay do chính ngân hàng trực tiếp tạo ra?',
+        'Một khoản thanh toán bancassurance trả trước có thể khiến một năm trở nên đặc biệt trong khi hoa hồng định kỳ trong tương lai vẫn khiêm tốn. Hãy chuẩn hóa các khoản một lần trước khi so sánh các ngân hàng hoặc dự phóng tăng trưởng.',
+      ],
+      evidence: 'Chương này trực tiếp tích hợp phụ lục nghiên cứu của Bài 3.2. Các phân biệt kế toán được giảng dạy ở mức khái niệm vì các công bố của từng ngân hàng chưa được kiểm chứng trên cơ sở so sánh tương đương.',
+      restriction: 'Hoa hồng bancassurance và cơ cấu thu nhập phí ròng theo từng ngân hàng vẫn thuộc diện Cần xác minh — Không xuất bản.',
+    },
+    {
+      en: 'Segment, price and measure profitability',
+      title: 'Phân khúc, định giá và đo lường khả năng sinh lời',
+      objective: 'Xây dựng góc nhìn khả năng sinh lời theo phân khúc và sản phẩm dựa trên giá, nguồn vốn, chi phí phục vụ, tổn thất kỳ vọng và vốn.',
+      mateIntro: 'Lãi suất vay thế chấp, phí tài khoản hay chênh lệch tỷ giá là giá — không phải lợi nhuận. Lợi nhuận chỉ xuất hiện sau khi phân bổ chi phí và rủi ro của việc phục vụ phân khúc đó.',
+      keyInsight: 'Phân khúc tốt gắn nhu cầu của khách hàng với thiết kế sản phẩm, giá dựa trên rủi ro, kênh phân phối và hiệu quả kinh tế suốt vòng đời.',
+      what: 'Các phân khúc như bán lẻ đại chúng, khách hàng giàu có, SME và doanh nghiệp khác nhau về quy mô số dư, hành vi giao dịch, rủi ro, nhu cầu tư vấn và cường độ phục vụ. Việc định giá có thể bao gồm lãi suất, phí, chênh lệch và gói sản phẩm.',
+      how: 'Ước tính doanh thu theo sản phẩm, trừ chi phí vốn tính theo giá chuyển vốn nội bộ, chi phí phục vụ trực tiếp và chi phí thu hút khách hàng, tổn thất tín dụng kỳ vọng và chi phí chung được phân bổ; sau đó đánh giá khả năng giữ chân, bán chéo và vốn.',
+      why: 'Một phân khúc lợi suất cao có thể có tổn thất và chi phí phục vụ cao; một mối quan hệ phí thấp có thể mang lại tiền gửi giá trị hoặc cơ hội bán chéo. Vì vậy biên lợi nhuận của một sản phẩm đơn lẻ có thể phản ánh sai giá trị mối quan hệ.',
+      global: 'Các ngân hàng giao dịch thường định giá một gói gồm cho vay, thanh khoản và thanh toán thay vì tối ưu hóa từng sản phẩm riêng lẻ.',
+      vietnam: 'Các đề xuất giá trị bán lẻ, SME và doanh nghiệp ngày càng kết hợp chi nhánh, đội ngũ quan hệ khách hàng và kênh di động; khả năng sinh lời phụ thuộc vào hành vi của phân khúc, chứ không chỉ nhãn kênh phân phối.',
+      visualHeading: 'Một ô phân khúc được đánh giá sau khi trừ chi phí, không phải theo giá của nó',
+      visualIntro: 'Lãi suất vay thế chấp, phí tài khoản hay chênh lệch tỷ giá là giá, không phải lợi nhuận. Hãy theo một ô phân khúc–sản phẩm qua từng khoản chi phí, rồi xem các lựa chọn nếu đóng góp yếu.',
+      imageAlt: 'Chuỗi sáu bước về khả năng sinh lời theo phân khúc.',
+      statTiles: [
+        { label: 'Định giá dựa trên rủi ro', subtitle: 'Giá phản ánh hiệu quả kinh tế kỳ vọng', description: 'Không phải giấy phép để đối xử bất công hoặc thiếu minh bạch.' },
+        { label: 'Giá chuyển vốn nội bộ', subtitle: 'Khoản tính phí hoặc ghi có nguồn vốn nội bộ', description: 'Kết nối khả năng sinh lời của sản phẩm với đường cong nguồn vốn của ngân hàng.' },
+        { label: 'Giá trị mối quan hệ', subtitle: 'Hiệu quả kinh tế đa sản phẩm suốt vòng đời', description: 'Bao gồm khả năng giữ chân và bán chéo, không chỉ biên lợi nhuận sản phẩm hôm nay.' },
+      ],
+      statsNote: 'Khung này được thiết kế sẵn sàng cho các chỉ số mà không tự đặt ra dữ liệu khả năng sinh lời theo phân khúc.',
+      keyTerms: [
+        { term: 'Định giá chuyển vốn nội bộ (FTP)', definition: 'Cơ chế nội bộ gán giá trị hoặc chi phí nguồn vốn cho các đơn vị kinh doanh và sản phẩm.' },
+        { term: 'Tổn thất tín dụng kỳ vọng', definition: 'Ước tính hướng tới tương lai về tổn thất tín dụng, dùng trong các quyết định rủi ro và kế toán.' },
+        { term: 'Giá trị vòng đời khách hàng', definition: 'Đóng góp kỳ vọng của mối quan hệ theo thời gian sau khi trừ chi phí và rủi ro liên quan.' },
+      ],
+      recap: [
+        'Giá không phải là lợi nhuận.',
+        'Kinh tế học phân khúc đòi hỏi nguồn vốn, chi phí phục vụ, rủi ro và vốn.',
+        'Giá trị mối quan hệ có thể khác với biên lợi nhuận sản phẩm.',
+      ],
+      chapterRecap: 'Quyết định về phân khúc và sản phẩm nên tối ưu hóa hiệu quả kinh tế suốt vòng đời, công bằng và điều chỉnh theo rủi ro, thay vì một mức lãi suất nhìn thấy được.',
+      deepDiveTitle: 'Một khối lập phương khả năng sinh lời',
+      deepDive: [
+        'Hãy xây dựng một khối lập phương gồm phân khúc, sản phẩm và kênh. Với mỗi ô, theo dõi số dư hoặc hoạt động, doanh thu ròng, chi phí phục vụ, tổn thất kỳ vọng và vốn. Cách này làm lộ rõ các khoản bù chéo và ngăn việc ghi công cho kênh số về doanh thu thực chất phụ thuộc vào đội ngũ quản lý quan hệ khách hàng.',
+        'Hãy dùng kết quả để chẩn đoán: đóng góp yếu có thể đòi hỏi thiết kế lại dịch vụ, thẩm định tốt hơn, bán chéo sâu hơn hoặc rút lui — chứ không mặc nhiên là tăng giá cho khách hàng.',
+      ],
+      evidence: 'Không có nguồn nào hỗ trợ bảng xếp hạng khả năng sinh lời theo phân khúc bằng số liệu cho Việt Nam, vì vậy bài học dừng ở khung phân tích thực tiễn.',
+    },
+  ],
+  takeaways: {
+    learned: 'Bạn có thể phân loại đúng sản phẩm và thu nhập ngân hàng, phân biệt hoa hồng bancassurance với phí bảo hiểm và xây dựng khả năng sinh lời theo phân khúc và sản phẩm.',
+    keyTakeaways: [
+      'Tiền gửi, cho vay và dịch vụ có các vai trò kinh tế khác nhau.',
+      'Không nên trộn lẫn NII, phí ròng, ngoại hối và kinh doanh.',
+      'So sánh phí ngân hàng sau khi trừ chi phí phí liên quan.',
+      'Giá và doanh thu không phải là lợi nhuận.',
+    ],
+    businessImplications: 'Chiến lược sản phẩm nên liên kết nhu cầu của khách hàng với doanh thu ròng, nguồn vốn, chi phí kênh, tổn thất kỳ vọng, hành vi kinh doanh và vốn.',
+    remember: 'Hãy phân loại thu nhập đúng trước khi so sánh tăng trưởng hay chất lượng.',
+  },
+};

@@ -1,0 +1,315 @@
+import type { VisualSpec } from './fashionVisualKit';
+
+export interface MfgElectronicsChapterVisual { heading: string; intro: string; spec: VisualSpec }
+
+/** Chapter-specific Learning Visuals for Consumer Electronics & Appliances Manufacturing Module 02, keyed by visualKind. */
+export const MFG_ELECTRONICS_M2_VISUALS: Record<string, MfgElectronicsChapterVisual> = {
+  'mfg-cea-m2-1': {
+    heading: 'Six lifecycle stages from raw materials to product recovery',
+    intro: 'The chain runs from raw materials and components through engineering, production, logistics and channels to installation, repair, refurbishment and recycling.',
+    spec: {
+      layout: 'flow', title: 'Structure and Core Stages of the Industry Value Chain', kicker: '',
+      steps: [
+        { label: 'Materials', detail: 'Steel, plastics, insulation and other raw inputs' },
+        { label: 'Component manufacturing', detail: 'Semiconductors, displays, PCBs, compressors, motors' },
+        { label: 'Product design', detail: 'Architecture, engineering and software' },
+        { label: 'Manufacturing and assembly', detail: 'Production, safety tests and quality' },
+        { label: 'Distribution and retail', detail: 'Packaging, logistics, channels and delivery' },
+        { label: 'After-sales and recovery', detail: 'Installation, repair, parts, refurbishment, recycling', kind: 'outcome' },
+      ],
+      loop: 'Information, quality, cash, service and feedback flows connect every stage across the lifecycle.',
+      note: 'Example: a connected refrigerator links steel, plastics, insulation, compressor and controls with design, software, assembly, safety tests, delivery, installation, repair and recovery.',
+      takeaway: 'Value is created through lifecycle coordination—not manufacturing alone.',
+    },
+  },
+  'mfg-cea-m2-2': {
+    heading: 'Products flow downstream, payments flow back, information moves both ways',
+    intro: 'Specialized participants supply, design, manufacture, move, sell, serve and recover products, while specifications, forecasts, test results and feedback move in both directions.',
+    spec: {
+      layout: 'ecosystem', title: 'Key Participants and Value Flows', kicker: '',
+      center: { label: 'Brand', detail: 'May own architecture, software, marketing, pricing and warranty' },
+      actors: [
+        { label: 'Material suppliers', relation: 'Supply raw materials', flows: ['product'] },
+        { label: 'Component suppliers', relation: 'Supply components to specification', flows: ['product', 'information'] },
+        { label: 'ODM', relation: 'Designs and manufactures to an agreed product brief', flows: ['product', 'information'] },
+        { label: 'OEM', relation: 'Produces to the brand’s specifications', flows: ['product', 'money'] },
+        { label: 'Logistics', relation: 'Moves goods to channels', flows: ['product', 'service'] },
+        { label: 'Retail', relation: 'Sells to customers; returns sales data and payment', flows: ['money', 'information'] },
+        { label: 'Service and recycling', relation: 'Repairs and recovers; reports failures', flows: ['service', 'information'] },
+      ],
+      note: 'Clarify product and IP ownership, specifications, data, quality, inventory, warranty, liability and bargaining power between participants.',
+      takeaway: 'Control of valuable capabilities may matter more than ownership of every production stage.',
+    },
+  },
+  'mfg-cea-m2-3': {
+    heading: 'Critical input families behind electronics and appliances',
+    intro: 'Product architectures have category-specific dependencies, and many components require specialized equipment, know-how, scale, qualification and regional ecosystems.',
+    spec: {
+      layout: 'taxonomy', title: 'Raw Materials, Electronic Components, and Critical Inputs', kicker: '',
+      root: 'Inputs a product depends on', rootDetail: 'One missing critical part can halt the line',
+      groups: [
+        { label: 'Raw materials', items: ['Copper, aluminum, steel', 'Plastics and glass', 'Lithium'] },
+        { label: 'Semiconductors and boards', items: ['Chips and memory', 'Power devices', 'PCBs, sensors, connectors'] },
+        { label: 'Device modules', items: ['Displays', 'Cameras', 'Batteries'] },
+        { label: 'Electromechanical and thermal', items: ['Motors and compressors', 'Pumps and heat exchangers', 'Insulation and refrigerants', 'Wiring'] },
+        { label: 'Supplied locally in Vietnam', items: ['Plastics and metal parts', 'Cables and packaging', 'Tooling', 'Selected electronics'] },
+      ],
+      note: 'Global Electronics Association: US$4.5T global electronics trade, of which ~US$2.46T inputs and components and ~US$2.06T finished electronics — trade value, not Consumer Electronics & Appliances revenue.',
+      takeaway: 'A missing critical component can halt production even when final-assembly capacity is available.',
+    },
+  },
+  'mfg-cea-m2-4': {
+    heading: 'Design choices fix cost, yield and repairability before the first build',
+    intro: 'Design choices determine component concentration, assembly steps, yield, energy use, repair access, certification, software support and future variants.',
+    spec: {
+      layout: 'driverTree', title: 'Research and Development, Product Design, and Technology Development', kicker: '',
+      root: { label: 'Lifecycle product value', detail: 'Largely set before production begins' },
+      drivers: [
+        { label: 'Component choices', detail: 'Concentration and obsolescence exposure', children: [{ label: 'Custom component: performance, tooling risk' }, { label: 'Bill of materials and target cost' }] },
+        { label: 'Manufacturability', detail: 'Assembly steps and yield' },
+        { label: 'Energy and compliance', detail: 'Energy use, safety and certification' },
+        { label: 'Serviceability', detail: 'Repair access and expected life', children: [{ label: 'Modular control board' }, { label: 'Design for repair' }] },
+        { label: 'Software and variants', detail: 'Support, cybersecurity and future variants' },
+      ],
+      note: 'In Vietnam, local engineering, software, tooling, testing, product adaptation and supplier collaboration can add value beyond labor-intensive assembly.',
+      takeaway: 'Much product value, cost, quality, and serviceability is determined before production begins.',
+    },
+  },
+  'mfg-cea-m2-5': {
+    heading: 'Why the cheapest quote is not always the right supplier',
+    intro: 'Procurement weighs capability, capacity, yield, quality, price, lead time, location, financial health, compliance and alternative supply — a late or unqualified chip can cost more than it saves.',
+    spec: {
+      layout: 'decision', title: 'Supplier Management, Procurement, and Upstream Risk Control', kicker: '',
+      root: { label: 'Lowest-price supplier offer', detail: 'Purchase price is only one cost' },
+      question: 'Does it also meet qualification, lead time, capacity and continuity needs?',
+      branches: [
+        { condition: 'Qualified, on time, alternatives exist', outcome: 'Award with risk monitoring', detail: 'Audit quality and share forecasts', tone: 'positive' },
+        { condition: 'Critical part with concentrated supply', outcome: 'Add a qualified alternative or strategic inventory', detail: 'Buffers and dual sourcing have cost limits', tone: 'caution' },
+        { condition: 'Late or fails qualification', outcome: 'Reject despite the saving', detail: 'A delayed launch destroys more value', tone: 'negative' },
+      ],
+      note: 'Segment suppliers by criticality and model disruption, inventory, obsolescence, currency, trade, quality and capacity scenarios. Vietnam manufacturers can combine supplier development, regional sourcing and design reuse.',
+      takeaway: 'Effective procurement balances total cost and resilience rather than minimizing purchase price alone.',
+    },
+  },
+  'mfg-cea-m2-6': {
+    heading: 'Electronics and appliance lines run different core processes',
+    intro: 'Throughput depends on materials, sequence, bottlenecks, people, equipment, tooling, changeovers, maintenance, automation, line balance and demand.',
+    spec: {
+      layout: 'compare', title: 'Manufacturing, Assembly, and Production Operations', kicker: '',
+      leftTitle: 'Electronics production', rightTitle: 'Appliance production',
+      rows: [
+        { label: 'Core process', a: 'PCB assembly, placement and soldering', b: 'Forming, molding and insulation' },
+        { label: 'Integration', a: 'Enclosure integration and firmware', b: 'Motors or compressors, wiring, mechanical assembly' },
+        { label: 'Testing', a: 'Calibration and functional tests', b: 'Safety checks, leak and electrical tests' },
+      ],
+      note: 'Example: a washing-machine line coordinates drums, motors, pumps, controls, harnesses, cabinets, firmware, tests, packing and model changes. Manage yield, throughput, downtime, rework, work in process, energy, maintenance, safety and schedule adherence on both line types.',
+      takeaway: 'Scale lowers unit cost only when process control, yield, flexibility, and demand alignment remain strong.',
+    },
+  },
+  'mfg-cea-m2-7': {
+    heading: 'Quality gates from incoming parts to compliance records',
+    intro: 'Defects create injury, downtime, returns, rework, warranty cost, reputation damage and market-access risk, so quality systems verify products at every stage.',
+    spec: {
+      layout: 'flow', title: 'Quality Assurance, Product Testing, and Regulatory Compliance', kicker: '',
+      steps: [
+        { label: 'Incoming inspection', detail: 'Components and tolerances' },
+        { label: 'In-process testing', detail: 'Assembly and electrical connections' },
+        { label: 'Performance testing', detail: 'Thermal, cooling, washing, energy use' },
+        { label: 'Safety testing', detail: 'Electrical safety, leakage and insulation' },
+        { label: 'Software validation', detail: 'Firmware and connectivity' },
+        { label: 'Compliance records', detail: 'Labels, test evidence and traceability', kind: 'outcome' },
+      ],
+      loop: 'Defect analysis drives corrective action, engineering change and supplier quality fixes.',
+      note: 'Example: a refrigerator needs electrical safety, temperature stability, energy, noise, door, refrigerant, transport and long-run reliability tests.',
+      takeaway: 'Prevention and early detection are more effective than warranty repair or recall.',
+    },
+  },
+  'mfg-cea-m2-8': {
+    heading: 'How factory output becomes shippable commercial inventory',
+    intro: 'Teams configure, protect, register and allocate products before release; packaging affects damage, freight cube, storage, presentation, waste and compliance.',
+    spec: {
+      layout: 'flow', title: 'Product Integration, Packaging, and Outbound Logistics Preparation', kicker: '',
+      steps: [
+        { label: 'Market configuration', detail: 'Market software, language and power' },
+        { label: 'Accessories and documents', detail: 'Plugs, accessories and documentation' },
+        { label: 'Protective packaging', detail: 'Guards against shock, vibration, moisture' },
+        { label: 'Labels and serials', detail: 'Register product identities' },
+        { label: 'Allocation and release', detail: 'Palletize and match stock to orders', kind: 'outcome' },
+      ],
+      note: 'Example: an air-conditioner shipment must pair indoor and outdoor units with compatible controls and serials. Vietnam domestic and export orders may need different labels, routing and customs documents.',
+      takeaway: 'Factory output becomes commercial inventory only after correct configuration, protection, traceability, and allocation.',
+    },
+  },
+  'mfg-cea-m2-9': {
+    heading: 'Shared import and wholesale steps, then alternative routes to the customer',
+    intro: 'Small electronics ship easily, while large appliances require specialized handling, delivery, installation and warranty; channels manage access, pricing, inventory and fulfillment.',
+    spec: {
+      layout: 'pathway', title: 'Distribution, Retail, and Market Access', kicker: '',
+      trunk: [
+        { label: 'Import and customs', detail: 'Importers bring products into the market' },
+        { label: 'Wholesale distribution', detail: 'Distributors manage access and local assortment' },
+      ],
+      optionsLabel: 'Channel options — alternatives, not steps',
+      options: [
+        { label: 'Electronics chains', detail: 'Specialist stores with consultation' },
+        { label: 'Appliance retailers and dealers', detail: 'Demonstration, finance and promotions' },
+        { label: 'Marketplaces', detail: 'Online transactions and fulfillment' },
+        { label: 'Brand channels', detail: 'Direct sales by the brand' },
+      ],
+      afterLabel: 'Needed for large appliances',
+      after: [
+        { label: 'Scheduled home delivery', detail: 'Warehouse space and careful handling' },
+        { label: 'Installation and service coverage', detail: 'After-sales coordination', kind: 'outcome' },
+      ],
+      note: 'A smartphone may move through a marketplace or specialist chain; a refrigerator needs scheduled delivery and service coverage. Design channels around product complexity.',
+      takeaway: 'Technically strong products underperform when availability, pricing, inventory, demonstration, delivery, or service is weak.',
+    },
+  },
+  'mfg-cea-m2-10': {
+    heading: 'Incremental sales at a healthy net price, decomposed into marketing drivers',
+    intro: 'Customers compare performance, efficiency, durability, price, operating cost, warranty and reviews; promotions must align with stock, fulfillment, installation and support.',
+    spec: {
+      layout: 'driverTree', title: 'Marketing, Sales, and Customer Acquisition', kicker: '',
+      root: { label: 'Incremental sales at net price', detail: 'Not views alone' },
+      drivers: [
+        { label: 'Qualified reach', detail: 'Search, social, video and stores', children: [{ label: 'Brand positioning' }, { label: 'Digital marketing' }] },
+        { label: 'Consideration', detail: 'Turn specifications into credible benefits', children: [{ label: 'Product education' }, { label: 'Creator and expert reviews' }] },
+        { label: 'Conversion', detail: 'Purchase promise the business can execute', children: [{ label: 'Store demonstrations' }, { label: 'Livestreams and campaigns' }, { label: 'Installment plans and trade-ins' }] },
+        { label: 'Retention', detail: 'Satisfaction, low returns, repeat purchase' },
+      ],
+      note: 'Example: an air-purifier campaign translates sensor, filter and airflow specifications into room-use benefits while stating conditions and ongoing filter cost.',
+      takeaway: 'Effective marketing converts technical features into clear, credible consumer benefits and an executable purchase promise.',
+    },
+  },
+  'mfg-cea-m2-11': {
+    heading: 'Who shares the customer lifecycle after the sale',
+    intro: 'Incorrect installation can affect safety, efficiency and performance, while failure and repair data reveal design, supplier, documentation and usage problems.',
+    spec: {
+      layout: 'ecosystem', title: 'Installation, After-Sales Service, and Customer Lifecycle Management', kicker: '',
+      center: { label: 'Installed product and owner', detail: 'From commissioning to recovery' },
+      actors: [
+        { label: 'Brand', relation: 'Warranty, software support and upgrades; receives failure data', flows: ['service', 'information'] },
+        { label: 'Retailer', relation: 'Sale, registration and trade-in coordination', flows: ['money', 'service'] },
+        { label: 'Installers', relation: 'Site assessment, commissioning, configuration', flows: ['service'] },
+        { label: 'Authorized service centers', relation: 'Warranty repair, maintenance and parts', flows: ['service', 'product'] },
+        { label: 'Independent repairers', relation: 'Repair and troubleshooting', flows: ['service', 'money'] },
+        { label: 'Logistics and recovery operators', relation: 'Collection, refurbishment and recycling', flows: ['product'] },
+      ],
+      note: 'Example: an air conditioner needs site assessment, refrigerant and electrical checks, maintenance, repair parts and service records. Track first-time fix, repeat failure, parts fill and warranty cost.',
+      takeaway: 'After-sales service creates value, protects trust, generates learning, and affects lifecycle profit after the initial sale.',
+    },
+  },
+  'mfg-cea-m2-12': {
+    heading: 'The resources beyond components that make a product succeed',
+    intro: 'The operating system combines physical inputs with IP, people, equipment, information, standards and relationships; electronics stress precision and software, appliances stress mechanical and thermal capability.',
+    spec: {
+      layout: 'taxonomy', title: 'Key Inputs and Operational Resources', kicker: '',
+      root: 'Operating resources behind a product', rootDetail: 'Assess maturity, ownership and substitutability of each',
+      groups: [
+        { label: 'Physical inputs', items: ['Materials', 'Components'] },
+        { label: 'IP and software', items: ['Firmware', 'Patents and algorithms', 'Designs'] },
+        { label: 'Engineering talent', detail: 'People who design, build and test' },
+        { label: 'Equipment and sites', items: ['Tooling and robotics', 'Test systems', 'Factories and warehouses'] },
+        { label: 'Information', items: ['Forecasts', 'Quality records', 'Customer feedback'] },
+        { label: 'Relationships and access', items: ['Supplier relationships', 'Standards', 'Channel and service capability'] },
+      ],
+      note: 'Example: a robotic vacuum needs sensors, motors, batteries, navigation software, plastics, assembly, tests, app support, channels, consumables and repair.',
+      takeaway: 'Components alone do not create differentiated, reliable, commercially successful products.',
+    },
+  },
+  'mfg-cea-m2-13': {
+    heading: 'Customer value and industrial value are measured differently',
+    intro: 'Product value includes reliability, safety, usability, energy, service and useful life, while industrial value includes jobs, suppliers, skills, technology and exports.',
+    spec: {
+      layout: 'compare', title: 'Outputs, Value Creation, and Customer Benefits', kicker: '',
+      leftTitle: 'Customer value', rightTitle: 'Industrial value',
+      rows: [
+        { label: 'What it delivers', a: 'Communication, computing, food preservation, cleaning, climate control', b: 'Jobs, suppliers, skills, technology and exports' },
+        { label: 'Efficient refrigerator', a: 'Convenience and lower use-phase electricity', b: 'Service work and potential material recovery' },
+        { label: 'How to measure', a: 'Reliability, safety, usability and useful life', b: 'Local content, wages, supplier development, IP' },
+      ],
+      note: 'NSO reported US$107.7B exports of electronics, computers and components in 2025, 22.7% of national exports; the broad product group is not the full appliances industry or domestic value added.',
+      takeaway: 'Value combines customer utility with industrial contribution, but gross trade does not reveal domestic value retained.',
+    },
+  },
+  'mfg-cea-m2-14': {
+    heading: 'Lifecycle profit after every cost layer, not gross margin alone',
+    intro: 'Costs accumulate across development, tooling, materials, labor, energy, depreciation, freight, inventory, markdown, acquisition, returns, warranty, software, parts and recovery.',
+    spec: {
+      layout: 'driverTree', title: 'Value Capture, Cost Structure, and Performance Measurement', kicker: '',
+      root: { label: 'Lifecycle profit', detail: 'What remains after the whole lifecycle' },
+      formula: 'Net price − product cost − conversion − logistics − marketing − after-sale cost',
+      drivers: [
+        { label: 'Net price and margin', detail: 'Brands capture IP, portfolio and customer value' },
+        { label: 'Product cost', op: '−', children: [{ label: 'Materials and components' }, { label: 'R&D and tooling' }] },
+        { label: 'Conversion cost', op: '−', detail: 'Labor, energy, depreciation', children: [{ label: 'Yield and throughput' }, { label: 'Utilization' }] },
+        { label: 'Logistics and inventory', op: '−', detail: 'Freight, inventory turns and markdown' },
+        { label: 'Marketing', op: '−', detail: 'Acquisition cost' },
+        { label: 'Warranty and returns', op: '−', detail: 'Support, software and parts' },
+      ],
+      note: 'Example: a premium device can have high gross margin but weak lifecycle return if acquisition, returns, support and warranty costs are high. In Vietnam, assembly can generate jobs and exports while much input and IP value stays imported or foreign-owned.',
+      takeaway: 'High volume or exports do not automatically mean high profit or domestic value capture.',
+    },
+  },
+  'mfg-cea-m2-15': {
+    heading: 'One product program, many specialized countries and dependencies',
+    intro: 'Materials, chips, displays, batteries and motors come from specialized regions, while design, software, tooling, assembly and markets may sit in different countries.',
+    spec: {
+      layout: 'ecosystem', title: 'Global Value Chain: Specialized Production and International Coordination', kicker: '',
+      center: { label: 'Global product program', detail: 'Coordinated across countries' },
+      actors: [
+        { label: 'Specialized material regions', relation: 'Supply global materials', flows: ['product'] },
+        { label: 'Chip, display and battery makers', relation: 'Supply regional components', flows: ['product', 'risk'] },
+        { label: 'Distributed development teams', relation: 'Design, software and tooling', flows: ['information'] },
+        { label: 'Assembly locations', relation: 'International production', flows: ['product'] },
+        { label: 'Cross-border logistics', relation: 'Moves inputs and finished goods', flows: ['product', 'risk'] },
+        { label: 'Trade policy and standards', relation: 'Shape access and compliance', flows: ['oversight'] },
+        { label: 'End markets', relation: 'Pay for finished products', flows: ['money'] },
+      ],
+      note: 'The Global Electronics Association reports 2023 global trade of US$4.5T, with inputs/components larger than finished electronics trade. Vietnam’s assembly and export growth is embedded in Asian and global inputs.',
+      takeaway: 'Global specialization creates efficiency and capability while increasing cross-border dependency.',
+    },
+  },
+  'mfg-cea-m2-16': {
+    heading: 'Vietnam’s local value chain: deep in some stages, import-dependent in others',
+    intro: 'Capability differs by product and stage: advanced components and technologies remain import dependent, while local firms can deepen supporting activities.',
+    spec: {
+      layout: 'taxonomy', title: 'Vietnam\'s Local Value Chain: Manufacturing, Assembly, and Domestic Market Development', kicker: '',
+      root: 'Vietnam’s local value chain', rootDetail: 'Capability differs by product and stage',
+      groups: [
+        { label: 'Foreign-invested export factories', detail: 'Large production and export activity' },
+        { label: 'Contract manufacturing', detail: 'Building for other firms’ products' },
+        { label: 'Local supporting suppliers', items: ['Packaging', 'Plastics and metal parts', 'Cables', 'Tooling'] },
+        { label: 'Appliance production', detail: 'Products for domestic households' },
+        { label: 'Domestic market services', items: ['Distribution', 'Installation', 'Service'] },
+        { label: 'Import-dependent', detail: 'Advanced components and technologies' },
+      ],
+      note: 'NSO reported US$107.7B exports and US$150.7B imports for electronics, computers and components in 2025 — gross flows that cannot be subtracted to infer value added. A local supplier may progress from packaging to precision parts, tooling or process engineering.',
+      takeaway: 'Vietnam has substantial production and export activity, but deeper value capture requires supplier, engineering, technology, product and brand capability.',
+    },
+  },
+  'mfg-cea-m2-17': {
+    heading: 'Upgrade routes from build-to-print toward owned capability',
+    intro: 'Local factories depend on imported inputs, equipment, customers and multinational decisions, while global networks depend on competitive local production, suppliers, people and services.',
+    spec: {
+      layout: 'pathway', title: 'Global–Local Interdependence and Strategic Implications', kicker: '',
+      trunk: [
+        { label: 'Build-to-print parts', detail: 'Produce to a customer’s drawings' },
+      ],
+      optionsLabel: 'Upgrade routes — can be combined',
+      options: [
+        { label: 'Co-design', detail: 'Joint development with customers' },
+        { label: 'Tooling and tests', detail: 'Own fixtures and test capability' },
+        { label: 'Software and process IP', detail: 'Proprietary know-how' },
+        { label: 'Direct customer qualification', detail: 'Approved supplier status' },
+        { label: 'Regional service', detail: 'Lifecycle services across markets' },
+      ],
+      afterLabel: 'Strategic destination',
+      after: [
+        { label: 'Owned, market-facing capability', detail: 'Domestic brands and higher-value activities', kind: 'outcome' },
+      ],
+      note: 'Universities, technical institutes, domestic firms, FDI manufacturers, logistics, service and policy actors can strengthen linkages. Interdependence brings learning and market access but can constrain retained value.',
+      takeaway: 'The strategic opportunity is to move from participation in global production toward greater ownership of capability and market-facing value.',
+    },
+  },
+};

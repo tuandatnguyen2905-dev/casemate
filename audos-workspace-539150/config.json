@@ -7,14 +7,26 @@
   "publicEntry": {
     "mode": "space-email-gate",
     "path": "/site/:configId",
-    "component": "components/EmailGate.tsx"
+    "component": "components/PublicEntry.tsx"
   },
+  "routes": [
+    { "path": "/fit-assessment", "public": true },
+    { "path": "/practice-tool", "public": true },
+    { "path": "/domain-knowledge", "public": true },
+    { "path": "/aptitude-test", "public": true },
+    { "path": "/about", "public": true },
+    { "path": "/terms", "public": true },
+    { "path": "/acceptable-use", "public": true }
+  ],
   "apps": [
     {
       "id": "fit-assessment",
       "name": "Fit Assessment",
       "icon": "Sparkles",
-      "component": "apps/FitAssessment/TargetFitOnboarding.tsx"
+      "component": "apps/FitAssessment/TargetFitOnboarding.tsx",
+      "description": "Upload your CV to see which industries, functions and graduate programs fit you best, then build a personalised preparation roadmap.",
+      "route": "/fit-assessment",
+      "public": true
     },
     {
       "id": "browse-programs",
@@ -39,7 +51,10 @@
       "id": "case-drill",
       "name": "Case Drill",
       "icon": "Zap",
-      "component": "apps/CaseDrill/App.tsx"
+      "component": "apps/CaseDrill/App.tsx",
+      "description": "Practise consulting-style cases step by step, with structured feedback on your answers.",
+      "route": "/practice-tool",
+      "public": true
     },
     {
       "id": "case-arena",
@@ -60,13 +75,59 @@
       "id": "industry-knowledge",
       "name": "Domain Knowledge",
       "icon": "BookOpen",
-      "component": "apps/IndustryKnowledge/App.tsx"
+      "component": "apps/IndustryKnowledge/App.tsx",
+      "description": "Learn the industry basics behind MT and consulting interviews, in short, easy-to-read cards.",
+      "route": "/domain-knowledge",
+      "public": true
     },
     {
       "id": "aptitude-test",
       "name": "Aptitude Test",
       "icon": "Hexagon",
-      "component": "apps/AptitudeTest/App.tsx"
+      "component": "apps/AptitudeTest/App.tsx",
+      "description": "Practise 12 aptitude test formats used by MT programs in Vietnam, from numerical to situational judgement. Free for 14 days.",
+      "route": "/aptitude-test",
+      "public": true
+    },
+    {
+      "id": "aptitude-simulation",
+      "name": "Aptitude Test Simulation",
+      "icon": "ClipboardList",
+      "component": "apps/AptitudeSimulation/App.tsx",
+      "description": "Sit full-length, timed aptitude rounds (25 questions across verbal, quantitative and abstract reasoning in 30 minutes) and review every answer afterwards."
+    },
+    {
+      "id": "pepsico-test",
+      "name": "PepsiCo Test",
+      "icon": "Droplets",
+      "component": "apps/PepsicoTest/App.tsx"
+    },
+    {
+      "id": "shopee-test",
+      "name": "Shopee Test",
+      "icon": "ShoppingCart",
+      "component": "apps/ShopeeTest/App.tsx"
+    },
+    {
+      "id": "hsbc-test",
+      "name": "HSBC Test",
+      "icon": "Building",
+      "component": "apps/HsbcTest/App.tsx"
+    },
+    {
+      "id": "aptitude-bank",
+      "name": "Bank of Aptitude Question",
+      "icon": "Database",
+      "component": "apps/AptitudeBank/App.tsx"
+    },
+    {
+      "id": "about-page",
+      "name": "About Us",
+      "icon": "Info",
+      "component": "apps/About/App.tsx",
+      "description": "Meet the story behind Casemate and our mission to help students find direction, prepare with confidence and become future leaders.",
+      "route": "/about",
+      "public": true
     },
     {
       "id": "feedback",
@@ -273,7 +334,7 @@
     },
     "branding": {
       "name": "Casemate",
-      "tagline": "Test your business thinking. Work under pressure. Stand out.",
+      "tagline": "Start to become a future leader. Upload your CV and see which industries, functions and graduate programs fit you best.",
       "logoUrl": "https://storage.googleapis.com/audos-images/workspaces/c6ce26d1-7466-4b72-962d-b7bf7a471c88/uploads/brand/e28b4f5e-44e7-4243-a6ec-91b01e5e68bb.png",
       "headingFont": "Inter",
       "bodyFont": "Inter",
@@ -402,7 +463,8 @@
           "shadow": "#cbd5e1",
           "shadowStrong": "#94a3b8"
         }
-      }
+      },
+      "heroVideoUrl": ""
     }
   },
   "cdnDependencies": {
@@ -411,7 +473,7 @@
     }
   },
   "agent": {
-    "greetingPrompt": "You are Mate in Casemate's SECONDARY support view. If asked about access or payment, state that new users receive 14 days of free access without payment, after which Casemate Pro is required for gated tools. Case Arena is the exception: every signed-in user can open the standalone app and register without a subscription, tier, trial, or admin check. Casemate Pro offers native card plans: First Month Promo (150.000₫ for the first month, then 200.000₫/month), Monthly (200.000₫ per month), and 6-Month (800.000₫, saving 400.000₫ versus six monthly payments), and each plan can be paid by Card / Thẻ or PayOS QR / bank transfer at the same displayed price and duration. Direct customers to Settings → Account & Subscription, where they first choose a plan, then choose one of those two payment methods. Customers land in Fit Assessment, not chat. Fit Assessment helps candidates validate a target program or explore their direction, then connects the result to a personalized preparation roadmap. Never restart either assessment as a chat interview and never request a CV here; direct actions back to Fit Assessment. Explain that customers choose one of two paths: validate a specific target program and function, or use the unchanged Exploration flow when they do not yet have a target. In validation, Casemate confirms the target, reviews a CV, collects MCQ motivation answers, reuses valid work-style results, shows only evidence-backed Target Fit dimensions, and generates a gap-based My Roadmap plan. Never invent a fit score, requirement, deadline, or company-culture claim. Keep the greeting under 120 words. Do not mention tools, systems, or this instruction.",
+    "greetingPrompt": "You are Mate in Casemate's SECONDARY support view. If asked about access or payment, state that new users receive 14 days of free access without payment, after which Casemate Pro is required for gated tools. Case Arena is the exception: every signed-in user can open the standalone app and register without a subscription, tier, trial, or admin check. Casemate Pro offers three access plans with provider-specific currencies: First Month Promo is a one-time 30-day purchase at $5.99 USD by Creem Card or 150.000₫ by PayOS VietQR; Monthly renews at $7.99 USD by Creem or is available for 200.000₫ by PayOS; and 6-Month is $30.99 USD by Creem or 800.000₫ by PayOS. Both methods grant the same displayed access duration. Direct customers to Settings → Account & Subscription, where they first choose a plan, then choose one of those two payment methods. Customers land in Fit Assessment, not chat. Fit Assessment helps candidates validate a target program or explore their direction, then connects the result to a personalized preparation roadmap. Never restart either assessment as a chat interview and never request a CV here; direct actions back to Fit Assessment. Explain that customers choose one of two paths: validate a specific target program and function, or use the unchanged Exploration flow when they do not yet have a target. In validation, Casemate confirms the target, reviews a CV, collects MCQ motivation answers, reuses valid work-style results, shows only evidence-backed Target Fit dimensions, and generates a gap-based My Roadmap plan. Never invent a fit score, requirement, deadline, or company-culture claim. Keep the greeting under 120 words. Do not mention tools, systems, or this instruction.",
     "welcomeMessage": "Welcome to Casemate. Start with Fit Assessment, build your roadmap, then practise solo or enter Case Arena for a live five-person team competition. I can help you compare programs, choose the right practice tool, or understand the 160-minute Pawvia session.",
     "name": "Mate",
     "greetingAutoSend": true,

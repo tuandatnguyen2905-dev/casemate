@@ -1,0 +1,266 @@
+import type { AdtechChapterVisual } from './adtechM1VisualSpecs';
+
+/** Chapter-specific Learning Visuals for Digital Marketing & AdTech Module 05, keyed by visualKind. */
+export const ADTECH_M5_VISUALS: Record<string, AdtechChapterVisual> = {
+  'adtech-m5-1': {
+    heading: 'One shopper, several platforms, each playing a different role',
+    intro: 'Consumers move among search, social, video, messaging, marketplaces, streaming, creators and commerce according to intent and context. One shopper’s path can touch five different platforms.',
+    spec: {
+      layout: 'table', title: 'Fragmented Media Consumption and the Rise of Short-Form Content', kicker: '',
+      headers: ['Platform or format', 'Role for this shopper', 'In the example'],
+      rows: [
+        { label: 'Creator short video', a: 'Discovery', b: 'First sees the product in a creator video' },
+        { label: 'Social search', a: 'Validation', b: 'Checks the choice through social search' },
+        { label: 'Marketplace', a: 'Comparison', b: 'Compares options in a marketplace' },
+        { label: 'Messaging', a: 'Questions', b: 'Asks questions in messaging' },
+        { label: 'Online or in store', a: 'Purchase', b: 'Buys through either route' },
+      ],
+      note: 'One example path, not a universal funnel. In Vietnam, short video, creators, social search and livestreaming matter but are segment-dependent — validate behavior by customer and category.',
+      takeaway: 'Fragmented attention requires coordinated channel roles and platform-specific content within one consistent customer proposition.',
+    },
+  },
+  'adtech-m5-2': {
+    heading: 'The same personalization tools can build trust or erode it',
+    intro: 'Brands personalize messages, work with creators, manage frequency and review AI content. A recommendation based on a recent customer action may feel useful, while repeated targeting after purchase feels careless or invasive.',
+    spec: {
+      layout: 'compare', title: 'Personalization, Authenticity, and Consumer Trust', kicker: '',
+      leftTitle: 'Builds trust', rightTitle: 'Erodes trust',
+      rows: [
+        { label: 'Relevance', a: 'Recommendation from a recent direct action', b: 'Repeated targeting after purchase' },
+        { label: 'Sponsorship', a: 'Commercial relationships disclosed', b: 'Undisclosed sponsorship' },
+        { label: 'Claims', a: 'Credible creator content', b: 'Exaggerated claims' },
+        { label: 'AI content', a: 'Reviewed before use', b: 'Unreviewed synthetic content' },
+        { label: 'Data use', a: 'Suitable preference choices', b: 'Unclear data practices' },
+        { label: 'Frequency', a: 'Managed exposure', b: 'Intrusive repetition' },
+      ],
+      note: 'Vietnamese advertisers should align personalization and creator work with audience expectations and applicable advertising and data rules. Optimize trust, complaints, retention and incremental outcomes — not personalization volume.',
+      takeaway: 'Personalization creates value only when relevance, appropriate data use, credible content, and customer control reinforce trust.',
+    },
+  },
+  'adtech-m5-3': {
+    heading: 'What happens after the ad decides whether media spend pays off',
+    intro: 'Product availability, price, page performance, checkout, delivery and support can convert or waste the demand media creates. A high-performing ad may still fail when stock runs out or mobile checkout is slow.',
+    spec: {
+      layout: 'flow', title: 'Omnichannel Journeys and Demand for Seamless Experiences', kicker: '',
+      steps: [
+        { label: 'Demand created', detail: 'Creator content, ads and search', owner: 'Marketing' },
+        { label: 'Product and page', detail: 'Availability, price and page performance', owner: 'Commerce' },
+        { label: 'Checkout and payment', detail: 'Website, marketplace, store or messaging', kind: 'decision', owner: 'Commerce' },
+        { label: 'Delivery or store visit', detail: 'Fulfillment, click-and-collect', owner: 'Operations' },
+        { label: 'Support and onboarding', detail: 'Customer care and education', owner: 'Service' },
+        { label: 'Repeat purchase', detail: 'Retention and lifetime value', kind: 'outcome' },
+      ],
+      loop: 'Post-purchase communication and journey analysis feed the next campaign.',
+      note: 'Evaluate the whole journey through conversion quality, fulfillment, satisfaction, margin and lifetime value.',
+      takeaway: 'Advertising value depends partly on the commerce, sales, service, and retention experience after the interaction.',
+    },
+  },
+  'adtech-m5-4': {
+    heading: 'Where human approval sits in an AI-driven campaign workflow',
+    intro: 'AI assists copy, imagery, video, localization, segmentation, bidding, pacing and analysis. Automation adds speed and scale but can produce errors, unsuitable claims, bias, rights issues or unaccountable decisions.',
+    spec: {
+      layout: 'flow', title: 'Generative AI and AI-Driven Campaign Execution', kicker: '',
+      steps: [
+        { label: 'Set permissions', detail: 'Permitted tasks and data boundaries', owner: 'Governance' },
+        { label: 'AI drafts and executes', detail: 'Creative, localization, segmentation, bidding and pacing', owner: 'AI tools' },
+        { label: 'Quality and legal review', detail: 'Quality standards and legal checks', kind: 'decision', owner: 'Human reviewer' },
+        { label: 'Approval gate', detail: 'Human approval with access controls and records', kind: 'decision', owner: 'Accountable owner' },
+        { label: 'Objective-specific measurement', detail: 'Outcome metrics and auditability', kind: 'outcome' },
+      ],
+      note: 'IAB’s September 2026 U.S. buyer study found 86% were changing or expected to change media measurement because of conversational AI and agents — a survey of U.S. respondents, not a market forecast.',
+      takeaway: 'Advantage will come from integrating AI into governed workflows and measurement—not adopting AI tools by name.',
+    },
+  },
+  'adtech-m5-5': {
+    heading: 'What brands can control to be visible in AI-assisted discovery',
+    intro: 'Consumers increasingly ask AI systems to compare and recommend. Brands can publish accurate, structured information, strengthen credible references and keep details consistent — without claiming guaranteed placement.',
+    spec: {
+      layout: 'driverTree', title: 'AI Search, Conversational Discovery, and Generative Engine Optimization', kicker: '',
+      root: { label: 'Visibility in AI-assisted discovery', detail: 'Alongside conventional search' },
+      drivers: [
+        { label: 'Structured, accurate content', children: [{ label: 'Specifications and FAQs' }, { label: 'Schema' }, { label: 'Support content' }] },
+        { label: 'Credible sources', detail: 'Expert sources and references' },
+        { label: 'Consistent brand information', detail: 'Same product and company details everywhere' },
+        { label: 'Search and content optimization', detail: 'GEO complements SEO and useful content' },
+      ],
+      note: 'Monitor mentions, citations, referrals, branded search, leads and sales; AI systems differ and responses vary, so reject GEO ranking guarantees. Vietnamese brands can invest in authoritative Vietnamese content.',
+      takeaway: 'Brands need visibility across conventional and AI-assisted discovery, but GEO should complement useful content and SEO rather than promise rankings.',
+    },
+  },
+  'adtech-m5-6': {
+    heading: 'One governed data base, several complementary measurement methods',
+    intro: 'Privacy, browsers, platform policy, identity gaps and offline outcomes limit any single method. Advertisers connect platform, website, CRM and commerce data under consent, then combine methods.',
+    spec: {
+      layout: 'pathway', title: 'Privacy-Conscious Data, Measurement, and Marketing Technology', kicker: '',
+      trunk: [
+        { label: 'First-party data strategy', detail: 'Lawful platform, website, CRM, commerce and service data' },
+        { label: 'Privacy controls', detail: 'Consent, minimization and aggregation' },
+      ],
+      optionsLabel: 'Complementary methods — each answers a different question',
+      options: [
+        { label: 'Platform attribution', detail: 'Supports day-to-day operations' },
+        { label: 'Incrementality testing', detail: 'Experiments estimate causality' },
+        { label: 'Marketing mix modeling', detail: 'Supports broader budget allocation' },
+        { label: 'CRM cohorts', detail: 'Reveal customer value over time' },
+        { label: 'Cross-platform analytics', detail: 'Reconciled view across channels' },
+      ],
+      afterLabel: 'Then',
+      after: [{ label: 'Documented decisions', detail: 'Purposes, consent, definitions, methods and uncertainty recorded', kind: 'outcome' }],
+      note: 'Reduce single-source dependency. Vietnamese businesses can build conversion definitions, access controls and CRM and commerce integration step by step.',
+      takeaway: 'Future measurement will combine complementary methods and governed first-party relationships rather than unrestricted individual tracking.',
+    },
+  },
+  'adtech-m5-7': {
+    heading: 'A creator program: set the foundations, choose the uses, measure beyond views',
+    intro: 'Brands use creators for discovery, demonstrations, reviews, affiliate sales, livestreams, paid amplification and reusable assets. Creator-led content connects media with commerce, but fragmented tools complicate evaluation.',
+    spec: {
+      layout: 'pathway', title: 'Social Video, Creator Marketing, and the Creator Economy', kicker: '',
+      trunk: [
+        { label: 'Creator fit', detail: 'Audience fit and credibility' },
+        { label: 'Contract and disclosure', detail: 'Rights, disclosure and brand safety agreed' },
+      ],
+      optionsLabel: 'Ways to use creators — alternatives, not steps',
+      options: [
+        { label: 'Discovery and demonstrations', detail: 'Entertainment and product demos' },
+        { label: 'Reviews', detail: 'Credible opinions' },
+        { label: 'Affiliate sales', detail: 'Commerce links' },
+        { label: 'Livestreams', detail: 'Live selling' },
+        { label: 'Paid amplification', detail: 'Boosting creator content' },
+        { label: 'Reusable assets', detail: 'Content used again in other channels' },
+      ],
+      afterLabel: 'Measure',
+      after: [{ label: 'Business outcomes', detail: 'Qualified engagement, incrementality, sales, brand effect and trust — not views alone', kind: 'outcome' }],
+      note: 'WARC’s October 2026 forecast: global social-media ad spend of US$394.6B in 2026, up 21.3%, with social video at 51.7% of global video ad spend. Global forecasts, not confirmed results or Vietnam figures.',
+      takeaway: 'Social video and creators are becoming major media channels, but value depends on credibility, relevance, disclosure, content quality, and business outcomes.',
+    },
+  },
+  'adtech-m5-8': {
+    heading: 'Retail media links brands, shoppers and retailer data — with competing incentives',
+    intro: 'Retailers and marketplaces sell sponsored search, category placements, display and off-site activation connected to shopping environments and permitted transaction data.',
+    spec: {
+      layout: 'ecosystem', title: 'Retail Media and Commerce-Integrated Advertising', kicker: '',
+      center: { label: 'Retail media network', detail: 'Retailer or marketplace selling media' },
+      actors: [
+        { label: 'Brands', relation: 'Buy placements for purchase proximity and measurement', flows: ['money'] },
+        { label: 'Shoppers', relation: 'Shopping behavior and permitted transaction data', flows: ['information'] },
+        { label: 'On-site inventory', relation: 'Sponsored products, category placements and display', flows: ['product'] },
+        { label: 'Off-site partners', relation: 'Activation on partner inventory', flows: ['product', 'money'] },
+        { label: 'Measurement governance', relation: 'Separates attributed from incremental sales', flows: ['oversight', 'risk'] },
+      ],
+      note: 'A sponsored listing can receive sales credit even when a loyal shopper would have bought anyway. Define attributed and incremental sales, data access, fees, overlap and retailer-brand incentives.',
+      takeaway: 'Retail media bridges advertising and commerce, but credible value requires data quality, relevant inventory, transparency, and incremental sales evidence.',
+    },
+  },
+  'adtech-m5-9': {
+    heading: 'Newer channels extend the mix across screens, moments and places',
+    intro: 'CTV and streaming, podcasts and audio, DOOH and social video extend the digital mix. Audience overlap can duplicate reach and frequency, and each channel reports with different definitions.',
+    spec: {
+      layout: 'taxonomy', title: 'Connected TV, Digital Audio, and Omnichannel Media Planning', kicker: '',
+      root: 'Extended digital media mix', rootDetail: 'Channels to coordinate, not a sequence',
+      groups: [
+        { label: 'CTV and streaming', detail: 'Screens — IAB U.S. forecast +15.6% for 2026' },
+        { label: 'Podcasts and audio', detail: 'Moments — IAB U.S. forecast +8.7% for 2026' },
+        { label: 'DOOH', detail: 'Locations' },
+        { label: 'Social video and search', detail: 'Existing digital channels' },
+        { label: 'Integrated measurement', detail: 'Audiences, timing, frequency and experiments across channels' },
+      ],
+      note: 'The IAB September 2026 figures are U.S. buyer forecasts, not Vietnam estimates. Assess local inventory, audience, pricing, measurement and channel role first; channel forecasts do not prove advertiser returns.',
+      takeaway: 'Emerging digital channels add reach and context, but value depends on coordination with existing media and comparable outcome evidence.',
+    },
+  },
+  'adtech-m5-10': {
+    heading: 'Vietnam’s 2026 legal changes and the ongoing compliance work they require',
+    intro: 'Two laws took effect on 1 January 2026 and the advertising decree on 15 February 2026. Organizations now document data purposes, permissions, disclosures and vendor responsibilities throughout the campaign lifecycle.',
+    spec: {
+      layout: 'timeline', title: 'Privacy, Data Protection, and Advertising Transparency', kicker: '',
+      events: [
+        { period: '1 Jan 2026', label: 'Personal Data Protection Law', detail: 'Law 91/2025/QH15 takes effect', status: 'historical' },
+        { period: '1 Jan 2026', label: 'Advertising Law amendment', detail: 'Law 75/2025/QH15 takes effect', status: 'historical' },
+        { period: '15 Feb 2026', label: 'Decree 342', detail: 'Detailing the Law on Advertising takes effect', status: 'historical' },
+        { period: 'Ongoing', label: 'Lifecycle compliance', detail: 'Consent, disclosure, vendor review, approvals and records', status: 'current' },
+      ],
+      note: 'Obligations depend on activity and role; businesses need activity-specific legal assessment, contracts, access controls and training. Embed compliance throughout the lifecycle rather than as final approval.',
+      takeaway: 'Privacy and transparency are operating requirements affecting campaign design, technology, vendors, and customer trust.',
+    },
+  },
+  'adtech-m5-11': {
+    heading: 'Checks an AI-generated or synthetic asset must pass before use',
+    intro: 'AI can generate text, imagery, video, voices and decisions; governance defines permissions, review, disclosure, rights, escalation and correction. A synthetic endorsement should trigger rights, authenticity, disclosure, claim and human-approval checks.',
+    spec: {
+      layout: 'decision', title: 'Responsible AI, Content Integrity, and Brand Safety', kicker: '',
+      root: { label: 'AI-generated asset', detail: 'For example, a synthetic endorsement' },
+      question: 'Has it passed rights, authenticity, disclosure, claim and human-approval checks?',
+      branches: [
+        { condition: 'All checks passed', outcome: 'Use with audit trail and monitoring', detail: 'Records kept; brand-safety and fraud controls stay on', tone: 'positive' },
+        { condition: 'Factual claims, real people or regulated products', outcome: 'Escalate for heightened review', detail: 'Proportionate human oversight', tone: 'caution' },
+        { condition: 'A check fails', outcome: 'Do not use; correct and record', detail: 'Incident handling and supplier accountability', tone: 'negative' },
+      ],
+      note: 'Errors and manipulation can harm people, brands, budgets and legal standing. Vietnamese providers can align responsible-AI and brand-safety procedures with client risk and applicable law.',
+      takeaway: 'Trustworthy providers differentiate by managing accuracy, accountability, authenticity, placement, fraud, and reputational risk.',
+    },
+  },
+  'adtech-m5-12': {
+    heading: 'What drives the resource footprint of a digital campaign',
+    intro: 'Digital advertising consumes computing, networks, devices, production, storage and data-center resources. Footprint varies with infrastructure, electricity, devices, geography, delivery volume, format and method.',
+    spec: {
+      layout: 'driverTree', title: 'Sustainability and the Environmental Impact of Digital Advertising', kicker: '',
+      root: { label: 'Campaign resource use', detail: 'Complex to measure for a single campaign' },
+      drivers: [
+        { label: 'Delivery volume', children: [{ label: 'Unnecessary ad requests' }, { label: 'Wasteful frequency' }, { label: 'Invalid traffic' }] },
+        { label: 'Creative assets', detail: 'Appropriate asset formats' },
+        { label: 'Infrastructure', detail: 'Computing, networks, storage, data centers and electricity' },
+        { label: 'Devices and geography', detail: 'Where and how ads are viewed' },
+        { label: 'Suppliers', detail: 'Supplier assessment and lifecycle practices' },
+      ],
+      note: 'Cutting invalid traffic and wasteful frequency can improve efficiency and resource use without claiming a carbon result. Define measurement boundaries and assumptions; make only substantiated environmental claims.',
+      takeaway: 'Sustainability can improve efficiency, but environmental claims need transparent boundaries, methods, and evidence.',
+    },
+  },
+  'adtech-m5-13': {
+    heading: 'WARC’s forecast path for total global ad spend to 2028',
+    intro: 'WARC’s October 2026 forecast projects total global advertising spend across all media rising each year to 2028, with growth slowing. Total market growth does not guarantee profit for every geography or provider.',
+    spec: {
+      layout: 'timeline', title: 'Global Advertising Growth and the Shift Toward Digital Channels', kicker: '',
+      events: [
+        { period: '2026', label: 'US$1.34T', detail: 'Forecast growth of 11.9%', status: 'forecast' },
+        { period: '2027', label: 'US$1.46T', detail: 'Forecast growth of 8.4%', status: 'forecast' },
+        { period: '2028', label: 'US$1.57T', detail: 'Forecast growth of 7.9%', status: 'forecast' },
+      ],
+      note: 'Global all-media totals, not digital-only spend; forecasts can be revised. A growing social market can benefit platforms while an undifferentiated agency still faces margin pressure — adapt global scenarios to local purchasing power, media behavior and regulation.',
+      takeaway: 'Growth favors digital channels, but total market expansion does not guarantee profit for every geography or provider.',
+    },
+  },
+  'adtech-m5-14': {
+    heading: 'A good opportunity sits where four conditions overlap',
+    intro: 'Opportunities include governed AI workflows, AI-discovery content, creators and affiliates, commerce media, automation, analytics and SMB tools. Each needs different talent, data and economics, and fast growth attracts competition.',
+    spec: {
+      layout: 'driverTree', title: 'High-Potential Growth Areas', kicker: '',
+      root: { label: 'Attractive opportunity', detail: 'Not simply the fastest-growing channel' },
+      drivers: [
+        { label: 'Customer demand', children: [{ label: 'Problem severity' }, { label: 'Willingness to pay' }] },
+        { label: 'Differentiated capability', children: [{ label: 'Capability fit' }, { label: 'Competition' }] },
+        { label: 'Responsible delivery', detail: 'Risk managed' },
+        { label: 'Profitability', children: [{ label: 'Margin' }, { label: 'Repeatability' }] },
+      ],
+      note: 'Example: a specialist agency may build deep retail-media measurement for one category while a vendor simplifies CRM and campaign reporting for SMEs. Local-language content, social commerce and affordable automation are relevant in Vietnam.',
+      takeaway: 'The best opportunity is where customer demand, differentiated capability, responsible delivery, and profitability overlap—not simply the fastest-growing channel.',
+    },
+  },
+  'adtech-m5-15': {
+    heading: 'What becomes less defensible, and the priority that replaces it',
+    intro: 'AI discovery, fragmented journeys, changing data, platform concentration and commoditized tools make single-platform conversions and undifferentiated services less defensible. Agencies, vendors and advertisers each need to shift.',
+    spec: {
+      layout: 'compare', title: 'Strategic Priorities for 2027 and Beyond', kicker: '',
+      leftTitle: 'Less defensible', rightTitle: 'Priority for 2027 and beyond',
+      rows: [
+        { label: 'Agencies', a: 'Repetitive execution', b: 'Strategy, specialization and AI-assisted productivity' },
+        { label: 'Vendors', a: 'Commoditized tools', b: 'Integration, reliability, usability and governance' },
+        { label: 'Advertisers', a: 'Single-platform conversions', b: 'Flexible multi-method measurement' },
+        { label: 'Channels', a: 'Dependence on one platform', b: 'Diversified dependencies' },
+        { label: 'Proof of value', a: 'Undifferentiated service claims', b: 'Retention and incrementality' },
+      ],
+      note: 'Vietnam priorities include local talent, commerce and creator capability, analytics, data and advertising compliance, first-party relationships and cross-border service quality.',
+      takeaway: 'Future winners combine adaptability, reliable execution, clear positioning, responsible data, and credible commercial evidence.',
+    },
+  },
+};

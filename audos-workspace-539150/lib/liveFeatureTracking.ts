@@ -138,6 +138,29 @@ async function resolveIdentity(input: LiveSourceEventBundle): Promise<TrackingId
   return { userId: null, sourceUserKey: null, identityStatus: 'identity_unresolved', excluded: false };
 }
 
+export function isExcludedTrackingSession(sessionId: string): boolean {
+  return isExcludedSession(sessionId);
+}
+
+export async function resolveTrackingIdentity(
+  sessionId: string,
+  featureName: string,
+  sourceUserKey?: string | null,
+): Promise<TrackingIdentity> {
+  return resolveIdentity({
+    featureName,
+    appId: '',
+    mode: null,
+    sessionId,
+    sourceTable: '',
+    sourceRecordId: '',
+    ...(sourceUserKey !== undefined ? { sourceUserKey } : {}),
+    occurredAt: new Date().toISOString(),
+    properties: {},
+    events: [],
+  });
+}
+
 function failureReason(error: unknown): string {
   if (error instanceof Error && error.message) return error.message.slice(0, 500);
   const message = (error as any)?.message;

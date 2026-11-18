@@ -1,10 +1,11 @@
 import { CASEMATE_ENTITLEMENT_SNIPPET, ACCESS_RULES_VERSION } from '../../lib/proAccess';
+import { CASE_SCORING_RUBRICS_JSON } from '../../lib/caseScoringRubrics';
 
 export const CASE_DRILL_HOOK_NAME = 'casemate-case-drill-v4';
-export const CASE_DRILL_HOOK_VERSION = 'case-drill-v15-journey-library';
+export const CASE_DRILL_HOOK_VERSION = 'case-drill-v21-feedback-priorities';
 export const CASE_DRILL_WORKSPACE_ID = 'workspace-539150';
 
-const HOOK_DESCRIPTION = `Casemate Case Pool full-case engine - live case generation (14 case types incl. banking/Big-4/ops/digital specialties, industry- and function-aware mixed rotation, optional program targeting, selectable Easy/Medium/Hard difficulty, exhibits rendered in the clearest form for the data - chart or table), guided walkthrough coaching, rubric grading - every graded case returns a model answer (framework, key findings, recommendation), a matched/missing delta comparison against it, and an action plan whose items each carry a why tied to that delta - give-up reveal with model answers, and grading for 114 prebuilt Case Library cases (100 core plus 14 manifest-approved Journey cases) against their own published model answer; generation is gated server-side to Casemate Pro subscribers or an active free-access window - launch week / founding-member month (${CASE_DRILL_HOOK_VERSION}, ${ACCESS_RULES_VERSION})`;
+const HOOK_DESCRIPTION = `Casemate Case Pool full-case engine - live case generation (14 case types incl. banking/Big-4/ops/digital specialties, industry- and function-aware mixed rotation, optional program targeting, selectable Easy/Medium/Hard difficulty, exhibits rendered in the clearest form for the data - chart or table), guided walkthrough coaching, rubric grading - every graded case returns a model answer (framework, key findings, recommendation), a matched/missing delta comparison against it, and an action plan whose items each carry a why tied to that delta - give-up reveal with model answers, and grading for the Case Library, including 24 CM-CALC Cycle 1 cases and 24 shared Market Sizing Cycle 3 cases across Provided Data and Ambiguous Estimation, plus preserved retired history, against each case's own published model answer; generation is gated server-side to Casemate Pro subscribers or an active free-access window - launch week / founding-member month (${CASE_DRILL_HOOK_VERSION}, ${ACCESS_RULES_VERSION})`;
 
 // v13 (solve a library case in place): adds action=grade_library, which grades
 // an answer to one of the 100 prebuilt Case Library cases. Those cases live in
@@ -439,6 +440,88 @@ const LIBRARY_RUBRIC = {
   },
 };
 
+const SHARED_SCORING_RUBRICS = ${CASE_SCORING_RUBRICS_JSON};
+
+function deterministicLowScore(answer) {
+  const clean = String(answer || '').trim();
+  if (!clean) return 0;
+  const words = clean.split(/\s+/).filter(function (word) { return /[A-Za-z0-9À-ỹ]/.test(word); });
+  if (words.length < 4) return 0;
+  if (words.length < 12 || clean.length < 45) return 1;
+  return null;
+}
+
+function normalizeSharedGrade(raw, rubric, answer) {
+  const low = deterministicLowScore(answer);
+  const rawItems = Array.isArray(raw && raw.criteria) ? raw.criteria : [];
+  const byKey = {};
+  rawItems.forEach(function (item) { if (item && item.key) byKey[String(item.key)] = item; });
+  const excerpt = clampText(String(answer || '').trim().replace(/\s+/g, ' '), 120);
+  const criteria = rubric.criteria.map(function (definition) {
+    if (low !== null) return {
+      key: definition.key,
+      label: definition.label,
+      weight: definition.weight,
+      score: low,
+      evidence: excerpt ? 'Submission: “' + excerpt + '”' : 'No answer was submitted.',
+      reason: low === 0 ? 'There is not enough relevant content to assess this criterion.' : 'The submission is too limited to demonstrate this criterion.',
+      stronger_answer: 'Add specific content that demonstrates ' + definition.label.toLowerCase() + ': ' + definition.description,
+    };
+    const item = byKey[definition.key];
+    const score = Number(item && item.score);
+    const evidence = clampText(item && item.evidence, 600).trim();
+    const reason = clampText(item && item.reason, 900).trim();
+    const stronger = clampText(item && (item.stronger_answer || item.strongerAnswer), 900).trim();
+    if (!item || !Number.isFinite(score) || !evidence || !reason || !stronger) throw new Error('Mate returned an incomplete criterion breakdown. Your answer is unchanged; please try grading again.');
+    return { key: definition.key, label: definition.label, weight: definition.weight, score: Math.round(Math.max(0, Math.min(10, score)) * 10) / 10, evidence: evidence, reason: reason, stronger_answer: stronger };
+  });
+  const totalWeight = criteria.reduce(function (sum, item) { return sum + item.weight; }, 0) || 100;
+  const overall = Math.round(criteria.reduce(function (sum, item) { return sum + item.score * item.weight; }, 0) / totalWeight);
+  return { rubric_id: rubric.id, scale: 10, overall_score: Math.max(0, Math.min(10, overall)), criteria: criteria };
+}
+
+function normalizePriorityActions(raw, missing) {
+  const actions = (Array.isArray(raw) ? raw : []).slice(0, 3).map(function (item) {
+    if (item && typeof item === 'object' && !Array.isArray(item)) {
+      return { action: clampText(item.action || item.text || '', 600).trim(), why: clampText(item.why || item.reason || '', 800).trim() };
+    }
+    return { action: clampText(item, 600).trim(), why: '' };
+  }).filter(function (item) { return item.action.length > 0; });
+  const gaps = (Array.isArray(missing) ? missing : []).map(function (item) { return clampText(item, 500).trim(); }).filter(Boolean);
+  gaps.forEach(function (gap) {
+    if (actions.length >= 3) return;
+    actions.push({ action: 'Revise the answer to address this gap: ' + gap, why: 'This is one of the highest-impact case-specific elements missing from the submitted answer.' });
+  });
+  if (actions.length < 1) {
+    actions.push({ action: 'Rebuild the answer in three sections: structure, analysis and calculations, then recommendation.', why: 'The submitted answer needs a complete, decision-led case flow before lower-impact polish.' });
+  }
+  return actions.slice(0, 3);
+}
+
+function normalizeSectionFeedback(raw) {
+  const items = Array.isArray(raw) ? raw : [];
+  const expected = ['Structure', 'Analysis & calculations', 'Recommendation'];
+  return expected.map(function (section) {
+    const match = items.find(function (item) { return item && String(item.section || '').toLowerCase() === section.toLowerCase(); }) || {};
+    return {
+      section: section,
+      assessment: clampText(match.assessment || '', 1200).trim(),
+      evidence: clampText(match.evidence || '', 900).trim(),
+      improvement: clampText(match.improvement || '', 900).trim(),
+    };
+  });
+}
+
+function normalizeIntegratedAssessment(raw) {
+  const value = asObject(raw);
+  return {
+    overall_recommendation: clampText(value.overall_recommendation || '', 1200).trim(),
+    supporting_evidence: clampText(value.supporting_evidence || '', 1200).trim(),
+    trade_offs: clampText(value.trade_offs || '', 1200).trim(),
+    feasibility: clampText(value.feasibility || '', 1200).trim(),
+  };
+}
+
 if (!sessionId) {
   respond(401, { error: 'Sign in to generate and save your case practice.' });
 } else if ((action === 'generate' || action === 'open_library') && !(await ensureProForGenerate())) {
@@ -521,7 +604,7 @@ if (!sessionId) {
     'Candidate snapshot: ' + String((assessment && assessment.candidate_snapshot) || 'No assessment snapshot available \u2014 build a strong general business case for a Vietnamese MT/consulting candidate.') + '.',
     'Set the case in a realistic industry context (Vietnamese or Southeast Asian setting preferred where natural). The case_type field in your JSON must be exactly "' + caseType.label + '".',
     'Use numbers that can be solved without outside research. Keep the prompt challenging but answerable in 20\u201330 minutes.',
-    'Tailor the rubric\'s "excellent" and "watch_for" strings to THIS case type and THIS case\'s specific numbers \u2014 e.g. a Market Sizing case rewards explicit assumptions and a sanity check; an M&A case rewards synergies-vs-price logic.',
+    caseTypeId === 'market_sizing' ? 'MARKET SIZING FLOW: the learner first builds an ungraded issue tree, then creates labelled Components and a bottom-up model. The rubric must assess only the Components, model logic, and calculated result. Never score or request the issue tree, written calculation steps, judgment notes, assumption rationale, or a reasonableness check. Express currency values and requested answers in full VND or VND per year, never compact billion-denominated labels or scaled answers.' : 'Tailor the rubric\'s "excellent" and "watch_for" strings to THIS case type and THIS case\'s specific numbers.',
     'Formatting for case_data (critical \u2014 it renders as plain text): use REAL line breaks, never one long paragraph. Put each fact on its own line, group facts under short section labels, leave a blank line between sections, and present every exhibit as its own block starting "Exhibit 1 \u2014 <title>:" followed by one "- label: value" line per data point. No markdown tables.',
     'Formatting for prompt: 2\u20133 short paragraphs separated by blank lines \u2014 client situation first, then the question.',
     chartSpec
@@ -535,7 +618,7 @@ if (!sessionId) {
     const generatedResult = await platform.generateText({
       systemPrompt: systemPrompt,
       userPrompt: userPrompt,
-      model: 'gpt-4o-mini',
+      model: 'gpt-6.1-sol',
       // Hard cases carry two exhibits and a full rubric - an explicit cap
       // prevents the JSON from being silently truncated mid-generation.
       maxTokens: 3000,
@@ -611,10 +694,19 @@ if (!sessionId) {
             recommendation: clampText(model.recommendation, 3000).trim(),
           },
         });
+        const numericChecks = (Array.isArray(lib.numeric_checks) ? lib.numeric_checks : []).slice(0, 12).map(function (check) {
+          const item = asObject(check);
+          return { label: clampText(item.label, 120), value: Number(item.value), tolerance: Number(item.tolerance) || 0, unit: clampText(item.unit, 80) };
+        }).filter(function (check) { return check.label && Number.isFinite(check.value); });
         const meta = {
           mode: 'library',
           source: 'library',
           library_case_id: libraryId,
+          source_case_id: clampText(lib.source_case_id, 40).trim(),
+          rounding_rule: clampText(lib.rounding_rule, 500).trim(),
+          numeric_checks: numericChecks,
+          market_sizing_format: clampText(lib.market_sizing_format, 40).trim(),
+          market_sizing_rubric_version: clampText(lib.market_sizing_rubric_version, 80).trim(),
           pool_type: clampText(lib.pool_type, 40).trim(),
           pool_industry: clampText(lib.pool_industry, 40).trim(),
           difficulty_id: clampText(lib.difficulty_id, 20).trim(),
@@ -675,7 +767,12 @@ if (!sessionId) {
           return String(item.step || '').toUpperCase() + ' \u2014 the candidate said: ' + String(item.response || '');
         }).join('\n');
 
-        const systemPrompt = 'You are Mate, Casemate\'s warm but rigorous case-interview coach, walking one candidate through one case step by step. Coach ONLY the current step. Be candid, supportive, and specific \u2014 quote their own words and the case facts. Return valid JSON only, with no markdown.';
+        const stepRubric = stepKey === 'structure'
+          ? SHARED_SCORING_RUBRICS.structures
+          : stepKey === 'math'
+            ? SHARED_SCORING_RUBRICS.calculations
+            : SHARED_SCORING_RUBRICS.full_case;
+        const systemPrompt = 'You are Mate, Casemate\'s rigorous and evidence-bound case-interview coach. Coach only the current step. Use the full 0-10 range. Length and confidence are not evidence. Never invent strengths, numbers, or exhibit references. Write all feedback in English and do not use long em dashes. Return valid JSON only.';
         const userPrompt = [
           'CASE TITLE: ' + practiceCase.case_title,
           'CASE TYPE: ' + practiceCase.case_type,
@@ -684,27 +781,32 @@ if (!sessionId) {
           'RUBRIC: ' + JSON.stringify(parts.rubric),
           prior ? 'EARLIER STEPS:\n' + prior : 'This is the first step of the walkthrough.',
           'CURRENT STEP: ' + stepKey + '. ' + stepGoals[stepKey],
+          'SHARED STEP RUBRIC: ' + JSON.stringify(stepRubric),
           'CANDIDATE RESPONSE FOR THIS STEP: ' + responseText,
           isFinal
             ? 'This is the final step, so set next_question to an empty string.'
             : 'Then write next_question: one warm, specific question that opens the ' + WALKTHROUGH_STEPS[stepIndex + 1] + ' step, pointing the candidate at the exact case facts or exhibit numbers they should use.',
-          'Language: write feedback, strengths, gaps, model_hint, and next_question in the same language the candidate wrote their response in (Vietnamese or English); keep all numbers and framework names exact.',
+          'For every rubric criterion return its exact key, 0-10 score, evidence from what the candidate wrote, reason, and stronger_answer. Write all user-facing feedback in English and keep all numbers exact.',
           'Return this exact JSON shape:',
-          '{"step_score":1,"feedback":"2-4 warm, specific sentences about this step","strengths":["string"],"gaps":["string"],"model_hint":"one concrete example of a stronger move for this step, not a full answer","next_question":"string"}'
+          '{"criteria":[{"key":"exact rubric key","score":0,"evidence":"string","reason":"string","stronger_answer":"string"}],"feedback":"2-4 specific sentences about this step","strengths":["string"],"gaps":["string"],"model_hint":"one concrete example of a stronger move for this step, not a full answer","next_question":"string"}'
         ].join('\n\n');
 
         try {
           const coachResult = await platform.generateText({
             systemPrompt: systemPrompt,
             userPrompt: userPrompt,
-            model: 'gpt-4o-mini',
+            model: 'gpt-6.1-sol',
+            reasoningEffort: 'medium',
+            maxTokens: 6000,
           });
           const coach = cleanJson(coachResult.text);
+          const stepScoring = normalizeSharedGrade(coach, stepRubric, responseText);
           const entry = {
             step: stepKey,
             question: clampText(walkthrough.next_question || '', 2000),
             response: responseText,
-            step_score: Math.max(1, Math.min(5, Math.round(Number(coach.step_score) || 3))),
+            step_score: stepScoring.overall_score,
+            step_scoring: stepScoring,
             feedback: clampText(coach.feedback || 'Nice work \u2014 keep going.', 4000),
             strengths: (Array.isArray(coach.strengths) ? coach.strengths : []).slice(0, 4).map(function (item) { return clampText(item, 500); }),
             gaps: (Array.isArray(coach.gaps) ? coach.gaps : []).slice(0, 4).map(function (item) { return clampText(item, 500); }),
@@ -740,8 +842,17 @@ if (!sessionId) {
 } else if (action === 'grade') {
   const caseId = parseInt(body.caseId || body.case_id || query.case_id, 10);
   const answerText = String(body.answer || '').trim();
-  if (!caseId || answerText.length < 80) {
-    respond(400, { error: 'Share a complete answer of at least 80 characters (structure, numbers, and a recommendation) so Mate can grade it fairly.' });
+  let answerForGrading = answerText;
+  if (answerText.indexOf('CASEMATE_MARKET_SIZING_V2\n') === 0) {
+    try {
+      const savedSizing = JSON.parse(answerText.slice('CASEMATE_MARKET_SIZING_V2\n'.length));
+      answerForGrading = clampText(savedSizing && savedSizing.gradableAnswer, 6000).trim();
+    } catch (error) {
+      answerForGrading = '';
+    }
+  }
+  if (!caseId) {
+    respond(400, { error: 'Mate could not tell which case to grade. Please refresh and try again.' });
   } else {
     const practiceCase = await loadCase(caseId);
     if (!practiceCase) {
@@ -774,60 +885,100 @@ if (!sessionId) {
           ? 'The candidate built this answer step by step in a guided walkthrough with you. Grade the assembled answer on its own merits.'
           : '';
 
-      const systemPrompt = 'You are Mate, Casemate\'s fair and specific case-interview grader. Apply only the supplied case and rubric. Return valid JSON only, with no markdown.';
+      const calculationSourceId = clampText(meta.source_case_id, 40).trim();
+      const isCalculationBank = /^CM-CALC-[HE]\d{2}$/.test(calculationSourceId);
+      const isMarketSizingProvided = /^CM-MS-A\d{2}$/.test(calculationSourceId) || meta.market_sizing_format === 'provided-data';
+      const isMarketSizingAmbiguous = /^CM-MS-B\d{2}$/.test(calculationSourceId) || meta.market_sizing_format === 'ambiguous-estimation';
+      const isMarketSizingGenerated = meta.case_type_id === 'market_sizing' && !isMarketSizingProvided && !isMarketSizingAmbiguous;
+      const scoringRubric = isCalculationBank
+        ? SHARED_SCORING_RUBRICS.calculations_cycle_1
+        : isMarketSizingProvided
+          ? SHARED_SCORING_RUBRICS.market_sizing_provided
+          : isMarketSizingAmbiguous
+            ? SHARED_SCORING_RUBRICS.market_sizing_ambiguous
+            : isMarketSizingGenerated
+              ? SHARED_SCORING_RUBRICS.market_sizing
+              : SHARED_SCORING_RUBRICS.full_case;
+      const deterministicChecks = isCalculationBank ? (Array.isArray(meta.numeric_checks) ? meta.numeric_checks : []).map(function (rawCheck) {
+        const check = asObject(rawCheck);
+        const expected = Number(check.value);
+        const unit = String(check.unit || '');
+        const storedTolerance = Number(check.tolerance) || 0;
+        const tolerance = storedTolerance === 0 ? 0 : Math.max(storedTolerance, Math.abs(expected) * 0.00005);
+        const candidates = [];
+        const matcher = /([−-]?\d[\d,]*(?:\.\d+)?)\s*(%|percent|bn|billion|m|million)?/gi;
+        let match;
+        while ((match = matcher.exec(answerText)) !== null) {
+          let value = Number(String(match[1]).replace('−', '-').replace(/,/g, ''));
+          const suffix = String(match[2] || '').toLowerCase();
+          if (/vnd million/i.test(unit)) {
+            if (/bn|billion/.test(suffix)) value *= 1000;
+            else if (!/m|million/.test(suffix) && Math.abs(value) >= 1000000) value /= 1000000;
+          }
+          if (Number.isFinite(value)) candidates.push(value);
+        }
+        return { label: clampText(check.label, 120), expected: expected, tolerance: tolerance, unit: unit, matched: candidates.some(function (value) { return Math.abs(value - expected) <= tolerance; }) };
+      }) : [];
+      const storedWorkedAnswer = asObject(asObject(meta.grade_report).model_answer);
+      const referenceWorkedAnswer = asObject(parts.rubric.reference_model_answer);
+      const cachedWorkedAnswer = Object.keys(storedWorkedAnswer).length > 0 ? storedWorkedAnswer : referenceWorkedAnswer;
+      const systemPrompt = 'You are Mate, Casemate\'s rigorous and evidence-bound case-interview grader. Apply only the supplied case, exhibits, reference material, and shared rubric. Use the full 0-10 range. Irrelevant, unsupported, fundamentally misunderstood, or mostly empty work must receive 0-2 where warranted. Length and confident wording are not evidence. Never invent a strength, number, quote, or exhibit reference. Separate observed data from inference. Write all user-facing text in English. Do not expose IDs, grading codes, raw JSON, or placeholder labels. Return valid JSON only, with no markdown.';
       const userPrompt = [
         'CASE TITLE: ' + practiceCase.case_title,
         'CASE TYPE: ' + practiceCase.case_type,
         'PROMPT: ' + practiceCase.prompt,
         'CASE DATA: ' + String(practiceCase.case_data || ''),
-        'RUBRIC: ' + JSON.stringify(parts.rubric),
+        'CASE-SPECIFIC REFERENCE RUBRIC: ' + JSON.stringify(parts.rubric),
+        'SHARED RUBRIC (weights sum to 100): ' + JSON.stringify(scoringRubric),
         modeNote,
-        'CANDIDATE ANSWER: ' + answerText,
-        'Grade each dimension from 1 to 5. Cite concrete evidence from the answer and give one immediately actionable next step for every dimension. The overall score must be an integer from 1 to 5 reflecting the weighted rubric. Be candid, supportive, and specific.',
-        'Also write model_answer - the answer an excellent candidate would give to THIS case, worked from the case data: framework (name the framework or structure to apply and, in one sentence, why it fits this case), key_findings (3 to 5 short bullets, each one concrete insight computed from the case numbers - include the actual figures), and recommendation (the clear answer-first conclusion: the decision or direction and its strongest reason).',
-        'Then write delta - a specific comparison of the candidate\'s answer against that model_answer. matched = the elements the candidate got right: name the exact analysis, structure branch, or number (e.g. "Computed the break-even volume correctly at 40,000 units"). missing = the specific elements absent or wrong versus the model answer (e.g. "Skipped the competitive analysis entirely - never asked who else serves this segment"). NEVER write generic items like "improve your structure" - every item must name a concrete element of THIS case. Give 1-4 items per list; matched may be empty only if truly nothing matched.',
-        'Then write recommendations as 2-4 objects, each {"action","why"}: action = one specific practice step; why = one sentence that ties the action DIRECTLY to this case\'s delta - reference the exact element from missing and why it matters for this case type (e.g. "In this case you skipped the competitive analysis - a core step of any market entry structure, so this rep closes that gap."). Never write a boilerplate why that could apply to any case.',
-        'Language: write model_answer, delta, and every why in the same language the candidate wrote their answer in (Vietnamese or English); keep all numbers and framework names exact.',
+        'CANDIDATE ANSWER: ' + (answerForGrading || '[empty submission]'),
+        isCalculationBank ? 'DETERMINISTIC NUMERIC CHECKS (authoritative for arithmetic and tolerance): ' + JSON.stringify(deterministicChecks) + '. ROUNDING RULE: ' + String(meta.rounding_rule || '') : '',
+        isCalculationBank ? 'Use feedback order: score breakdown; what the learner did; FIRST decisive divergent step; worked answer; exactly 1-2 revisions; next exercise. Treat FINAL NUMERICAL ANSWERS and STRUCTURED FORMULA ROWS as distinct evidence. Cite the learner’s actual row number and arithmetic in criterion feedback, and identify the first row that diverges. A missing formula loses model/traceability credit, but a correct final number still earns arithmetic credit. Accept alternative valid formula order, grouping, operators, and equivalent methods. A single slip is not 0/10.' : '',
+        isMarketSizingProvided ? 'PROVIDED DATA SAFEGUARD: grade only the labelled Components, bottom-up model, and calculated result with units. The issue tree is a private thinking tool and must never be graded or compared. Name the exact omitted or misapplied component and explain its directional effect. Do not reward invented replacement values. A stock-times-price, all-population-times-price, or model missing decisive eligibility/frequency components must receive 0-2 overall. Accept mathematically equivalent formula order and alternative valid methods.' : '',
+        isMarketSizingAmbiguous ? 'AMBIGUOUS ESTIMATION SAFEGUARD: grade only the labelled Components, bottom-up model logic, and calculated result with units, NOT proximity to the model number. The issue tree is a private thinking tool and must never be graded or compared. Do not ask for, mention, or score a recommended tree, written scope, assumption rationale, calculation-step narrative, sensitivity analysis, reasonableness checks, or independent checks. Name the exact component, operator, value, unit, or stock-to-flow choice that was right or wrong and its effect on the estimate. A mostly empty or fundamentally wrong model must receive 0-2 overall. Accept a different defensible component model when its logic and units hold.' : '',
+        'For EVERY shared rubric criterion return its exact key, a 0-10 score, evidence quoting or faithfully paraphrasing what the candidate actually wrote, why it did or did not meet the criterion, and what a stronger answer would add. Apply relevant Structures, Calculations, Market Sizing, Creativity, and Charts reasoning to each section where applicable. If no meaningful strength exists, say so plainly and respectfully. The server derives the overall score from the weighted criteria, so do not return an independent score.',
+        (isMarketSizingProvided || isMarketSizingAmbiguous || isMarketSizingGenerated)
+          ? 'Write model_answer with an empty framework and recommendation; key_findings should show only the case-specific Components, bottom-up formula, and calculated result with units. Never provide or compare a recommended issue tree.'
+          : Object.keys(cachedWorkedAnswer).length > 0
+            ? 'CACHED WORKED ANSWER FOR THIS CASE: ' + JSON.stringify(cachedWorkedAnswer) + '. Reproduce it exactly in model_answer so repeat attempts always see the same case answer.'
+            : 'Also write model_answer - the case-specific WORKED ANSWER an excellent candidate would give, grounded only in the supplied facts: framework (the tailored issue tree and why it covers the decision), key_findings (3 to 5 concrete findings that show relevant inputs, formula, line-by-line calculation with units, result, and business meaning where math is required; for exhibits clearly separate OBSERVED IN THE DATA from INFERENCE and state the decision implication), and recommendation (answer first, supporting evidence, trade-offs, and feasibility). For creative options, give 3-5 directions with mechanism, benefit, implementation, and trade-offs.',
+        (isMarketSizingProvided || isMarketSizingAmbiguous || isMarketSizingGenerated) ? 'Return delta with empty matched and missing arrays. Criterion feedback is the complete comparison for Market Sizing.' : 'Then write delta - a specific comparison of the candidate\'s answer against that model_answer. matched = the elements the candidate got right: name the exact analysis, structure branch, or number (e.g. "Computed the break-even volume correctly at 40,000 units"). missing = the specific elements absent or wrong versus the model answer (e.g. "Skipped the competitive analysis entirely - never asked who else serves this segment"). NEVER write generic items like "improve your structure" - every item must name a concrete element of THIS case. Give 1-4 items per list; matched may be empty only if truly nothing matched.',
+        (isMarketSizingProvided || isMarketSizingAmbiguous || isMarketSizingGenerated) ? 'Return section_feedback as an empty array.' : 'Write section_feedback for EVERY required section, in this exact order: Structure; Analysis & calculations; Recommendation. For each, assess what the candidate wrote, cite their section-specific evidence (or say it was absent), and state the single strongest improvement.',
+        (isMarketSizingProvided || isMarketSizingAmbiguous || isMarketSizingGenerated) ? 'Return integrated_assessment as an empty object.' : 'Write integrated_assessment across the whole answer: overall_recommendation, supporting_evidence, trade_offs, and feasibility. Assess whether the recommendation is supported and executable, not just whether each section exists.',
+        'Write evidence_to_revisit only when there is a meaningful evidence issue. Every item must name the specific figure, chart pattern, or case fact; state what the candidate missed or misread; and explain why it matters to the conclusion. Compare against the actual candidate answer first and never claim they missed evidence they used correctly. Return [] when there is no grounded evidence issue. Never write vague advice such as “use more evidence”.',
+        'Write next_step as the ONE correction that would most improve this answer: a concrete action and brief reason tied directly to what the candidate wrote or missed. Prioritize a wrong conclusion, calculation, or decisive case fact before writing style. further_improvements contains zero to two smaller useful actions. Do not repeat advice or contradict another section.',
+        'Write all feedback in English, keep all numbers and framework names exact, and do not use long em dashes.',
         'Return this exact JSON shape:',
-        '{"score":1,"summary":"string","breakdown":{"structure":{"score":1,"evidence":"string","next_step":"string"},"math":{"score":1,"evidence":"string","next_step":"string"},"communication":{"score":1,"evidence":"string","next_step":"string"},"recommendation_quality":{"score":1,"evidence":"string","next_step":"string"}},"model_answer":{"framework":"string","key_findings":["string","string","string"],"recommendation":"string"},"delta":{"matched":["string"],"missing":["string"]},"recommendations":[{"action":"string","why":"string"},{"action":"string","why":"string"}]}'
+        '{"criteria":[{"key":"exact rubric key","score":0,"evidence":"string","reason":"string","stronger_answer":"string"}],"summary":"string","model_answer":{"framework":"string","key_findings":["string","string","string"],"recommendation":"string"},"section_feedback":[{"section":"Structure","assessment":"string","evidence":"string","improvement":"string"},{"section":"Analysis & calculations","assessment":"string","evidence":"string","improvement":"string"},{"section":"Recommendation","assessment":"string","evidence":"string","improvement":"string"}],"integrated_assessment":{"overall_recommendation":"string","supporting_evidence":"string","trade_offs":"string","feasibility":"string"},"delta":{"matched":["string"],"missing":["string"]},"evidence_to_revisit":["exact fact + miss/misread + why it matters"],"next_step":{"action":"string","why":"string"},"further_improvements":[{"action":"string","why":"string"}]}'
       ].filter(function (line) { return line !== ''; }).join('\n\n');
 
       try {
         const gradeResult = await platform.generateText({
           systemPrompt: systemPrompt,
           userPrompt: userPrompt,
-          model: 'gpt-4o-mini',
-          // v12: the grade now also carries a full model answer, delta, and
-          // reasoned action plan - cap high enough that the JSON never
-          // truncates mid-generation.
-          maxTokens: 3000,
+          model: 'gpt-6.1-sol',
+          reasoningEffort: 'medium',
+          maxTokens: 6000,
         });
         const grade = cleanJson(gradeResult.text);
-        const dimensions = ['structure', 'math', 'communication', 'recommendation_quality'];
+        const scoring = normalizeSharedGrade(grade, scoringRubric, answerForGrading);
+        const score = scoring.overall_score;
         const breakdown = {};
-        const dimensionScores = [];
-        dimensions.forEach(function (key) {
-          const item = asObject(grade.breakdown && grade.breakdown[key]);
-          const itemScore = Math.max(1, Math.min(5, Math.round(Number(item.score) || 1)));
-          dimensionScores.push(itemScore);
-          breakdown[key] = {
-            score: itemScore,
-            evidence: String(item.evidence || 'No clear evidence was provided.'),
-            next_step: String(item.next_step || 'Make this dimension more explicit in your next answer.'),
+        scoring.criteria.forEach(function (item) {
+          breakdown[item.key] = {
+            label: item.label,
+            weight: item.weight,
+            score: item.score,
+            evidence: item.evidence,
+            reason: item.reason,
+            stronger_answer: item.stronger_answer,
           };
         });
-        const fallbackScore = Math.round(dimensionScores.reduce(function (sum, value) { return sum + value; }, 0) / dimensionScores.length);
-        const score = Math.max(1, Math.min(5, Math.round(Number(grade.score) || fallbackScore)));
         // v12: recommendations are {action, why} objects - the why ties each
         // action back to THIS case's delta. Plain-string items (an older or
         // partial model response) are kept with an empty why so nothing is
         // silently dropped.
-        const recommendations = (Array.isArray(grade.recommendations) ? grade.recommendations : []).slice(0, 5).map(function (item) {
-          if (item && typeof item === 'object' && !Array.isArray(item)) {
-            return { action: clampText(item.action || item.text || '', 600).trim(), why: clampText(item.why || item.reason || '', 800).trim() };
-          }
-          return { action: clampText(item, 600).trim(), why: '' };
-        }).filter(function (item) { return item.action.length > 0; });
+        const recommendationsRaw = [grade.next_step].concat(Array.isArray(grade.further_improvements) ? grade.further_improvements : []).concat(Array.isArray(grade.recommendations) ? grade.recommendations : []).filter(Boolean);
         // v12: the model answer + delta comparison live in the meta envelope
         // (rubric_json._casemate.grade_report) because WorkspaceDB tables
         // cannot gain new columns after creation. Missing/empty fields are
@@ -843,10 +994,19 @@ if (!sessionId) {
         };
         const deltaRaw = asObject(grade.delta);
         const delta = { matched: cleanReportList(deltaRaw.matched, 6), missing: cleanReportList(deltaRaw.missing, 6) };
+        const recommendations = normalizePriorityActions(recommendationsRaw, delta.missing);
+        const hasWorkedAnswer = Boolean(modelAnswer.framework || modelAnswer.key_findings.length > 0 || modelAnswer.recommendation);
         meta.grade_report = {
           summary: clampText(grade.summary || '', 1200).trim(),
-          model_answer: (modelAnswer.framework || modelAnswer.key_findings.length > 0 || modelAnswer.recommendation) ? modelAnswer : null,
+          model_answer: hasWorkedAnswer ? modelAnswer : null,
+          worked_answer_status: hasWorkedAnswer ? 'ready' : 'unavailable',
+          section_feedback: normalizeSectionFeedback(grade.section_feedback),
+          integrated_assessment: normalizeIntegratedAssessment(grade.integrated_assessment),
           delta: (delta.matched.length > 0 || delta.missing.length > 0) ? delta : null,
+          evidence_to_revisit: cleanReportList(grade.evidence_to_revisit, 4),
+          next_step: recommendations[0] || null,
+          further_improvements: recommendations.slice(1, 3),
+          scoring: scoring,
         };
         const now = new Date().toISOString();
         // json columns must be passed as JSON strings on update (raw arrays
@@ -867,7 +1027,7 @@ if (!sessionId) {
         respond(200, {
           success: true,
           case: updated.updatedRows[0],
-          message: 'Grade saved to this candidate\'s Case Pool log and their progress tracker updated. If you are presenting it in chat: lead with the overall grade (x/5); then show Mate\'s model answer for this exact case from rubric_json._casemate.grade_report.model_answer (the framework, the key findings, and the recommendation) so they see what good looks like; then the delta from grade_report.delta - what they got right and what they missed; then the per-dimension evidence and next steps compactly; and close with the action plan - each item in recommendations_json is {action, why}, so give every action WITH its why, which ties it to what was missing in this case. Remind them the full report and their progress live in the Case Pool app.',
+          message: 'Grade saved to this candidate\'s Case Pool log. Present the derived overall score out of 10, then every weighted criterion with the candidate evidence, reason, and stronger-answer guidance. Never invent strengths or data. Then show the model answer, delta, and action plan.',
         });
       } catch (error) {
         console.error('Case grading failed', error);
@@ -879,10 +1039,17 @@ if (!sessionId) {
   const lib = asObject(body.libraryCase);
   const libraryId = clampText(lib.id, 40).trim();
   const answerText = String(body.answer || '').trim();
+  let answerForGrading = answerText;
+  if (answerText.indexOf('CASEMATE_MARKET_SIZING_V2\n') === 0) {
+    try {
+      const savedSizing = JSON.parse(answerText.slice('CASEMATE_MARKET_SIZING_V2\n'.length));
+      answerForGrading = clampText(savedSizing && savedSizing.gradableAnswer, 6000).trim();
+    } catch (error) {
+      answerForGrading = '';
+    }
+  }
   if (!libraryId) {
     respond(400, { error: 'Mate could not tell which library case this answer belongs to. Please reopen the case and try again.' });
-  } else if (answerText.length < 80) {
-    respond(400, { error: 'Share a complete answer of at least 80 characters (your structure, the numbers you worked out, and a recommendation) so Mate can grade it fairly.' });
   } else {
     const libModel = asObject(lib.model_answer);
     const referenceFindings = (Array.isArray(libModel.key_findings) ? libModel.key_findings : [])
@@ -906,7 +1073,18 @@ if (!sessionId) {
     const exhibitsText = clampText(lib.exhibits_text, 6000).trim();
     const promptText = situation + (keyQuestion ? '\n\nKey question: ' + keyQuestion : '');
 
-    const systemPrompt = 'You are Mate, Casemate\'s fair and specific case-interview grader. Grade only against the supplied case, rubric, and reference answer. Return valid JSON only, with no markdown.';
+    const marketSizingFormat = clampText(lib.market_sizing_format, 40).trim();
+    const creativityCategory = clampText(lib.creativity_category, 60).trim();
+    const creativityRubric = asObject(lib.creativity_rubric);
+    const hasCreativityRubric = Boolean(creativityCategory && creativityRubric.id && Array.isArray(creativityRubric.criteria) && creativityRubric.criteria.length > 0);
+    const scoringRubric = marketSizingFormat === 'provided-data'
+      ? SHARED_SCORING_RUBRICS.market_sizing_provided
+      : marketSizingFormat === 'ambiguous-estimation'
+        ? SHARED_SCORING_RUBRICS.market_sizing_ambiguous
+        : hasCreativityRubric
+          ? creativityRubric
+          : SHARED_SCORING_RUBRICS.full_case;
+    const systemPrompt = 'You are Mate, Casemate\'s rigorous and evidence-bound case-interview grader. Grade only against the supplied case, exhibits, reference answer, and shared rubric. Use the full 0-10 range. Irrelevant, unsupported, fundamentally misunderstood, or mostly empty work must receive 0-2 where warranted. Length and confident wording are not evidence. Never invent a strength, number, quote, or exhibit reference. Separate observed data from inference. Write all user-facing text in English. Do not expose IDs, grading codes, raw JSON, or placeholder labels. Return valid JSON only, with no markdown.';
     const userPrompt = [
       'CASE TITLE: ' + title,
       'CASE TYPE: ' + typeLabel,
@@ -915,51 +1093,53 @@ if (!sessionId) {
       'SITUATION: ' + situation,
       'KEY QUESTION: ' + keyQuestion,
       'CASE DATA (the exhibits the candidate was shown): ' + exhibitsText,
-      'RUBRIC: ' + JSON.stringify(LIBRARY_RUBRIC),
-      'REFERENCE MODEL ANSWER (written by Casemate for THIS exact case - treat it as the standard a 5/5 answer reaches; do not rewrite it): ' + JSON.stringify(referenceAnswer),
-      'CANDIDATE ANSWER: ' + answerText,
-      'Grade each rubric dimension from 1 to 5. Cite concrete evidence quoted from the candidate\'s own answer and give one immediately actionable next step per dimension. The overall score must be an integer from 1 to 5 reflecting the weighted rubric. Be candid, supportive, and specific - a 5 is reserved for an answer that matches the reference on structure, numbers, and decisiveness.',
+      'CASE-SPECIFIC REFERENCE RUBRIC: ' + JSON.stringify(hasCreativityRubric ? creativityRubric : LIBRARY_RUBRIC),
+      'SHARED RUBRIC (weights sum to 100): ' + JSON.stringify(scoringRubric),
+      hasCreativityRubric ? 'CREATIVITY TRACK: ' + creativityCategory + '. WHAT TO LOOK FOR: ' + clampText(lib.creativity_what_to_look_for, 1800).trim() + '. SOURCE /10 GUIDE: ' + clampText(lib.creativity_source_rubric, 600).trim() + '. Treat the reference response as one strong route, not the only acceptable answer. Reward different mechanisms when they use the supplied facts, respect the constraints, and define a defensible test.' : '',
+      'REFERENCE MODEL ANSWER (written by Casemate for THIS exact case; do not rewrite it): ' + JSON.stringify(referenceAnswer),
+      'CANDIDATE ANSWER: ' + (answerForGrading || '[empty submission]'),
+      marketSizingFormat ? 'MARKET SIZING RULE: grade only Components, bottom-up model logic, and the calculated result with units. The issue tree is not present because it is a saved thinking tool and is never graded. Do not request or score written scope, assumption rationale, calculation-step narrative, judgment notes, sensitivity, or an independent check.' : '',
+      hasCreativityRubric ? 'CREATIVITY RULE: grade the complete response against the case-specific Creativity rubric above. Do not require one fixed framework, slogan, product format, channel mix, or retention mechanic. Penalize invented facts or claims presented as verified.' : '',
+      'For EVERY shared rubric criterion return its exact key, a 0-10 score, evidence quoting or faithfully paraphrasing what the candidate actually wrote, why it did or did not meet the criterion, and what a stronger answer would add. If no meaningful strength exists, say so plainly and respectfully. The server derives the overall score from weighted criteria, so do not return an independent score.',
       'Then write delta - a specific comparison of the candidate\'s answer against the REFERENCE MODEL ANSWER above. matched = what they got right, naming the exact analysis, structure branch, or figure (e.g. "Identified the bottleneck stage correctly at 260 units/hour"). missing = the specific elements absent or wrong versus the reference (e.g. "Never quantified the throughput gain from lifting the bottleneck"). NEVER write generic items like "improve your structure" - every item must name a concrete element of THIS case. Give 1-4 items per list; matched may be empty only if truly nothing matched.',
-      'Then write recommendations as 2-4 objects, each {"action","why"}: action = one specific practice step; why = one sentence tying that action DIRECTLY to an item in missing for THIS case. Never write a why that could apply to any case.',
-      'Language: write the summary, delta, and every why in the same language the candidate wrote their answer in (Vietnamese or English); keep all numbers and framework names exact.',
+      marketSizingFormat ? 'For Market Sizing return section_feedback as an empty array and integrated_assessment as an empty object. Criterion feedback is the complete report.' : 'Write section_feedback for EVERY required section, in this exact order: Structure; Analysis & calculations; Recommendation. For each, assess what the candidate wrote, cite section-specific evidence (or say it was absent), and state the single strongest improvement.',
+      marketSizingFormat ? '' : 'Write integrated_assessment across the whole answer with overall_recommendation, supporting_evidence, trade_offs, and feasibility. Use only the case exhibits and reference answer.',
+      'Write evidence_to_revisit only for a meaningful evidence issue. Each item must name the specific figure, chart pattern, or case fact; state what the candidate missed or misread; and explain why it changes the conclusion. Compare against the actual candidate answer first, never claim correctly used evidence was missed, and return [] when there is no issue.',
+      'Write next_step as the ONE highest-impact correction, with a concrete action and brief case-specific reason. Prioritize conclusion, calculation, and decisive evidence errors before writing style. further_improvements contains zero to two smaller useful actions. Do not repeat or contradict advice.',
+      'Write all feedback in English, keep all numbers and framework names exact, and do not use long em dashes.',
       'Return this exact JSON shape:',
-      '{"score":1,"summary":"string","breakdown":{"structure":{"score":1,"evidence":"string","next_step":"string"},"math":{"score":1,"evidence":"string","next_step":"string"},"communication":{"score":1,"evidence":"string","next_step":"string"},"recommendation_quality":{"score":1,"evidence":"string","next_step":"string"}},"delta":{"matched":["string"],"missing":["string"]},"recommendations":[{"action":"string","why":"string"},{"action":"string","why":"string"}]}'
+      '{"criteria":[{"key":"exact rubric key","score":0,"evidence":"string","reason":"string","stronger_answer":"string"}],"summary":"string","section_feedback":[{"section":"Structure","assessment":"string","evidence":"string","improvement":"string"},{"section":"Analysis & calculations","assessment":"string","evidence":"string","improvement":"string"},{"section":"Recommendation","assessment":"string","evidence":"string","improvement":"string"}],"integrated_assessment":{"overall_recommendation":"string","supporting_evidence":"string","trade_offs":"string","feasibility":"string"},"delta":{"matched":["string"],"missing":["string"]},"evidence_to_revisit":["exact fact + miss/misread + why it matters"],"next_step":{"action":"string","why":"string"},"further_improvements":[{"action":"string","why":"string"}]}'
     ].filter(function (line) { return line !== ''; }).join('\n\n');
 
     try {
       const gradeResult = await platform.generateText({
         systemPrompt: systemPrompt,
         userPrompt: userPrompt,
-        model: 'gpt-4o-mini',
-        maxTokens: 2400,
+        model: 'gpt-6.1-sol',
+        reasoningEffort: 'medium',
+        maxTokens: 6000,
       });
       const grade = cleanJson(gradeResult.text);
-      const dimensions = ['structure', 'math', 'communication', 'recommendation_quality'];
+      const scoring = normalizeSharedGrade(grade, scoringRubric, answerForGrading);
+      const score = scoring.overall_score;
       const breakdown = {};
-      const dimensionScores = [];
-      dimensions.forEach(function (key) {
-        const item = asObject(grade.breakdown && grade.breakdown[key]);
-        const itemScore = Math.max(1, Math.min(5, Math.round(Number(item.score) || 1)));
-        dimensionScores.push(itemScore);
-        breakdown[key] = {
-          score: itemScore,
-          evidence: String(item.evidence || 'No clear evidence was provided.'),
-          next_step: String(item.next_step || 'Make this dimension more explicit in your next answer.'),
+      scoring.criteria.forEach(function (item) {
+        breakdown[item.key] = {
+          label: item.label,
+          weight: item.weight,
+          score: item.score,
+          evidence: item.evidence,
+          reason: item.reason,
+          stronger_answer: item.stronger_answer,
         };
       });
-      const fallbackScore = Math.round(dimensionScores.reduce(function (sum, value) { return sum + value; }, 0) / dimensionScores.length);
-      const score = Math.max(1, Math.min(5, Math.round(Number(grade.score) || fallbackScore)));
-      const recommendations = (Array.isArray(grade.recommendations) ? grade.recommendations : []).slice(0, 5).map(function (item) {
-        if (item && typeof item === 'object' && !Array.isArray(item)) {
-          return { action: clampText(item.action || item.text || '', 600).trim(), why: clampText(item.why || item.reason || '', 800).trim() };
-        }
-        return { action: clampText(item, 600).trim(), why: '' };
-      }).filter(function (item) { return item.action.length > 0; });
+      const recommendationsRaw = [grade.next_step].concat(Array.isArray(grade.further_improvements) ? grade.further_improvements : []).concat(Array.isArray(grade.recommendations) ? grade.recommendations : []).filter(Boolean);
       const cleanReportList = function (list, max) {
         return (Array.isArray(list) ? list : []).slice(0, max).map(function (item) { return clampText(item, 500).trim(); }).filter(function (item) { return item.length > 0; });
       };
       const deltaRaw = asObject(grade.delta);
       const delta = { matched: cleanReportList(deltaRaw.matched, 6), missing: cleanReportList(deltaRaw.missing, 6) };
+      const recommendations = normalizePriorityActions(recommendationsRaw, delta.missing);
 
       const metaEnvelope = {
         mode: 'library',
@@ -971,7 +1151,14 @@ if (!sessionId) {
         grade_report: {
           summary: clampText(grade.summary || '', 1200).trim(),
           model_answer: (referenceAnswer.framework || referenceAnswer.key_findings.length > 0 || referenceAnswer.recommendation) ? referenceAnswer : null,
+          worked_answer_status: (referenceAnswer.framework || referenceAnswer.key_findings.length > 0 || referenceAnswer.recommendation) ? 'ready' : 'unavailable',
+          section_feedback: normalizeSectionFeedback(grade.section_feedback),
+          integrated_assessment: normalizeIntegratedAssessment(grade.integrated_assessment),
           delta: (delta.matched.length > 0 || delta.missing.length > 0) ? delta : null,
+          evidence_to_revisit: cleanReportList(grade.evidence_to_revisit, 4),
+          next_step: recommendations[0] || null,
+          further_improvements: recommendations.slice(1, 3),
+          scoring: scoring,
         },
       };
 
@@ -1076,7 +1263,7 @@ if (!sessionId) {
         const modelResult = await platform.generateText({
           systemPrompt: systemPrompt,
           userPrompt: userPrompt,
-          model: 'gpt-4o-mini',
+          model: 'gpt-6.1-sol',
         });
         const now = new Date().toISOString();
         meta.skipped = true;

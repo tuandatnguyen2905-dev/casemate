@@ -55,9 +55,10 @@
 // gracefully.
 
 import { CASEMATE_ENTITLEMENT_SNIPPET, ACCESS_RULES_VERSION } from '../../lib/proAccess';
+import { CASE_SCORING_RUBRICS_JSON } from '../../lib/caseScoringRubrics';
 
 export const MICRO_DRILL_HOOK_NAME = 'casemate-micro-drill-v1';
-export const MICRO_DRILL_HOOK_VERSION = 'micro-drill-v1.6';
+export const MICRO_DRILL_HOOK_VERSION = 'micro-drill-v5-feedback-priorities';
 export const MICRO_DRILL_WORKSPACE_ID = 'workspace-539150';
 
 // The Case Pool hook - used only to DERIVE the correct agent-tool endpoint
@@ -180,28 +181,27 @@ const SKILLS = {
   market_sizing: {
     label: 'Market Sizing',
     seconds: 120,
-    task: 'One estimation question (a market, demand, or operational quantity - Vietnamese or Southeast Asian setting preferred). Give at most 2-3 anchor facts in drill_data (e.g. population, household size, a price point) - NEVER the answer or the funnel; the structure and assumptions are the test.',
-    judge: 'Reward an explicit top-down or bottom-up structure, stated assumptions with sensible values, clean arithmetic, and a sanity check. The exact final number matters far less than the logic.',
-    model: 'model_answer = one clean estimation walk: the chosen structure, each assumption with its value, the arithmetic, the final estimate, and a one-line sanity check.',
+    task: 'One bottom-up estimation question (a market, demand, or operational quantity - Vietnamese or Southeast Asian setting preferred). Give at most 2-3 anchor facts in drill_data. Currency and requested answers must use full VND or VND per year, never compact billion-denominated labels or scaled answers. The learner will build an ungraded issue tree, then add determinants as Components.',
+    judge: 'Grade only the labelled Components, how they are combined in the bottom-up model, and the calculated result with units. Never grade or request the issue tree, written calculation steps, judgment notes, assumption rationale, or a reasonableness check.',
+    model: 'model_answer = a compact case-specific BOTTOM-UP worked answer with only these labels: COMPONENTS (each determinant and value); MODEL (operators and formula); CALCULATED RESULT (number in full VND or VND per year). Do not provide a recommended issue tree or a separate comparison against one.',
     approach: [
-      'Commit to a direction out loud: top-down (population, then filter down) or bottom-up (one unit, then scale up).',
-      'Write the funnel as labeled steps BEFORE plugging in numbers (e.g. population > households > % who buy > spend per year).',
-      'Give every assumption an explicit, defensible round value - a justified 100 beats an unexplained 87.',
-      'Multiply down the funnel cleanly, keeping units at each step so the final figure has a real meaning.',
-      'Sanity-check the result against an anchor you know ("does that size make sense next to the population?") and say so.',
+      'Use the issue tree to name the determinants of the market before touching the numbers.',
+      'Send the determinants you need into Components and remove any overlap or double counting.',
+      'Set each Component as a raw number or percentage, then choose the operators that form the bottom-up model.',
+      'Read the calculated result with its unit and correct any stock-to-flow or annualization mistake in the Components.',
     ],
     practice: [
-      'Run another Market Sizing rep using the OPPOSITE direction (top-down if you went bottom-up) to build both muscles.',
-      'Memorize 5-6 anchor numbers for your market (population, households, urban share, a common price point) - funnels get twice as fast.',
-      'Take a market-sizing full case in Case Pool, where you also defend the assumptions in a full write-up.',
+      'Run another Market Sizing rep and build a different determinant tree before choosing Components.',
+      'Memorize 5-6 anchor numbers for Vietnam, then practise converting each into a bottom-up Component.',
+      'Take a Market Sizing case in Case Pool and build the same tree-to-Components workflow on a full case.',
     ],
   },
   calculations: {
     label: 'Calculations',
     seconds: 60,
-    task: 'A rapid-fire set of exactly 4 short numeric items in drill_data, numbered 1-4, one per line: percentages, growth rates, margins, break-evens, quick multiplications with business flavor (e.g. "1. 12% of 350,000", "2. Revenue grows 8% per year for 2 years from 500 - end value?"). The prompt just tells them to answer all 4 in order.',
-    judge: 'Score by how many of the 4 answers are numerically right (small rounding is fine). Reward showing answers in order; speed matters, working does not need to be shown.',
-    model: 'model_answer = the 4 correct answers, numbered, each with a one-line mental-math shortcut.',
+    task: 'A rapid-fire set of exactly 4 short numeric items in drill_data, numbered 1-4, one per line: percentages, growth rates, margins, break-evens, quick multiplications with business flavor (e.g. "1. 12% of 350,000", "2. Revenue grows 8% per year for 2 years from 500 - end value?"). Use a named company or subject. Also return calculation_results with exactly four objects in the same numbered order; every object needs a concise descriptive label that says what is measured and names the company/subject (for example "Lotus Mart Revenue Growth"), never a generic ordinal label. The prompt just tells them to answer all 4 in order.',
+    judge: 'Score the four final numbers and the structured formula rows separately. Small rounding differences are fine. A correct final number earns arithmetic credit even if its formula is missing, while a missing formula loses method and traceability credit. Cite the learner’s actual row and identify the first divergent step; accept equivalent order, grouping, and operators.',
+    model: 'model_answer = FOUR numbered, case-specific worked answers. For EACH item show: INPUTS (with units), FORMULA, STEP-BY-STEP CALCULATION, FINAL RESULT (with units), and BUSINESS MEANING. Show enough working to locate an arithmetic or setup divergence; a shortcut may follow but never replace the formula and steps.',
     approach: [
       'Scan all items first: knock out the instant ones, flag the multi-step ones - order of attack is part of the skill.',
       'Use decomposition shortcuts: 12% of 350,000 = 10% + 2% (35,000 + 7,000); growth over 2 years compounds, it does not just add.',
@@ -219,7 +219,7 @@ const SKILLS = {
     seconds: 90,
     task: 'One chart-reading question. Return exhibit_chart (3-5 points) AND mirror its exact numbers in drill_data as "- label: value" lines. The question must require actually using the chart: identify the driver of a change, compute a share or growth rate from the bars, or draw the one insight an interviewer would expect.',
     judge: 'Reward reading the right numbers off the exhibit, any computation done correctly, and stating the insight in one crisp sentence. Punish answers that ignore the data.',
-    model: 'model_answer = the correct reading: the relevant numbers, the computation, and the one-sentence insight.',
+    model: 'model_answer must use three explicit sections grounded only in the supplied exhibit: OBSERVED IN THE DATA (the relevant values and any exact calculation); INFERENCE (what the pattern supports, clearly separated from observation); IMPLICATION FOR THE DECISION (the concrete case action or choice). If multiple exhibit points are relevant, connect them instead of restating one value.',
     approach: [
       'Read the title, the unit, and the axis FIRST - most exhibit mistakes are unit mistakes, not reading mistakes.',
       'Find what changed most or breaks the pattern - the question almost always points at the biggest mover or the outlier.',
@@ -237,7 +237,7 @@ const SKILLS = {
     seconds: 90,
     task: 'One brainstorm prompt asking for AT LEAST 8 distinct ideas fast (e.g. "List ways a Vietnamese supermarket chain could cut food waste"). No numbers needed; drill_data may hold one line of context. The test is volume + variety under time pressure. Do not prescribe a named framework or a fixed set of buckets; the candidate may use any clear structure that fits the question.',
     judge: 'Reward the count of genuinely DISTINCT ideas (target 8+), variety across categories (customer, operations, partners, pricing, technology...), and at least one non-obvious idea. Duplicates and rephrasings count once.',
-    model: 'model_answer must begin "ONE POSSIBLE APPROACH - other structures can work too." Then give 8-10 strong example ideas using a clear structure chosen specifically for this question (for example customer journey, time horizon, value chain, stakeholder, or another suitable organising logic), followed by one concrete recommendation and one key risk. Vary the organising logic across questions; do not default to one fixed framework or imply this is the only valid answer.',
+    model: 'model_answer must begin "ONE POSSIBLE APPROACH - other structures can work too." Then give 3-5 distinct, case-relevant SOLUTION DIRECTIONS. For EACH direction explicitly show: MECHANISM (how it works), EXPECTED BENEFIT (against the case objective), IMPLEMENTATION CONSIDERATIONS, and TRADE-OFFS. Judge and prioritize the directions against the stated objective and constraints, not novelty alone. Finish with one recommendation and its key risk. Choose an organising logic suited to this question; never imply a fixed framework is mandatory.',
     approach: [
       'Generate first, judge later - evaluating while brainstorming is what kills volume under a clock.',
       'Choose an organising logic that fits this question - such as journey stages, stakeholders, time horizons, or the value chain - rather than forcing every prompt into the same buckets.',
@@ -252,6 +252,52 @@ const SKILLS = {
   },
 };
 const SKILL_IDS = Object.keys(SKILLS);
+const SHARED_SCORING_RUBRICS = ${CASE_SCORING_RUBRICS_JSON};
+
+function scoringRubricFor(skillId) {
+  if (skillId === 'case_math') return SHARED_SCORING_RUBRICS.case_math;
+  return SHARED_SCORING_RUBRICS[skillId] || SHARED_SCORING_RUBRICS.full_case;
+}
+
+function deterministicLowScore(answer) {
+  const clean = String(answer || '').trim();
+  if (!clean) return 0;
+  const words = clean.split(/\s+/).filter(function (word) { return /[A-Za-z0-9À-ỹ]/.test(word); });
+  if (words.length < 4) return 0;
+  if (words.length < 12 || clean.length < 45) return 1;
+  return null;
+}
+
+function normalizeRubricGrade(raw, rubric, answer) {
+  const low = deterministicLowScore(answer);
+  const rawItems = Array.isArray(raw && raw.criteria) ? raw.criteria : [];
+  const byKey = {};
+  rawItems.forEach(function (item) { if (item && item.key) byKey[String(item.key)] = item; });
+  const excerpt = clampText(String(answer || '').trim().replace(/\s+/g, ' '), 120);
+  const criteria = rubric.criteria.map(function (definition) {
+    if (low !== null) {
+      return {
+        key: definition.key,
+        label: definition.label,
+        weight: definition.weight,
+        score: low,
+        evidence: excerpt ? 'Submission: “' + excerpt + '”' : 'No answer was submitted.',
+        reason: low === 0 ? 'There is not enough relevant content to assess this criterion.' : 'The submission is too limited to demonstrate this criterion.',
+        stronger_answer: 'Add specific content that demonstrates ' + definition.label.toLowerCase() + ': ' + definition.description,
+      };
+    }
+    const item = byKey[definition.key];
+    const score = Number(item && item.score);
+    const evidence = clampText(item && item.evidence, 600).trim();
+    const reason = clampText(item && item.reason, 900).trim();
+    const stronger = clampText(item && (item.stronger_answer || item.strongerAnswer), 900).trim();
+    if (!item || !Number.isFinite(score) || !evidence || !reason || !stronger) throw new Error('Mate returned an incomplete criterion breakdown. Your answer is unchanged; please try grading again.');
+    return { key: definition.key, label: definition.label, weight: definition.weight, score: Math.round(Math.max(0, Math.min(10, score)) * 10) / 10, evidence: evidence, reason: reason, stronger_answer: stronger };
+  });
+  const totalWeight = criteria.reduce(function (sum, item) { return sum + item.weight; }, 0) || 100;
+  const overall = Math.round(criteria.reduce(function (sum, item) { return sum + item.score * item.weight; }, 0) / totalWeight);
+  return { rubric_id: rubric.id, scale: 10, overall_score: Math.max(0, Math.min(10, overall)), criteria: criteria };
+}
 
 function normalizeSkill(raw) {
   const text = String(raw || '').toLowerCase().trim();
@@ -288,6 +334,18 @@ function sanitizeChart(raw) {
     unit: clampText(String(chart.unit || '').trim(), 48),
     data: points,
   };
+}
+
+function sanitizeCalculationResults(raw) {
+  const source = Array.isArray(raw) ? raw : [];
+  const results = source.slice(0, 4).map(function (item, index) {
+    const row = item && typeof item === 'object' ? item : {};
+    const label = clampText(String(row.label || '').trim(), 100);
+    const unit = clampText(String(row.unit || '').trim(), 48);
+    if (!label || /^(?:item|result|required result)\s*\d+$/i.test(label)) return null;
+    return { id: 'item-' + (index + 1), label: label, unit: unit };
+  }).filter(Boolean);
+  return results.length === 4 ? { format: 'calculation_results_v1', results: results } : null;
 }
 
 // ---- Case Math linked mini-case format (micro-drill-v1.4) -----------------
@@ -380,7 +438,7 @@ async function verifyCaseMathNumbers(spec) {
       'If every step\'s arithmetic and result reconcile with the data table, return {"consistent":true}.',
       'If anything does NOT reconcile, recompute the correct solution yourself and return {"consistent":false,"corrected_solution_steps":[{"label":"string","work":"string","result":"string","tip":"string"}],"corrected_consultant_close":"string"} - exactly one step per question, in order, with the actual arithmetic shown in "work" and the intermediate result with its unit in "result"; keep or improve the thinking tips, and rewrite the consultant close so it matches the corrected numbers. ALL text in ENGLISH.',
     ].join('\n'),
-    model: 'gpt-4o-mini',
+    model: 'gpt-6.1-sol',
     maxTokens: 2500,
   });
   return cleanJson(checkResult.text);
@@ -475,7 +533,7 @@ if (!sessionId) {
         const generatedResult = await platform.generateText({
           systemPrompt: caseSystemPrompt,
           userPrompt: caseUserPrompt,
-          model: 'gpt-4o-mini',
+          model: 'gpt-6.1-sol',
           maxTokens: 3500,
         });
         let candidate = null;
@@ -559,25 +617,30 @@ if (!sessionId) {
       skillId === 'charts'
         ? 'Also return exhibit_chart: {"type":"bar|line|pie","title":"string","unit":"string","data":[{"label":"string","value":123}]} with 3-5 points, plain numbers only (unit goes in the unit field). The EXACT same numbers must appear in drill_data.'
         : '',
+      skillId === 'calculations'
+        ? 'Also return calculation_results with exactly four objects in drill_data order: [{"label":"Company/subject + measured result","unit":"%, VND, units, or another concise unit"}]. Labels must be descriptive and unique; generic numbered labels are invalid.'
+        : '',
       'Return this exact JSON shape:',
-      '{"prompt":"string","drill_data":"string","model_answer":"string"' + (skillId === 'charts' ? ',"exhibit_chart":{"type":"bar","title":"string","unit":"string","data":[{"label":"string","value":123}]}' : '') + '}'
+      '{"prompt":"string","drill_data":"string","model_answer":"string"' + (skillId === 'charts' ? ',"exhibit_chart":{"type":"bar","title":"string","unit":"string","data":[{"label":"string","value":123}]}' : '') + (skillId === 'calculations' ? ',"calculation_results":[{"label":"string","unit":"string"}]' : '') + '}'
     ].filter(function (line) { return line !== ''; }).join('\n');
 
     try {
       const generatedResult = await platform.generateText({
         systemPrompt: systemPrompt,
         userPrompt: userPrompt,
-        model: 'gpt-4o-mini',
+        model: 'gpt-6.1-sol',
         maxTokens: 2000,
       });
       const generated = cleanJson(generatedResult.text);
       const chart = skillId === 'charts' ? sanitizeChart(generated.exhibit_chart) : null;
+      const calculationResults = skillId === 'calculations' ? sanitizeCalculationResults(generated.calculation_results) : null;
+      if (skillId === 'calculations' && !calculationResults) throw new Error('Mate did not name every requested calculation result. Please try again.');
       const inserted = await db.insert('micro_drills', {
         skill: skillId,
         skill_label: skill.label,
         prompt: clampText(String(generated.prompt || ''), 2000),
         drill_data: clampText(String(generated.drill_data || ''), 4000),
-        chart_json: chart,
+        chart_json: calculationResults || chart,
         time_limit_seconds: skill.seconds,
         target_industry: targetIndustry || null,
         target_function: targetFunction || null,
@@ -602,7 +665,16 @@ if (!sessionId) {
   }
 } else if (action === 'grade') {
   const drillId = parseInt(body.drillId || body.drill_id || query.drill_id, 10);
-  const answerText = clampText(String(body.answer || '').trim(), 8000);
+  const answerText = clampText(String(body.answer || '').trim(), 30000);
+  let answerForGrading = answerText;
+  if (answerText.indexOf('CASEMATE_MARKET_SIZING_V2\n') === 0) {
+    try {
+      const savedSizing = JSON.parse(answerText.slice('CASEMATE_MARKET_SIZING_V2\n'.length));
+      answerForGrading = clampText(savedSizing && savedSizing.gradableAnswer, 6000).trim();
+    } catch (error) {
+      answerForGrading = '';
+    }
+  }
   const elapsedRaw = parseInt(body.elapsedSeconds || body.elapsed_seconds, 10);
   const elapsedSeconds = Number.isFinite(elapsedRaw) && elapsedRaw >= 0 ? elapsedRaw : null;
   const timedOut = body.timedOut === true || body.timed_out === true || String(body.timed_out || body.timedOut || '') === 'true';
@@ -615,10 +687,9 @@ if (!sessionId) {
       respond(404, { error: 'That micro-drill was not found in your drill log.' });
     } else if (drill.status !== 'pending') {
       respond(400, { error: 'This drill is already finished - generate a fresh one to keep drilling.' });
-    } else if (!answerText) {
-      // Empty answer = give up / time ran out with nothing written: reveal the
-      // approach playbook + model answer + next steps, record the rep as
-      // skipped, never score it.
+    } else if (body.skip === true || body.skipped === true || String(body.skip || '') === 'true') {
+      // Explicit reveal/give-up stays unscored. An empty answer submitted for
+      // grading is different: it deterministically receives 0/10 below.
       const skillSpec = SKILLS[drill.skill] || SKILLS.structures;
       const reveal = solutionPayload(drill);
       const now = new Date().toISOString();
@@ -668,21 +739,38 @@ if (!sessionId) {
         respond(400, { error: 'This drill is already finished - generate a fresh one to keep drilling.' });
       } else if (claimResult) {
       const skill = SKILLS[drill.skill] || SKILLS.structures;
+      const scoringRubric = drill.skill === 'calculations' ? SHARED_SCORING_RUBRICS.calculations_cycle_1 : scoringRubricFor(drill.skill);
       const reveal = solutionPayload(drill);
-      const systemPrompt = 'You are Mate, Casemate\'s fair and specific micro-drill grader. This was a SHORT timed rep of one sub-skill, not a full case - grade the sub-skill only, quickly and concretely. Return valid JSON only, with no markdown.';
+      const systemPrompt = 'You are Mate, Casemate\'s rigorous and evidence-bound micro-drill grader. Grade only the supplied answer, case facts, answer key, and shared rubric. Use the full 0-10 range. Irrelevant, unsupported, fundamentally misunderstood, or mostly empty work must receive 0-2 where warranted. Length and confident wording are not evidence. Never invent a strength, quote, number, or exhibit reference. Keep observation separate from inference. Write all user-facing text in English. Do not expose IDs, grading codes, raw JSON, or placeholder labels. Return valid JSON only, with no markdown.';
       const userPrompt = [
         'SUB-SKILL: ' + skill.label + ' (time limit ' + drill.time_limit_seconds + 's' + (elapsedSeconds !== null ? ', candidate used about ' + elapsedSeconds + 's' : '') + (timedOut ? ', the countdown hit ZERO before they submitted' : '') + ').',
         'DRILL PROMPT: ' + String(drill.prompt || ''),
         drill.drill_data ? 'DRILL DATA: ' + String(drill.drill_data) : '',
         'ANSWER KEY (ground truth - never assume the candidate saw it): ' + reveal.modelAnswerText,
         'HOW TO JUDGE THIS SUB-SKILL: ' + skill.judge,
-        'CANDIDATE ANSWER: ' + answerText,
-        'Score 1-5 (5 = interview-ready under time pressure; a timed-out but strong partial answer can still score 3). feedback = 2-3 warm, candid sentences citing their own words or numbers and tying them to the answer key above. strengths = up to 3 short bullets. improvements = up to 3 short bullets, each a concrete move for the NEXT rep.',
-        'approach_steps = 3-5 short strings teaching the reusable METHOD for attacking this type of ' + skill.label + ' drill: what to do first, second, third - grounded in THIS drill so the candidate can replay it, never generic filler like "practice more" or "stay structured".',
-        'next_steps = 1-3 short strings telling this candidate exactly what to practice next and how, based on where their answer fell short.',
-        'Language: write feedback, strengths, improvements, approach_steps, and next_steps in the same language the candidate wrote their answer in (Vietnamese or English); keep all numbers exact.',
+        'SHARED RUBRIC (weights sum to 100): ' + JSON.stringify(scoringRubric),
+        'CANDIDATE ANSWER: ' + (answerForGrading || '[empty submission]'),
+        'For EVERY rubric criterion return its exact key, a 0-10 score, evidence quoting or faithfully paraphrasing what the candidate actually wrote, why that evidence meets or misses the criterion, and what a stronger answer would add. If no meaningful strength exists, say so plainly and respectfully. Overall score is computed by the server from these weighted criterion scores, so do not return an independent overall score.',
+        'feedback = 2-3 candid sentences tied to the answer key. strengths = up to 3 real strengths and may be empty.',
+        'evidence_to_revisit = only meaningful evidence issues. Every item must name the specific figure, chart pattern, or case fact; state what the candidate missed or misread; and explain why it matters to the conclusion. Compare against the actual candidate answer first and never claim they missed evidence they used correctly. Return [] when there is no grounded evidence issue. Never write vague advice such as “use more evidence”.',
+        drill.skill === 'calculations'
+          ? 'CALCULATION COMPARISON: treat FINAL NUMERICAL ANSWERS and FORMULAS BY RESULT as distinct evidence, and compare each formula only with the result id and label attached to it. Cite the learner’s actual row number and arithmetic, identify the FIRST divergent row, and accept alternative valid formula order, grouping, and operators. Missing formulas lose model/traceability credit, but correct final numbers still earn arithmetic credit.'
+          : drill.skill === 'case_math'
+            ? 'CALCULATION COMPARISON: compare the candidate working line by line to the worked answer and identify the FIRST exact step where setup, arithmetic, units, or interpretation diverged. If their work is correct, say there is no divergence.'
+          : '',
+        drill.skill === 'market_sizing'
+          ? 'MARKET-SIZING COMPARISON: grade only Components, bottom-up model logic, and the calculated result with units. The issue tree was deliberately removed before marking and must never be requested, graded, reconstructed, or compared with a recommended tree. Do not request or score written calculation steps, judgment notes, assumption rationale, sensitivity, or a reasonableness check.'
+          : '',
+        drill.skill === 'charts'
+          ? 'CHART COMPARISON: separately assess what the candidate OBSERVED and what they INFERRED. If they merely restated exhibit values without an implication, call that out plainly and score it low under the rubric.'
+          : '',
+        drill.skill === 'creativity'
+          ? 'CREATIVITY COMPARISON: judge each idea against the case objective and constraints, not novelty alone; note mechanism, likely benefit, implementation, or trade-off gaps.'
+          : '',
+        'approach_steps = 3-5 short strings teaching the reusable method for this drill type. next_step = the ONE correction that would most improve this answer, as a concrete action plus a brief reason tied to what the candidate wrote or missed. Prioritize an error affecting the conclusion, calculation, or decisive evidence before writing style. further_improvements = zero to two smaller useful actions. Do not repeat advice across fields and do not contradict another section.',
+        'Keep all numbers exact and cite only data present above. Write all feedback in English and do not use long em dashes.',
         'Return this exact JSON shape:',
-        '{"score":1,"feedback":"string","strengths":["string"],"improvements":["string"],"approach_steps":["string"],"next_steps":["string"]}'
+        '{"criteria":[{"key":"exact rubric key","score":0,"evidence":"string","reason":"string","stronger_answer":"string"}],"feedback":"string","strengths":["string"],"evidence_to_revisit":["exact fact + miss/misread + why it matters"],"approach_steps":["string"],"next_step":{"action":"string","why":"string"},"further_improvements":[{"action":"string","why":"string"}]}'
       ].filter(function (line) { return line !== ''; }).join('\n\n');
 
       try {
@@ -690,14 +778,16 @@ if (!sessionId) {
           platform.generateText({
             systemPrompt: systemPrompt,
             userPrompt: userPrompt,
-            model: 'gpt-4o-mini',
-            maxTokens: 1600,
+            model: 'gpt-6.1-sol',
+            reasoningEffort: 'medium',
+            maxTokens: 6000,
           }),
           28000,
           'Mate timed out while grading this drill. Please try again.',
         );
         const grade = cleanJson(gradeResult.text);
-        const score = Math.max(1, Math.min(5, Math.round(Number(grade.score) || 3)));
+        const scoring = normalizeRubricGrade(grade, scoringRubric, answerForGrading);
+        const score = scoring.overall_score;
         function cleanList(items, max) {
           return (Array.isArray(items) ? items : [])
             .map(function (item) { return clampText(String(item === null || item === undefined ? '' : item).trim(), 400); })
@@ -705,16 +795,36 @@ if (!sessionId) {
             .slice(0, max);
         }
         const approachSteps = cleanList(grade.approach_steps, 5);
-        const nextSteps = cleanList(grade.next_steps, 3);
+        function cleanAction(item) {
+          if (typeof item === 'string') return item.trim() ? { action: clampText(item, 600).trim(), why: '' } : null;
+          const value = item && typeof item === 'object' ? item : {};
+          const action = clampText(value.action || value.text || '', 600).trim();
+          return action ? { action: action, why: clampText(value.why || value.reason || '', 800).trim() } : null;
+        }
+        const rankedCriteria = scoring.criteria.slice().sort(function (a, b) { return a.score - b.score || b.weight - a.weight; });
+        const generatedNextStep = cleanAction(grade.next_step);
+        const nextStep = generatedNextStep || (rankedCriteria[0] ? { action: rankedCriteria[0].stronger_answer, why: rankedCriteria[0].reason } : null);
+        const generatedFurther = (Array.isArray(grade.further_improvements) ? grade.further_improvements : []).map(cleanAction).filter(Boolean);
+        const fallbackFurther = rankedCriteria.slice(1).map(function (item) { return { action: item.stronger_answer, why: item.reason }; });
+        const seenActions = {};
+        if (nextStep) seenActions[String(nextStep.action).toLowerCase()] = true;
+        const furtherImprovements = generatedFurther.concat(fallbackFurther).filter(function (item) {
+          const key = String(item.action || '').toLowerCase();
+          if (!key || seenActions[key]) return false;
+          seenActions[key] = true;
+          return true;
+        }).slice(0, 2);
         const feedback = {
-          feedback: clampText(grade.feedback || 'Nice rep - keep drilling.', 4000),
+          feedback: clampText(grade.feedback || 'Keep drilling and use the priority below for the next rep.', 4000),
           strengths: cleanList(grade.strengths, 3),
-          improvements: cleanList(grade.improvements, 3),
-          // Teaching-grade guidance (micro-drill-v1.3): drill-tailored steps
-          // from the grader, with the curated per-skill playbook as fallback
-          // so these sections never come back empty.
+          improvements: [],
+          evidence_to_revisit: cleanList(grade.evidence_to_revisit, 4),
+          next_step: nextStep,
+          further_improvements: furtherImprovements,
+          // Keep a legacy flat list so older saved-attempt readers still work.
           approach: approachSteps.length >= 3 ? approachSteps : skill.approach,
-          next_steps: nextSteps.length > 0 ? nextSteps : skill.practice,
+          next_steps: [nextStep].concat(furtherImprovements).filter(Boolean).map(function (item) { return item.action; }).slice(0, 3),
+          scoring: scoring,
         };
         const now = new Date().toISOString();
         // json columns must be passed as JSON strings on update (raw objects
@@ -742,7 +852,7 @@ if (!sessionId) {
           next_steps: feedback.next_steps,
           model_answer: reveal.modelAnswerText,
           solution: reveal.solution,
-          message: 'Grade saved to this candidate\'s Case Drill log. If you are presenting it in chat: lead with the score (x/5) and the feedback, then the strengths and improvement bullets compactly, then teach the approach steps (the reusable method for this drill type), show the model answer so they see what good looks like, and close with the 1-3 next steps - then offer another rep (same skill to consolidate, or a different one for variety).' + (reveal.solution ? ' This was a Case Math mini-case: present the model answer as the step-by-step solution (each step\'s arithmetic, intermediate result, and thinking tip) and end with the consultant-style close.' : ''),
+          message: 'Grade saved to this candidate\'s Case Drill log. Present the derived overall score out of 10, then every weighted criterion with the candidate evidence, reason, and stronger-answer guidance. Never invent strengths or data. Then show the compact coaching and model answer.' + (reveal.solution ? ' This was a Case Math mini-case: present the model answer as the step-by-step solution and end with the consultant-style close.' : ''),
         });
       } catch (error) {
         try {
@@ -764,7 +874,7 @@ if (!sessionId) {
     }
   }
 } else {
-  respond(400, { error: 'Unknown micro-drill action. Use action=generate (optional skill: structures | case_math | market_sizing | calculations | charts | creativity, or omit to rotate the least-practiced skill) or action=grade (drill_id + answer + optional elapsed_seconds/timed_out; an empty answer marks the drill skipped and reveals the model answer).' });
+  respond(400, { error: 'Unknown micro-drill action. Use action=generate (optional skill: structures | case_math | market_sizing | calculations | charts | creativity, or omit to rotate the least-practiced skill) or action=grade (drill_id + answer + optional elapsed_seconds/timed_out; empty answers receive the deterministic low score, while the app passes skip=true for an unscored reveal).' });
 }
 `;
 
@@ -958,10 +1068,10 @@ function microToolDefinitions(endpointFor: (action: string) => string): Registry
     {
       name: 'grade_micro_drill',
       description:
-        `Grade the candidate's answer to a Case Drill micro-drill created with generate_micro_drill. Pass the drill_id and their full answer text; returns a 1-5 score plus full structured coaching: approach steps (the reusable method for this drill type), feedback with strengths and what was missing in their answer, the model answer, and 1-3 next steps to practice. For case_math drills the model answer is a step-by-step worked solution (each step's arithmetic, its intermediate result, and a thinking tip, plus a consultant-style close) - walk it step by step when presenting. Pass an EMPTY answer to mark the drill skipped and reveal the approach, model answer, and next steps without a score (when they give up or the timer beat them). Never invent a drill grade yourself - this tool's grade is the grade. [${MICRO_DRILL_HOOK_VERSION}]`,
+        `Grade the candidate's answer to a Case Drill micro-drill created with generate_micro_drill. Pass the drill_id and their full answer text; returns a weighted 0-10 score, criterion-level candidate evidence, reasons, stronger-answer guidance, and structured coaching. Empty or near-empty submissions receive a deterministic 0-1 score; the app's separate reveal action is the unscored skip path. For case_math drills the model answer is a step-by-step worked solution. Never invent a grade, strength, or exhibit number yourself. [${MICRO_DRILL_HOOK_VERSION}]`,
       parameters: {
         drill_id: { type: 'number', required: true, description: 'The drill id returned by generate_micro_drill.' },
-        answer: { type: 'string', required: false, description: "The candidate's full answer; empty to skip and reveal the model answer." },
+        answer: { type: 'string', required: false, description: "The candidate's full answer; empty is graded deterministically at 0/10." },
         elapsed_seconds: { type: 'number', required: false, description: 'Roughly how many seconds the candidate took, when known.' },
       },
       action: {

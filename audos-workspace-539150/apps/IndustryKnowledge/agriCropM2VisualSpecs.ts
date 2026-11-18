@@ -1,0 +1,306 @@
+import type { AgriCropChapterVisual } from './agriCropVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Crop Production & Agricultural Processing Module 02, keyed by visualKind. */
+export const AGRI_CROP_M2_VISUALS: Record<string, AgriCropChapterVisual> = {
+  'agri-crop-m2-1': {
+    heading: 'The chain from seeds and inputs to the final customer',
+    intro: 'The crop value chain links seeds and inputs, farms, collectors, handlers, processors, logistics and customers. Which activities matter most depends on crop biology, perishability and the end-market specification.',
+    spec: {
+      layout: 'flow', title: 'How Does the Crop Production Value Chain Work?', kicker: '',
+      steps: [
+        { label: 'Seeds and inputs', detail: 'Planting material and farm inputs', owner: 'Input supply' },
+        { label: 'Farm production', detail: 'The crop is grown and harvested', owner: 'Farms' },
+        { label: 'Collection', detail: 'Crop gathered from many farms', owner: 'Aggregation' },
+        { label: 'Handling', detail: 'Cooling, drying or storage by crop type', owner: 'Handlers' },
+        { label: 'Transformation', detail: 'Crop made into the product customers specify', owner: 'Processing' },
+        { label: 'Delivery to customers', detail: 'Logistics to the end market', kind: 'outcome', owner: 'Logistics' },
+      ],
+      note: 'Fresh fruit needs cooling and speed while dry grain emphasizes moisture and storage.',
+      takeaway: 'Required activities depend on crop biology, perishability and end-market specification, so map each crop separately.',
+    },
+  },
+  'agri-crop-m2-2': {
+    heading: 'Participants grouped by production, post-harvest and distribution',
+    intro: 'Each lifecycle stage has its own participants — from input suppliers and farms to collectors, handlers, processors, logistics firms and customers.',
+    spec: {
+      layout: 'taxonomy', title: 'Who Participates Across the Crop Production Lifecycle?', kicker: '',
+      root: 'Crop lifecycle participants', rootDetail: 'Roles by stage; one firm may hold several',
+      groups: [
+        { label: 'Production', items: ['Seed and input suppliers', 'Farms'] },
+        { label: 'Post-harvest', items: ['Collectors', 'Handlers', 'Processors'] },
+        { label: 'Distribution', items: ['Logistics providers', 'Customers'] },
+      ],
+      note: 'Fresh fruit needs cooling and speed while dry grain emphasizes moisture and storage, so the participants needed differ by crop.',
+      takeaway: 'Required activities — and therefore participants — depend on crop biology, perishability and end-market specification.',
+    },
+  },
+  'agri-crop-m2-3': {
+    heading: 'Who adds and protects usable output as crop, information and money move',
+    intro: 'Variety, cultivation, harvest, handling, transformation and customer fit all affect usable output. Poor drying can erase field value before a crop reaches a processor.',
+    spec: {
+      layout: 'ecosystem', title: 'How Do Inputs, Crops, Information, and Money Flow?', kicker: '',
+      center: { label: 'Usable crop output', detail: 'Created and preserved across the lifecycle' },
+      actors: [
+        { label: 'Input suppliers', relation: 'Variety and inputs for the crop plan', flows: ['product', 'information'] },
+        { label: 'Farms', relation: 'Field yield from cultivation and harvest', flows: ['product'] },
+        { label: 'Handlers', relation: 'Loss reduction, e.g. proper drying', flows: ['service', 'risk'] },
+        { label: 'Processors', relation: 'Processing yield to a stated specification', flows: ['product'] },
+        { label: 'Customers', relation: 'Payment and market alignment signals', flows: ['money', 'information'] },
+      ],
+      note: 'Processing yield = usable output relative to defined raw material input under a stated specification.',
+      takeaway: 'Value is created and preserved across the lifecycle, not at harvest or final sale alone.',
+    },
+  },
+  'agri-crop-m2-4': {
+    heading: 'A seed is sourced only if it fits climate, maturity, processor and buyer',
+    intro: 'Seed, nutrients and mechanization are upstream choices that shape productivity, cost and downstream quality. A suitable variety must fit climate, maturity, processing and buyer needs.',
+    spec: {
+      layout: 'decision', title: 'How Are Seeds and Planting Materials Sourced?', kicker: '',
+      root: { label: 'Candidate seed or variety', detail: 'With its nutrient and machinery needs' },
+      question: 'Does it fit climate, maturity, processing and buyer needs?',
+      branches: [
+        { condition: 'Fits all four', outcome: 'Source it with matched nutrients and machinery', tone: 'positive' },
+        { condition: 'Fits the field, not the buyer', outcome: 'Reconsider before planting', detail: 'Downstream quality depends on the variety', tone: 'caution' },
+        { condition: 'Needs unjustified input intensity', outcome: 'Avoid', detail: 'No soil, crop or economic justification', tone: 'negative' },
+      ],
+      note: 'Avoid input intensity without soil, crop and economic justification.',
+      takeaway: 'Input selection and efficient application shape productivity, cost and downstream quality.',
+    },
+  },
+  'agri-crop-m2-5': {
+    heading: 'Soil, crop protection and water each drive productivity, cost and quality',
+    intro: 'Soil, crop protection and water inputs are matched to agronomy and finance. How efficiently they are applied shapes productivity, cost and downstream quality together.',
+    spec: {
+      layout: 'driverTree', title: 'How Do Soil, Fertilizers, and Agricultural Inputs Affect Production?', kicker: '',
+      root: { label: 'Productivity, cost and quality', detail: 'Shaped by input selection and application' },
+      drivers: [
+        { label: 'Soil', detail: 'Justifies which fertilizers are needed',
+          children: [{ label: 'Fertilizer selection' }, { label: 'Efficient application' }] },
+        { label: 'Crop protection', detail: 'Protects yield and downstream quality' },
+        { label: 'Water', detail: 'Irrigation matched to agronomy and finance' },
+        { label: 'Technical knowledge', detail: 'Guides input choice and use' },
+      ],
+      note: 'Avoid input intensity without soil, crop and economic justification.',
+      takeaway: 'Input selection and efficient application shape productivity, cost and downstream quality.',
+    },
+  },
+  'agri-crop-m2-6': {
+    heading: 'Planning the season from planting schedule to harvest quality',
+    intro: 'Farmers coordinate crop cycles, field operations, irrigation, nutrition, pests and harvest resources. Labor, equipment and collection need to be in place before harvest peaks.',
+    spec: {
+      layout: 'flow', title: 'How Do Farmers Plan Land, Water, and Production Resources?', kicker: '',
+      steps: [
+        { label: 'Planting schedule', detail: 'Set the crop cycle' },
+        { label: 'Field monitoring', detail: 'Irrigation, nutrition and pests through the season' },
+        { label: 'Labor and machinery', detail: 'Seasonal labor, equipment and collection arranged' },
+        { label: 'Harvest timing', detail: 'Hand or mechanized harvest to the quality goal', kind: 'decision' },
+        { label: 'Yield and quality', detail: 'Less loss, steadier processor supply', kind: 'outcome' },
+      ],
+      note: 'Selective hand harvest and mechanized harvest serve different crops and quality goals.',
+      takeaway: 'Consistent planning and timely harvest improve quality, reduce loss and stabilize processor supply.',
+    },
+  },
+  'agri-crop-m2-7': {
+    heading: 'Dry crops and perishables need opposite post-harvest handling',
+    intro: 'Harvested crops are handled according to moisture, perishability, contamination and end use. Controlled drying can improve safe storage while delayed cooling damages perishables.',
+    spec: {
+      layout: 'compare', title: 'How Are Crops Cultivated and Managed?', kicker: '',
+      leftTitle: 'Crop that must be dried', rightTitle: 'Perishable crop',
+      rows: [
+        { label: 'Critical property', a: 'Moisture', b: 'Perishability' },
+        { label: 'Key handling', a: 'Controlled drying', b: 'Prompt cooling' },
+        { label: 'Storage', a: 'Safe storage once dried', b: 'Cold storage' },
+        { label: 'What goes wrong', a: 'Uncontrolled drying limits safe storage', b: 'Delayed cooling damages produce' },
+      ],
+      note: 'Transport and other infrastructure should match crop and throughput rather than use one universal design.',
+      takeaway: 'Post-harvest operations determine how much marketable quality reaches processing and sale.',
+    },
+  },
+  'agri-crop-m2-8': {
+    heading: 'Integrated pest management acts on monitoring and thresholds, not recipes',
+    intro: 'A farmer monitors crop stage, soil moisture and pest pressure before choosing an intervention with qualified local guidance. Irrigation and nutrition are likewise set field by field.',
+    spec: {
+      layout: 'decision', title: 'How Do Irrigation, Pest Management, and Crop Nutrition Work?', kicker: '',
+      root: { label: 'Field scouting result', detail: 'Crop stage, soil moisture and pest pressure' },
+      question: 'Does monitored pest pressure justify intervening under local advice?',
+      branches: [
+        { condition: 'Below the action threshold', outcome: 'Keep monitoring', detail: 'Adjust irrigation and nutrition to need', tone: 'positive' },
+        { condition: 'Threshold reached', outcome: 'Choose suitable controls', detail: 'Biological, cultural, physical or chemical, with local guidance', tone: 'caution' },
+        { condition: 'Universal chemical recipe', outcome: 'Do not apply', detail: 'Unsafe and not crop- or field-specific', tone: 'negative' },
+      ],
+      note: 'Integrated pest management coordinates monitoring with suitable biological, cultural, physical and chemical controls; responsible input use follows local advice.',
+      takeaway: 'Water, nutrition and pest management must be crop- and field-specific; integrated pest management uses monitoring and multiple controls rather than unsafe universal chemical recipes.',
+    },
+  },
+  'agri-crop-m2-9': {
+    heading: 'How a processor turns accepted raw crop into usable output',
+    intro: 'Processing spans milling, hulling, crushing, extraction, freezing, drying, canning and ingredient manufacture. A processor tracks raw acceptance, recovery, product specification and by-product disposition.',
+    spec: {
+      layout: 'flow', title: 'How Do Farmers Improve Operational Efficiency and Yield?', kicker: '',
+      steps: [
+        { label: 'Raw acceptance', detail: 'Incoming crop tested before intake', owner: 'Testing' },
+        { label: 'Primary processing', detail: 'Cleaning, drying, milling or hulling' },
+        { label: 'Further processing', detail: 'Ingredients or finished products' },
+        { label: 'Production control', detail: 'Recovery and specification checked', owner: 'Testing' },
+        { label: 'Packaging', detail: 'Product prepared for the customer' },
+        { label: 'Usable output', detail: 'Meets a customer need at competitive cost', kind: 'outcome' },
+      ],
+      loop: 'By-products are tracked and dispositioned alongside the main product.',
+      note: 'Facility economics depend on raw quality, utilization, energy, maintenance and customer acceptance.',
+      takeaway: 'Processing creates value when usable output meets a customer need at competitive total cost.',
+    },
+  },
+  'agri-crop-m2-10': {
+    heading: 'Downstream customer segments each set their own specification',
+    intro: 'Crops and processed products supply manufacturers, wholesalers, retailers, exporters and industrial buyers. Each segment’s specification and feedback shape what is delivered.',
+    spec: {
+      layout: 'taxonomy', title: 'How Are Crops Harvested?', kicker: '',
+      root: 'Downstream customer segments', rootDetail: 'Segments, not steps — each with its own specification',
+      groups: [
+        { label: 'Manufacturers' },
+        { label: 'Wholesalers' },
+        { label: 'Retailers' },
+        { label: 'Exporters' },
+        { label: 'Industrial buyers' },
+      ],
+      note: 'Complaint and rejection data from customers should improve sourcing and process controls.',
+      takeaway: 'Downstream value requires product, volume, packaging and delivery to fit customer needs profitably.',
+    },
+  },
+  'agri-crop-m2-11': {
+    heading: 'Order-planned output avoids distress sales and waste',
+    intro: 'Coordinating seasonal output with contracts, storage and distribution protects quality and value after harvest, and complaint data feeds back into sourcing.',
+    spec: {
+      layout: 'compare', title: 'How Do Farmers Manage Post-Harvest Quality and Losses?', kicker: '',
+      leftTitle: 'Uncoordinated seasonal output', rightTitle: 'Order-planned output',
+      rows: [
+        { label: 'Selling', a: 'Distress sales at harvest peaks', b: 'Sold against contracts' },
+        { label: 'Storage', a: 'Waste when output cannot be stored', b: 'Storage bridges harvest and orders' },
+        { label: 'Distribution', a: 'Whatever is ready is shipped', b: 'Product, volume and packaging fit the order' },
+        { label: 'Feedback', a: 'Complaints repeat', b: 'Rejection data improves sourcing and controls' },
+      ],
+      note: 'Coordinate seasonal output with contracts and storage to avoid distress sales or waste.',
+      takeaway: 'Downstream value requires product, volume, packaging and delivery to fit customer needs profitably.',
+    },
+  },
+  'agri-crop-m2-12': {
+    heading: 'Export access runs through compliance and documents, not capacity',
+    intro: 'Reaching export buyers involves destination requirements, inspection, customs, logistics and buyer qualification. A shipment can fail when the product is acceptable but documentation is incomplete.',
+    spec: {
+      layout: 'flow', title: 'How Do Crops Reach Traders, Cooperatives, and Buyers?', kicker: '',
+      steps: [
+        { label: 'Market development', detail: 'Buyer qualification and destination rules verified' },
+        { label: 'Export preparation', detail: 'Production and packing to those rules' },
+        { label: 'Quality and safety', detail: 'Inspection against requirements' },
+        { label: 'Origin record', detail: 'Complete documentation', kind: 'decision' },
+        { label: 'Shipment', detail: 'Customs and logistics to the buyer', kind: 'outcome' },
+      ],
+      note: 'Verify current crop and destination rules before production and packing decisions.',
+      takeaway: 'Market access depends on compliant product and documents, not production capacity alone.',
+    },
+  },
+  'agri-crop-m2-13': {
+    heading: 'Farm productivity counts usable output against resources, not volume',
+    intro: 'Farm inputs are converted into harvest output, and productivity is judged by usable quality output relative to land, inputs, labor, energy and capital.',
+    spec: {
+      layout: 'compare', title: 'What Inputs Determine Crop Production Output?', kicker: '',
+      leftTitle: 'Volume view', rightTitle: 'Productivity view',
+      rows: [
+        { label: 'Output counted', a: 'Total harvest volume', b: 'Usable quality output' },
+        { label: 'Measured against', a: 'Nothing explicit', b: 'Land, inputs, labor, energy and capital' },
+        { label: 'Agricultural KPI', a: 'Undefined totals', b: 'Yield and loss with definitions' },
+        { label: 'Data', a: 'Mixed units', b: 'Crop-specific NSO tables, units kept' },
+      ],
+      note: 'Use NSO crop-specific area, yield and production tables without mixing units.',
+      takeaway: 'Productivity is usable quality output relative to land, inputs, labor, energy and capital—not volume alone.',
+    },
+  },
+  'agri-crop-m2-14': {
+    heading: 'Processing KPIs show how much raw crop becomes sellable product',
+    intro: 'Processing inputs become processed output, and defined KPIs — loss, throughput, recovery, rejection and energy — reveal where usable value is gained or lost.',
+    spec: {
+      layout: 'table', title: 'How Do Yield, Quality, and Losses Affect Farm Value?', kicker: '',
+      headers: ['Processing KPI', 'Relates', 'Signals'],
+      rows: [
+        { label: 'Recovery', a: 'Processed output to processing input', b: 'How much raw crop becomes product' },
+        { label: 'Loss', a: 'Input that never becomes usable output', b: 'Value lost in handling or processing' },
+        { label: 'Rejection', a: 'Output failing the specification', b: 'Quality shortfall' },
+        { label: 'Throughput', a: 'Volume processed over time', b: 'How fully the plant is used' },
+        { label: 'Energy', a: 'Energy used for the output', b: 'Resource cost of production' },
+      ],
+      note: 'Track yield, loss, throughput, recovery, rejection and energy with definitions.',
+      takeaway: 'Productivity is usable quality output relative to processing inputs, labor, energy and capital—not volume alone.',
+    },
+  },
+  'agri-crop-m2-15': {
+    heading: 'Profit depends on yield, recovery, price and utilization covering costs',
+    intro: 'Costs accumulate across land, inputs, labor, irrigation, raw crops, energy, packaging, storage, logistics and finance. High harvest volume can depress price while an underused plant carries fixed cost.',
+    spec: {
+      layout: 'driverTree', title: 'Where Are Production Costs and Economic Value Created?', kicker: '',
+      root: { label: 'Margin', detail: 'Reconciled by crop, lot, product and customer' },
+      drivers: [
+        { label: 'Yield and recovery', detail: 'Usable output from farm and plant', children: [{ label: 'Farm yield' }, { label: 'Recovery' }] },
+        { label: 'Selling price', detail: 'High harvest volume can depress it' },
+        { label: 'Farm cost', detail: 'Land, inputs, labor and irrigation' },
+        { label: 'Processing cost', detail: 'Raw crops, energy, packaging, storage, logistics',
+          children: [{ label: 'Utilization', detail: 'An underused plant still carries fixed cost' }] },
+        { label: 'Working capital', detail: 'Finance for seasonal and capital costs' },
+      ],
+      note: 'Reconcile value by crop, lot, product and customer.',
+      takeaway: 'Profit requires yields, recovery, utilization and selling prices to cover seasonal and capital costs.',
+    },
+  },
+  'agri-crop-m2-16': {
+    heading: 'Origins, hubs, routes, customers and policy in a global crop chain',
+    intro: 'Global systems coordinate production origins, processing hubs, routes and customers across countries. Regional specialization links advantages with demand, while international sourcing adds logistics, policy and supply risk.',
+    spec: {
+      layout: 'ecosystem', title: 'How Do Global Crop Production Systems Differ?', kicker: '',
+      center: { label: 'Global crop chain', detail: 'Coordinated across countries' },
+      actors: [
+        { label: 'Production origins', relation: 'Regional specialization supplies the crop', flows: ['product'] },
+        { label: 'Processing hubs', relation: 'Transform crops sourced from origins', flows: ['product', 'service'] },
+        { label: 'Routes and logistics', relation: 'Move crops and add logistics risk', flows: ['product', 'risk'] },
+        { label: 'International customers', relation: 'Source across origins and pay', flows: ['money', 'information'] },
+        { label: 'Policy', relation: 'Adds policy risk at each border', flows: ['oversight', 'risk'] },
+      ],
+      note: 'Diversification across origins is one response to supply risk. Perishability may favor near-origin processing while stable commodities can travel before transformation.',
+      takeaway: 'Global chains link regional advantages with demand while adding logistics, policy and supply risk.',
+    },
+  },
+  'agri-crop-m2-17': {
+    heading: 'Vietnam’s export roles once a crop meets the quality standard',
+    intro: 'Vietnamese crops can be processed near origin or travel before transformation in another country. The right export role is one where local quality and cost are defensible.',
+    spec: {
+      layout: 'pathway', title: 'How Does Vietnam\'s Crop Production Value Chain Operate?', kicker: '',
+      trunk: [
+        { label: 'Vietnamese production origin', detail: 'Crop grown and collected' },
+        { label: 'Quality standard met', detail: 'Required before any export role', kind: 'decision' },
+      ],
+      optionsLabel: 'Export roles — alternatives chosen where quality and cost are defensible',
+      options: [
+        { label: 'Near-origin processing', detail: 'Favored for perishable crops' },
+        { label: 'Cross-border processing', detail: 'Stable commodity transformed abroad' },
+        { label: 'Supply to a processing hub', detail: 'Part of a chain coordinated across countries' },
+      ],
+      note: 'Choose export roles where local quality and cost are defensible.',
+      takeaway: 'Global chains link regional advantages with demand while adding logistics, policy and supply risk, so each export role must be defensible on quality and cost.',
+    },
+  },
+  'agri-crop-m2-18': {
+    heading: 'Closer farm-to-processor and processor-to-market links drive value capture',
+    intro: 'Local competitiveness depends on how farmers, cooperatives, collectors, factories, exporters and domestic manufacturers coordinate. Raw-material agreements should align variety, schedule, quality and realistic factory demand.',
+    spec: {
+      layout: 'driverTree', title: 'How Do Local Conditions Influence Productivity and Competitiveness?', kicker: '',
+      root: { label: 'Reliability, quality and value capture', detail: 'Local productivity and competitiveness' },
+      drivers: [
+        { label: 'Farm-to-processor links', detail: 'Supply matched to the factory',
+          children: [{ label: 'Producer coordination' }, { label: 'Post-harvest infrastructure' }, { label: 'Market-oriented production' }] },
+        { label: 'Processor-to-market links', detail: 'Product matched to buyers',
+          children: [{ label: 'Channel integration' }, { label: 'Digital traceability' }] },
+        { label: 'Processing investment', detail: 'Against verified bottlenecks and viable offtake' },
+      ],
+      note: 'Invest against verified bottlenecks and commercially viable offtake.',
+      takeaway: 'Closer farm-to-processor and processor-to-market coordination can improve reliability, quality and value capture.',
+    },
+  },
+};

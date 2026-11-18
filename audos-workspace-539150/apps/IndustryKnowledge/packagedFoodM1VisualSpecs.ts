@@ -1,0 +1,435 @@
+import type { ChapterVisual } from './chapterVisualText';
+
+/** Chapter-specific Learning Visuals for Packaged Food & Confectionery Module 01, keyed by visualKind. */
+export const PACKAGED_FOOD_M1_VISUALS: Record<string, ChapterVisual> = {
+  'packaged-food-m1-11-1-industry': {
+    heading: 'How a farm ingredient becomes a repeatable branded SKU',
+    intro: 'A wrapper hides a whole system. Follow each stage and notice where processing and the sealed pack make the product repeatable enough to travel.',
+    spec: {
+      layout: 'flow', title: 'What Is the Packaged Food & Confectionery Industry?', kicker: '',
+      steps: [
+        { label: 'Agricultural ingredients', detail: 'Variable farm inputs enter the factory', kind: 'stage' },
+        { label: 'Processing', detail: 'Controls texture, safety and shelf life batch after batch', kind: 'stage' },
+        { label: 'Sealed packaging', detail: 'Barrier against contamination, moisture, oxygen or breakage; carries ingredient, allergen and date information', kind: 'stage' },
+        { label: 'Brand promise', detail: 'Makes the product recognisable and the promise repeatable', kind: 'stage' },
+        { label: 'Distribution', detail: 'Makes the SKU available again and again', kind: 'stage' },
+        { label: 'Repeat purchase', detail: 'Low unit prices and frequent buying give classic FMCG economics', kind: 'outcome' },
+      ],
+      note: 'Confectionery is one subset: chocolate confectionery contains cocoa, sugar confectionery covers non-cocoa sweets and gum. The research provides no single official global packaged-food market-value series.',
+      takeaway: 'The pack turns food preparation into an FMCG business: one repeatable unit that factories, distributors and retailers can all plan around.',
+    },
+  },
+  'packaged-food-m1-11-2-traits': {
+    heading: 'Seven product traits that add up to a snack maker’s advantage',
+    intro: 'No single trait wins on its own. Read each driver as a link: preservation enables reach, safety enables trust and convenience enables frequency.',
+    spec: {
+      layout: 'driverTree', title: 'What Makes This Industry Unique?', kicker: '',
+      root: { label: 'Durable competitive position', detail: 'Repeat purchase turned into advantage' },
+      formula: 'Advantage = product requirements that build trust × business capabilities that build reach and cost',
+      drivers: [
+        { label: 'Product requirements', op: '×', children: [
+          { label: 'Shelf life', detail: 'Stable for a stated period, so the product can reach further' },
+          { label: 'Food safety', detail: 'A minimum condition that protects trust' },
+          { label: 'Batch consistency', detail: 'The same taste and texture every time' },
+          { label: 'Convenience', detail: 'Supports frequent, everyday use' },
+        ] },
+        { label: 'Business capabilities', op: '×', children: [
+          { label: 'Purchase frequency', detail: 'Low unit price means the pack is bought again and again' },
+          { label: 'Brand equity', detail: 'Recognition, trust and preference give the pack meaning' },
+          { label: 'Economies of scale', detail: 'Large runs, specialised lines and a dense distributor network' },
+        ] },
+      ],
+      note: 'Orion reportedly held prices flat from 2018 despite a roughly 70% ingredient-cost increase; this is company context from VnExpress, not an industry-wide cost index.',
+      takeaway: 'Once safety and consistency are met by many producers, competition shifts to convenience, taste, pack-price architecture and availability.',
+    },
+  },
+  'packaged-food-m1-11-3-boundaries': {
+    heading: 'Is yogurt in? Drawing the packaged-food boundary before quoting a number',
+    intro: 'Sort products into core, adjacent and outside before choosing a market estimate. Adjacent categories can be discussed together but must be measured separately.',
+    spec: {
+      layout: 'taxonomy', title: 'Where Does the Industry Begin and End?', kicker: '',
+      root: 'Packaged-food market boundary', rootDetail: 'Two tests: product form and revenue boundary',
+      groups: [
+        { label: 'Core packaged food', detail: 'Processed, sealed products made for repeatable sale', items: ['Chocolate and confectionery', 'Biscuits', 'Savoury snacks', 'A sealed biscuit sold in a café'] },
+        { label: 'Adjacent: label separately', detail: 'May appear in broad studies but have their own denominators', items: ['Dairy', 'Beverages', 'Bakery', 'Instant noodles'] },
+        { label: 'Outside the core', detail: 'Not packaged products', items: ['Fresh or loose food', 'Home-prepared meals', 'Restaurant-made dishes and café service'] },
+      ],
+      note: 'Before quoting a figure, fix products, geography, year, channel and value type. The ~US$3.73tn packaged-food and ~US$586.3bn confectionery-and-snacks commercial estimates overlap, so never add them.',
+      takeaway: 'Company portfolios can cross boundaries, but market estimates should not: declare what is included to avoid double-counting.',
+    },
+  },
+  'packaged-food-m1-11-4-categories': {
+    heading: 'Chocolate, candy, biscuits and chips: separate businesses on one aisle',
+    intro: 'Each product family has its own trade heading, examples and input exposure. Compare the rows to see why the category label decides the denominator.',
+    spec: {
+      layout: 'table', title: 'Understanding Major Product Categories', kicker: '',
+      headers: ['Product family', 'Examples in the chapter', 'Trade heading and input exposure'],
+      rows: [
+        { label: 'Chocolate confectionery', a: 'KitKat; Mondelez Kinh Do chocolate', b: 'HS 1806; cocoa dominates the economics' },
+        { label: 'Sugar confectionery', a: 'Gummy candy and gum; Bibica and Hai Ha candy', b: 'HS 1704; non-cocoa sweets and gum' },
+        { label: 'Biscuits and cookies', a: 'Oreo; Mondelez Kinh Do biscuits; Orion ChocoPie near the pie/cake area', b: 'HS 1905; flour and fat matter more' },
+        { label: 'Savoury snacks', a: 'Potato chips, crackers, extruded snacks', b: 'A separate commercial family; frying oil and potatoes matter' },
+        { label: 'Other packaged foods', a: 'Ready meals, sauces, frozen foods, processed meats', b: 'Commercial research may group these differently' },
+      ],
+      note: 'HS headings come from a third-party reference reflecting standard nomenclature, not an official WCO publication; check the official tariff text for legal work.',
+      takeaway: 'Name the commercial category first and use HS codes as a cross-check, because each family carries different inputs and risks.',
+    },
+  },
+  'packaged-food-m1-11-5-customers': {
+    heading: 'One biscuit pack, five customers who each want something different',
+    intro: 'The child eats it, the parent chooses it, the retailer shelves it and the distributor finances it. See what each customer values from the manufacturer.',
+    spec: {
+      layout: 'ecosystem', title: 'Who Are the Industry\'s Customers?', kicker: '',
+      center: { label: 'Manufacturer and its branded pack', detail: 'Needs consumer pull and trade execution at the same time' },
+      actors: [
+        { label: 'Consumer', relation: 'Eats the product; wants taste and reliability', flows: ['product'] },
+        { label: 'Shopper', relation: 'Chooses and pays; balances price, health, convenience and occasion', flows: ['money', 'product'] },
+        { label: 'Retail buyer', relation: 'Decides assortment and shelf; wants rate of sale and margin', flows: ['money', 'information'] },
+        { label: 'Wholesaler or distributor', relation: 'Carries stock and reach; needs workable credit, inventory turns and route economics', flows: ['product', 'money'] },
+        { label: 'Foodservice customer', relation: 'Uses packs or ingredients in its own offer; wants portion consistency and kitchen efficiency', flows: ['product', 'money'] },
+      ],
+      note: 'The research supports the channel structure qualitatively; it gives no verified current share for Vietnam traditional trade.',
+      takeaway: 'A product can be loved but unavailable, or listed but unwanted: success needs both consumer pull and trade execution.',
+    },
+  },
+  'packaged-food-m1-12-1-preservation': {
+    heading: 'From salting a harvest to sealing it in a can',
+    intro: 'Preservation slowed spoilage long before factories. Trace how heat, a sealed container and microbial science made the result portable and controllable.',
+    spec: {
+      layout: 'timeline', title: 'From Food Preservation to Packaged Products', kicker: '',
+      events: [
+        { period: 'Ancient practice', label: 'Drying, salting, smoking, fermenting, sugaring', detail: 'Remove water or change acidity to slow spoilage', status: 'historical' },
+        { period: '1795–1809', label: 'Appert develops heat preservation', detail: 'Food heated in sealed containers to control microorganisms', status: 'historical' },
+        { period: '1804', label: 'First cannery opens at Massy', detail: 'Appert’s cannery in the research record', status: 'historical' },
+        { period: '1810', label: 'French prize and the tin can', detail: 'Appert receives the government prize; Durand patents the tin can', status: 'historical' },
+        { period: '1860s', label: 'Pasteur’s microbial science', detail: 'Puts heat treatment on a scientific footing', status: 'historical' },
+      ],
+      note: 'The PubMed source supports Appert’s history; the Durand and Pasteur dates are corroborating secondary history, not claims from that article.',
+      takeaway: 'A longer, predictable shelf life lets a producer hold inventory, ship beyond the local market and promise a consistent use-by window.',
+    },
+  },
+  'packaged-food-m1-12-2-industrialisation': {
+    heading: 'Three process inventions that turned confectionery and frozen food into mass brands',
+    intro: 'Once preservation was controllable, the question became scale. See which inventions made thousands of packs identical, and what that scale brought with it.',
+    spec: {
+      layout: 'pathway', title: 'The Industrialization of Packaged Food', kicker: '',
+      trunk: [
+        { label: 'Craft variability', detail: 'Output differs from batch to batch', kind: 'stage' },
+        { label: 'Standardised production', detail: 'Inputs, recipes, temperatures, timing, forming and packaging fixed', kind: 'stage' },
+      ],
+      optionsLabel: 'Process inventions that made scale possible',
+      options: [
+        { label: 'Milk chocolate', detail: 'Commercialised by Daniel Peter and Nestlé in 1875' },
+        { label: 'Conching', detail: 'Introduced by Rodolphe Lindt in 1879 for smoother texture' },
+        { label: 'Flash-freezing', detail: 'Birdseye: developed in the 1920s, patent in 1927, commercial frozen food from 1929' },
+      ],
+      afterLabel: 'What scale brought',
+      after: [
+        { label: 'Mass confectionery brands', detail: 'Cadbury, Fry, Hershey and Mars paired industrial recipes with packaging and distribution', kind: 'outcome' },
+        { label: 'Higher fixed-cost risk', detail: 'Utilisation and demand planning become central to profitability', kind: 'outcome' },
+      ],
+      note: 'The confectionery and Birdseye dates are corroborating secondary history in the research record.',
+      takeaway: 'Scale lowers unit cost only when output is sold, which is why seasonal categories must prepare factories and inventory early.',
+    },
+  },
+  'packaged-food-m1-12-3-packaging': {
+    heading: 'Which logistics problem each packaging system solved',
+    intro: 'A factory can make a perfect product, but the pack decides whether it arrives perfect. Compare what each system does and what it changed for distribution.',
+    spec: {
+      layout: 'table', title: 'Packaging Innovation and the Rise of Global Food Brands', kicker: '',
+      headers: ['Packaging system', 'How it protects the food', 'What it changed'],
+      rows: [
+        { label: 'Retort pouch (1950s–60s)', a: 'Heat-resistant flexible pack; emerged from US Army Natick work', b: 'Lighter shelf-stable formats that can replace a can in some uses' },
+        { label: 'Aseptic systems (1960s)', a: 'Commercially sterile product filled into sterile packaging; Tetra Pak founded in Lund in 1951', b: 'Products travel without unopened refrigeration' },
+        { label: 'Modified atmosphere (1970s–80s)', a: 'Changes the gases around food to slow quality loss', b: 'Longer life for selected chilled and snack foods' },
+        { label: 'Barrier films', a: 'Limit moisture, oxygen, light or aroma transfer', b: 'Crisp biscuits and snacks stay protected' },
+      ],
+      note: 'The first commercial Tetra Brik Aseptic year is reported as 1961 or 1969; the lesson uses the supported 1960s range.',
+      takeaway: 'Packaging choice starts with the product’s failure modes and then shapes line speed, freight, shelf impact and recyclability.',
+    },
+  },
+  'packaged-food-m1-12-4-vietnam': {
+    heading: 'From mứt and state factories to Mondelez Kinh Do',
+    intro: 'Vietnam’s confectionery shelf records its economic reform. Follow how state makers, private founders and multinational capital arrived in turn.',
+    spec: {
+      layout: 'timeline', title: 'The Development of Vietnam\'s Packaged Food Industry', kicker: '',
+      events: [
+        { period: 'Planned economy', label: 'Traditional sweets and state makers', detail: 'Mứt, bánh kẹo and mooncakes; state-owned Hai Ha and Hai Chau', status: 'historical' },
+        { period: '1986', label: 'Đổi Mới liberalises the economy', detail: 'Opens room for private brands and foreign manufacturers', status: 'historical' },
+        { period: '1993', label: 'Kinh Do founded', status: 'historical' },
+        { period: '1999 and 2005', label: 'Bibica, then Orion Food Vina', detail: 'Modern branded expansion continues', status: 'historical' },
+        { period: '2014', label: 'Mondelez agrees to buy 80% of Kinh Do’s confectionery arm', detail: 'About VND7,846bn, implying about VND9,808.6bn for 100%: a transaction value, not market size', status: 'historical' },
+        { period: '2015', label: 'Mondelez Kinh Do follows', detail: 'KIDO later pivots toward cooking oil and ice cream', status: 'historical' },
+      ],
+      note: 'Exact founding dates for Hai Ha and Hai Chau, and some Kinh Do milestones, were not verified against primary filings.',
+      takeaway: 'Ownership history explains today’s portfolios and distribution assets: a buyer often acquires a local platform rather than building from zero.',
+    },
+  },
+  'packaged-food-m1-13-1-global': {
+    heading: 'US$3.7 trillion or US$140 billion? Nested global food definitions',
+    intro: 'All of these global values can be valid because each describes a different basket. Read them as layers of definition, never as parts to add up.',
+    spec: {
+      layout: 'taxonomy', title: 'Understanding the Global Packaged Food Market', kicker: '',
+      root: 'Global market estimates by definition', rootDetail: 'Commercial vendor estimates, not official statistics',
+      groups: [
+        { label: 'Broad packaged-food umbrella', detail: '~US$3,730bn in 2025 (Maximize Market Research estimate); includes many categories' },
+        { label: 'Confectionery and snacks aggregate', detail: '~US$586.3bn in 2024 from a different source; overlaps several families' },
+        { label: 'Chocolate confectionery', detail: '~US$140.15bn narrow versus ~US$173.20bn broader definition, 2025; a definitional spread, not averaged' },
+        { label: 'Sugar confectionery', detail: 'Narrower again, with its own definition' },
+      ],
+      note: 'No official FAO or UN global packaged-food market-value series was verified. Vietnam’s VND66tn forecast covers confectionery only.',
+      takeaway: 'Match the denominator to the business question: a biscuit company should not treat the broad total as its addressable market.',
+    },
+  },
+  'packaged-food-m1-13-2-size': {
+    heading: 'What sits inside a 4.5% packaged-food growth forecast',
+    intro: 'One vendor projects broad packaged food rising from about US$3,730bn in 2025 to US$5,080bn in 2032. Break that value growth into the drivers it can hide.',
+    spec: {
+      layout: 'driverTree', title: 'Global Market Size and Growth', kicker: '',
+      root: { label: 'Broad packaged-food value, 2025–2032', detail: '~US$3,730bn to ~US$5,080bn; ~4.5% CAGR (commercial projection)' },
+      formula: 'Nominal value growth = volume + price + mix, within one vendor’s scope',
+      drivers: [
+        { label: 'Volume', detail: 'Units, new buyers and wider distribution', op: '+' },
+        { label: 'Price', detail: 'Nominal value rises with price as well as units', op: '+' },
+        { label: 'Premium mix', detail: 'Mature markets can grow value while units are flat', op: '+' },
+        { label: 'Category expansion', detail: 'The basket spans bakery, confectionery, dairy, snacks, ready meals and beverages', op: '+' },
+        { label: 'Currency assumptions', detail: 'Change value in the vendor’s reporting money', op: '±' },
+      ],
+      note: 'The Maximize estimate is a commercial projection whose methodology is not reproduced in the research record. Do not substitute this global CAGR for Vietnam confectionery growth.',
+      takeaway: 'Treat the forecast as an external anchor and build at least a base and a downside case rather than repeating the headline.',
+    },
+  },
+  'packaged-food-m1-13-3-patterns': {
+    heading: 'Breakfast, treat, gift or dinner: packaged food sorted by need state',
+    intro: 'People buy a quick breakfast or a gift, not “the market”. Group the product families by the job they do for the buyer.',
+    spec: {
+      layout: 'taxonomy', title: 'Global Product Categories and Consumption Patterns', kicker: '',
+      root: 'Consumption by need state and occasion', rootDetail: 'An educational framework, not measured share data',
+      groups: [
+        { label: 'Everyday fuel', items: ['Biscuits', 'Crackers', 'Competes with bread or yogurt at breakfast'] },
+        { label: 'Indulgence and impulse', items: ['Chocolate', 'Candy', 'Cadbury, Milka, Toblerone'] },
+        { label: 'Gifting', items: ['Premium boxes', 'Tết gift boxes', 'Mid-Autumn mooncakes'] },
+        { label: 'Convenience', items: ['Ready meals', 'Quick dinner at home'] },
+        { label: 'Controlled indulgence', items: ['Lower-sugar products', 'Portioned packs'] },
+      ],
+      note: 'The research gives no validated global percentage split by occasion.',
+      takeaway: 'Occasion explains why similar ingredients can support different price points, packs and channels, and reveals substitution risk.',
+    },
+  },
+  'packaged-food-m1-13-4-markets': {
+    heading: 'Where packaged-food value sits today versus where volume will come from',
+    intro: 'The biggest market and the fastest-growing one are often different places. Compare how mature and emerging regions create growth.',
+    spec: {
+      layout: 'compare', title: 'Major Production and Consumption Markets', kicker: '',
+      leftTitle: 'Mature value centres: North America and Europe', rightTitle: 'Growth engine: Asia-Pacific, including Vietnam',
+      rows: [
+        { label: 'Growth mechanics', a: 'Premiumisation, innovation, pricing and higher mix', b: 'New buyers, more occasions and wider retail reach' },
+        { label: 'Main constraint', a: 'High penetration limits easy volume growth', b: 'Price sensitivity and fragmented trade' },
+        { label: 'Company response', a: 'Renovate products and target new need states', b: 'Affordable pack sizes and local execution' },
+        { label: 'Underlying support', a: 'Large established value pools', b: 'Urbanisation, rising incomes and young consumers' },
+      ],
+      note: 'Nestlé reported CHF91.354bn group sales in 2024, down from CHF92.998bn in 2023: audited group context, not confectionery market size. “Fastest-growing” is a commercial-research conclusion with no official regional share.',
+      takeaway: 'Regional strategy must separate where value exists from where incremental volume is likely to come from.',
+    },
+  },
+  'packaged-food-m1-13-5-trade': {
+    heading: 'How the 2024 cocoa shock travelled from origin to Mondelez earnings',
+    intro: 'A chocolate bar is a chain of traded commodities before it reaches the factory. Follow a price shock until it shows up in margin and earnings.',
+    spec: {
+      layout: 'flow', title: 'International Trade and Market Dynamics', kicker: '',
+      steps: [
+        { label: 'Cocoa traded at origin', detail: 'Pivotal input; record price inflation in 2024', kind: 'stage' },
+        { label: 'Freight, duties and currency', detail: 'Sit between origin and the factory, even for local plants', kind: 'stage' },
+        { label: 'Manufacturer cost base rises', detail: 'Contracts and inventory carry the shock with a lag', kind: 'stage' },
+        { label: 'Response levers', detail: 'Hedge, reformulate, raise price, cut promotions or resize packs', kind: 'decision' },
+        { label: 'Margin and earnings', detail: 'Gross margin compresses if cost lands before price and mix actions', kind: 'outcome' },
+      ],
+      note: 'Mondelez reported +4.3% organic net-revenue growth and 7.4% chocolate revenue growth in FY2024, yet anticipated about a 10% adjusted-EPS decline for 2025 (company outlook, not market growth). HS Chapters 17, 18 and 19 classify the traded goods.',
+      takeaway: 'Revenue growth and profit pressure can coexist, so connect category mix to input exposure, pricing power and timing.',
+    },
+  },
+  'packaged-food-m1-14-1-glance': {
+    heading: 'Four Vietnam confectionery indicators that answer different questions',
+    intro: 'Vietnam’s best verified anchor is confectionery, not all packaged food. Read what each indicator measures and its source before using it.',
+    spec: {
+      layout: 'table', title: 'Vietnam\'s Packaged Food Market at a Glance', kicker: '',
+      headers: ['Indicator', 'Value', 'What it measures and source status'],
+      rows: [
+        { label: 'Market size', a: '~VND66tn, 2025 forecast', b: 'Confectionery only; Nielsen via VnExpress, commercial forecast' },
+        { label: 'Growth', a: '~7% a year, 2020–2025', b: 'Source-specific industry forecast' },
+        { label: 'Per-capita consumption', a: '~2kg in 2022 versus ~3kg globally', b: 'Same secondary source; suggests headroom, not guaranteed convergence' },
+        { label: 'Company revenue', a: 'Orion >US$400m in 2022', b: 'One company’s sales, not market size' },
+      ],
+      note: 'No official GSO or Customs packaged-food or confectionery market-size series was verified.',
+      takeaway: 'Market size, company revenue, segment share and per-capita consumption are different metrics; label each one to stay credible.',
+    },
+  },
+  'packaged-food-m1-14-2-demand': {
+    heading: 'Everyday snacking plus Tết and Mid-Autumn peaks in Vietnam',
+    intro: 'A yearly average hides the calendar. See how steady everyday forces combine with two concentrated gifting peaks to shape Vietnamese demand.',
+    spec: {
+      layout: 'driverTree', title: 'Consumption and Demand in Vietnam', kicker: '',
+      root: { label: 'Vietnam confectionery demand', detail: 'Everyday use plus seasonal gifting' },
+      formula: 'Demand = everyday base + seasonal peaks, filtered by affordability and local taste',
+      drivers: [
+        { label: 'Everyday base', op: '+', children: [
+          { label: 'Young consumers', detail: 'Snacking fits changing routines' },
+          { label: 'Rising income', detail: 'Ability to buy branded and premium products' },
+          { label: 'Urban convenience', detail: 'Portable occasions' },
+        ] },
+        { label: 'Seasonal peaks', op: '+', children: [
+          { label: 'Tết gifting', detail: 'Drives confectionery gift boxes' },
+          { label: 'Mid-Autumn', detail: 'A distinct mooncake cycle' },
+        ] },
+        { label: 'Filters on choice', op: '×', children: [
+          { label: 'Affordability', detail: 'Price remains powerful' },
+          { label: 'Local taste', detail: 'Flavours that fit Vietnamese preference' },
+        ] },
+      ],
+      note: 'The research documents seasonality qualitatively; it gives no verified percentage of annual sales during Tết or Mid-Autumn.',
+      takeaway: 'Seasonal stock is committed before sales are visible, so forecast error becomes waste, discounting or lost sales.',
+    },
+  },
+  'packaged-food-m1-14-3-production': {
+    heading: 'Made in Vietnam, priced by world commodity markets',
+    intro: 'A local factory can still depend on globally priced inputs. Follow the domestic production system and note where quality gates and import exposure sit.',
+    spec: {
+      layout: 'flow', title: 'Domestic Production and Manufacturing', kicker: '',
+      steps: [
+        { label: 'Procurement', detail: 'Ingredients and packaging, including globally priced cocoa, dairy ingredients and oils', kind: 'stage', owner: 'Procurement' },
+        { label: 'Run planning', detail: 'Runs set by demand and shelf life', kind: 'stage', owner: 'Operations' },
+        { label: 'Conversion', detail: 'Mixing, baking, forming, coating, cooling and packaging; yield, uptime and changeovers managed', kind: 'stage', owner: 'Operations' },
+        { label: 'Batch release', detail: 'Only batches meeting safety, composition and label specifications pass', kind: 'decision', owner: 'Quality' },
+        { label: 'Warehousing and distribution', detail: 'Released stock moves to channels', kind: 'outcome' },
+      ],
+      note: 'Orion reportedly has only about 21 South Korean staff among roughly 3,600 (company reporting via VnExpress). No official Vietnam production-volume series was verified.',
+      takeaway: 'Competitiveness depends on both factory execution and procurement: a cheaper but variable input can raise total cost.',
+    },
+  },
+  'packaged-food-m1-14-4-companies': {
+    heading: 'Orion, Mondelez Kinh Do and the domestic confectioners: positions, not shares',
+    intro: 'Vietnam is not a simple local-versus-foreign contest. Group the players by how they compete, and keep each figure’s scope beside it.',
+    spec: {
+      layout: 'taxonomy', title: 'Major Companies and Market Participants', kicker: '',
+      root: 'Vietnam confectionery participants', rootDetail: 'Figures use different currencies and scopes; not a market-share table',
+      groups: [
+        { label: 'Localised foreign-owned leader', detail: 'Orion Food Vina: over US$400m revenue in 2022; ChocoPie about 66% of the pie segment (Nielsen, segment only)' },
+        { label: 'Global owner, local heritage', detail: 'Mondelez Kinh Do: global and inherited local portfolios; current revenue not verified' },
+        { label: 'Domestic confectioners', detail: 'Bibica about VND1.6tn and Hai Ha about VND1.5tn revenue in 2022; recognition, price, seasonal products' },
+        { label: 'Adjacent participants', detail: 'Masan Consumer and Nestlé Vietnam in related packaged-food areas' },
+        { label: 'Exited core confectionery', detail: 'KIDO moved toward cooking oil and ice cream' },
+      ],
+      note: 'Revenue figures are company context reported by VnExpress. Current precise market shares by player were not primary-verified.',
+      takeaway: 'Position comes from category focus, brand, distribution, localisation, price and seasonal execution, not nationality alone.',
+    },
+  },
+  'packaged-food-m1-14-5-distribution': {
+    heading: 'From distributor to neighbourhood shop, supermarket and screen',
+    intro: 'A campaign is wasted if the pack is missing from the local shop. Follow stock from the manufacturer through distributors into each Vietnamese channel.',
+    spec: {
+      layout: 'pathway', title: 'Vietnam\'s Distribution and Trade Landscape', kicker: '',
+      trunk: [
+        { label: 'Manufacturer', detail: 'Plans packs, prices and seasonal inventory', kind: 'stage' },
+        { label: 'Distributors and wholesalers', detail: 'Carry inventory, extend credit and serve fragmented outlets', kind: 'stage' },
+      ],
+      optionsLabel: 'Routes to the shopper',
+      options: [
+        { label: 'Traditional trade', detail: 'Independent stores and kiosks; essential for reach, needs route discipline' },
+        { label: 'Modern trade', detail: 'Supermarkets and convenience chains; listings, promotions and shelf position' },
+        { label: 'E-commerce', detail: 'Search, reviews and delivery; fulfilment and last-mile costs' },
+        { label: 'Foodservice and seasonal pop-ups', detail: 'Other routes for packs and gifting' },
+      ],
+      afterLabel: 'What must happen next',
+      after: [
+        { label: 'Sell-through control', detail: 'Tết and Mid-Autumn need precise sell-in, displays and sell-through', kind: 'outcome' },
+      ],
+      note: 'The research supports traditional-trade dominance qualitatively but does not verify a current precise share.',
+      takeaway: 'The best channel mix is where pack, price, service level and margin work for each route, not the one with the most channels.',
+    },
+  },
+  'packaged-food-m1-15-1-economic': {
+    heading: 'Why packaged-food demand can grow while maker margins shrink',
+    intro: 'Demand and profit are different stories. Compare the forces that lift how much consumers buy with the forces that raise the cost of each pack.',
+    spec: {
+      layout: 'compare', title: 'Economic Drivers of Packaged Food Demand', kicker: '',
+      leftTitle: 'Forces that grow demand', rightTitle: 'Forces that squeeze affordability and margin',
+      rows: [
+        { label: 'Main forces', a: 'Rising income and urbanisation', b: 'Inflation; cocoa, sugar, dairy, oils and wheat; currency and freight' },
+        { label: 'What they change', a: 'How often and at what price consumers buy', b: 'What it costs to make and deliver each pack' },
+        { label: 'Typical effect', a: 'More convenience and premium-tier purchases', b: 'Trade-down to smaller packs, promotions or cheaper brands; costs rise before price actions land' },
+        { label: 'Example', a: 'Young Vietnamese demand and rising income', b: 'Record 2024 cocoa inflation; Mondelez anticipated about a 10% adjusted-EPS decline for 2025' },
+      ],
+      note: 'The cocoa and earnings evidence is Mondelez company reporting, not category contraction. Vietnam-specific cocoa or sugar cost impacts were not quantified.',
+      takeaway: 'Respond with a mix of price, pack size, promotion, mix, procurement and productivity rather than one blanket price increase.',
+    },
+  },
+  'packaged-food-m1-15-2-regulation': {
+    heading: 'Food-safety compliance runs from recipe design to recall',
+    intro: 'Regulation is not a final label review. Follow how standards become specifications, factory controls, labels and the ability to contain a problem.',
+    spec: {
+      layout: 'flow', title: 'Food Safety, Regulation, and Compliance', kicker: '',
+      steps: [
+        { label: 'Codex reference', detail: 'Joint FAO/WHO standards for consumer health and fair food trade; not national law', kind: 'stage' },
+        { label: 'National law', detail: 'Vietnam’s Law on Food Safety (2010) and the Vietnam Food Administration set the enforceable floor', kind: 'stage' },
+        { label: 'Design and suppliers', detail: 'Ingredient specifications, approved suppliers, hygienic design', kind: 'stage' },
+        { label: 'Factory controls', detail: 'Process limits, allergen controls, sampling, tests and records', kind: 'stage' },
+        { label: 'Labels and claims', detail: 'Composition, allergens and claims with a defined basis', kind: 'stage' },
+        { label: 'Traceability and recall', detail: 'Identify, contain, find root cause and correct', kind: 'outcome' },
+      ],
+      loop: 'Root-cause analysis and corrective action feed back into specifications and controls.',
+      note: 'The primary Vietnam Food Safety Law text and detailed confectionery standards were not in the source register.',
+      takeaway: 'Compliance is an operating system designed into product and process; a failure can stop production and damage trust built over years.',
+    },
+  },
+  'packaged-food-m1-15-3-social': {
+    heading: 'Less sugar and still a treat: matching each social pull to a product response',
+    intro: 'The same shopper can want a cheap biscuit, a work snack and a premium Tết gift. Start from the need state and see which product response it calls for.',
+    spec: {
+      layout: 'decision', title: 'Social Trends and Consumer Behavior', kicker: '',
+      root: { label: 'One shopper, several occasions', detail: 'Health and indulgence coexist rather than replacing each other' },
+      question: 'Which social pull is the product answering?',
+      branches: [
+        { condition: 'Sugar awareness', outcome: 'Reformulate or portion', detail: 'Lower-sugar recipes need sweetener, flavour and texture work; smaller portions need new wrappers or multipacks', tone: 'positive' },
+        { condition: 'Urban routines', outcome: 'Portable snacks', detail: 'Convenient formats for work and on the move', tone: 'positive' },
+        { condition: 'Premiumisation', outcome: 'Better ingredients and presentation', detail: 'Creates value beyond volume', tone: 'positive' },
+        { condition: 'Tradition and gifting', outcome: 'Seasonal ranges', detail: 'Tết and Mid-Autumn products sustain gifting demand', tone: 'positive' },
+      ],
+      note: 'Validate repeat purchase, not just trial. The research gives no validated global share of “health-conscious” packaged-food buyers.',
+      takeaway: 'A single “healthy versus indulgent” segment misses how one person moves across occasions, so portfolios must serve several need states.',
+    },
+  },
+  'packaged-food-m1-15-4-technology': {
+    heading: 'The gates a new snack recipe passes before launch',
+    intro: 'Technology matters only when it changes an outcome. Follow an idea through each gate and note the question each one answers.',
+    spec: {
+      layout: 'flow', title: 'Technology and Manufacturing Innovation', kicker: '',
+      steps: [
+        { label: 'Consumer problem', detail: 'Desirability: what need does it solve?', kind: 'stage' },
+        { label: 'Formulation', detail: 'R&D balances recipe and shelf life', kind: 'stage' },
+        { label: 'Pilot scale', detail: 'Technical feasibility in manufacturing', kind: 'decision' },
+        { label: 'Factory trial', detail: 'Automation, process control and vision inspection for throughput and cost', kind: 'stage' },
+        { label: 'Shelf-life validation', detail: 'Safety and scalability confirmed', kind: 'decision' },
+        { label: 'Launch', detail: 'Planning systems match production with demand', kind: 'outcome' },
+      ],
+      note: 'The research names technology directions but gives no vendor-specific return or adoption rates for Vietnam factories. Poor source data creates false precision.',
+      takeaway: 'The best technology raises quality, speed or flexibility without making the product unaffordable, and never replaces process ownership.',
+    },
+  },
+  'packaged-food-m1-15-5-sustainability': {
+    heading: 'Cocoa farms, factory emissions and wrappers: where sustainability pressure lands',
+    intro: 'The footprint sits inside the product. See which actors raise the pressure and where it enters sourcing, factory and packaging decisions.',
+    spec: {
+      layout: 'ecosystem', title: 'Sustainability and Environmental Pressures', kicker: '',
+      center: { label: 'Packaged-food and confectionery maker', detail: 'Sustainability changes sourcing, packaging design, compliance cost and capital allocation' },
+      actors: [
+        { label: 'Cocoa farms and suppliers', relation: 'Deforestation and livelihood risk; sourcing programmes and traceability', flows: ['product', 'risk'] },
+        { label: 'Factories', relation: 'Energy, emissions and water use', flows: ['risk'] },
+        { label: 'Packaging and collection systems', relation: 'Plastic and multilayer waste; recyclability depends on collection and processing', flows: ['product', 'risk'] },
+        { label: 'Regulators and retailers', relation: 'Raise the minimum requirement', flows: ['oversight'] },
+        { label: 'Consumers', relation: 'Trust rewards credible claims; unsupported claims create risk', flows: ['information', 'money'] },
+      ],
+      note: 'Mondelez reported about 90% of cocoa via Cocoa Life, about 96% recyclable packaging and about a 38% manufacturing-emissions reduction versus 2018 (company-reported, its own boundary). EU Deforestation Regulation dates were not checked.',
+      takeaway: 'Ask what metric, boundary, baseline, date and verifier stand behind any claim: a programme share is not proof of every outcome.',
+    },
+  },
+};

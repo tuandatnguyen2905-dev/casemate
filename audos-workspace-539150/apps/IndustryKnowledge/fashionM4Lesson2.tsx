@@ -1,0 +1,202 @@
+import { F4DeepDive, citeF4, f4Chapter, f4Quiz } from './fashionM4Core';
+import type { FashionM4LessonBundle } from './fashionM4Core';
+
+const LESSON = '2. Key Industry Players';
+
+const deck = [
+  f4Chapter({
+    title: 'Global Fashion and Luxury Brands', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Contrast the strategies of luxury houses, fast-fashion retailers, functional apparel brands and premium fashion brands.',
+    mateIntro: 'Louis Vuitton, Zara and Uniqlo all sell clothes and almost nothing else about them is alike. Their strategies are different answers to the question of what a customer is really buying.',
+    keyInsight: 'Brand recognition alone does not determine competitive strength. Successful players align their product portfolios, pricing, customer experience and distribution with a clearly defined market position.',
+    statTiles: [
+      { value: '4', label: 'Player types profiled', subtitle: 'Luxury, fast fashion, functional, premium', description: 'Each type builds consumer value in a different way.' },
+      { value: '30', label: 'UNIQLO stores in Vietnam plus an online store', subtitle: 'As of February 2026', description: 'The company’s own count, after the Vietnam company was established in October 2018.' },
+      { value: '13', label: 'H&M stores in Vietnam', subtitle: 'June 2025, plan for 20+', description: 'Reported after about eight years in the market, with a stated plan to expand.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; store counts are company or press-reported figures at the dates shown and measure network size, not sales or share.',
+    narrative: [
+      { label: 'What it is', text: 'Global fashion and luxury brands influence the industry through product design, brand storytelling, retail networks and international marketing. Their positions are built over time through distinctive brand identities, consistent product quality and strong consumer recognition. Strategies differ considerably: luxury houses emphasise exclusivity and craftsmanship, while fast-fashion retailers focus on trend responsiveness and broader market accessibility.' },
+      { label: 'Why it is happening', text: 'Operating in the same broad industry does not mean serving the same need. Each type of player has chosen a trade-off between exclusivity and reach, or between newness and consistency, and the portfolio, price and distribution have to follow from that choice.' },
+      { label: 'Real-world example', text: 'Louis Vuitton, Gucci and Prada compete through heritage, craftsmanship, design and exclusivity. Zara and H&M emphasise trend-led assortments, accessible prices and frequent product updates. Uniqlo differentiates itself through everyday essentials, functional materials and consistent value. Premium fashion brands combine design quality, brand image and elevated customer experiences to justify higher prices.' },
+      { label: 'Vietnam example', text: 'UNIQLO Vietnam was established in October 2018 and reports 30 stores and an online store as of February 2026. H&M, which began retailing in Vietnam in 2017, had 13 stores in June 2025 and has said it plans more than 20. A March 2025 desktop count found Zara with 3 stores. Their networks are far smaller than those of the leading domestic chains, so each competes through a defined style or functional promise rather than reach.' },
+      { label: 'Business impact', text: 'Global fashion and luxury brands show different approaches to creating consumer value. Their strategies provide useful benchmarks for brand positioning, product development, pricing and retail execution, and the useful lesson is the alignment of those choices, not the size of any one brand.' },
+    ],
+    visualKind: 'fashion-m4-21-global', visualHeading: 'Two ways to create value in global fashion',
+    visualIntro: 'Compare luxury houses with fast-fashion retailers on promise, rhythm, experience and risk.',
+    imageAlt: 'Casemate comparison of luxury houses and fast-fashion retailers',
+    keyTerms: [
+      { term: 'Luxury house', definition: 'A brand built on heritage, craftsmanship, exclusivity and tightly controlled presentation.' },
+      { term: 'Functional apparel', definition: 'Everyday clothing differentiated by materials, practicality and consistent value.' },
+      { term: 'Premium fashion', definition: 'Fashion that combines design quality, brand image and an elevated experience to justify higher prices.' },
+      { term: 'Market position', definition: 'The place a brand occupies in customers’ minds relative to alternatives.' },
+    ],
+    recap: [
+      'Luxury houses compete on exclusivity and craftsmanship; fast fashion on trend and accessibility.',
+      'Uniqlo differentiates through everyday essentials and consistent value.',
+      'Brand recognition alone does not determine strength.',
+      'Alignment of portfolio, price, experience and distribution matters most.',
+    ],
+    chapterRecap: 'Global fashion and luxury brands represent different approaches to creating consumer value. Their strategies provide useful benchmarks for brand positioning, product development, pricing, and retail execution.',
+    deepDiveTitle: 'Why scale and strength are not the same thing',
+    body: <F4DeepDive paragraphs={[
+      'A well-known name can sit on a weak model, and a smaller network can sit on a very clear one. What matters is whether range, price, service and channels all point the same way, so that customers understand what the brand is for.',
+      'This is why a luxury house with a few hundred stores and a fast-fashion group with thousands can both be strong. They are judged against different customers, and each has built its operations around its own promise.' ,
+    ]} evidence="The player types are described qualitatively in the supplied material. Store counts come from the companies’ own pages and a government-portal report, and a Q&Me Vietnam desktop count for Zara as of March 2025; none measures sales or share." />,
+    sources: citeF4('bofStateOfFashion', 'uniqloVietnam', 'hmVietnam', 'qmeStoreCount'),
+  }),
+  f4Chapter({
+    title: 'Sportswear and Outdoor Brands', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how sportswear and outdoor brands combine technical credibility with lifestyle appeal and where Vietnam fits in their model.',
+    mateIntro: 'A runner wants a shoe that works. A weekend wearer wants a hoodie that looks right. The same brand now has to satisfy both, and the strongest ones turn performance into identity.',
+    keyInsight: 'The strongest sportswear and outdoor brands connect functional product benefits with emotional and lifestyle value. Technical credibility can attract customers, while brand communities and cultural relevance can strengthen long-term engagement.',
+    statTiles: [
+      { value: '51%', label: 'NIKE Brand footwear made in Vietnam, fiscal 2025', subtitle: '31% of apparel', description: 'Nike’s annual filing shows Vietnam as its largest footwear source.' },
+      { value: '27%', label: 'adidas total sourcing volume from Vietnam, 2024', subtitle: '39% of footwear, 18% of apparel', description: 'adidas reports Vietnam as its largest sourcing country.' },
+      { value: '64 vs 47', label: 'Adidas and Nike stores in Vietnam, March 2025', description: 'A desktop count that shows the two brands’ retail presence in the same market.' },
+    ],
+    statsNote: 'Sourcing shares are company-reported shares of each brand’s own production; store counts come from a Q&Me Vietnam desktop survey and are indicative.',
+    narrative: [
+      { label: 'What it is', text: 'Sportswear and outdoor brands compete through a combination of functionality, technical innovation, brand identity and lifestyle relevance. Their products serve consumers seeking athletic performance, comfort, durability, outdoor protection or sports-inspired everyday clothing. Competition has expanded beyond professional sports as many brands target consumers who integrate fitness, wellness and casual athletic apparel into daily life.' },
+      { label: 'Why it is happening', text: 'Performance claims win the first purchase but are hard to see in a store, so brands add culture, endorsement and community to give customers a reason to stay. As wellness and casual athletic wear spread, the market for these brands has grown beyond people who play sport.' },
+      { label: 'Real-world example', text: 'Nike, Adidas and Puma combine athletic products with sports culture, endorsements and lifestyle collections. ASICS and New Balance emphasise running footwear, comfort and performance-oriented development. The North Face focuses on outdoor apparel, technical functionality and adventure positioning, and Lululemon combines performance apparel with wellness, community engagement and everyday positioning. All of them develop specialised footwear, technical fabrics, cushioning systems and weather-resistant materials to differentiate.' },
+      { label: 'Vietnam example', text: 'Vietnam is both a factory and a market for these brands. Nike’s fiscal 2025 filing shows Vietnam manufacturing about 51% of NIKE Brand footwear and 31% of apparel, and adidas reports Vietnam as its largest sourcing country at 27% of 2024 volume. In retail, a March 2025 desktop count found 64 Adidas and 47 Nike stores in Vietnam, so the same brands compete for Vietnamese shoppers that they also equip from Vietnamese factories.' },
+      { label: 'Business impact', text: 'Sportswear and outdoor brands compete through technical credibility, product innovation and lifestyle positioning. Their relative strengths depend on how effectively they translate product benefits into distinctive consumer value, and on keeping supply and brand promise aligned across markets.' },
+    ],
+    visualKind: 'fashion-m4-22-sportswear', visualHeading: 'Five ways sportswear and outdoor brands compete',
+    visualIntro: 'See each competitive group with the example the lesson names.',
+    imageAlt: 'Casemate cards of global sportswear, running, outdoor, athleisure and innovation competition',
+    keyTerms: [
+      { term: 'Technical credibility', definition: 'Evidence that a product genuinely performs, which earns trust with serious users.' },
+      { term: 'Athleisure', definition: 'Performance-inspired clothing designed for everyday wear.' },
+      { term: 'Brand community', definition: 'A group of customers connected by clubs, events or shared activity around a brand.' },
+      { term: 'Sourcing share', definition: 'The share of a brand’s production made in a given country.' },
+    ],
+    recap: [
+      'Sportswear and outdoor brands compete on function, innovation, identity and lifestyle relevance.',
+      'Technical credibility attracts; communities and culture retain.',
+      'Competition now reaches fitness, wellness and casual wearers.',
+      'Vietnam is a major production source and a retail market for these brands.',
+    ],
+    chapterRecap: 'Sportswear and outdoor brands compete through technical credibility, product innovation, and lifestyle positioning. Their relative strengths depend on how effectively they translate product benefits into distinctive consumer value.',
+    deepDiveTitle: 'Why performance has to become identity',
+    body: <F4DeepDive paragraphs={[
+      'Many shoes are comfortable and many jackets are waterproof, so technical claims alone are easy for rivals to match. A brand that is also associated with a sport, a community or a way of life gives customers a reason that is harder to copy.',
+      'The reverse also holds. A brand with identity but weak product loses the serious user, and with that its credibility. The strongest brands keep both layers working together.' ,
+    ]} evidence="The competitive groups are described qualitatively in the supplied material. Sourcing shares are as reported in Nike’s fiscal 2025 annual filing and adidas’ 2024 annual report; store counts are a Q&Me Vietnam desktop survey as of March 2025." />,
+    sources: citeF4('bofStateOfFashion', 'nike10k2025', 'adidasReport', 'qmeStoreCount'),
+  }),
+  f4Chapter({
+    title: 'Retailers, Platforms, and Emerging Brands', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how retailers, platforms, private-label businesses and digital-first brands shape competition through access and customer relationships.',
+    mateIntro: 'The brand makes the product but someone else often owns the shelf, the search results and the customer. Competition for that position is as important as competition between brands.',
+    keyInsight: 'Competitive power is distributed across both brands and distribution intermediaries. Businesses must consider who owns the customer relationship, controls product visibility and influences purchasing decisions.',
+    statTiles: [
+      { value: 'VND 9,069B', label: 'Authentic fashion on Shopee, Lazada and Tiki, H1 2025', subtitle: '+21% year on year', description: 'Excludes sportswear, imported fashion and accessories.' },
+      { value: 'VND 64B+', label: 'Coolmate revenue in the same ranking', subtitle: '+37%, ranked first', description: 'The leading brand in YouNet ECI’s Sustainable Growth ranking for the half-year.' },
+      { value: '0', label: 'Offline stores at Calem.Club', subtitle: 'Gen Z brand in the ranking', description: 'It sells through social content, TikTok Shop and Shopee livestreams.' },
+    ],
+    statsNote: 'All three tiles come from YouNet reporting on three marketplaces for the first half of 2025; the scope excludes sportswear, imported fashion, accessories and counterfeit goods, so they do not describe the whole market.',
+    narrative: [
+      { label: 'What it is', text: 'Retailers and digital platforms connect brands with consumers, influencing product visibility, pricing transparency, shopping convenience and access to customers. Emerging and local brands add pressure by targeting specific groups, using digital channels and responding quickly to local preferences, while private-label businesses let retailers create exclusive products and take more control of assortment and pricing.' },
+      { label: 'Why it is happening', text: 'Whoever controls discovery and checkout controls much of the customer relationship, so retailers, marketplaces and brands all compete for that position. Low-cost digital channels also allow small brands to reach customers without a store network.' },
+      { label: 'Real-world example', text: 'Department stores and specialist retailers compete through assortment, service and convenience. Amazon and regional marketplaces offer broad selection, search, price comparison and fulfilment. Smaller businesses use local insight, niche positioning and social media; private-label businesses develop exclusive products to differentiate and potentially improve margin; and digital-first DTC brands communicate directly with customers and gather first-party data.' },
+      { label: 'Vietnam example', text: 'YouNet ECI counted VND 9,069 billion of authentic fashion sales on Shopee, Lazada and Tiki in the first half of 2025, up 21%, with local brands dominating its ranking. Coolmate ranked first with revenue above VND 64 billion, up 37%, using KOL collaborations and everyday-life content, and Calem.Club, with no offline stores, guided Gen Z customers from TikTok content to TikTok Shop and Shopee livestreams.' },
+      { label: 'Business impact', text: 'Retailers, platforms and emerging brands shape competition through distribution access, customer relationships and differentiated offers. Understanding their roles helps businesses identify potential competitors, partners and alternative routes to market, and decide how much of the customer relationship to keep.' },
+    ],
+    visualKind: 'fashion-m4-23-retailers', visualHeading: 'Who owns the customer relationship?',
+    visualIntro: 'Compare each player’s competitive role and what it controls.',
+    imageAlt: 'Casemate table of multi-brand retailers, platforms, emerging brands, private label and DTC brands',
+    keyTerms: [
+      { term: 'Multi-brand retailer', definition: 'A retailer that sells products from several brands and competes on assortment and service.' },
+      { term: 'Private label', definition: 'A product sold under a retailer’s own brand and made by an external producer.' },
+      { term: 'Digital-first brand', definition: 'A brand that starts online and sells directly to customers, collecting its own customer data.' },
+      { term: 'First-party data', definition: 'Information a business collects directly from its own customers.' },
+    ],
+    recap: [
+      'Retailers and platforms control visibility, pricing transparency and access to customers.',
+      'Emerging brands use niches, local insight and social media.',
+      'Private label gives retailers control of assortment and price.',
+      'Ask who owns the customer relationship.',
+    ],
+    chapterRecap: 'Retailers, platforms, and emerging brands shape competition through distribution access, customer relationships, and differentiated product offerings. Understanding their roles helps businesses identify potential competitors, partners, and alternative routes to market.',
+    deepDiveTitle: 'Why small brands can win on platforms',
+    body: <F4DeepDive paragraphs={[
+      'On a marketplace or social platform the starting position is similar for everyone: a product page, a price and a creator or a livestream. A small brand with a sharp product and quick content can reach customers without the store network that a larger rival built over years.',
+      'That does not make platforms easy. Rising fees, price competition and dependence on one algorithm are the cost of the access, which is why diversified channels and owned customer data matter.' ,
+    ]} evidence="The player roles are described qualitatively in the supplied material. The Vietnam figures are YouNet reporting for the first half of 2025 on Shopee, Lazada and Tiki, excluding sportswear, imported fashion, accessories and counterfeit goods; Coolmate’s revenue is on those platforms only." />,
+    sources: citeF4('bofStateOfFashion', 'younetFashion', 'younetGrowthRanking', 'scaleCommerceD2c'),
+  }),
+  f4Chapter({
+    title: 'Competitive Positioning of Key Players', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe the main bases of competitive positioning and explain why consistency between promise and experience protects differentiation.',
+    mateIntro: 'Positioning is the one-line answer in a customer’s head to the question “why this brand?”. It is built from what you make, what you charge, how you sell and, above all, whether the experience keeps the promise.',
+    keyInsight: 'A strong competitive position requires consistency between what a brand promises and what customers experience. Inconsistent pricing, product quality or communication can weaken differentiation and reduce trust.',
+    statTiles: [
+      { value: '5', label: 'Bases of positioning', subtitle: 'Brand, price, product, lifestyle, channel', description: 'Each is a different way to be relevant to a target customer.' },
+      { value: '110', label: 'Canifa stores', subtitle: 'March 2025 desktop count', description: 'A Vietnamese fashion brand that also runs an app and a unified customer view.' },
+      { value: '189', label: 'Biti’s stores', subtitle: 'March 2025 desktop count', description: 'A Vietnamese footwear brand with a wide store network in the same survey.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; store counts are from a Q&Me Vietnam desktop survey as of March 2025 and show network size only.',
+    narrative: [
+      { label: 'What it is', text: 'Competitive positioning describes how a brand distinguishes itself from alternatives in the minds of target customers. It reflects the combination of product attributes, pricing, brand identity, customer experience and perceived value that makes a business relevant to a particular audience. In Fashion, Sports & Lifestyle Retail it can be built around performance, affordability, exclusivity, design, sustainability or lifestyle identity.' },
+      { label: 'Why it is happening', text: 'With many similar products and instant comparison, customers decide on a shorthand. A clear position helps a business guide product decisions, marketing investment and channel strategy, and an unclear one leaves it competing on price alone.' },
+      { label: 'Real-world example', text: 'Brand-based positioning: Nike emphasises sport, achievement and performance, while luxury houses emphasise heritage and exclusivity. Price-based: value-oriented retailers focus on affordability whereas premium brands justify higher prices through quality and brand value. Product-based: technical sportswear brands differentiate through functionality and materials. Lifestyle-based: athleisure brands connect apparel with wellness, identity and routines. Channel-based: DTC brands emphasise direct relationships, while multi-brand retailers compete through assortment and convenience.' },
+      { label: 'Vietnam example', text: 'Vietnamese brands show several positions. Canifa runs more than 100 stores and an app and says it combines online and offline data into a single customer view, a channel and relationship position. Coolmate built a position on minimalist, practical men’s basics sold mainly online, and a March 2025 desktop count found Biti’s with 189 stores. Each has chosen where to be relevant and has built operations to keep that promise.' },
+      { label: 'Business impact', text: 'Competitive positioning gives a foundation for understanding how players attract and retain customers. Businesses should establish a clear, credible position and reinforce it consistently across products, pricing, marketing and distribution, because inconsistency is quickly visible to customers.' },
+    ],
+    visualKind: 'fashion-m4-24-positioning', visualHeading: 'A positioning map: price against basis of appeal',
+    visualIntro: 'See where well-known players sit between value and premium, and between functional and emotional appeal.',
+    imageAlt: 'Casemate positioning map of value retailers, Uniqlo, technical sportswear, Nike, Lululemon and luxury houses',
+    keyTerms: [
+      { term: 'Competitive positioning', definition: 'How a brand distinguishes itself from alternatives in the minds of target customers.' },
+      { term: 'Perceived value', definition: 'What customers believe a product is worth relative to its price and alternatives.' },
+      { term: 'Brand promise', definition: 'What a brand tells customers they can expect.' },
+      { term: 'Consistency', definition: 'Delivering the same promise across product, price, communication and channels.' },
+    ],
+    recap: [
+      'Positioning is built from product, price, identity, experience and perceived value.',
+      'It can rest on brand, price, product, lifestyle or channel.',
+      'A clear position guides product, marketing and channel decisions.',
+      'Inconsistency weakens differentiation and trust.',
+    ],
+    chapterRecap: 'Competitive positioning provides a foundation for understanding how industry players attract and retain customers. Businesses should establish a clear, credible position and reinforce it consistently across products, pricing, marketing, and distribution.',
+    deepDiveTitle: 'Why a position is a promise you have to keep',
+    body: <F4DeepDive paragraphs={[
+      'Claiming a position is easy; keeping it is the work. A brand that promises quality but varies in finish, or promises value but discounts unpredictably, gives customers a reason to doubt the claim.',
+      'The test is whether a customer who meets the brand in a store, on a marketplace and on social media would describe it in the same way. If not, the position is not yet consistent across channels.' ,
+    ]} evidence="The positioning bases are described qualitatively in the supplied material. Canifa details come from a vendor case study, and store counts from a Q&Me Vietnam desktop survey as of March 2025; neither measures performance." />,
+    sources: citeF4('bofStateOfFashion', 'canifaCleverTap', 'qmeStoreCount', 'younetFashion'),
+  }),
+];
+
+const quiz = f4Quiz('fashion-m4-l2', [
+  { chapter: '1', objective: 'Contrast luxury and fast fashion', question: 'How do luxury houses and fast-fashion retailers differ in strategy?', application: 'One brand stresses heritage and exclusivity, another trend response and accessible prices. Which is which?', correct: 'Luxury emphasises exclusivity and craftsmanship; fast fashion emphasises trend responsiveness and accessibility', wrong: ['Both emphasise exclusivity equally', 'Both emphasise the lowest prices equally', 'Luxury competes only on speed'], explanation: 'Their strategies differ considerably even within the same broad industry. Review Chapter 1.' },
+  { chapter: '1', objective: 'Recognise brand strength', question: 'What determines competitive strength besides brand recognition?', application: 'A famous brand has an unclear range and inconsistent pricing. What is missing?', correct: 'Alignment of portfolio, pricing, experience and distribution with a clearly defined position', wrong: ['A larger advertising budget only', 'A higher number of suppliers only', 'A shorter product name'], explanation: 'Brand recognition alone does not determine strength. Review Chapter 1.' },
+  { chapter: '1', objective: 'Identify Uniqlo’s differentiator', question: 'How does Uniqlo differentiate itself in the lesson?', application: 'A brand sells everyday essentials in functional materials at consistent value. Which one is it?', correct: 'Everyday essentials, functional materials and consistent value', wrong: ['Heritage and exclusivity', 'Celebrity-led limited releases', 'Trend-led weekly drops'], explanation: 'Uniqlo is positioned on everyday essentials and functional materials. Review Chapter 1.' },
+  { chapter: '2', objective: 'State the sportswear success formula', question: 'What do the strongest sportswear brands connect?', application: 'A brand wants both serious users and everyday wearers. What should it connect?', correct: 'Functional product benefits with emotional and lifestyle value', wrong: ['Low prices with limited ranges', 'Heritage with exclusivity only', 'Advertising with discounts only'], explanation: 'Technical credibility attracts customers while community and culture strengthen engagement. Review Chapter 2.' },
+  { chapter: '2', objective: 'Describe sportswear competition', question: 'How has competition in sportswear and outdoor expanded?', application: 'Fitness and wellness wearers now buy sports brands. What does this show?', correct: 'It reaches beyond professional sports to consumers who wear athletic apparel in daily life', wrong: ['It is limited to professional athletes', 'It is limited to outdoor equipment', 'It is limited to luxury brands'], explanation: 'Many brands now target consumers who integrate fitness, wellness and casual athletic apparel into daily life. Review Chapter 2.' },
+  { chapter: '3', objective: 'Define distributed competitive power', question: 'Where does competitive power sit in the industry?', application: 'A marketplace controls search and checkout for many brands. What does this illustrate?', correct: 'It is distributed across brands and distribution intermediaries', wrong: ['It sits only with brand owners', 'It sits only with factories', 'It sits only with regulators'], explanation: 'Retailers and platforms influence visibility, pricing transparency and access to customers. Review Chapter 3.' },
+  { chapter: '3', objective: 'Name the key question', question: 'What should a business ask about intermediaries and platforms?', application: 'A brand sells mostly on one platform. What question matters most?', correct: 'Who owns the customer relationship, controls visibility and influences the purchase decision', wrong: ['How many colours the platform logo uses', 'How old the platform is', 'How many offices the platform has'], explanation: 'Businesses must consider who owns the customer relationship and controls visibility. Review Chapter 3.' },
+  { chapter: '3', objective: 'Describe digital-first brands', question: 'What advantage do digital-first DTC brands have?', application: 'A brand sells only online and speaks to customers directly. What does it gain?', correct: 'Direct communication with customers and first-party consumer data', wrong: ['Guaranteed higher margins', 'No competition from marketplaces', 'Freedom from returns'], explanation: 'DTC businesses use online channels to communicate directly and gather first-party data. Review Chapter 3.' },
+  { chapter: '4', objective: 'Define positioning', question: 'What does competitive positioning describe?', application: 'A manager is asked to explain why customers choose the brand. What is that explanation?', correct: 'How a brand distinguishes itself from alternatives in the minds of target customers', wrong: ['Where the brand’s head office sits', 'How many stores the brand owns', 'The brand’s tax position'], explanation: 'Positioning combines product, price, identity, experience and perceived value. Review Chapter 4.' },
+  { chapter: '4', objective: 'Protect the position', question: 'What weakens differentiation and trust?', application: 'A brand promises quality but its pricing and finish vary. What is the effect?', correct: 'Inconsistent pricing, product quality or communication', wrong: ['Consistent product quality', 'Clear communication', 'A stable price architecture'], explanation: 'A strong position needs consistency between promise and experience. Review Chapter 4.' },
+]);
+
+export const LESSON_4_2: FashionM4LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can contrast the strategies of luxury, fast-fashion, functional and sportswear brands, explain how retailers and platforms share competitive power and describe the bases of competitive positioning.',
+    keyTakeaways: [
+      'Brand recognition alone does not determine competitive strength.',
+      'Sportswear brands connect technical credibility with lifestyle and community.',
+      'Competitive power is shared between brands and intermediaries.',
+      'Ask who owns the customer relationship and the visibility.',
+      'A position holds only when promise and experience are consistent.',
+    ],
+    businessImplications: 'Study players as examples of aligned choices on portfolio, price, channel and experience, and make sure your own position can be kept at every point where the customer meets the brand.',
+    remember: 'Strength comes from a clear position kept consistently, not from size or recognition alone.',
+    nextLesson: 'Competitor Benchmarking',
+  },
+};

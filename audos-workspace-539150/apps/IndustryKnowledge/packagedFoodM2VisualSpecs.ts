@@ -1,0 +1,311 @@
+import type { ChapterVisual } from './chapterVisualText';
+
+/** Chapter-specific Learning Visuals for Packaged Food Module 02 (value chain), keyed by visualKind. */
+export const PACKAGED_FOOD_M2_VISUALS: Record<string, ChapterVisual> = {
+  'packaged-food-m2-21-1': {
+    heading: 'Following one pack from crop and wrapper to the shopper’s basket',
+    intro: 'Every packaged snack crosses the same three blocks. Watch how the middle step changes by category and how an upstream shock, like the 2023/24 cocoa fall, travels down the chain.',
+    spec: {
+      layout: 'flow', title: 'From Raw Ingredients to Packaged Food Products', kicker: '',
+      steps: [
+        { label: 'Farm commodities', detail: 'Cocoa, wheat, sugar, oils, dairy and grains', kind: 'stage', owner: 'Upstream' },
+        { label: 'Ingredient and packaging supply', detail: 'Packaging materials and supplier activities before manufacturing', kind: 'stage', owner: 'Upstream' },
+        { label: 'Category-specific conversion', detail: 'Biscuits are baked, chocolate conched, candy boiled, snacks fried or extruded', kind: 'stage', owner: 'Midstream' },
+        { label: 'Check and pack', detail: 'Quality control and packaging make safe, standardised products', kind: 'stage', owner: 'Midstream' },
+        { label: 'Distribute, market and sell', detail: 'Supermarkets, convenience stores and family-run shops reach the shopper', kind: 'outcome', owner: 'Downstream' },
+      ],
+      loop: 'A shock in one block reaches the others: world cocoa production fell 11.7% in 2023/24 (ICCO projection), and every chocolate chain felt it.',
+      note: 'World cocoa production of 4.461 Mt in 2023/24 is an ICCO projection; the ~US$3.73tn packaged-food figure for 2025 is a commercial vendor estimate, not value captured at each stage.',
+      takeaway: 'Commodities cross borders while factories and distribution sit near consumers, so local production still carries global price exposure.',
+    },
+  },
+  'packaged-food-m2-21-2': {
+    heading: 'Who adds which kind of value, from farm supply to brand preference',
+    intro: 'Each participant solves a different constraint. Sort them by the kind of value they add before asking who captures the profit.',
+    spec: {
+      layout: 'taxonomy', title: 'Who Creates Value Across the Supply Chain?', kicker: '',
+      root: 'Packaged-food chain participants', rootDetail: 'Value appears when specialists coordinate',
+      groups: [
+        { label: 'Supply', detail: 'Produce, aggregate and prepare usable inputs', items: ['Farmers', 'Commodity traders', 'Ingredient suppliers', 'Packaging suppliers'] },
+        { label: 'Transformation', detail: 'Turn inputs into consistent SKUs', items: ['Manufacturers', 'Co-packers'] },
+        { label: 'Assurance', detail: 'Protect safety and consistency', items: ['Quality teams', 'Service partners'] },
+        { label: 'Availability', detail: 'Create reach and access', items: ['Logistics firms', 'Distributors', 'Retailers', 'E-commerce platforms'] },
+        { label: 'Information and preference', detail: 'Build demand and share data', items: ['Marketing builds demand', 'Modern retailers share data and planned promotions'] },
+      ],
+      note: 'Mondelez’s +7.4% chocolate revenue in FY2024 is a company result showing branded value capture, not an industry growth rate; no verified split of value or profit by stage exists.',
+      takeaway: 'Creating value is not the same as capturing profit: scarce ingredients, large retailers and strong brands each shift bargaining power.',
+    },
+  },
+  'packaged-food-m2-21-3': {
+    heading: 'Goods forward, cash back, signals in both directions',
+    intro: 'Each partner exchanges something different with the manufacturer. Look for the flow that arrives late, because a slow signal can empty shelves even when the factory has capacity.',
+    spec: {
+      layout: 'ecosystem', title: 'How Materials, Products, Information, and Money Flow', kicker: '',
+      center: { label: 'Manufacturer', detail: 'Plans purchasing, production and inventory from demand forecasts' },
+      actors: [
+        { label: 'Ingredient and packaging suppliers', relation: 'Send materials forward; receive payment, orders and forecasts', flows: ['product', 'money', 'information'] },
+        { label: 'Distributors', relation: 'Receive finished products; pass back store orders and payment', flows: ['product', 'information', 'money'] },
+        { label: 'Retailers', relation: 'Return point-of-sale data showing what shoppers bought', flows: ['information', 'money'] },
+        { label: 'Quality teams', relation: 'Keep batch records; incomplete ones can force a wider recall', flows: ['information', 'risk'] },
+      ],
+      note: 'Risk is the fifth lens: delays or errors can travel across all four flows. No outlet count is quoted for Orion or any other Vietnam manufacturer.',
+      takeaway: 'To diagnose a supply-chain problem, name the flow that failed, where it began and which partner needs a faster signal.',
+    },
+  },
+  'packaged-food-m2-22-1': {
+    heading: 'Reading the ingredient list as a map of crop and currency risk',
+    intro: 'Chocolate, biscuits, candy and savoury snacks draw on different input baskets. Note where each basket is geographically concentrated or imported.',
+    spec: {
+      layout: 'taxonomy', title: 'Where Packaged Food Ingredients Come From', kicker: '',
+      root: 'Packaged-food input baskets', rootDetail: 'Farm output is graded, traded and processed into factory-ready ingredients',
+      groups: [
+        { label: 'Chocolate', detail: 'Ghana and Côte d’Ivoire produce over 60% of cocoa (secondary source)', items: ['Cocoa mass, butter and powder', 'Sugar', 'Dairy'] },
+        { label: 'Biscuits', detail: 'Vietnam imports over 1.8 million tonnes of milling wheat a year (trade-body estimate)', items: ['Flour', 'Fats or oils', 'Sugar'] },
+        { label: 'Candy', items: ['Sugar', 'Glucose syrups', 'Flavours', 'Gelling agents'] },
+        { label: 'Savoury snacks', items: ['Potato, corn or other grains', 'Oils', 'Seasonings'] },
+      ],
+      note: 'World cocoa production was projected at 4.461 Mt for 2023/24, down 11.7% (ICCO). The wheat figure should be re-confirmed against primary trade data; Vietnam also has a small cocoa crop and domestic sugar production.',
+      takeaway: 'Procurement cannot manage “food ingredients” as one category: each input has its own crop cycle, supplier market and currency exposure.',
+    },
+  },
+  'packaged-food-m2-22-2': {
+    heading: 'Food inputs and wrappers: two supplier bases, two ways to fail',
+    intro: 'Suppliers are judged on quality, volume, traceability and timing, not price alone. Compare what goes wrong when an ingredient or a packaging material misses its specification.',
+    spec: {
+      layout: 'compare', title: 'Suppliers, Agricultural Inputs, and Packaging Materials', kicker: '',
+      leftTitle: 'Ingredient suppliers', rightTitle: 'Packaging suppliers',
+      rows: [
+        { label: 'What they supply', a: 'Farm commodities, flavours, dairy and processed ingredients', b: 'Flexible film, foil, cartons and plastics' },
+        { label: 'Specified for', a: 'Technical, safety, legal and traceability requirements', b: 'Barrier performance, machine compatibility, food contact and shelf life' },
+        { label: 'When it fails', a: 'The recipe fails before production begins', b: 'A film fails to seal or a carton breaks in transport' },
+        { label: 'Responsibility and change risk', a: 'Cocoa deforestation and child labour are procurement risks', b: 'A cheaper, thinner material must be tested before switching' },
+      ],
+      note: 'Mondelez reports about 90% of its cocoa via Cocoa Life, a US$1bn commitment and ~300,000 farmers targeted by 2030: company programme figures, not global cocoa shares.',
+      takeaway: 'Packaging is a functional input that can waste perfectly good food, so it is qualified as rigorously as any ingredient.',
+    },
+  },
+  'packaged-food-m2-22-3': {
+    heading: 'Short disruption or structural shortage: choosing the input-risk response',
+    intro: 'Each risk tool fixes one problem and adds cost or complexity. Match the response to the kind of shock before reaching for a price increase.',
+    spec: {
+      layout: 'decision', title: 'Understanding Input Costs and Supply Risks', kicker: '',
+      root: { label: 'Input shock', detail: 'Cocoa production projected down 11.7% in 2023/24, a 439 kt deficit (ICCO)' },
+      question: 'What kind of disruption is it?',
+      branches: [
+        { condition: 'Short delay or interruption', outcome: 'Cover with safety stock or dual sourcing', detail: 'Inventory buffers and a second approved supplier bridge the gap', tone: 'positive' },
+        { condition: 'Price volatility', outcome: 'Contracts or hedges smooth near-term cost', detail: 'They cannot create a crop that was never harvested', tone: 'caution' },
+        { condition: 'Structural shortage', outcome: 'Change origin, recipe, pack or price', detail: 'New origins, supplier development, reformulation, pack-price changes or customer pricing', tone: 'negative' },
+      ],
+      note: 'Orion Food Vina reportedly absorbed an approximately 70% ingredient-cost increase while holding prices flat from 2018, a company example rather than an industry cost index.',
+      takeaway: 'Contracts and inventory delay market price changes, so a shock can reach company margin before it reaches the shelf.',
+    },
+  },
+  'packaged-food-m2-23-1': {
+    heading: 'Same weighed ingredients, four category-defining conversion routes',
+    intro: 'Every product starts from a recipe and ends in a pack, but the middle step decides equipment, skills and energy use. Notice that cooling is part of manufacturing.',
+    spec: {
+      layout: 'pathway', title: 'How Packaged Foods and Confectionery Are Manufactured', kicker: '',
+      trunk: [
+        { label: 'Formulation', detail: 'Recipe and technical specification for ingredients, process and performance', kind: 'stage' },
+        { label: 'Mix ingredients', detail: 'Inputs are combined before the category-defining step', kind: 'stage' },
+      ],
+      optionsLabel: 'Category-defining process',
+      options: [
+        { label: 'Biscuits', detail: 'Formed, then baked: baking removes moisture and sets structure' },
+        { label: 'Chocolate', detail: 'Refined and conched for particle size and flavour, then tempered and moulded or enrobed' },
+        { label: 'Candy', detail: 'Syrups cooked to control solids and texture, then deposited, moulded or extruded' },
+        { label: 'Savoury snacks', detail: 'Extruded or fried with heat and pressure, then seasoned' },
+      ],
+      afterLabel: 'Shared finish',
+      after: [
+        { label: 'Cool', detail: 'Packing too warm causes condensation, texture loss or unstable chocolate', kind: 'stage' },
+        { label: 'Check and pack', detail: 'Clear limits and checks at every handoff', kind: 'outcome' },
+      ],
+      note: 'Global cocoa grindings were about 4.855 Mt in 2023/24, down 4.3% (ICCO), a separate midstream step. A ChocoPie-type product combines bakery, marshmallow filling and chocolate enrobing.',
+      takeaway: 'A product idea must fit a stable process: small changes in moisture, temperature, particle size or cooling affect quality, line speed and waste.',
+    },
+  },
+  'packaged-food-m2-23-2': {
+    heading: 'The batch-release call: safe, in specification and correctly packed',
+    intro: 'A batch leaves the plant only when every control has a record behind it. See how a safe product can still fail on its pack.',
+    spec: {
+      layout: 'decision', title: 'Food Safety, Quality Control, and Packaging', kicker: '',
+      root: { label: 'Finished batch with traceability records', detail: 'Incoming materials inspected and critical process conditions monitored' },
+      question: 'Do food-safety, quality and packaging checks all pass?',
+      branches: [
+        { condition: 'All checks pass', outcome: 'Batch release', detail: 'Formal confirmation before sale or shipment', tone: 'positive' },
+        { condition: 'Hazard not controlled', outcome: 'Do not release', detail: 'A failure can harm consumers, stop production and trigger a recall', tone: 'negative' },
+        { condition: 'Out of specification', outcome: 'Quality failure', detail: 'Weight, moisture, texture or seal integrity misses the consumer promise', tone: 'caution' },
+        { condition: 'Allergen label or date code wrong', outcome: 'Non-compliant pack', detail: 'Safe food can still become a non-compliant product', tone: 'caution' },
+      ],
+      note: 'Codex Alimentarius (joint FAO/WHO), HACCP and ISO 22000 frame company systems, but a Vietnam plant must also apply local food-safety law and national technical regulations.',
+      takeaway: 'Food safety prevents harm, quality control keeps the product within specification, and packaging preserves both through distribution.',
+    },
+  },
+  'packaged-food-m2-23-3': {
+    heading: 'From planned line hours to good saleable packs',
+    intro: 'Each loss between planned time and saleable output needs a different fix. Follow the deductions and notice that speed alone does not create value.',
+    spec: {
+      layout: 'flow', title: 'Production Efficiency and Manufacturing Economics', kicker: '',
+      steps: [
+        { label: 'Planned production time', detail: 'The time the line is scheduled to produce', kind: 'stage' },
+        { label: 'Running time', detail: 'Remove changeovers, breakdowns and waiting', kind: 'stage' },
+        { label: 'Output at actual speed', detail: 'Compare actual speed with designed speed', kind: 'stage' },
+        { label: 'Good saleable output', detail: 'Remove rejects and rework; fixed costs are spread over this', kind: 'outcome' },
+      ],
+      loop: 'A faster line can create more defects, and larger batches cut changeovers but raise inventory, so Operations, Quality, Maintenance, Planning, Procurement and Sales must agree the trade-offs.',
+      note: 'Nestlé’s CHF91.354 billion 2024 group sales and Orion Food Vina’s ~3,600 employees (about 21 South Korean) show scale and localisation, not plant productivity; no Vietnam yield or margin benchmark was verified.',
+      takeaway: 'Manufacturing economics improve by turning more good output from the same time, materials and assets, without weakening safety or quality.',
+    },
+  },
+  'packaged-food-m2-24-1': {
+    heading: 'Hand-offs that turn factory cases into a shopper’s choice',
+    intro: 'Each distribution layer holds stock and performs a service. Follow the cases from plant to shopper, then the loop that makes deep distribution hard to copy.',
+    spec: {
+      layout: 'flow', title: 'How Packaged Food Products Reach Consumers', kicker: '',
+      steps: [
+        { label: 'Plant', detail: 'Finished cases leave the factory', kind: 'stage' },
+        { label: 'Primary distribution', detail: 'Bulk stock moves to a company depot or distributor', kind: 'stage' },
+        { label: 'Secondary distribution', detail: 'Distributors and wholesalers break bulk, plan routes, extend credit and collect payment', kind: 'stage' },
+        { label: 'Last mile', detail: 'Outlet or fulfilment point to the shopper, especially in e-commerce and quick commerce', kind: 'stage' },
+        { label: 'Shopper purchase', detail: 'Only now has a consumer sale been created', kind: 'outcome' },
+      ],
+      loop: 'More productive stops improve route economics, reliable service strengthens retailer relationships, and better availability produces sell-out data that improves the next forecast.',
+      note: 'Orion Food Vina reported more than US$400 million of revenue in 2022 (VnExpress), company scale rather than market size; its outlet and distributor counts were not verified.',
+      takeaway: 'Removing an intermediary means the manufacturer must replace its inventory, credit, route and collection services.',
+    },
+  },
+  'packaged-food-m2-24-2': {
+    heading: 'Neighbourhood shop, supermarket, convenience store or app: what each channel demands',
+    intro: 'The same snack competes in different commercial systems. Compare how each channel is served and what it asks of the manufacturer before judging it by sales alone.',
+    spec: {
+      layout: 'table', title: 'Understanding Retail and Distribution Channels', kicker: '',
+      headers: ['Channel', 'How it is served', 'What it demands'],
+      rows: [
+        { label: 'General Trade', a: 'Family shops, wet-market stalls and kiosks, via distributors and wholesalers', b: 'Frequent small drops and credit' },
+        { label: 'Modern Trade', a: 'Supermarkets and hypermarkets as key accounts on central terms', b: 'Listings, planograms, promotions and reliable case supply' },
+        { label: 'Convenience chains', a: 'Organised outlets such as Circle K and GS25', b: 'Immediate availability for small missions' },
+        { label: 'E-commerce and quick commerce', a: 'Shopee, Lazada and TikTok Shop for shelf-stable snacks and gift sets', b: 'Platform terms, picking and last-mile delivery' },
+      ],
+      note: 'ChocoPie held ~66% of Vietnam’s “pie” segment in 2022 (Nielsen via VnExpress), a segment share; the ~VND66tn 2025 confectionery figure is a commercial forecast. No verified GT-versus-MT split exists.',
+      takeaway: 'A channel with more sales can be less attractive once promotion, fees, credit, delivery, returns and working capital are counted.',
+    },
+  },
+  'packaged-food-m2-24-3': {
+    heading: 'Turning advertised demand into sell-through before Tết and Mid-Autumn',
+    intro: 'Distribution earns a place in the outlet; execution earns the sale. Check how missing any one shelf condition wastes the demand that advertising created.',
+    spec: {
+      layout: 'driverTree', title: 'Marketing, Merchandising, and Retail Execution', kicker: '',
+      root: { label: 'Profitable shopper sell-through', detail: 'Sales from the channel to the final shopper, not sell-in' },
+      formula: 'Sell-through = availability × visibility × correct price × promotion',
+      drivers: [
+        { label: 'Availability', detail: 'Right SKU in stock at the outlet', op: '×', children: [{ label: 'Distributor loading' }, { label: 'Protected replenishment lead time' }] },
+        { label: 'Visibility', detail: 'Shelf position, display and planogram', op: '×' },
+        { label: 'Price', detail: 'Correct shelf price on a planned price-pack', op: '×' },
+        { label: 'Promotion', detail: 'Timed activation that creates profitable sell-through', op: '×' },
+      ],
+      note: 'Mondelez’s +4.3% organic net-revenue growth in FY2024 is an audited corporate result, not a merchandising return; the share of sales at Tết and Mid-Autumn is not quantified.',
+      takeaway: 'Seasonal packs lose value after the occasion, so excess stock means discounting while a stock-out loses an unrecoverable selling window.',
+    },
+  },
+  'packaged-food-m2-25-1': {
+    heading: 'What each stage consumes and what it leaves behind',
+    intro: 'Read every stage as input, transformation and output. Look beyond saleable packs to the waste streams and information each stage also produces.',
+    spec: {
+      layout: 'table', title: 'Understanding Inputs and Outputs Across the Value Chain', kicker: '',
+      headers: ['Stage', 'Inputs consumed', 'Outputs produced'],
+      rows: [
+        { label: 'Upstream', a: 'Cocoa, wheat, sugar, oils, dairy, grains and packaging materials', b: 'Ingredients valued by the factory' },
+        { label: 'Manufacturing', a: 'Labour, energy, equipment and quality systems', b: 'Consistent branded SKUs, plus trimmings, rejected batches and wastewater' },
+        { label: 'Downstream', a: 'Inventory, logistics, distributor service, retailer terms and marketing', b: 'Outlet availability, consumer purchase and used packaging' },
+        { label: 'Across stages', a: 'Quality results, forecasts and point-of-sale data', b: 'Signals that change future production, stock and promotion' },
+      ],
+      note: 'Mondelez reports ~90% of cocoa via Cocoa Life (2024) and ~38% lower manufacturing emissions versus 2018, company indicators; no plant-level energy, water or waste intensity was verified for Vietnam.',
+      takeaway: 'Waste streams and used packaging are real outputs with disposal, compliance and reputation costs, not external details.',
+    },
+  },
+  'packaged-food-m2-25-2': {
+    heading: 'Cocoa, wheat or sugar: why the swing cost differs by category',
+    intro: 'There is no single packaged-food cost structure. Trace which costs move with each category and which levers defend the profit that remains.',
+    spec: {
+      layout: 'driverTree', title: 'Where Costs and Profits Are Generated', kicker: '',
+      root: { label: 'Profit', detail: 'Revenue left after resources and commercial terms are paid' },
+      formula: 'Profit = revenue (price, volume, mix) − costs (ingredients, packaging, manufacturing, logistics, marketing)',
+      drivers: [
+        { label: 'Revenue levers', detail: 'Pricing, richer sales mix and premiumisation', op: '+', children: [{ label: 'Cost pass-through' }, { label: 'Smaller or redesigned packs' }] },
+        { label: 'Category ingredients', detail: 'Chocolate moves with cocoa; biscuits with wheat, oils and sugar; candy with sugar', op: '−' },
+        { label: 'Packaging and distribution', detail: 'Carried by every category', op: '−' },
+        { label: 'Manufacturing', detail: 'Labour, overhead, energy and depreciation; yield and utilisation protect it', op: '−' },
+        { label: 'Marketing', detail: 'Builds the brand that supports pricing power', op: '−' },
+      ],
+      note: 'Mondelez grew chocolate revenue 7.4% in FY2024 yet anticipated an ~10% adjusted-EPS decline for 2025; Orion reportedly absorbed a ~70% ingredient-cost surge. No Vietnam margin or itemised cost split was verified.',
+      takeaway: 'Revenue growth does not guarantee profit growth: pricing, mix, procurement and productivity must defend economics together.',
+    },
+  },
+  'packaged-food-m2-25-3': {
+    heading: 'Capabilities that reinforce each other into a packaged-food moat',
+    intro: 'A recipe is copied faster than a trusted brand or a national route to market. See how each capability feeds the value a company can retain.',
+    spec: {
+      layout: 'ecosystem', title: 'How Packaged Food Companies Create Competitive Value', kicker: '',
+      center: { label: 'Retained competitive value', detail: 'Captured through price, repeat purchase, lower cost, availability or reduced risk' },
+      actors: [
+        { label: 'Brand', relation: 'Creates preference and willingness to pay' },
+        { label: 'Innovation', relation: 'Gives reasons to choose or trade up' },
+        { label: 'Distribution depth', relation: 'Turns preference into availability', flows: ['product'] },
+        { label: 'Scale', relation: 'Improves procurement and fixed-cost absorption', flows: ['money'] },
+        { label: 'Recipes and sourcing systems', relation: 'Make delivery harder to copy and secure supply', flows: ['risk'] },
+      ],
+      note: 'Cocoa Life targets a cumulative US$1bn by 2030 (up from US$400m in 2012) and ~300,000 farmers; reported farmer net-income gains of ~15% (Ghana) and ~33% (Côte d’Ivoire) are company figures, not causal proof. ChocoPie’s ~66% applies only to the “pie” segment.',
+      takeaway: 'A moat matters only if it improves willingness to buy, cost, resilience or execution and competitors cannot reproduce it quickly.',
+    },
+  },
+  'packaged-food-m2-26-1': {
+    heading: 'Climate fixes the cocoa origin; consumers fix the factory location',
+    intro: 'Multinationals globalise some stages and localise others. Compare why commodity sourcing crosses borders while bulky, taste-sensitive production stays near shoppers.',
+    spec: {
+      layout: 'compare', title: 'How Global Packaged Food Supply Chains Operate', kicker: '',
+      leftTitle: 'Globalised upstream sourcing', rightTitle: 'Localised production and distribution',
+      rows: [
+        { label: 'What sits here', a: 'Cocoa, wheat, sugar, oils and dairy pooled and procured across borders', b: 'Factories, recipes, packs and national routes to market' },
+        { label: 'Location logic', a: 'Climate-bound origins and scaled ingredient processing', b: 'Less finished-goods transport, fresher product, local taste and channels' },
+        { label: 'Main exposure', a: 'Ghana and Côte d’Ivoire supply over 60% of cocoa', b: 'Still carries commodity, currency and import-logistics exposure' },
+        { label: 'Resilience test', a: 'Check origin, processor, port and route, not supplier count', b: 'Balance scale, landed cost, freshness, local fit and control' },
+      ],
+      note: 'World gross cocoa production was projected at 4,461 kt for 2023/24, down 11.7% (ICCO via BusinessGhana); the >60% share comes from a secondary source.',
+      takeaway: 'Contracts and hedges can delay a crop shortfall but cannot create the missing cocoa, so concentration is a risk several brands share.',
+    },
+  },
+  'packaged-food-m2-26-2': {
+    heading: 'Vietnam’s hybrid chain: imported wheat, local plants and local routes',
+    intro: 'Vietnam’s packaged-food chain is neither simply imported nor simply domestic. Separate the globally exposed inputs from the activities performed locally.',
+    spec: {
+      layout: 'taxonomy', title: "Vietnam's Packaged Food Value Chain", kicker: '',
+      root: 'Vietnam’s packaged-food value chain', rootDetail: 'Local conversion and market execution on globally exposed inputs',
+      groups: [
+        { label: 'Imported or globally priced inputs', items: ['Milling wheat: over 1.8 Mt a year, no domestic crop', 'Industrial cocoa at global prices', 'Some sugar alongside domestic output'] },
+        { label: 'Local conversion', items: ['Domestic milling', 'Food plants', 'Packaging', 'Quality control'] },
+        { label: 'Local workforce', items: ['Orion: ~3,600 employees (2022)', 'About 21 reportedly South Korean'] },
+        { label: 'Local route to market', items: ['Distributors', 'Family shops', 'Organised retailers', 'Digital platforms'] },
+        { label: 'Foreign ownership by acquisition', detail: 'Mondelez paid VND7,846bn for 80% of Kinh Do Binh Duong in 2014, about US$370m then' },
+      ],
+      note: 'The wheat figure is a snippet-only U.S. Wheat Associates estimate; named-company shares of imported versus local inputs were not verified, so no local-content ratio is stated.',
+      takeaway: 'A pack made in Vietnam can stay globally exposed through commodities and currency even when its people, plants and routes are local.',
+    },
+  },
+  'packaged-food-m2-26-3': {
+    heading: 'Input imports, finished imports and exports are different dependencies',
+    intro: 'Localisation should be decided input by input and SKU by SKU. Compare each trade flow with the response management can take.',
+    spec: {
+      layout: 'table', title: 'Localization, Imports, Exports, and Supply Dependencies', kicker: '',
+      headers: ['Flow', 'Example in Vietnam', 'Management response'],
+      rows: [
+        { label: 'Structural input import', a: 'Cocoa from origins such as West Africa', b: 'Supplier diversity, contracts, inventory and sourcing programmes' },
+        { label: 'Local production', a: 'Mass biscuits, candy and ChocoPie-type products', b: 'Win on cost and taste; develop local suppliers' },
+        { label: 'Finished-goods import', a: 'Some premium chocolate and speciality confectionery', b: 'Track separately from input imports' },
+        { label: 'Regional export', a: 'Some processed snacks and confectionery', b: 'Keep qualitative until Customs or UN Comtrade data are added' },
+      ],
+      note: 'Vietnam confectionery consumption of ~2kg per person in 2022 versus ~3kg globally is a secondary estimate signalling possible headroom; Ghana and Côte d’Ivoire supply over 60% of cocoa.',
+      takeaway: 'Resilience comes from managing dependencies deliberately: localise where Vietnam has an advantage and diversify the imports that cannot be avoided.',
+    },
+  },
+};

@@ -1,12 +1,51 @@
-// Casemate — Numerical Reasoning: 30 tests × 30 original questions.
+// Casemate — Numerical Reasoning.
 //
-// The supplied references use a small data exhibit followed by calculation and
-// interpretation questions. Each test here has six unique exhibits and five
-// questions per exhibit. Every correct answer is calculated from the same data
-// object rendered by the UI, preventing answer/table drift across all 900
-// questions. Options are always A–D and each test has a 9/12/9 difficulty mix.
+// Source-attributed practice tests are loaded first with verbatim questions,
+// answer keys, section structure and data-driven exhibits. The original 30
+// generated practice tests remain available and are explicitly labelled as
+// based on Assessment Day tests.
 
-export type NumericalDifficulty = 'easy' | 'medium' | 'hard';
+import { loadSourcedNumericalTests } from './mckinseyNumericalTests';
+import { loadAssessmentDayNumericalTests } from './assessmentDayNumericalTests';
+import { loadAssessmentDayCuteNumericalTests } from './assessmentDayCuteNumericalTests';
+
+export type NumericalDifficulty = 'easy' | 'medium' | 'hard' | 'mixed';
+
+export interface NumericalSourceAxis {
+  title?: string;
+  subtitle?: string;
+  unit?: string;
+  minimum?: number;
+  maximum?: number;
+  tickInterval?: number;
+  position?: 'left' | 'right';
+}
+
+export interface NumericalSourceSeries {
+  name: string;
+  values?: number[];
+  points?: [number, number][];
+}
+
+export interface NumericalSourceExhibit {
+  id: string;
+  title: string;
+  subtitle?: string;
+  type: 'table' | 'flow' | 'bar' | 'stacked-bar' | 'line' | 'scatter' | 'pie';
+  notes?: string[];
+  table?: { headers: string[]; rows: string[][] };
+  xLabels?: string[];
+  series?: NumericalSourceSeries[];
+  xAxis?: NumericalSourceAxis;
+  yAxis?: NumericalSourceAxis;
+  annotations?: string[];
+  scatter?: Array<{ label: string; x: number; y: number }>;
+  panels?: Array<{
+    title: string;
+    subtitle?: string;
+    values: Array<{ label: string; value: number; displayValue: string }>;
+  }>;
+}
 
 export interface NumericalDataTable {
   title: string;
@@ -15,11 +54,45 @@ export interface NumericalDataTable {
   rows: string[][];
 }
 
+export type NumericalAnswerKind = 'choice' | 'numeric' | 'rank' | 'text';
+
+export interface NumericalFigureSource {
+  url: string;
+  page: number;
+  box: [number, number, number, number];
+}
+
 export interface NumericalQuestion {
   kind: 'numerical';
   id: string;
   difficulty: NumericalDifficulty;
-  table: NumericalDataTable;
+  /** How the candidate answers. Absent means the usual lettered options. */
+  answerKind?: NumericalAnswerKind;
+  /** Original booklet picture (table or chart) drawn from the Questions PDF. */
+  figure?: NumericalFigureSource;
+  /** Optional answer-key version of the picture, shown instead of `figure` when the question is reviewed. */
+  solutionFigure?: NumericalFigureSource;
+  /** When true the lettered options are drawn as a single row of compact letter buttons (the picture holds the options). */
+  compactOptions?: boolean;
+  /** In review, show `figure` as well as `solutionFigure` (for example the exhibit above the marked-up question block). */
+  reviewShowsBoth?: boolean;
+  /** Reading exhibits (original booklet pictures) shown together in a scrollable panel above the statement. */
+  figures?: NumericalFigureSource[];
+  /** Items to put in order (shown in a neutral order); the correct order is joined by RANK_SEPARATOR in correctAnswer. */
+  rankItems?: string[];
+  /** Typed answers accepted as correct (numeric questions). */
+  numericAccept?: number[];
+  /** Lower-case phrases of which one must appear in the typed answer (text questions). */
+  textAccept?: string[];
+  /** When true the typed text must equal one accepted phrase (single-word spelling answers). */
+  textExact?: boolean;
+  /** Readable form of the correct answer for typed and ranking questions. */
+  answerLabel?: string;
+  table?: NumericalDataTable;
+  sourceOrganization: string;
+  sectionTitle?: string;
+  contextPassages?: string[];
+  sourceExhibits?: NumericalSourceExhibit[];
   prompt: string;
   options: string[];
   optionLabels: string[];
@@ -35,7 +108,71 @@ export interface NumericalTest {
   description: string;
   difficulty: 'mixed';
   timeLimitSeconds: number;
+  sourceOrganization: string;
+  instructions?: string;
   questions: NumericalQuestion[];
+}
+
+export const RANK_SEPARATOR = '|';
+
+/** The fields the typed-answer and ranking helpers need; numerical and verbal questions both satisfy it. */
+export type FreeAnswerQuestion = Pick<NumericalQuestion, 'answerKind' | 'rankItems' | 'numericAccept' | 'textAccept' | 'textExact' | 'answerLabel' | 'correctAnswer'>;
+
+export function parseNumericalInput(value: string | null | undefined): number | null {
+  if (!value) return null;
+  const match = /-?\d+(?:\.\d+)?/.exec(value.replace(/[\s,\u00a3$\u20ac%]/g, ''));
+  return match ? Number(match[0]) : null;
+}
+
+function decimalPlaces(value: number): number {
+  const text = String(value);
+  const dot = text.indexOf('.');
+  return dot < 0 ? 0 : text.length - dot - 1;
+}
+
+export function isNumericalAnswerComplete(question: FreeAnswerQuestion, answer: string | null | undefined): boolean {
+  if (!answer) return false;
+  if (question.answerKind === 'rank') {
+    return answer.split(RANK_SEPARATOR).filter(Boolean).length === (question.rankItems?.length ?? 0);
+  }
+  if (question.answerKind === 'numeric') return parseNumericalInput(answer) !== null;
+  return answer.trim().length > 0;
+}
+
+export function isNumericalAnswerCorrect(question: FreeAnswerQuestion, answer: string | null | undefined): boolean {
+  if (!answer) return false;
+  switch (question.answerKind) {
+    case 'rank':
+      return answer === question.correctAnswer;
+    case 'numeric': {
+      const typed = parseNumericalInput(answer);
+      if (typed === null) return false;
+      return (question.numericAccept || []).some((target) => {
+        const places = decimalPlaces(target);
+        const tolerance = 0.5 * Math.pow(10, -(places === 0 ? 0 : Math.max(places, 2)));
+        return Math.abs(Math.abs(typed) - Math.abs(target)) <= tolerance + 1e-9;
+      });
+    }
+    case 'text': {
+      const typed = answer.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+      return (question.textAccept || []).some((phrase) => phrase.length > 0 && (question.textExact ? typed === phrase : typed.includes(phrase)));
+    }
+    default:
+      return answer === question.correctAnswer;
+  }
+}
+
+/** Readable form of a stored answer: the typed text, or a ranking written as 1st > 2nd > 3rd. */
+export function formatNumericalAnswer(question: FreeAnswerQuestion, answer: string | null | undefined): string {
+  if (!answer) return '';
+  if (question.answerKind === 'rank') return answer.split(RANK_SEPARATOR).filter(Boolean).join(' > ');
+  return answer;
+}
+
+export function formatNumericalCorrectAnswer(question: FreeAnswerQuestion): string {
+  if (question.answerKind === 'rank') return question.correctAnswer.split(RANK_SEPARATOR).join(' > ');
+  if (question.answerKind === 'numeric' || question.answerKind === 'text') return question.answerLabel || question.correctAnswer;
+  return question.correctAnswer;
 }
 
 export const NUMERICAL_TEST_COUNT = 30;
@@ -279,6 +416,7 @@ function buildTest(testNumber: number): NumericalTest {
         id: `${id}-q${pad2(number)}`,
         difficulty: DIFFICULTIES[groupIndex][questionIndex],
         table: dataSet.table,
+        sourceOrganization: 'Based on Assessment Day Test',
         prompt: draft.prompt,
         options: choice.options,
         optionLabels: LABELS.slice(),
@@ -295,6 +433,7 @@ function buildTest(testNumber: number): NumericalTest {
     description: 'Six original data exhibits covering FMCG, banking, workforce, demographics, market share and company financials.',
     difficulty: 'mixed',
     timeLimitSeconds: NUMERICAL_TIME_LIMIT_SECONDS,
+    sourceOrganization: 'Based on Assessment Day Test',
     questions,
   };
 }
@@ -302,6 +441,9 @@ function buildTest(testNumber: number): NumericalTest {
 let cache: NumericalTest[] | null = null;
 
 export function loadNumericalReasoningLibrary(): NumericalTest[] {
-  if (!cache) cache = Array.from({ length: NUMERICAL_TEST_COUNT }, (_, index) => buildTest(index + 1));
+  if (!cache) {
+    const legacyTests = Array.from({ length: NUMERICAL_TEST_COUNT }, (_, index) => buildTest(index + 1));
+    cache = [...loadAssessmentDayNumericalTests(), ...loadAssessmentDayCuteNumericalTests(), ...loadSourcedNumericalTests(), ...legacyTests];
+  }
   return cache;
 }

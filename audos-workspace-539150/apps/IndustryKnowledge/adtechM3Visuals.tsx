@@ -1,0 +1,1 @@
+import type{AdtechM3VisualKind}from'./adtechM3Core';import{VisualView}from'./fashionVisualKit';import{ADTECH_M3_VISUALS}from'./adtechM3VisualSpecs';export function renderAdtechModule03Visual(kind:AdtechM3VisualKind){const visual=ADTECH_M3_VISUALS[kind];return visual?<VisualView spec={visual.spec}/>:null;}

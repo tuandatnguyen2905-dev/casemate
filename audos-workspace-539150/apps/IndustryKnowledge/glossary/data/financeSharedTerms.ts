@@ -1,0 +1,260 @@
+// Definitions reused across Banking & Financial Services sub-industries. Each concept is defined
+// once here; curriculum files reference it by id and add lesson-specific context notes instead of
+// copying the definition. Source URLs are copied from the curricula's own source registries.
+import type { GlossarySource, GlossaryTermDef } from '../glossaryTypes';
+
+export const FINANCE_SHARED_SOURCES: GlossarySource[] = [
+  { id: 'fin-sbv-institutions', title: 'System of Credit Institutions', url: 'https://sbv.gov.vn/en/w/sbv527426', publisher: 'State Bank of Vietnam' },
+  { id: 'fin-credit-law-2025', title: 'Law on Credit Institutions — consolidated 2025 text', url: 'https://vanban.chinhphu.vn/?docid=215312&pageid=27160', publisher: 'National Assembly / Office of the National Assembly' },
+  { id: 'fin-circular-31-2024', title: 'Circular 31/2024/TT-NHNN — debt classification', url: 'https://vanban.chinhphu.vn/?classid=1&docid=210625&pageid=27160', publisher: 'State Bank of Vietnam / Government Gazette' },
+  { id: 'fin-decree-86-2024', title: 'Decree 86/2024/ND-CP — risk provisions', url: 'https://vbpl.vn/nganhangnhanuoc/Pages/vbpq-toanvan.aspx?ItemID=168385', publisher: 'Government of Vietnam / National Legal Database' },
+  { id: 'fin-bis-credit', title: 'Credit Risk — Principles for the Management of Credit Risk', url: 'https://www.bis.org/publ/bcbs75.htm', publisher: 'Basel Committee on Banking Supervision' },
+  { id: 'fin-cic', title: 'National Credit Information Centre of Vietnam', url: 'https://cic.gov.vn/', publisher: 'CIC' },
+  { id: 'fin-napas', title: 'NAPAS network and services', url: 'https://en.napas.com.vn/', publisher: 'NAPAS' },
+  { id: 'fin-decree-52-2024', title: 'Decree No. 52/2024/ND-CP on Non-cash Payments', url: 'https://vanban.chinhphu.vn/?docid=210262&pageid=27160', publisher: 'Government of Vietnam', note: 'URL corrected in Sprint 04F: the earlier docid=210315 resolves to Decree 58/2024/ND-CP (forestry), not Decree 52/2024.' },
+  { id: 'fin-emv-qr', title: 'EMV QR Code Specifications', url: 'https://www.emvco.com/emv-technologies/qr-codes/', publisher: 'EMVCo' },
+  { id: 'fin-fatf', title: 'FATF Recommendations', url: 'https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html', publisher: 'Financial Action Task Force' },
+  { id: 'fin-findex', title: 'Global Findex Database', url: 'https://www.worldbank.org/en/publication/globalfindex', publisher: 'World Bank' },
+  { id: 'fin-oecd-consumer', title: 'G20/OECD High-Level Principles on Financial Consumer Protection 2022', url: 'https://www.oecd.org/en/publications/g20-oecd-high-level-principles-on-financial-consumer-protection-2022_48cc3df0-en.html', publisher: 'OECD' },
+  { id: 'fin-eu-ifr', title: 'Regulation (EU) 2015/751 on interchange fees for card-based payment transactions', url: 'https://eur-lex.europa.eu/eli/reg/2015/751/oj', publisher: 'European Parliament and Council (EUR-Lex)', note: 'Article 2 defines acquirer, issuer, interchange fee, merchant service charge and payment card scheme. An EU instrument used as an international reference for the concept; it is not Vietnamese law.' },
+  { id: 'fin-cb-key-terms', title: 'Commercial Banking curriculum — chapter Key Terms (sourced)', note: 'Definitions authored with the chapter source registry; see the chapter sources in the reader.' },
+  { id: 'fin-cf-key-terms', title: 'Consumer Finance curriculum — definitions table (sourced)', note: 'consumerFinanceCore.tsx definitions table.' },
+  { id: 'fin-pf-key-terms', title: 'Payments & Fintech curriculum — definitions table (sourced)', note: 'paymentsFintechCore.tsx definitions table.' },
+];
+
+export const FINANCE_SHARED_TERMS: GlossaryTermDef[] = [
+  {
+    id: 'fin.sbv', term: 'State Bank of Vietnam', acronym: 'SBV', fullForm: 'State Bank of Vietnam', aliases: ['NHNN'], category: 'institutions',
+    definitionEn: 'Vietnam’s central bank and banking supervisor. It issues the currency, conducts monetary policy, and licenses and supervises credit institutions.',
+    definitionVi: 'Ngân hàng Nhà nước Việt Nam (NHNN) – ngân hàng trung ương và cơ quan giám sát ngân hàng: phát hành tiền, điều hành chính sách tiền tệ, cấp phép và giám sát các tổ chức tín dụng.',
+    businessContextEn: 'SBV rules—credit growth limits, prudential ratios, debt classification—shape how fast Vietnamese lenders can grow and how they report risk.',
+    businessContextVi: 'Các quy định của NHNN như hạn mức tăng trưởng tín dụng, tỷ lệ an toàn và phân loại nợ quyết định tốc độ tăng trưởng và cách các tổ chức tín dụng báo cáo rủi ro.',
+    sourceIds: ['fin-sbv-institutions', 'fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.cic', term: 'National Credit Information Centre of Vietnam', acronym: 'CIC', fullForm: 'National Credit Information Centre of Vietnam', category: 'institutions',
+    definitionEn: 'The credit information centre under the State Bank of Vietnam. It collects borrowers’ credit data from lenders and provides the credit reports used in lending decisions.',
+    definitionVi: 'Trung tâm Thông tin Tín dụng Quốc gia Việt Nam (CIC), đơn vị thuộc NHNN: thu thập dữ liệu tín dụng của khách hàng vay từ các tổ chức tín dụng và cung cấp báo cáo tín dụng phục vụ quyết định cho vay.',
+    businessContextEn: 'Lenders check a borrower’s CIC history before approving credit; customers with a thin or missing record are harder to assess.',
+    businessContextVi: 'Tổ chức cho vay tra cứu lịch sử CIC trước khi phê duyệt; khách hàng có ít hoặc chưa có dữ liệu tín dụng sẽ khó thẩm định hơn.',
+    sourceIds: ['fin-cic', 'fin-cf-key-terms'], basis: 'paraphrase', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.napas', term: 'National Payment Corporation of Vietnam', acronym: 'NAPAS', fullForm: 'National Payment Corporation of Vietnam', category: 'institutions',
+    definitionEn: 'Vietnam’s national payment switching company. It operates the interbank infrastructure that routes domestic card, ATM/POS and instant interbank transfer transactions between member banks.',
+    definitionVi: 'Công ty Cổ phần Thanh toán Quốc gia Việt Nam (NAPAS): vận hành hạ tầng chuyển mạch liên ngân hàng trong nước, kết nối giao dịch thẻ, ATM/POS và chuyển khoản nhanh liên ngân hàng giữa các ngân hàng thành viên.',
+    businessContextEn: 'Shared switching lets a customer of one bank pay or transfer to any other bank, which makes national QR and instant transfers possible.',
+    businessContextVi: 'Hạ tầng chuyển mạch dùng chung cho phép khách hàng của một ngân hàng thanh toán hoặc chuyển tiền tới bất kỳ ngân hàng nào khác, tạo nền tảng cho QR và chuyển khoản nhanh trên toàn quốc.',
+    sourceIds: ['fin-napas'], basis: 'paraphrase', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.kyc', term: 'Know your customer', acronym: 'KYC', fullForm: 'Know Your Customer', category: 'regulatory',
+    definitionEn: 'Processes for identifying customers and understanding the risk they bring, before and throughout the relationship.',
+    definitionVi: 'Nhận biết khách hàng (KYC): quy trình xác minh danh tính và đánh giá mức độ rủi ro của khách hàng, trước và trong suốt quan hệ giao dịch.',
+    businessContextEn: 'KYC is a legal obligation and the first gate of onboarding; weak KYC exposes a provider to fraud and money-laundering risk.',
+    businessContextVi: 'KYC là nghĩa vụ pháp lý và là bước đầu tiên khi mở tài khoản; KYC yếu khiến doanh nghiệp đối mặt rủi ro gian lận và rửa tiền.',
+    sourceIds: ['fin-cb-key-terms', 'fin-fatf'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.ekyc', term: 'eKYC', fullForm: 'Electronic Know Your Customer', aliases: ['electronic KYC'], category: 'business-processes',
+    definitionEn: 'Electronic know-your-customer: verifying a customer’s identity remotely, for example with identity-document scans, biometrics or national digital identity.',
+    definitionVi: 'Định danh khách hàng điện tử (eKYC): xác minh danh tính khách hàng từ xa, ví dụ qua ảnh giấy tờ tùy thân, sinh trắc học hoặc định danh điện tử quốc gia.',
+    businessContextEn: 'eKYC lets customers open accounts without visiting a branch, which is what makes digital onboarding at scale possible.',
+    businessContextVi: 'eKYC cho phép khách hàng mở tài khoản mà không cần đến quầy, giúp việc mở tài khoản số trên quy mô lớn trở nên khả thi.',
+    sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.aml', term: 'Anti-money laundering', acronym: 'AML', fullForm: 'Anti-Money Laundering', category: 'regulatory',
+    definitionEn: 'Controls that prevent, detect and report possible money laundering, such as transaction monitoring and suspicious-transaction reporting.',
+    definitionVi: 'Phòng, chống rửa tiền (AML): các biện pháp ngăn ngừa, phát hiện và báo cáo hành vi rửa tiền, như giám sát giao dịch và báo cáo giao dịch đáng ngờ.',
+    businessContextEn: 'AML failures can bring fines, licence restrictions and loss of correspondent or partner relationships.',
+    businessContextVi: 'Vi phạm về phòng, chống rửa tiền có thể dẫn đến bị phạt, hạn chế giấy phép và mất quan hệ đối tác.',
+    sourceIds: ['fin-cb-key-terms', 'fin-fatf'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.npl', term: 'Non-performing loan', acronym: 'NPL', fullForm: 'Non-Performing Loan', aliases: ['non-performing loans', 'NPLs'], category: 'essential-concepts',
+    definitionEn: 'A loan that is unlikely to be repaid in full and on time. In Vietnam, NPLs are loans classified in debt Groups 3, 4 and 5 under SBV debt-classification rules.',
+    definitionVi: 'Nợ xấu (NPL): khoản vay có nguy cơ không được hoàn trả đầy đủ, đúng hạn. Tại Việt Nam, nợ xấu là các khoản nợ thuộc nhóm 3, 4 và 5 theo quy định phân loại nợ của NHNN.',
+    businessContextEn: 'Rising NPLs force lenders to set aside more provisions, which reduces profit and, eventually, capital.',
+    businessContextVi: 'Nợ xấu tăng buộc tổ chức cho vay trích lập thêm dự phòng, làm giảm lợi nhuận và về lâu dài là vốn.',
+    sourceIds: ['fin-circular-31-2024', 'fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.dpd', term: 'Days past due', acronym: 'DPD', fullForm: 'Days Past Due', category: 'acronyms',
+    definitionEn: 'The number of days a scheduled loan payment is overdue. It is used to track delinquency and to classify loans.',
+    definitionVi: 'Số ngày quá hạn (DPD): số ngày một khoản thanh toán theo lịch bị chậm trả; dùng để theo dõi nợ quá hạn và phân loại nợ.',
+    businessContextEn: 'Lenders watch DPD buckets to act early—before an overdue loan becomes a non-performing one.',
+    businessContextVi: 'Tổ chức cho vay theo dõi các nhóm DPD để xử lý sớm, trước khi khoản vay quá hạn trở thành nợ xấu.',
+    sourceIds: ['fin-cb-key-terms', 'fin-circular-31-2024'], basis: 'curriculum', verificationStatus: 'verified',
+    reviewNote: 'The regulatory day bands are deliberately not stated here, matching the curriculum, until the operative text is verified.',
+  },
+  {
+    id: 'fin.credit-underwriting', term: 'Credit underwriting', aliases: ['underwriting'], category: 'business-processes',
+    definitionEn: 'Assessing a borrower’s ability and willingness to repay, then deciding whether to lend and on what terms (amount, price, tenor, collateral).',
+    definitionVi: 'Thẩm định tín dụng: đánh giá khả năng và thiện chí trả nợ của khách hàng vay, từ đó quyết định có cho vay hay không và với điều kiện nào (hạn mức, lãi suất, kỳ hạn, tài sản bảo đảm).',
+    businessContextEn: 'Underwriting quality today determines credit losses tomorrow; it is where growth and risk are traded off.',
+    businessContextVi: 'Chất lượng thẩm định hôm nay quyết định tổn thất tín dụng ngày mai; đây là nơi đánh đổi giữa tăng trưởng và rủi ro.',
+    sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms', 'fin-bis-credit'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.cost-of-risk', term: 'Cost of risk', category: 'financial-metrics',
+    definitionEn: 'Credit-loss (provision) expense for a period divided by average loans—how much of the loan book is being lost to bad debt.',
+    definitionVi: 'Chi phí rủi ro tín dụng: chi phí dự phòng tổn thất tín dụng trong kỳ chia cho dư nợ cho vay bình quân, cho biết phần dư nợ bị mất do nợ xấu.',
+    businessContextEn: 'Read margin and cost of risk together: a high-yield lender with a high cost of risk can earn less than a lower-yield bank.',
+    businessContextVi: 'Cần đọc biên lãi cùng chi phí rủi ro: một tổ chức cho vay lãi suất cao nhưng chi phí rủi ro lớn có thể lãi ít hơn một ngân hàng lãi suất thấp.',
+    sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.expected-credit-loss', term: 'Expected credit loss', acronym: 'ECL', fullForm: 'Expected Credit Loss', category: 'financial-metrics',
+    definitionEn: 'A forward-looking, probability-weighted estimate of credit losses, used to set loss allowances (for example under IFRS 9).',
+    definitionVi: 'Tổn thất tín dụng dự kiến (ECL): ước tính tổn thất tín dụng có tính dự báo, gia quyền theo xác suất, dùng để trích lập dự phòng (ví dụ theo IFRS 9).',
+    businessContextEn: 'ECL makes lenders recognise likely losses earlier, so a weakening economy hits reported profit before loans actually default.',
+    businessContextVi: 'ECL buộc tổ chức cho vay ghi nhận tổn thất sớm hơn, nên khi kinh tế suy yếu, lợi nhuận bị ảnh hưởng trước cả khi khoản vay thực sự vỡ nợ.',
+    sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.write-off', term: 'Write-off', aliases: ['written off', 'write off'], category: 'business-processes',
+    definitionEn: 'Removing a loan judged unrecoverable from the balance sheet, usually after it has been provisioned. Recovery efforts may continue afterwards.',
+    definitionVi: 'Xóa nợ (xử lý nợ bằng dự phòng): loại khoản vay được đánh giá không thể thu hồi khỏi bảng cân đối kế toán, thường sau khi đã trích lập dự phòng; việc thu hồi vẫn có thể tiếp tục.',
+    businessContextEn: 'A falling NPL ratio can reflect write-offs rather than better loans, so analysts check write-offs alongside NPLs.',
+    businessContextVi: 'Tỷ lệ nợ xấu giảm có thể do xóa nợ chứ không phải do chất lượng khoản vay tốt lên, nên cần xem xóa nợ cùng với nợ xấu.',
+    sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.nim', term: 'Net interest margin', acronym: 'NIM', fullForm: 'Net Interest Margin', category: 'financial-metrics',
+    definitionEn: 'Net interest income divided by average interest-earning assets—the spread a lender earns on its balance sheet, usually shown as a percentage.',
+    definitionVi: 'Biên lãi thuần (NIM): thu nhập lãi thuần chia cho tài sản sinh lãi bình quân – mức chênh lệch lãi mà tổ chức cho vay thu được trên bảng cân đối, thường tính theo %.',
+    businessContextEn: 'NIM is the headline profitability gauge for lenders; cheaper funding or higher-yield lending pushes it up.',
+    businessContextVi: 'NIM là thước đo sinh lời chủ chốt của tổ chức cho vay; nguồn vốn rẻ hơn hoặc cho vay lãi suất cao hơn sẽ làm NIM tăng.',
+    sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.nii', term: 'Net interest income', acronym: 'NII', fullForm: 'Net Interest Income', category: 'financial-metrics',
+    definitionEn: 'Interest income earned minus interest expense paid over a period; the main revenue line of most lenders.',
+    definitionVi: 'Thu nhập lãi thuần (NII): thu nhập từ lãi trừ chi phí trả lãi trong kỳ; là nguồn doanh thu chính của phần lớn tổ chức cho vay.',
+    businessContextEn: 'NII grows with loan volume and margin, so analysts split its growth into “more lending” versus “better spread”.',
+    businessContextVi: 'NII tăng theo quy mô cho vay và biên lãi, nên khi phân tích cần tách phần tăng do “cho vay nhiều hơn” và do “chênh lệch lãi tốt hơn”.',
+    sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.cost-of-funds', term: 'Cost of funds', aliases: ['funding cost', 'funding costs'], category: 'financial-metrics',
+    definitionEn: 'The weighted-average interest rate a lender pays across all its funding—deposits, interbank borrowing and issued bonds.',
+    definitionVi: 'Chi phí vốn huy động: lãi suất bình quân gia quyền mà tổ chức cho vay phải trả trên toàn bộ nguồn vốn – tiền gửi, vay liên ngân hàng và trái phiếu phát hành.',
+    businessContextEn: 'A lower cost of funds is a durable advantage: it widens margin without taking more credit risk.',
+    businessContextVi: 'Chi phí vốn thấp là lợi thế bền vững: giúp nới rộng biên lãi mà không phải chấp nhận thêm rủi ro tín dụng.',
+    sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.liquidity', term: 'Liquidity', category: 'essential-concepts',
+    definitionEn: 'The ability to meet cash obligations—withdrawals, maturing debt, payments—when they fall due, without unacceptable loss.',
+    definitionVi: 'Thanh khoản: khả năng đáp ứng các nghĩa vụ chi trả – rút tiền, nợ đến hạn, thanh toán – đúng hạn mà không chịu tổn thất quá mức.',
+    businessContextEn: 'A profitable lender can still fail if it runs out of liquidity, which is why regulators set liquidity ratios.',
+    businessContextVi: 'Một tổ chức có lãi vẫn có thể đổ vỡ nếu cạn thanh khoản, vì vậy cơ quan quản lý đặt ra các tỷ lệ thanh khoản.',
+    sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.bancassurance', term: 'Bancassurance', category: 'business-models',
+    definitionEn: 'Distribution of an insurer’s products through a bank’s branches and channels under a partnership agreement.',
+    definitionVi: 'Bancassurance (bảo hiểm qua ngân hàng): ngân hàng phân phối sản phẩm của doanh nghiệp bảo hiểm qua chi nhánh và các kênh của mình theo thỏa thuận hợp tác.',
+    businessContextEn: 'The bank earns commission; the insurer carries the insurance risk and records the premium.',
+    businessContextVi: 'Ngân hàng nhận hoa hồng; doanh nghiệp bảo hiểm chịu rủi ro bảo hiểm và ghi nhận phí bảo hiểm.',
+    sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.open-banking', term: 'Open banking', category: 'business-models',
+    definitionEn: 'Permissioned sharing of banking data or services with third parties through controlled interfaces (APIs), with the customer’s consent.',
+    definitionVi: 'Ngân hàng mở (open banking): chia sẻ dữ liệu hoặc dịch vụ ngân hàng cho bên thứ ba qua giao diện lập trình (API) có kiểm soát, khi được khách hàng đồng ý.',
+    businessContextEn: 'Open banking lets partners build services on top of bank accounts, turning banks into platforms as well as product providers.',
+    businessContextVi: 'Ngân hàng mở cho phép đối tác xây dựng dịch vụ dựa trên tài khoản ngân hàng, biến ngân hàng thành nền tảng chứ không chỉ là nơi cung cấp sản phẩm.',
+    sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.api', term: 'Application programming interface', acronym: 'API', fullForm: 'Application Programming Interface', aliases: ['APIs'], category: 'acronyms',
+    definitionEn: 'A controlled software interface that lets two systems exchange data or trigger services—for example, a shop’s checkout calling a payment provider.',
+    definitionVi: 'Giao diện lập trình ứng dụng (API): giao diện phần mềm có kiểm soát cho phép hai hệ thống trao đổi dữ liệu hoặc gọi dịch vụ của nhau – ví dụ trang thanh toán của cửa hàng kết nối với nhà cung cấp dịch vụ thanh toán.',
+    businessContextEn: 'APIs are how banks and fintechs plug into partners’ apps, so API quality directly affects partnerships and conversion.',
+    businessContextVi: 'API là cách ngân hàng và fintech kết nối vào ứng dụng của đối tác, nên chất lượng API ảnh hưởng trực tiếp đến hợp tác và tỷ lệ chuyển đổi.',
+    sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.cac', term: 'Customer acquisition cost', acronym: 'CAC', fullForm: 'Customer Acquisition Cost', aliases: ['acquisition cost', 'acquisition costs'], category: 'financial-metrics',
+    definitionEn: 'The sales, marketing, partner and onboarding cost of winning one new customer or account, under a stated method.',
+    definitionVi: 'Chi phí thu hút khách hàng (CAC): tổng chi phí bán hàng, marketing, đối tác và mở tài khoản để có thêm một khách hàng hoặc tài khoản mới, theo phương pháp tính được nêu rõ.',
+    businessContextEn: 'Growth only creates value when the lifetime value of the customers won clearly exceeds CAC.',
+    businessContextVi: 'Tăng trưởng chỉ tạo ra giá trị khi giá trị vòng đời của khách hàng thu hút được lớn hơn rõ rệt so với CAC.',
+    sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.clv', term: 'Customer lifetime value', acronym: 'CLV', fullForm: 'Customer Lifetime Value', aliases: ['lifetime value'], category: 'financial-metrics',
+    definitionEn: 'The expected value a customer relationship generates over time, after relevant costs and risk.',
+    definitionVi: 'Giá trị vòng đời khách hàng (CLV): giá trị kỳ vọng mà một quan hệ khách hàng mang lại theo thời gian, sau khi trừ các chi phí và rủi ro liên quan.',
+    businessContextEn: 'Comparing CLV with acquisition cost shows whether a customer segment or channel is worth growing.',
+    businessContextVi: 'So sánh CLV với chi phí thu hút khách hàng cho biết một phân khúc hay kênh có đáng đầu tư mở rộng hay không.',
+    sourceIds: ['fin-cb-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+    reviewNote: 'Not linked to the abbreviation “LTV”: in lending, LTV usually means loan-to-value, so it is never auto-annotated.',
+  },
+  {
+    id: 'fin.qr-payment', term: 'QR code payment', fullForm: 'Quick Response (QR) code payment', aliases: ['QR payment', 'QR payments', 'QR code payments', 'QR code', 'VietQR', 'QR'], category: 'products-services',
+    definitionEn: 'Paying by scanning a QR (Quick Response) code with a banking or wallet app. In merchant-presented mode the merchant shows the code and the customer scans it; the payment can be account-based or card-based, depending on the provider.',
+    definitionVi: 'Thanh toán bằng mã QR: dùng ứng dụng ngân hàng hoặc ví điện tử quét mã QR. Ở chế độ người bán hiển thị mã, khách hàng quét mã; khoản thanh toán có thể theo tài khoản hoặc theo thẻ tùy nhà cung cấp.',
+    businessContextEn: 'QR acceptance needs no card terminal, which makes digital payments affordable for small merchants.',
+    businessContextVi: 'Chấp nhận thanh toán QR không cần máy POS, giúp tiểu thương dễ dàng nhận thanh toán số với chi phí thấp.',
+    sourceIds: ['fin-emv-qr'], basis: 'official', verificationStatus: 'verified',
+    reviewNote: 'Checked against the EMVCo QR code page (fetched Sprint 04F): consumer-presented and merchant-presented modes; account-based and card-based payment. Decree 52/2024 does not mention QR and was removed as a source for this term.',
+  },
+  {
+    id: 'fin.e-wallet', term: 'E-wallet', aliases: ['e-wallets', 'digital wallet', 'digital wallets', 'mobile wallet', 'mobile wallets'], category: 'products-services',
+    definitionEn: 'An app that stores payment credentials or a balance so users can pay, transfer and top up from their phone—for example MoMo or ZaloPay.',
+    definitionVi: 'Ví điện tử: ứng dụng lưu thông tin thanh toán hoặc số dư, cho phép người dùng thanh toán, chuyển tiền và nạp tiền trên điện thoại – ví dụ MoMo hoặc ZaloPay.',
+    businessContextEn: 'E-wallets compete with banks for everyday payments while relying on bank accounts and national switching for top-ups and settlement.',
+    businessContextVi: 'Ví điện tử cạnh tranh với ngân hàng ở mảng thanh toán hằng ngày nhưng vẫn dựa vào tài khoản ngân hàng và hạ tầng chuyển mạch quốc gia để nạp tiền và quyết toán.',
+    sourceIds: ['fin-pf-key-terms', 'fin-decree-52-2024'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.finco', term: 'Consumer finance company', aliases: ['finance company', 'finance companies', 'consumer-finance company', 'consumer finance companies', 'FinCo'], category: 'institutions',
+    definitionEn: 'A licensed non-bank credit institution that lends to individuals—cash loans, instalment loans, cards—funded by equity and wholesale borrowing rather than public deposits.',
+    definitionVi: 'Công ty tài chính tiêu dùng: tổ chức tín dụng phi ngân hàng được cấp phép, cho cá nhân vay (vay tiền mặt, vay trả góp, thẻ), nguồn vốn từ vốn chủ sở hữu và vốn vay bán buôn thay vì nhận tiền gửi của công chúng.',
+    businessContextEn: 'Finance companies serve many borrowers that banks decline, charging higher rates to cover higher credit risk.',
+    businessContextVi: 'Công ty tài chính phục vụ nhiều khách hàng mà ngân hàng từ chối, với lãi suất cao hơn để bù đắp rủi ro tín dụng cao hơn.',
+    sourceIds: ['fin-cb-key-terms', 'fin-credit-law-2025'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.financial-inclusion', term: 'Financial inclusion', category: 'strategic',
+    definitionEn: 'Access to, and effective use of, formal financial services—accounts, payments, savings, credit and insurance—by individuals and businesses.',
+    definitionVi: 'Tài chính toàn diện: việc cá nhân và doanh nghiệp tiếp cận và sử dụng hiệu quả các dịch vụ tài chính chính thức như tài khoản, thanh toán, tiết kiệm, tín dụng và bảo hiểm.',
+    businessContextEn: 'Inclusion opens new customer pools, but serving them profitably needs low-cost channels and careful risk control.',
+    businessContextVi: 'Tài chính toàn diện mở ra tệp khách hàng mới, nhưng để phục vụ có lãi cần kênh chi phí thấp và kiểm soát rủi ro chặt chẽ.',
+    sourceIds: ['fin-cb-key-terms', 'fin-findex'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.embedded-finance', term: 'Embedded finance', aliases: ['embedded banking', 'embedded lending', 'embedded credit'], category: 'business-models',
+    definitionEn: 'Financial services—payments, credit, insurance—placed inside a non-financial company’s customer journey, such as checkout on an e-commerce app, with a licensed provider behind it.',
+    definitionVi: 'Tài chính nhúng: dịch vụ tài chính (thanh toán, tín dụng, bảo hiểm) được tích hợp vào hành trình khách hàng của một doanh nghiệp phi tài chính, ví dụ bước thanh toán trên ứng dụng thương mại điện tử, với một đơn vị được cấp phép đứng sau cung cấp.',
+    businessContextEn: 'Embedded models win customers at the moment of need, but the licensed provider still owns the credit, compliance and conduct risk.',
+    businessContextVi: 'Mô hình nhúng tiếp cận khách hàng đúng lúc họ có nhu cầu, nhưng đơn vị được cấp phép vẫn chịu rủi ro tín dụng, tuân thủ và ứng xử với khách hàng.',
+    sourceIds: ['fin-cb-key-terms', 'fin-cf-key-terms'], basis: 'curriculum', verificationStatus: 'verified',
+  },
+  {
+    id: 'fin.interchange', term: 'Interchange fee', aliases: ['interchange'], category: 'business-models',
+    definitionEn: 'A fee paid for each card transaction, directly or indirectly, between the issuer and the acquirer involved in the transaction.',
+    definitionVi: 'Phí trao đổi (interchange): khoản phí trả cho mỗi giao dịch thẻ, trực tiếp hoặc gián tiếp, giữa ngân hàng phát hành thẻ (issuer) và ngân hàng thanh toán (acquirer) tham gia giao dịch đó.',
+    businessContextEn: 'It is usually applied between the acquirer and the issuer of a card scheme and is a main part of the fee merchants pay their acquirer; for issuers it is a revenue line.',
+    businessContextVi: 'Phí này thường phát sinh giữa ngân hàng thanh toán và ngân hàng phát hành trong cùng một tổ chức thẻ, là cấu phần chính trong phí người bán trả cho ngân hàng thanh toán; với ngân hàng phát hành đây là một nguồn thu.',
+    sourceIds: ['fin-eu-ifr'], basis: 'official', verificationStatus: 'verified',
+    reviewNote: 'Wording follows Regulation (EU) 2015/751 Art. 2(10) and recital 10 (EUR-Lex, fetched in Sprint 04F). It is the international reference definition, not a Vietnamese rule; Vietnamese domestic card rules and NAPAS fee schedules were not checked.',
+  },
+];
+
+export const sharedTerms = (ids: string[]): GlossaryTermDef[] => ids.map((id) => {
+  const term = FINANCE_SHARED_TERMS.find((item) => item.id === id);
+  if (!term) throw new Error(`Unknown shared glossary term ${id}`);
+  return term;
+});
+
+/** Every source referenced by `terms`, from the shared registry and the curriculum's own list, each once. */
+export const collectSources = (terms: GlossaryTermDef[], own: GlossarySource[]): GlossarySource[] => {
+  const ids = new Set(terms.flatMap((term) => term.sourceIds));
+  const pool = new Map<string, GlossarySource>();
+  [...FINANCE_SHARED_SOURCES, ...own].forEach((source) => { if (!pool.has(source.id)) pool.set(source.id, source); });
+  return [...pool.values()].filter((source) => ids.has(source.id));
+};

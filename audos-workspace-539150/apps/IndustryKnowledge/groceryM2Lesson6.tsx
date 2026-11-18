@@ -1,0 +1,202 @@
+import { G2DeepDive, citeG2, g2Chapter, g2Quiz } from './groceryM2Core';
+import type { GroceryM2LessonBundle } from './groceryM2Core';
+
+const LESSON = '6. Global vs. Local Value Chain';
+
+const deck = [
+  g2Chapter({
+    title: 'Global Sourcing and International Supply Networks', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe how retailers source from overseas suppliers and explain why total landed cost and diversification matter more than the headline unit price.',
+    mateIntro: 'Cherries, cheese and electronics on a Vietnamese shelf were made or grown somewhere else. Getting them there adds customs, shipping, currency and timing to the cost of the product.',
+    keyInsight: 'Global sourcing can improve assortment and cost competitiveness, but only if retailers manage total landed cost, supplier reliability, and disruption risk. Diversification across sourcing locations is generally more resilient than dependence on a single supplier or region.',
+    statTiles: [
+      { value: '6', label: 'Key global sourcing activities', subtitle: 'Procurement to diversification', description: 'International procurement, supplier networks, import and customs management, international logistics, foreign exchange and diversification.' },
+      { value: 'US$15.7B', label: 'Consumer-oriented products imported by Vietnam in 2024', subtitle: 'Up 9.9% on the year', description: 'USDA analysis of Euromonitor data on food, beverage and related consumer-oriented imports.' },
+      { value: '5', label: 'Companies named as importing directly', subtitle: 'MM Mega Market, WinMart and three others', description: 'Most retailers buy imported goods through importers and distributors.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the import value and direct-importer list are from a US Department of Agriculture report on Vietnam’s retail foods sector and cover consumer-oriented products, not all general merchandise.',
+    narrative: [
+      { label: 'What it is', text: 'Global sourcing means buying products, components or brands from suppliers outside the retailer’s home market, and it creates an international supply network of manufacturers, agents, forwarders, ports and customs authorities. Imported products add assortment that domestic producers may not offer, such as specialised foods, brands and general merchandise, and can give access to large production capacity. The price on the invoice is only part of the picture, because duties, freight, insurance, financing and delays also decide what a product costs once it is on the shelf.' },
+      { label: 'Why it is happening', text: 'Shoppers want variety and retailers want competitive cost, and some products are made at scale only in a few places. The same dependence on distant suppliers exposes the chain to currency moves, border delays and disruption.' },
+      { label: 'Real-world example', text: 'Retailers buy packaged food, beverages, apparel, electronics and household products from overseas suppliers; work with manufacturers and sourcing agents across several markets; manage documentation, tariffs, classification and border procedures; coordinate shipping, ports, freight forwarding and inland transport; follow currency movements that change purchasing cost; and combine international suppliers with alternative sourcing locations to reduce concentration risk.' },
+      { label: 'Vietnam example', text: 'Vietnam imported about US$15.7 billion of consumer-oriented products in 2024, up 9.9%. According to the USDA, most retailers buy imported goods through importers and distributors, and only some large chains, including MM Mega Market, WinMart, An Nam Gourmet, Klever Fruits and Royal Seafood, import directly. The same report lists complex regulations, costly import procedures, high tariffs, shelf life and logistics among the obstacles, and notes that international chains from Korea, Japan and Thailand tend to favour their own countries’ products.' },
+      { label: 'Business impact', text: 'Global sourcing widens choice and can lower unit cost, but it adds exposure to currency, lead time and compliance. Retailers judge each import on landed cost and reliability, and keep alternative sources for critical products.' },
+    ],
+    visualKind: 'grocery-m2-61-global-sourcing', visualHeading: 'Six global sourcing activities and the exposure each carries',
+    visualIntro: 'See six global sourcing activities branching from the centre and the exposure each creates.',
+    imageAlt: 'Casemate tree mind map of six global sourcing activities and the exposure each carries',
+    keyTerms: [
+      { term: 'Landed cost', definition: 'The full cost of a product delivered to the retailer, including freight, duties, insurance and handling.' },
+      { term: 'Importer of record', definition: 'The party legally responsible for bringing goods through customs.' },
+      { term: 'Freight forwarder', definition: 'A company that arranges international transport and documentation for shipments.' },
+      { term: 'Supply-chain diversification', definition: 'Using several suppliers or regions so one failure does not stop supply.' },
+    ],
+    recap: [
+      'Global sourcing buys from overseas suppliers through international networks.',
+      'It can widen assortment and improve cost competitiveness.',
+      'Landed cost, reliability and disruption risk must be managed.',
+      'Diversification is more resilient than dependence on one supplier or region.',
+    ],
+    chapterRecap: 'Global sourcing offers variety, scale, and cost advantages, but it also increases exposure to currency, logistics, compliance, and supplier-concentration risks. Retailers need to evaluate sourcing decisions on total landed cost and resilience, not unit price alone.',
+    deepDiveTitle: 'Why the cheapest invoice is not always the cheapest product',
+    body: <G2DeepDive paragraphs={[
+      'A product that is cheaper at the factory gate can become more expensive on the shelf once duties, ocean freight, financing for stock in transit, currency moves and a longer replenishment cycle are added. A longer cycle also forces larger orders, which tie up cash and raise the risk of unsold stock.' ,
+      'Comparing sources on landed cost, lead time and the risk of disruption lets a retailer decide which products justify the complexity of importing and which can be bought closer to the shelf.',
+    ]} evidence="The sourcing activities are described qualitatively in the supplied material. The import value, the list of direct importers and the obstacles are from the USDA report on Vietnam’s retail foods sector and cover consumer-oriented products." />,
+    sources: citeG2('usdaRetailFoods', 'deloitteGpr2025', 'vietnamplusRetail2025'),
+  }),
+  g2Chapter({
+    title: 'Local Sourcing and Domestic Distribution Networks', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how retailers build domestic supply and what has to be true for local sourcing to create value.',
+    mateIntro: 'A tomato picked in a nearby province can reach a store in a day. It is only a better choice if the farm can deliver the right volume, quality and paperwork every week.',
+    keyInsight: 'Local sourcing creates value when domestic suppliers can consistently meet the retailer’s requirements for quality, volume, price, reliability, and compliance. Retailers often need to invest in supplier development and logistics infrastructure to make local sourcing scalable.',
+    statTiles: [
+      { value: '6', label: 'Key local sourcing activities', subtitle: 'Supplier development to shorter chains', description: 'Domestic supplier development, direct procurement, regional distribution, local differentiation, capability building and shorter supply chains.' },
+      { value: '14', label: 'WinEco farms producing for WinMart', subtitle: 'VietGAP and GlobalGAP standards', description: 'A retailer-linked farm network that supplies fresh produce to its own stores.' },
+      { value: 'OCOP', label: 'Programme promoting local products', subtitle: 'One Commune One Product', description: 'A national programme the USDA cites as promoting Vietnamese local products in retail.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the farm count is from WinEco and the programme is as described by the USDA, so neither measures the share of local products on shelves.',
+    narrative: [
+      { label: 'What it is', text: 'Local sourcing means buying from domestic farms, processors and manufacturers and moving the products through a domestic network of warehouses, regional hubs and transport routes. Short routes can support freshness, responsiveness and traceability, and regional foods and specialties can differentiate a retailer. The condition is capability: a nearby supplier is useful only if it can meet requirements for quality, volume, price, reliability and compliance, and many need help with packaging, quality control, forecasting and delivery consistency.' },
+      { label: 'Why it is happening', text: 'Fresh and short-shelf-life products lose value with every day in transit, and retailers want supply that responds to local demand. Local sourcing is also not automatically cheaper, which is why development and logistics have to be built as well.' },
+      { label: 'Real-world example', text: 'Retailers identify and support domestic farms and manufacturers; buy selected products directly from qualified producers; use regional warehouses and transport to serve outlets; offer regional foods and locally made goods; help suppliers improve packaging, quality control and delivery consistency; and cut intermediaries or transit time where doing so adds value.' },
+      { label: 'Vietnam example', text: 'WinEco operates 14 farms working to VietGAP and GlobalGAP standards for WinMart, and WinCommerce had opened 415 new stores by the end of August 2025, about 75% of them in rural areas, so its network increasingly reaches the regions where produce is grown. According to the USDA, the OCOP programme promotes local products, and Vietcap describes how traders, collectors and cooperatives bridge the gap between many small farms and modern retailers.' },
+      { label: 'Business impact', text: 'Local sourcing turns into an advantage when supplier capability, direct procurement and regional distribution are built together. The retailer gains freshness and identity; the supplier gains a route to a larger market.' },
+    ],
+    visualKind: 'grocery-m2-62-local-sourcing', visualHeading: 'Six local sourcing activities and the condition each depends on',
+    visualIntro: 'See six local sourcing activities around the centre and what each one depends on.',
+    imageAlt: 'Casemate orbit mind map of six local sourcing activities and the condition each depends on',
+    keyTerms: [
+      { term: 'Direct procurement', definition: 'Buying from qualified producers without going through several intermediaries.' },
+      { term: 'Supplier development', definition: 'Investing in a supplier’s capability, such as quality control, packaging and forecasting.' },
+      { term: 'OCOP', definition: 'One Commune One Product, a Vietnamese programme promoting local products.' },
+      { term: 'Regional distribution', definition: 'Domestic warehouses and transport that serve stores in a region.' },
+    ],
+    recap: [
+      'Local sourcing uses domestic farms, processors and distribution networks.',
+      'It supports freshness, responsiveness, traceability and local identity.',
+      'Suppliers must meet quality, volume, price, reliability and compliance requirements.',
+      'Retailers often have to invest in supplier development and logistics.',
+    ],
+    chapterRecap: 'Local sourcing and domestic distribution can improve freshness, responsiveness, and local relevance, but they depend on supplier capability and logistics quality. Retailers that build strong domestic supplier networks can create differentiation and resilience.',
+    deepDiveTitle: 'Why “local” has to be built, not declared',
+    body: <G2DeepDive paragraphs={[
+      'A nearby farm can deliver freshness but not always the consistent volume, grading, packaging and records that a chain needs for hundreds of stores. Closing that gap takes training, shared forecasts, collection points and cold storage, which cost money before they save any.' ,
+      'Where the investment is made, retailers gain supply they understand and can trace. Where it is not, the chain falls back on intermediaries or imports.',
+    ]} evidence="The local sourcing activities are described qualitatively in the supplied material. The WinEco and WinCommerce figures are company-reported, the OCOP and direct-sourcing points are from the USDA report, and the intermediary role is from Vietcap’s sector analysis." />,
+    sources: citeG2('winEcoFarms', 'winCommerceExpansion', 'usdaRetailFoods', 'vietcapGrocery'),
+  }),
+  g2Chapter({
+    title: 'Vietnam’s Grocery and General Merchandise Value Chain', chapterTitle: LESSON, readingTime: '7',
+    objective: 'Describe how traditional and modern supply routes coexist in Vietnam and which seven developments are linking them.',
+    mateIntro: 'In Vietnam a shopper may buy morning vegetables at a wet market and weekly supplies at a minimart. The two sit on different supply routes that are slowly being connected.',
+    keyInsight: 'Vietnam’s grocery value chain is not simply moving from traditional to modern trade. Retailers that improve supplier coordination, food safety, logistics, and digital integration can strengthen both efficiency and consumer trust while still serving diverse shopping habits.',
+    statTiles: [
+      { value: '7', label: 'Features of Vietnam’s value chain', subtitle: 'Traditional procurement to traceability', description: 'Traditional procurement, modern supplier integration, agricultural linkages, cold chain, network expansion, digital integration and traceability.' },
+      { value: '8,274', label: 'Traditional markets in Vietnam', subtitle: 'End of 2024', description: 'Still the main place many shoppers buy fresh food.' },
+      { value: '1,293', label: 'Supermarkets in Vietnam', subtitle: 'With 276 shopping centres and about 7,000 convenience stores', description: 'The modern formats that rely on formal supplier requirements.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the format counts are Vietnamese government figures and describe the number of outlets, not their share of sales.',
+    narrative: [
+      { label: 'What it is', text: 'Vietnam’s grocery and general merchandise value chain combines traditional and modern routes. Traditional procurement sources fresh products through local markets, wholesalers and regional traders, which gives reach and flexibility. Modern retail adds formal supplier requirements, delivery schedules and quality-control processes, together with links between farmers, cooperatives, processors, distribution centres and supermarket chains, cold-chain storage and transport, a growing network of supermarkets, minimarts, convenience stores and digital channels, electronic payments and online ordering, and documentation of origins and handling.' },
+      { label: 'Why it is happening', text: 'Shoppers want freshness, safety and convenience, and the government is tightening product-quality and traceability rules. Retailers respond by organising supply more formally while still serving habits that favour markets.' },
+      { label: 'Real-world example', text: 'A modern chain may buy protein under contract from processors, vegetables from supervised farms and household goods from distributors, move them through distribution centres and cold storage to stores, and take orders through an app, while a wet-market trader sources the same categories through collectors and regional wholesalers.' },
+      { label: 'Vietnam example', text: 'At the end of 2024 Vietnam had 8,274 markets, 1,293 supermarkets, 276 shopping centres and about 7,000 convenience stores. Vietcap describes a fragmented fresh-food chain in which traders, collectors and cooperatives act as bridges, while protein supply is more centralised, with Bach Hoa Xanh contracting suppliers such as CP Foods, Minh Phu, Navico and Godaco. On the infrastructure side, logistics costs are 16–17% of GDP and the cold-chain market was about US$202 million in 2024, and Law 78/2025/QH15 on product and goods quality, effective 1 January 2026, and Circular 02/2024/TT-BKHCN on traceability (“one step forward, one step back”) push the chain toward documented origins.' },
+      { label: 'Business impact', text: 'Retailers that connect suppliers, cold chain, stores and digital systems can improve efficiency and trust at once. Those that treat modernisation as only opening more stores leave the weakest links in supply untouched.' },
+    ],
+    visualKind: 'grocery-m2-63-vietnam-chain', visualHeading: 'Seven features of Vietnam’s grocery value chain',
+    visualIntro: 'See seven features of the Vietnamese chain on two sides of the centre and what each focuses on.',
+    imageAlt: 'Casemate mind map of seven features of Vietnam’s grocery and general merchandise value chain',
+    keyTerms: [
+      { term: 'Traditional trade', definition: 'Wet markets, small shops and independent retailers supplied through local wholesalers and traders.' },
+      { term: 'Modern trade', definition: 'Supermarkets, minimarts and convenience chains with formal supplier and quality systems.' },
+      { term: 'Cooperative', definition: 'A group of farmers that pools output and sells collectively.' },
+      { term: 'Traceability', definition: 'Records of where a product came from and how it was handled.' },
+    ],
+    recap: [
+      'Traditional and modern supply routes coexist in Vietnam.',
+      'Modern retail adds supplier integration, cold chain, digital systems and traceability.',
+      'Traders, collectors and cooperatives bridge small farms and chains.',
+      'The shift is not simply from traditional to modern trade.',
+    ],
+    chapterRecap: 'Vietnam’s grocery and general merchandise value chain is evolving through supplier integration, cold-chain development, retail expansion, digital systems, and traceability. Traditional and modern channels will coexist, so retailers must manage both efficiency and local shopping habits.',
+    deepDiveTitle: 'Why the weakest link sets the standard of the chain',
+    body: <G2DeepDive paragraphs={[
+      'A modern chain can have contracts, cold storage and an app, yet still lose freshness if a collection point or short transport leg is uncontrolled. Improvements at one stage do not hold unless neighbouring stages keep pace.' ,
+      'Traceability rules make that visible, because a record is only as complete as its least documented step. Retailers therefore invest across the chain, from supplier standards to digital records, rather than at the store alone.',
+    ]} evidence="The seven features are described qualitatively in the supplied material. Format counts are from Vietnamese government reporting, supplier and fragmentation points are from Vietcap, logistics and cold-chain figures are from the Ministry of Industry and Trade and FiinGroup, and the legal references are as published in Vietnamese regulation." />,
+    sources: citeG2('govRetailReport', 'vietcapGrocery', 'logisticsCostPortal', 'fiinColdChain', 'productQualityLaw', 'traceCircular'),
+  }),
+  g2Chapter({
+    title: 'Global vs. Local Value Chain: Strategic Comparison', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Compare global and local value chains on reach, lead time, cost, relationships and risk, and decide which fits a given product.',
+    mateIntro: 'There is no single best way to source. A tin of imported cheese and a bunch of local herbs call for different supply chains, and a retailer needs both.',
+    keyInsight: 'The best value chain is product-specific. Retailers should globalise where scale or specialisation matters, and source locally where freshness, responsiveness, traceability, or regional identity create more value.',
+    statTiles: [
+      { value: '6', label: 'Dimensions in the comparison', subtitle: 'Reach to best use', description: 'Reach and variety, lead time, cost structure, supplier relationship, main risks and best use.' },
+      { value: '16–17%', label: 'Logistics cost as a share of Vietnam’s GDP', subtitle: 'Japan 11%, Malaysia and Indonesia 13%', description: 'A national cost level that affects both imported and domestic goods.' },
+      { value: '12–15%', label: 'Strategy target for 2035', subtitle: 'Decision 2229/QD-TTg', description: 'Vietnam’s 2025–2035 logistics strategy aims to reduce the cost share.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the logistics cost figures are from the Ministry of Industry and Trade logistics portal and the government strategy, and describe the national economy, not a single retailer.',
+    narrative: [
+      { label: 'What it is', text: 'Global and local value chains offer different strengths. Global chains give access to specialised products and large production capacity but carry longer lead times, duties, freight and exposure to currency, geopolitics and disruption. Local chains offer faster replenishment, regional specialties and direct relationships with domestic farms and processors, but depend on consistent quality, traceability and capacity, and are not automatically cheaper. Most retailers use both, deciding product by product.' },
+      { label: 'Why it is happening', text: 'Products differ in shelf life, differentiation and scale economics. Fresh and short-shelf-life items reward short routes, while specialised or differentiated products often depend on far-away producers.' },
+      { label: 'Real-world example', text: 'A retailer may import specialised foods and general merchandise to widen the range and lower unit cost, and buy produce, regional goods and short-shelf-life items from domestic suppliers for freshness. It keeps alternative sources for critical lines and reviews both on total cost, lead time and risk.' },
+      { label: 'Vietnam example', text: 'Imports of consumer-oriented products reached about US$15.7 billion in 2024, while WinEco farms and rural store expansion show retailers strengthening domestic supply. Logistics costs of 16–17% of GDP, against 11% in Japan and 8% in Singapore, make every extra leg of transport costly, and the 2035 target of 12–15% would reduce that gap. Cold-chain growth of 8–13% a year to 2028 and Vietnam’s participation in 17 free trade agreements, as cited by FiinGroup, shape both the import and the domestic options.' },
+      { label: 'Business impact', text: 'Choosing the sourcing route by product protects margin and resilience. A fixed policy of “all import” or “all local” ignores that the right answer changes with the category.' },
+    ],
+    visualKind: 'grocery-m2-64-comparison', visualHeading: 'Global versus local value chains',
+    visualIntro: 'Compare global and local value chains across six dimensions.',
+    imageAlt: 'Casemate comparison of global and local value chains across six dimensions',
+    keyTerms: [
+      { term: 'Lead time', definition: 'The time from placing an order to having the goods available for sale.' },
+      { term: 'Free trade agreement (FTA)', definition: 'A treaty that lowers tariffs and trade barriers between countries.' },
+      { term: 'Concentration risk', definition: 'Exposure from relying heavily on one supplier, region or route.' },
+      { term: 'Product-specific sourcing', definition: 'Choosing the supply route for each product rather than applying one rule to all.' },
+    ],
+    recap: [
+      'Global chains bring variety and scale but longer lead times and more exposure.',
+      'Local chains bring responsiveness and traceability but depend on supplier capability.',
+      'Neither is automatically cheaper once total cost is counted.',
+      'Choose the route product by product.',
+    ],
+    chapterRecap: 'Global and local value chains each provide distinct advantages and risks. Retailers should compare them on cost, lead time, quality, resilience, and customer value, and use a mix of sourcing models that fits the product and the market.',
+    deepDiveTitle: 'Why the answer changes by category',
+    body: <G2DeepDive paragraphs={[
+      'For a fruit with a short shelf life, every extra day lowers quality and raises waste, which favours nearby supply. For a specialised product that few domestic producers make, importing is the only route, and the question is how to hold enough stock without tying up cash.' ,
+      'Reviewing each category on shelf life, differentiation, volume and risk produces a sourcing mix that can change as suppliers, tariffs and logistics costs change.',
+    ]} evidence="The comparison dimensions are described qualitatively in the supplied material. The logistics cost levels and targets are from the Ministry of Industry and Trade logistics portal and the national strategy, and the cold-chain and trade agreement figures are from FiinGroup." />,
+    sources: citeG2('logisticsCostPortal', 'logisticsStrategy', 'fiinColdChain', 'usdaRetailFoods'),
+  }),
+];
+
+const quiz = g2Quiz('grocery-m2-l6', [
+  { chapter: '1', objective: 'Define global sourcing', question: 'What is global sourcing?', application: 'A retailer buys packaged food and electronics from overseas suppliers. What is this called?', correct: 'Buying products or inputs from suppliers outside the home market through international networks', wrong: ['Buying only from nearby farms', 'Selling only online', 'Buying only private-label goods'], explanation: 'Global sourcing uses overseas suppliers, agents, logistics and customs processes. Review Chapter 1.' },
+  { chapter: '1', objective: 'Define landed cost', question: 'What should global sourcing decisions be judged on?', application: 'Two suppliers have similar unit prices but different freight and duties. How should they be compared?', correct: 'Total landed cost, reliability and disruption risk, not unit price alone', wrong: ['Unit price alone', 'Brand name alone', 'Distance alone'], explanation: 'Duties, freight, financing and delays change the real cost. Review Chapter 1.' },
+  { chapter: '1', objective: 'Recognise Vietnam import routes', question: 'How do most Vietnamese retailers obtain imported goods, according to the USDA?', application: 'A small chain wants imported cheese. What is its usual route?', correct: 'Through importers and distributors; only some large chains import directly', wrong: ['All retailers import directly', 'Only through government agencies', 'Only through online marketplaces'], explanation: 'Direct importers include MM Mega Market and WinMart. Review Chapter 1.' },
+  { chapter: '2', objective: 'State the condition for local sourcing', question: 'When does local sourcing create value?', application: 'A retailer wants to source vegetables from nearby farms. What must be true?', correct: 'When domestic suppliers consistently meet quality, volume, price, reliability and compliance requirements', wrong: ['Whenever the farm is nearby', 'Only when prices are lowest', 'Only when no imports are possible'], explanation: 'Capability, not distance alone, makes local sourcing work. Review Chapter 2.' },
+  { chapter: '2', objective: 'Explain supplier development', question: 'Why do retailers often invest in supplier development?', application: 'Local farms vary in grading and packaging. What can the retailer do?', correct: 'To improve packaging, quality control, forecasting and delivery consistency so local sourcing can scale', wrong: ['To avoid buying locally', 'To raise prices to shoppers', 'To remove all intermediaries by law'], explanation: 'Local sourcing must be made scalable. Review Chapter 2.' },
+  { chapter: '3', objective: 'Describe the Vietnamese chain', question: 'Which statement best describes Vietnam’s grocery value chain?', application: 'A retailer wants to modernise supply. What should it assume about traditional trade?', correct: 'Traditional and modern routes coexist, so it is not simply a move from one to the other', wrong: ['Traditional trade has disappeared', 'Modern retail has no supplier standards', 'Only imports matter'], explanation: 'Retailers must serve diverse shopping habits while improving coordination. Review Chapter 3.' },
+  { chapter: '3', objective: 'Identify what links the chain', question: 'Which developments strengthen both efficiency and trust in Vietnam’s chain?', application: 'A chain wants to improve freshness and safety. Where should it invest?', correct: 'Supplier coordination, food safety, cold chain, digital integration and traceability', wrong: ['Store signage only', 'Opening stores only', 'Reducing product range only'], explanation: 'Connected improvements across the chain hold up better than isolated ones. Review Chapter 3.' },
+  { chapter: '4', objective: 'Compare lead time', question: 'Which is typically a feature of global value chains compared with local ones?', application: 'A retailer compares overseas and domestic supply. What differs?', correct: 'Longer shipping and customs time, with exposure to currency and disruption', wrong: ['Always faster replenishment', 'No exposure to currency', 'Always lower total cost'], explanation: 'Local chains usually replenish faster. Review Chapter 4.' },
+  { chapter: '4', objective: 'Recognise local risks', question: 'What are main risks of local value chains?', application: 'A retailer relies on small domestic farms. What should it watch?', correct: 'Consistency, quality and traceability, and local sourcing is not automatically cheaper', wrong: ['Currency and customs only', 'No risks exist', 'Only ocean freight'], explanation: 'Domestic supply still has capability and cost risks. Review Chapter 4.' },
+  { chapter: '4', objective: 'Choose the sourcing route', question: 'How should a retailer decide between global and local sourcing?', application: 'A store sells short-shelf-life fruit and a specialised imported food. How should it source them?', correct: 'Product by product: globalise where scale or specialisation matters and source locally where freshness or traceability matter', wrong: ['Import everything', 'Source everything locally', 'Choose the cheapest unit price for all products'], explanation: 'The best value chain is product-specific. Review Chapter 4.' },
+]);
+
+export const LESSON_G2_6: GroceryM2LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can explain how global and local sourcing work, describe the traditional and modern routes in Vietnam’s grocery chain and choose a sourcing route product by product.',
+    keyTakeaways: [
+      'Global sourcing widens choice and scale but adds landed-cost, currency and disruption risk.',
+      'Diversification is more resilient than dependence on a single supplier or region.',
+      'Local sourcing works when domestic suppliers meet quality, volume, price, reliability and compliance requirements.',
+      'In Vietnam, traditional and modern routes coexist and are being linked through cold chain, digital systems and traceability.',
+      'The best value chain is product-specific.',
+    ],
+    businessImplications: 'Compare sourcing options on landed cost, lead time and risk, invest in supplier development and logistics where local supply matters, and keep a mix of global and local sources.',
+    remember: 'Globalise for scale, localise for freshness, and decide product by product.',
+    nextLesson: 'Back to module overview',
+  },
+};

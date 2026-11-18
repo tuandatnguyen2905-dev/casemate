@@ -56,21 +56,23 @@ export const DIFFICULTY_LABELS: Record<CaseDifficulty, string> = {
 export const DIFFICULTY_ORDER: CaseDifficulty[] = ['easy', 'medium', 'hard', 'expert'];
 
 /* --------------------------------------------------------------------------
- * Vietnamese-style number formatting: dots for thousands, comma for decimals.
+ * Number formatting: commas for thousands, a dot for decimals - the format of
+ * every exhibit table and the only one the numeric answer parser accepts, so
+ * case text, metric cards and tables quote the same figure the same way.
  * ------------------------------------------------------------------------ */
 
 export function n(x: number, d = 1): string {
   const rounded = Math.round(x);
   if (d <= 0 || Math.abs(x - rounded) < 1e-9) {
-    return rounded.toLocaleString('de-DE');
+    return rounded.toLocaleString('en-US');
   }
   const fixed = x.toFixed(d);
   const [whole, frac] = fixed.split('.');
-  return Number(whole).toLocaleString('de-DE') + ',' + frac;
+  return `${Number(whole).toLocaleString('en-US')}.${frac}`;
 }
 
 export function pct(x: number, d = 1): string {
-  return x.toFixed(d).replace('.', ',') + '%';
+  return `${x.toFixed(d)}%`;
 }
 
 export function money(x: number, unit = 'billion VND', d = 1): string {

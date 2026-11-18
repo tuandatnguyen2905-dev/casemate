@@ -1,0 +1,276 @@
+import type { ChapterVisual } from './chapterVisualText';
+
+/** Chapter-specific Learning Visuals for Enterprise Software & IT Services Module 05, keyed by visualKind. */
+export const ENT_M5_VISUALS: Record<string, ChapterVisual> = {
+  'ent-m5-11-buying': {
+    heading: 'Signing the contract is the easy part',
+    intro: 'Buyers now judge a provider along the whole path from evaluation to measured results. Watch where each of the six expectations appears, and where use can quietly fade.',
+    spec: {
+      layout: 'flow', title: 'Enterprise Customer Expectations and Buying Behavior', kicker: '',
+      steps: [
+        { label: 'Gather evidence', detail: 'References, pilots and documented metrics, reviewed by finance, operations, security and IT leaders', kind: 'stage' },
+        { label: 'Test fit and assurance', detail: 'Integration with existing ERP, CRM, finance and HR platforms; data protection, uptime and access controls', kind: 'stage' },
+        { label: 'Deploy quickly', detail: 'Value without long deployment cycles or heavy customisation', kind: 'stage' },
+        { label: 'Drive adoption', detail: 'Usability, training, workflow fit and change management so employees actually use the system', kind: 'stage' },
+        { label: 'Measure the return', detail: 'Lower costs, higher productivity, faster processes or better revenue after go-live', kind: 'outcome' },
+      ],
+      loop: 'Buyers who have seen use fade ask vendors how they will drive adoption, not only how they will deploy.',
+      note: 'In one World Bank case study, 605 SMEs took a free one-year cloud ERP offer; close to 80% used it after initial training, but only 35% about 18 months later. One provider’s trial, not all buyers.',
+      takeaway: 'A contract is not an outcome: providers win and keep customers by proving the system is used and pays back.',
+    },
+  },
+  'ent-m5-12-ai-demand': {
+    heading: 'AI demand narrows to one workflow at a time',
+    intro: 'Vendors are putting AI into tools customers already own. Follow how broad interest turns into specific tasks, and what buyers demand before they pay.',
+    spec: {
+      layout: 'pathway', title: 'Demand for AI-Enabled Productivity and Automation', kicker: '',
+      trunk: [
+        { label: 'AI built into existing applications', detail: 'Vendors embed AI features, including agentic AI, in products customers already use', kind: 'stage' },
+      ],
+      optionsLabel: 'Where customers want AI to help',
+      options: [
+        { label: 'Customer service', detail: 'Answer service requests and summarise cases' },
+        { label: 'Document and knowledge work', detail: 'Search, draft and summarise documents and enterprise knowledge' },
+        { label: 'Software development', detail: 'Write, test and document software' },
+        { label: 'IT operations', detail: 'Triage incidents and monitor operations' },
+        { label: 'Finance and back office', detail: 'Process invoices and automate back-office tasks' },
+        { label: 'Decision support', detail: 'Analytics that support decisions' },
+      ],
+      afterLabel: 'What buyers ask for first',
+      after: [
+        { label: 'Clear use case and reliable data', detail: 'One specific workflow, with data accurate and accessible enough for AI', kind: 'stage' },
+        { label: 'Integration and human oversight', detail: 'Connected to existing systems, with people reviewing what AI produces', kind: 'stage' },
+        { label: 'Measurable result', detail: 'Which workflow improves, by how much, and how it is measured', kind: 'outcome' },
+      ],
+      note: 'Gartner forecasts worldwide AI spending up 49.5% in 2026 to about US$2.67 trillion, with about 56% in infrastructure; only 10% of surveyed Vietnamese businesses were fully digitised with AI (VINASME and Ministry survey).',
+      takeaway: 'Forecast spending is not adoption: AI pays when it is tied to one workflow, clean data and human supervision.',
+    },
+  },
+  'ent-m5-13-flexible': {
+    heading: 'Small first steps beat one large commitment',
+    intro: 'Compare a single large rollout with a modular entry. Notice who carries the risk, and when value is proved, in each approach.',
+    spec: {
+      layout: 'compare', title: 'Demand for Flexible, Scalable, and Industry-Specific Solutions', kicker: '',
+      leftTitle: 'One large implementation', rightTitle: 'Modular, step-by-step entry',
+      rows: [
+        { label: 'Budget at risk', a: 'The whole budget, before value is proved', b: 'One process tested and measured, then the next step decided' },
+        { label: 'Existing systems', a: 'Wholesale replacement of what already works', b: 'Hybrid deployment keeps public cloud, private cloud and on-premises systems together' },
+        { label: 'Capacity', a: 'Fixed in a multi-year implementation plan', b: 'Cloud scalability adjusts resources as workloads change' },
+        { label: 'Sector fit', a: 'Generic software that needs heavy customisation', b: 'Industry-specific workflows, terminology and rules' },
+        { label: 'Provider’s first sale', a: 'One large sale', b: 'A smaller sale with a clearer path to expansion' },
+      ],
+      note: 'Ken Research estimates about 183,000 paid cloud ERP subscriptions among Vietnamese SMEs in 2025, 21.0% of addressable SMEs; SMEs are over 97% of about 900,000 active businesses. Third-party estimates.',
+      takeaway: 'Flexibility is now a buying criterion: start small, prove value, then scale without replacing what works.',
+    },
+  },
+  'ent-m5-21-ai-native': {
+    heading: 'How far an AI system may act on its own',
+    intro: 'An assistant that drafts can be corrected; an agent that changes records acts directly. Follow each branch to see how much oversight it needs.',
+    spec: {
+      layout: 'decision', title: 'Generative AI, Agentic AI, and AI-Native Software Development', kicker: '',
+      root: { label: 'AI inside enterprise software', detail: 'Generative assistants, agentic workflows, AI-native development and domain-specific models' },
+      question: 'Does the AI only draft, or does it act directly on records and systems?',
+      branches: [
+        { condition: 'It drafts', outcome: 'People correct it before relying on it', detail: 'Assistants that produce text, code or summaries in documents, service and analytics', tone: 'positive' },
+        { condition: 'It acts on routine work', outcome: 'Permissions and output checks needed', detail: 'Agents processing invoices or handling IT incidents can spread a mistake across connected systems', tone: 'caution' },
+        { condition: 'It touches high-consequence decisions', outcome: 'Humans stay in the loop', detail: 'Human review of sensitive decisions and exceptions, with auditability and agent permissions', tone: 'caution' },
+      ],
+      note: 'Gartner forecasts US$29B of worldwide spending on AI agents and assistants in 2026, and predicts 40% of enterprise application portfolios will include custom apps built on AI-native platforms by 2030, up from 2%. Analyst forecasts, not measurements.',
+      takeaway: 'The more an AI system can do on its own, the more human review and governance it needs.',
+    },
+  },
+  'ent-m5-22-hybrid': {
+    heading: 'No single cloud fits every workload',
+    intro: 'Placement starts from what a workload needs, not from where the industry is heading. Read each row from the need to the place it usually lands.',
+    spec: {
+      layout: 'table', title: 'Cloud-Native Architecture, Hybrid Cloud, and Edge Computing', kicker: '',
+      headers: ['Workload need', 'Tends to sit in', 'Why'],
+      rows: [
+        { label: 'Variable demand', a: 'Public cloud', b: 'Capacity scales up and down with use' },
+        { label: 'Sensitive data', a: 'Private cloud', b: 'The organisation keeps tighter control' },
+        { label: 'Very fast local processing', a: 'Edge computing', b: 'Data is processed close to where it is created, such as a factory or branch' },
+        { label: 'Older applications hard to rebuild', a: 'On-premises, modernised in steps', b: 'Legacy systems cannot be replaced overnight' },
+        { label: 'A mix of these needs', a: 'Hybrid cloud', b: 'Public cloud, private cloud and on-premises systems combined' },
+      ],
+      note: 'Illustrative placements, not measured data; two firms may reasonably place the same workload differently. Gartner forecasts infrastructure-as-a-service spending up 29.3% in 2026 (about US$287 billion); Decision 1121/QD-TTg targets cloud use by 70% of private enterprises by 2030, a policy target.',
+      takeaway: 'The aim is a deliberate mix of cloud, private infrastructure and edge, with cost and placement managed continuously.',
+    },
+  },
+  'ent-m5-23-trust': {
+    heading: 'Trust is built from controls and rules together',
+    intro: 'Digital trust mixes technical safeguards with governance over data and AI. Sort the six building blocks by what each one protects.',
+    spec: {
+      layout: 'taxonomy', title: 'Cybersecurity, Data Intelligence, and Digital Trust', kicker: '',
+      root: 'Digital trust', rootDetail: 'The confidence customers, partners and regulators place in how systems, data and AI are handled',
+      groups: [
+        { label: 'Technical controls', items: ['Zero-trust security: verify every user, device and request', 'Preemptive threat detection through analytics and monitoring', 'Confidential computing for data being processed'] },
+        { label: 'AI safeguards', items: ['Monitor AI applications and agents', 'Restrict agent permissions', 'Guard against leakage and misuse'] },
+        { label: 'Data governance and provenance', items: ['Rules for ownership, quality, access and retention', 'Track the origin of software components, datasets and AI-generated content'] },
+      ],
+      note: 'The Personal Data Protection Law took effect on 1 January 2026 with fines up to VND 3 billion for most violations, and the Law on Cybersecurity on 1 July 2026. Gartner forecasts US$51B of AI cybersecurity spending in 2026, a global forecast.',
+      takeaway: 'Security and data governance are now purchase criteria, so trust can win deals, not only reduce risk.',
+    },
+  },
+  'ent-m5-31-recurring': {
+    heading: 'Subscription revenue lasts only as long as use does',
+    intro: 'With a subscription, money arrives period by period rather than at signing. Follow the cycle and spot the step where revenue is kept or lost.',
+    spec: {
+      layout: 'flow', title: 'Continued Cloud Adoption and Recurring Software Revenue', kicker: '',
+      steps: [
+        { label: 'Smaller first commitment', detail: 'The customer subscribes instead of paying a large one-off licence fee', kind: 'stage' },
+        { label: 'Continuous delivery', detail: 'Software, updates and support delivered from the cloud without customer-run servers', kind: 'stage' },
+        { label: 'Customer success', detail: 'Help customers keep using what they pay for', kind: 'stage' },
+        { label: 'Renewal', detail: 'Revenue continues only while the customer stays', kind: 'decision' },
+        { label: 'Expansion', detail: 'Wider use, usage-based charges and managed services add revenue', kind: 'outcome' },
+      ],
+      loop: 'A customer who stops using the software eventually stops paying, so retention has to be earned again every period.',
+      note: 'Ken Research estimates Vietnam’s cloud ERP for SMEs at about US$126.8 million in 2025 and forecasts US$356.7 million by 2031; in one World Bank case study only 35% of trial users were still active after about 18 months.',
+      takeaway: 'Recurring revenue is steadier only for providers that keep proving value and keep pricing clear.',
+    },
+  },
+  'ent-m5-32-ecosystem': {
+    heading: 'What every partnership gives and takes',
+    intro: 'More deals now arrive through a partner than through a direct sales call. See what each partner contributes and what the provider risks giving up.',
+    spec: {
+      layout: 'ecosystem', title: 'Ecosystem Selling, Strategic Partnerships, and Platform Integration', kicker: '',
+      center: { label: 'Enterprise software or services provider', detail: 'Reaches and serves customers together with other organisations' },
+      actors: [
+        { label: 'Major cloud providers', relation: 'Develop, deploy and distribute solutions together; watch dependence on one platform', flows: ['product', 'money'] },
+        { label: 'Consulting and implementation firms', relation: 'Connect multiple business systems; delivery responsibility must be clear', flows: ['service'] },
+        { label: 'Complementary technology vendors', relation: 'Combine CRM, analytics, cybersecurity and workflow products; integration quality matters', flows: ['product'] },
+        { label: 'Cloud marketplaces', relation: 'Bring buyers and simplify purchasing, but may take a margin and sit between provider and customer', flows: ['money', 'information'] },
+        { label: 'Co-selling partners', relation: 'Coordinate sales on the same deals; accounts can become contested', flows: ['information'] },
+        { label: 'Customers’ other systems', relation: 'Connect through APIs, standard data formats and documented interfaces', flows: ['information'] },
+      ],
+      note: 'CMC Global signed a cooperation agreement with NTT DATA and NTT DATA Vietnam on 27 January 2026, and FPT lists an Oracle alliance in 1997; company statements, not measures of partner revenue. The risks shown are our own reasoning.',
+      takeaway: 'Partnerships extend reach, but the provider must keep control of customer experience, data and strategic capabilities.',
+    },
+  },
+  'ent-m5-33-delivery': {
+    heading: 'Outsourcing moves from selling hours to owning results',
+    intro: 'Customers increasingly buy expertise and continuity rather than engineering time. Compare the older and newer models row by row.',
+    spec: {
+      layout: 'compare', title: 'Global Delivery, Digital Channels, and the Evolution of IT Outsourcing', kicker: '',
+      leftTitle: 'Outsourcing as labour supply', rightTitle: 'Outsourcing as managed results',
+      rows: [
+        { label: 'What the customer buys', a: 'Hours of lower-cost engineering', b: 'Continuing operation, specialist knowledge and agreed results' },
+        { label: 'How it is charged', a: 'Time and materials', b: 'Deliverables, service levels or measurable performance, where appropriate' },
+        { label: 'How the offer is packaged', a: 'Capacity supplied to each project', b: 'Repeatable offers: cloud migration assessments, cybersecurity reviews, software testing' },
+        { label: 'How buyers are reached', a: 'Mainly personal networks', b: 'Websites, webinars, online demonstrations and technical content' },
+        { label: 'Vietnam’s positioning', a: 'Engineering talent at competitive costs', b: 'Plus consulting, architecture, AI and industry expertise' },
+      ],
+      note: 'FPT reports overseas IT services revenue of VND 35,382 billion in 2025 (+14.3%) and a shift from time-and-materials to managed services, company figures; Gartner forecasts worldwide IT services spending up 5.3% in 2026.',
+      takeaway: 'Cost still matters, but higher-value delivery depends on specialist knowledge, quality and managing complex projects across locations.',
+    },
+  },
+  'ent-m5-41-law': {
+    heading: 'A legal calendar for data, security and AI',
+    intro: 'Five laws now shape how providers handle data, security and AI, each with its own start date. Note the transition period that makes AI deadlines differ by sector.',
+    spec: {
+      layout: 'timeline', title: 'Data Protection, Cybersecurity, and AI Governance', kicker: '',
+      events: [
+        { period: '1 July 2025', label: 'Law on Data 60/2024/QH15', detail: 'Rules for data in general', status: 'historical' },
+        { period: '1 January 2026', label: 'Law on the Digital Technology Industry 71/2025/QH15', detail: 'Some articles already applied from 1 July 2025', status: 'historical' },
+        { period: '1 January 2026', label: 'Personal Data Protection Law 91/2025/QH15', detail: 'Maximum administrative fine of VND 3 billion for most violations', status: 'historical' },
+        { period: '1 March 2026', label: 'Law on Artificial Intelligence 134/2025/QH15', detail: 'Risk-based, with three levels; AI is a support tool and does not replace human decisions', status: 'historical' },
+        { period: '1 July 2026', label: 'Law on Cybersecurity 116/2025/QH15', detail: 'Replaces the 2018 law', status: 'historical' },
+        { period: '12 or 18 months after the AI law', label: 'Deadline for AI systems already running', detail: '12 months in most sectors; 18 months in healthcare, education and finance', status: 'forecast' },
+      ],
+      note: 'Implementing decrees and sector rules may change details, so check the current texts. This is a learning summary, not legal advice.',
+      takeaway: 'Read the sector, the system type and the date together: compliance is an ongoing capability, not a single deadline.',
+    },
+  },
+  'ent-m5-42-policy': {
+    heading: 'Where a policy target might become a purchase',
+    intro: 'A government target is a signal, not a purchase order. Trace the steps between a 2030 goal and a contract a provider could actually win.',
+    spec: {
+      layout: 'pathway', title: 'Vietnam’s Digital Transformation and Technology Policy Environment', kicker: '',
+      trunk: [
+        { label: 'National strategies set 2030 targets', detail: 'Decisions 1266/QD-TTg, 1308/QD-TTg and 1121/QD-TTg: policy targets, not contracts', kind: 'stage' },
+      ],
+      optionsLabel: 'Where demand may form',
+      options: [
+        { label: 'Digital government', detail: '100% digitised administrative records and 99% satisfaction with online public services' },
+        { label: 'Enterprise digitalisation', detail: 'Support for at least 500,000 SMEs adopting ERP, CRM, cloud and analytics' },
+        { label: 'Data infrastructure', detail: 'At least five data exchanges and three national data centres' },
+        { label: 'Strategic technology', detail: 'At least 150 Make in Vietnam AI products and 1,000 data and AI firms' },
+        { label: 'Domestic capability', detail: 'Skilled staff, R&D, technology partnerships and locally relevant solutions' },
+      ],
+      afterLabel: 'Before any provider is paid',
+      after: [
+        { label: 'Budget and programme design', detail: 'Which part of a target requires a purchase, and who decides', kind: 'decision' },
+        { label: 'Procurement and security rules', detail: 'Specifications, security requirements, procedures and service obligations', kind: 'stage' },
+        { label: 'A purchase, if the offer fits', detail: 'Only offers that match a defined customer need convert', kind: 'outcome' },
+      ],
+      note: 'Decision 1266/QD-TTg of 14 July 2026 also targets a digital economy of at least 30% of GDP by 2030. All figures are official targets, not forecasts of spending or contracts.',
+      takeaway: 'Policy shows where demand may form; providers still have to match a defined need and win it through procurement.',
+    },
+  },
+  'ent-m5-43-green': {
+    heading: 'Spending shows where capacity grows, not how much power it draws',
+    intro: 'Money flowing into AI infrastructure does not reveal its energy use. See which factors actually decide it, and where green IT practices act on them.',
+    spec: {
+      layout: 'driverTree', title: 'Sustainability, Green IT, and Responsible Technology Operations', kicker: '',
+      root: { label: 'Energy used by AI and cloud infrastructure', detail: 'Not measured by the spending figures in this chapter' },
+      drivers: [
+        { label: 'Capacity being built', detail: 'Data-centre systems spending forecast +62.5% in 2026; about 56% of AI spending goes to infrastructure' },
+        { label: 'Equipment efficiency', detail: 'Energy-efficient infrastructure and cloud regions', children: [{ label: 'Hardware life-cycle management', detail: 'Reuse and responsible disposal' }] },
+        { label: 'Utilisation', detail: 'How well computing resources are used', children: [{ label: 'Efficient software design' }, { label: 'Cloud cost and carbon visibility' }] },
+        { label: 'Power sources', detail: 'What supplies the electricity; no public data on Vietnamese data-centre energy use was found' },
+      ],
+      note: 'Figures are Gartner 2026 forecasts of spending, not energy use or emissions; linking them to resource demand is our own reading. Responsible AI deployment and reporting complete the green IT activities.',
+      takeaway: 'Treat spending as a rough pointer and ask for real energy and emissions data before claiming an environmental benefit.',
+    },
+  },
+  'ent-m5-51-global': {
+    heading: 'Growth rates to compare, totals never to add',
+    intro: 'Each forecast measures a different, overlapping slice of spending. Read across the rows for growth, and resist adding the values down the column.',
+    spec: {
+      layout: 'table', title: 'Global Market Growth and Investment Outlook', kicker: '',
+      headers: ['Gartner 2026 forecast', 'Value and growth', 'What it signals'],
+      rows: [
+        { label: 'Worldwide IT spending', a: 'US$6,369 billion, +14.2%', b: 'The size of the wider market' },
+        { label: 'Software', a: 'US$1,468 billion, +15.5%', b: 'Demand for applications and platforms' },
+        { label: 'IT services', a: 'US$1,570 billion, +5.3%', b: 'Demand for implementation and operation, growing more slowly' },
+        { label: 'Data-centre systems', a: 'US$822 billion, +62.5%', b: 'Where AI infrastructure is being built' },
+        { label: 'Infrastructure as a service', a: 'US$287 billion, +29.3%', b: 'Faster than the total, slower than data-centre systems' },
+        { label: 'AI spending (September forecast)', a: 'About US$2.67 trillion, +49.5%', b: 'Overlaps the rows above, so never add it' },
+      ],
+      note: 'All are worldwide forecasts with overlapping definitions. Mordor Intelligence’s Vietnam IT services estimate (US$2.37 billion in 2025) uses a different definition and cannot be compared or combined.',
+      takeaway: 'Growth is strong but uneven: compare segments one by one and treat every forecast as a range that can change.',
+    },
+  },
+  'ent-m5-52-vietnam': {
+    heading: 'Higher-value ground open to Vietnamese providers',
+    intro: 'Strong export numbers do not show how much of the work is high-value. Group the seven opportunity areas by where the demand or the value comes from.',
+    spec: {
+      layout: 'taxonomy', title: 'Vietnam’s Growth Potential and Opportunities for Local Providers', kicker: '',
+      root: 'Higher-value positions for local providers', rootDetail: 'Beyond lower-cost software development',
+      groups: [
+        { label: 'Domestic demand', items: ['SME digitalisation: accounting, ERP, CRM, HR and inventory', 'Industry-specific solutions for manufacturing, banking, retail, logistics, healthcare and public administration'] },
+        { label: 'Specialist services', items: ['AI adoption: use cases, data, integration and outcomes', 'Cloud migration and modernisation', 'Cybersecurity: assessments, managed detection and incident response'] },
+        { label: 'Export markets', items: ['Engineering and consulting for Japan, South Korea, North America and Europe'] },
+        { label: 'Owned assets', items: ['Proprietary platforms and reusable assets alongside labour-based services'] },
+      ],
+      note: 'Mordor Intelligence projects Vietnam’s IT services market at US$4.39 billion by 2031, from US$2.37 billion in 2025 (10.82% a year), a third-party projection; TopDev estimates a shortage of 150,000 to 200,000 tech workers a year.',
+      takeaway: 'Firms that choose a narrow area and build depth there are less exposed to price competition and talent limits.',
+    },
+  },
+  'ent-m5-53-priorities': {
+    heading: 'Three questions every growth bet must survive',
+    intro: 'There are eight possible priorities and not enough budget for all of them. Put each one through the three tests and see where it lands.',
+    spec: {
+      layout: 'decision', title: 'Strategic Priorities and Long-Term Growth Opportunities', kicker: '',
+      root: { label: 'A candidate growth priority', detail: 'For example AI-enabled services, higher-value consulting, recurring service revenue or proprietary technology' },
+      question: 'Will customers pay, can we build or buy the capability, and can a competitor copy it quickly?',
+      branches: [
+        { condition: 'No evidence customers will pay', outcome: 'A hope, not a strategy', detail: 'Drop it before investing', tone: 'negative' },
+        { condition: 'Capability cannot be built or bought', outcome: 'Not yet within reach', detail: 'Talent is the common constraint, with an estimated shortage of 150,000 to 200,000 tech workers a year', tone: 'caution' },
+        { condition: 'Easy for a competitor to copy', outcome: 'No defensible position', detail: 'Risk of being squeezed between larger platforms and cheaper competitors', tone: 'caution' },
+        { condition: 'Passes all three tests', outcome: 'Invest, measure and adjust', detail: 'Track retention, revenue quality, service margins, implementation success and realised outcomes', tone: 'positive' },
+      ],
+      note: 'Gartner forecasts a US$1.2 trillion AI services opportunity worldwide by 2030; the National Data Strategy targets at least 150 Make in Vietnam AI products. A forecast and a policy target, neither showing what any provider will earn.',
+      takeaway: 'Back a few priorities where demand, capability and a defensible position overlap, and let measurement drop the weak bets.',
+    },
+  },
+};

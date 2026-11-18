@@ -1,0 +1,303 @@
+import type { ConsultingChapterVisual } from './consultingVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Management & Technology Consulting Module 02, keyed by visualKind. */
+export const CONSULTING_M2_VISUALS: Record<string, ConsultingChapterVisual> = {
+  'professional-consulting-m2-1': {
+    heading: 'Value starts before delivery: from relationship to signed contract',
+    intro: 'Before formal delivery, an engagement moves through relationship development, need sensing, opportunity qualification, proposal, procurement and negotiation.',
+    spec: {
+      layout: 'flow', title: '01 How Does a Consulting Engagement Create Value?', kicker: '',
+      steps: [
+        { label: 'Account development', detail: 'Relationship development and trust' },
+        { label: 'Need sensing', detail: 'Spotting a real client problem' },
+        { label: 'Opportunity qualification', detail: 'Sponsor, budget, urgency, data and delivery fit', kind: 'decision' },
+        { label: 'Proposal and procurement', detail: 'Formal purchasing route followed' },
+        { label: 'Contract', detail: 'Negotiated roles, deliverables, acceptance and payment terms' },
+        { label: 'Formal delivery', kind: 'outcome' },
+      ],
+      note: 'ISO 20700 emphasizes client needs, contracting, roles, deliverables, acceptance criteria and governance.',
+      takeaway: 'Client acquisition establishes trust and positioning, while disciplined qualification protects delivery quality and profitability.',
+    },
+  },
+  'professional-consulting-m2-2': {
+    heading: 'Client-side and consultant-side roles in the engagement lifecycle',
+    intro: 'Before work starts, both sides must be clear: the client’s sponsor, decision authority and procurement, and the consultant’s thought leadership and proposal.',
+    spec: {
+      layout: 'taxonomy', title: '02 Who Participates in the Consulting Engagement Lifecycle?', kicker: '',
+      root: 'Engagement participants',
+      rootDetail: 'Roles to confirm before delivery — categories, not steps',
+      groups: [
+        { label: 'Client side', items: ['Sponsor', 'Decision authority', 'Procurement'] },
+        { label: 'Consultant side', items: ['Thought leadership', 'Proposal team'] },
+        { label: 'Agreed between both', detail: 'Set out in the contract', items: ['Roles', 'Deliverables', 'Acceptance criteria', 'Governance'] },
+      ],
+      note: 'Also confirm budget, problem urgency, data, delivery fit, conflicts and payment terms.',
+      takeaway: 'Client acquisition establishes trust and positioning, while disciplined qualification protects delivery quality and profitability.',
+    },
+  },
+  'professional-consulting-m2-3': {
+    heading: 'Information, decisions, fees and benefits move between different parties',
+    intro: 'Referrals and partnerships bring opportunities in; evidence and recommendations go to the client; fees flow back; benefits stay with the client.',
+    spec: {
+      layout: 'ecosystem', title: '03 How Do Information, Decisions, Fees, and Benefits Flow?', kicker: '',
+      center: { label: 'Client organization', detail: 'Makes decisions and keeps the benefits' },
+      actors: [
+        { label: 'Consulting firm', relation: 'Sends evidence and recommendations; receives fees', flows: ['information', 'money'] },
+        { label: 'Referral source', relation: 'Passes on an opportunity and trust', flows: ['information'] },
+        { label: 'Partner firm', relation: 'Joins delivery through a partnership', flows: ['service'] },
+        { label: 'Decision authority', relation: 'Approves budget and scope', flows: ['oversight'] },
+        { label: 'Procurement', relation: 'Sets the route and payment terms', flows: ['oversight', 'money'] },
+      ],
+      note: 'Keep client need, evidence, output, benefit, fee and cash separate; a paid fee is not the same as a realized benefit.',
+      takeaway: 'Client acquisition establishes trust and positioning, while disciplined qualification protects delivery quality and profitability.',
+    },
+  },
+  'professional-consulting-m2-4': {
+    heading: 'Qualify the opportunity only when the problem and success criteria are agreed',
+    intro: 'Qualifying a need means converting symptoms into a structured problem with agreed boundaries, questions, evidence and measures.',
+    spec: {
+      layout: 'decision', title: '04 How Are Client Needs and Opportunities Qualified?', kicker: '',
+      root: { label: 'Client-stated need', detail: 'Often a symptom, not yet a problem' },
+      question: 'Do stakeholder interviews and a testable hypothesis point to a problem with agreed success criteria?',
+      branches: [
+        { condition: 'Problem and success criteria agreed', outcome: 'Qualify and scope the engagement', tone: 'positive' },
+        { condition: 'Several possible causes', outcome: 'Diagnose further before committing', detail: 'More interviews and evidence', tone: 'caution' },
+        { condition: 'No agreed measure of success', outcome: 'Do not start the work', tone: 'negative' },
+      ],
+      note: 'State assumptions, data limitations, exclusions, client inputs, acceptance, change control and measurable success before work begins.',
+      takeaway: 'A well-delivered project can still fail if it solves the wrong problem or excludes critical constraints.',
+    },
+  },
+  'professional-consulting-m2-5': {
+    heading: 'One symptom, several hypotheses to test',
+    intro: 'Diagnosis turns a symptom into testable hypotheses. Declining sales, for example, can reflect positioning, pricing, retention, capacity or several interacting causes.',
+    spec: {
+      layout: 'driverTree', title: '05 How Are Problems Diagnosed and Hypotheses Built?', kicker: '',
+      root: { label: 'Declining sales', detail: 'The symptom the client reports' },
+      drivers: [
+        { label: 'Positioning', detail: 'Hypothesis to test' },
+        { label: 'Pricing', detail: 'Hypothesis to test' },
+        { label: 'Retention', detail: 'Hypothesis to test' },
+        { label: 'Capacity', detail: 'Hypothesis to test' },
+      ],
+      note: 'Causes can interact. Run a data assessment for each hypothesis and record data limitations inside the agreed scope.',
+      takeaway: 'A well-delivered project can still fail if it solves the wrong problem or excludes critical constraints.',
+    },
+  },
+  'professional-consulting-m2-6': {
+    heading: 'What a scope statement must fix before work begins',
+    intro: 'Scope sets the agreed boundaries, questions, evidence, responsibilities, deliverables and measures of an engagement.',
+    spec: {
+      layout: 'taxonomy', title: '06 How Are Scope, Contracts, and Success Criteria Defined?', kicker: '',
+      root: 'Agreed scope and contract',
+      rootDetail: 'Elements stated together before work begins',
+      groups: [
+        { label: 'Root cause', detail: 'The structured problem the work will solve' },
+        { label: 'Assumptions and data limits', detail: 'Stated openly, not found later' },
+        { label: 'Exclusions', detail: 'Agreed boundaries of the work' },
+        { label: 'Dependencies', detail: 'Client inputs and other work relied on' },
+        { label: 'Acceptance and change control', detail: 'How deliverables are accepted and changes agreed' },
+        { label: 'Success criteria', detail: 'Measurable success defined up front' },
+      ],
+      note: 'Missing a root cause or a critical dependency can make well-delivered work solve the wrong problem.',
+      takeaway: 'A well-delivered project can still fail if it solves the wrong problem or excludes critical constraints.',
+    },
+  },
+  'professional-consulting-m2-7': {
+    heading: 'Evidence is collected, reconciled, then used to test hypotheses',
+    intro: 'Consultants use internal and external data, interviews, research, process and system evidence to test hypotheses and explain performance.',
+    spec: {
+      layout: 'flow', title: '07 How Are Evidence and Data Collected and Tested?', kicker: '',
+      steps: [
+        { label: 'Collect evidence', detail: 'Market research, interviews, operational analytics' },
+        { label: 'Benchmark', detail: 'Compare against external reference points' },
+        { label: 'Check data quality', detail: 'Definitions, completeness, bias, sample, period, data rights', kind: 'decision' },
+        { label: 'Test hypotheses', detail: 'With uncertainty stated' },
+        { label: 'Explain performance', detail: 'Evidence connected to the decision', kind: 'outcome' },
+      ],
+      note: 'AI can accelerate synthesis, but NIST identifies confabulation, privacy and security risks that require verification and governance.',
+      takeaway: 'Analytical sophistication matters only when evidence is valid, contextual and connected to the decision.',
+    },
+  },
+  'professional-consulting-m2-8': {
+    heading: 'Several kinds of analysis feed one recommendation',
+    intro: 'Recommendations draw on financial analysis, technology assessment and AI-assisted analysis, all resting on valid evidence.',
+    spec: {
+      layout: 'pathway', title: '08 How Are Solutions and Recommendations Developed?', kicker: '',
+      trunk: [{ label: 'Valid, contextual evidence', detail: 'Reconciled and tested first' }],
+      optionsLabel: 'Analysis methods — combined as needed, not steps',
+      options: [
+        { label: 'Financial analysis', detail: 'Economic effect of each option' },
+        { label: 'Technology assessment', detail: 'Fit of systems and architecture' },
+        { label: 'AI-assisted analysis', detail: 'Faster synthesis, verified for confabulation, privacy and security' },
+      ],
+      afterLabel: 'Leads to',
+      after: [{ label: 'Recommendation tied to the decision', kind: 'outcome' }],
+      note: 'Reconcile definitions, completeness, bias, currency, period, data rights and uncertainty before drawing conclusions.',
+      takeaway: 'Analytical sophistication matters only when evidence is valid, contextual and connected to the decision.',
+    },
+  },
+  'professional-consulting-m2-9': {
+    heading: 'From alternatives to an executive decision on the feasible option',
+    intro: 'Options are generated and compared against value, cost, feasibility, risk and client readiness before an executive decides.',
+    spec: {
+      layout: 'flow', title: '09 How Are Business Cases, Tradeoffs, and Roadmaps Built?', kicker: '',
+      steps: [
+        { label: 'Generate alternatives', detail: 'Strategic, operating, organization and technology options' },
+        { label: 'Build the business case', detail: 'Value and cost of each option' },
+        { label: 'Weigh trade-offs', detail: 'Feasibility, risk and client readiness', kind: 'decision' },
+        { label: 'Design and prioritize', detail: 'Operating model, architecture and migration logic' },
+        { label: 'Executive decision', kind: 'outcome' },
+      ],
+      note: 'A target architecture needs a business case, migration logic, operating ownership, security and adoption — not a diagram alone. Test local talent, vendors, law and funding.',
+      takeaway: 'The strongest recommendation is the feasible option that solves the root problem and creates sufficient value — not the most sophisticated design.',
+    },
+  },
+  'professional-consulting-m2-10': {
+    heading: 'Implementation runs from roadmap to cutover under change control',
+    intro: 'Implementation is phased delivery of processes, organization, systems, data, software and vendor work under governance, testing and issue management.',
+    spec: {
+      layout: 'flow', title: '10 How Are Consulting Solutions Implemented?', kicker: '',
+      steps: [
+        { label: 'Roadmap and milestones', detail: 'Accountable owners named' },
+        { label: 'System implementation', detail: 'Software, data migration and vendor work' },
+        { label: 'Testing and acceptance', detail: 'Including cyber checks', kind: 'decision' },
+        { label: 'Cutover', detail: 'Switch to the new way of working' },
+        { label: 'Usable operational capability', kind: 'outcome' },
+      ],
+      loop: 'A risk register and change control run throughout, with steering decisions on issues and vendor dependencies.',
+      note: 'PMI separates outputs from benefits: benefits must be identified, executed and sustained beyond project completion.',
+      takeaway: 'Recommendations create no durable value until coordinated implementation produces usable operational capability.',
+    },
+  },
+  'professional-consulting-m2-11': {
+    heading: 'Governance coordinates the parties whose work must change together',
+    intro: 'Change is managed through governance that links process redesign, vendor coordination and steering decisions so delivery becomes usable capability.',
+    spec: {
+      layout: 'ecosystem', title: '11 How Are Change and Adoption Managed?', kicker: '',
+      center: { label: 'Steering governance', detail: 'Takes steering decisions and resolves issues' },
+      actors: [
+        { label: 'Accountable owners', relation: 'Own process redesign and adoption', flows: ['oversight'] },
+        { label: 'Vendors', relation: 'Deliver within coordinated dependencies', flows: ['product', 'service'] },
+        { label: 'Consulting team', relation: 'Runs testing and issue management', flows: ['service', 'information'] },
+        { label: 'Data and cyber leads', relation: 'Protect data migration and security', flows: ['risk'] },
+      ],
+      note: 'Benefits must be sustained beyond project completion, so ownership stays with the client after go-live.',
+      takeaway: 'Recommendations create no durable value until coordinated implementation produces usable operational capability.',
+    },
+  },
+  'professional-consulting-m2-12': {
+    heading: 'What makes outcomes persist after the consultants leave',
+    intro: 'Capability building covers leadership alignment, stakeholder engagement, communication, learning, role change, feedback and ownership transfer.',
+    spec: {
+      layout: 'driverTree', title: '12 How Are Capabilities Transferred and Outcomes Sustained?', kicker: '',
+      root: { label: 'Sustained outcome', detail: 'Measured service outcomes after handover' },
+      drivers: [
+        { label: 'Readiness', detail: 'People prepared for new roles', children: [{ label: 'Stakeholder map' }, { label: 'Training completion' }] },
+        { label: 'Adoption', detail: 'The new system is really used', children: [{ label: 'Actual usage' }, { label: 'Process compliance' }] },
+        { label: 'Reinforcement', detail: 'Old habits do not return', children: [{ label: 'Communication' }, { label: 'Feedback' }] },
+        { label: 'Client ownership', detail: 'Capability stays inside', children: [{ label: 'Knowledge transfer' }] },
+      ],
+      note: 'A functioning system underperforms when users keep old spreadsheets, incentives or workflows.',
+      takeaway: 'Transformation depends on adoption as well as technical delivery; internal capability helps outcomes persist after consultants leave.',
+    },
+  },
+  'professional-consulting-m2-13': {
+    heading: 'From baseline to sustained benefit: deliverables are only the middle',
+    intro: 'An engagement is defined by financial, operational, customer, employee, technology and risk outcomes measured against the business case over time.',
+    spec: {
+      layout: 'flow', title: '13 What Inputs and Outputs Define a Consulting Engagement?', kicker: '',
+      steps: [
+        { label: 'Baseline', detail: 'Defined starting measure', owner: 'Input' },
+        { label: 'Deliverables', detail: 'What the project produces', owner: 'Output' },
+        { label: 'Adoption', detail: 'Client uses what was delivered' },
+        { label: 'Attributed outcome', detail: 'Change against the baseline, transparently attributed' },
+        { label: 'Sustained benefit', detail: 'Owned by a named benefit owner', kind: 'outcome', owner: 'Sustainment' },
+      ],
+      note: 'PMI’s framework distinguishes deliverables from business value.',
+      takeaway: 'Consulting value should be assessed through outcomes, not activity or deliverable volume, using baselines and transparent attribution.',
+    },
+  },
+  'professional-consulting-m2-14': {
+    heading: 'Three evaluation tools and what each records',
+    intro: 'Benefits are evaluated against the business case over time, using KPIs, the roadmap and a post-implementation review.',
+    spec: {
+      layout: 'table', title: '14 How Are Benefits and Performance Evaluated?', kicker: '',
+      headers: ['Tool', 'What it records', 'Focus'],
+      rows: [
+        { label: 'KPI', a: 'Definition, source, owner, frequency, target', b: 'Measured performance' },
+        { label: 'Roadmap', a: 'When benefits are expected over time', b: 'Business-case timing' },
+        { label: 'Post-implementation review', a: 'Realized value and external factors', b: 'Attribution and sustainment' },
+      ],
+      note: 'Record the baseline too, so realized value can be compared with the starting point.',
+      takeaway: 'Consulting value should be assessed through outcomes, not activity or deliverable volume, using baselines and transparent attribution.',
+    },
+  },
+  'professional-consulting-m2-15': {
+    heading: 'Propose follow-on work only for a justified client need',
+    intro: 'After a project, lessons learned, method improvement and recurring support should be governed by genuine client needs.',
+    spec: {
+      layout: 'decision', title: '15 How Do Retention and Continuous Improvement Create Value?', kicker: '',
+      root: { label: 'Post-project review', detail: 'Outcome, satisfaction, quality, collections, remaining risks' },
+      question: 'Is there a justified next need for the client?',
+      branches: [
+        { condition: 'Genuine new need', outcome: 'Ongoing advisory or follow-on work', tone: 'positive' },
+        { condition: 'Lessons but no new need', outcome: 'Continuous improvement and knowledge management', detail: 'Confidential client information protected', tone: 'caution' },
+        { condition: 'Only project expansion', outcome: 'Do not propose it', detail: 'Ethical account development', tone: 'negative' },
+      ],
+      note: 'Relationship governance keeps account growth tied to outcomes, transparency and capability transfer.',
+      takeaway: 'Retention is strongest when the firm remains useful through outcomes, transparency and capability transfer — not unnecessary project expansion.',
+    },
+  },
+  'professional-consulting-m2-16': {
+    heading: 'A global delivery network around one client engagement',
+    intro: 'Global delivery combines international methods, remote teams, shared delivery and vendor ecosystems with local regulation, language, relationships and implementation.',
+    spec: {
+      layout: 'ecosystem', title: '16 How Do Global Consulting Delivery Networks Work?', kicker: '',
+      center: { label: 'Client engagement', detail: 'Client ownership of decisions stays here' },
+      actors: [
+        { label: 'Global method', relation: 'Supplies international methods and templates', flows: ['information'] },
+        { label: 'Remote shared delivery', relation: 'Performs work from shared teams', flows: ['service'] },
+        { label: 'Technology partner', relation: 'Provides the vendor ecosystem', flows: ['product', 'service'] },
+        { label: 'Local team', relation: 'Handles regulation, language and relationships', flows: ['service', 'information'] },
+        { label: 'Client owner', relation: 'Accepts work and pays fees', flows: ['oversight', 'money'] },
+      ],
+      note: 'Example: a regional ERP template still requires Vietnamese process, data, cyber, tax, labor and adoption decisions.',
+      takeaway: 'Global scale and local execution are complementary, but distributed delivery requires clear accountability, context and secure information flows.',
+    },
+  },
+  'professional-consulting-m2-17': {
+    heading: 'Local decisions a regional template cannot make for Vietnam',
+    intro: 'Even a regional ERP template needs Vietnamese decisions on process, data, cyber, tax, labor and adoption, supported by local context and specialists.',
+    spec: {
+      layout: 'taxonomy', title: '17 How Is Consulting Adapted to Vietnam and Local Context?', kicker: '',
+      root: 'Regional template in Vietnam',
+      rootDetail: 'Local decisions still required — considered together',
+      groups: [
+        { label: 'Process and adoption', detail: 'How Vietnamese teams actually work' },
+        { label: 'Data and cyber', detail: 'Current personal-data and cybersecurity law', items: ['Law No. 91/2025/QH15', 'Law No. 116/2025/QH15'] },
+        { label: 'Tax and labor', detail: 'Local rules the template does not cover' },
+        { label: 'Language and relationships', detail: 'Local context for implementation' },
+        { label: 'Specialist network', detail: 'Local experts for these decisions' },
+      ],
+      note: 'Electronic transactions fall under Law on Electronic Transactions No. 20/2023/QH15.',
+      takeaway: 'Global scale and local execution are complementary, but distributed delivery requires clear accountability, context and secure information flows.',
+    },
+  },
+  'professional-consulting-m2-18': {
+    heading: 'Check data transfer and accountability before a delivery center starts work',
+    intro: 'Distributed delivery needs clear local decision rights, cross-border data rules, subcontractors, security, acceptance, knowledge transfer and escalation.',
+    spec: {
+      layout: 'decision', title: '18 How Are Distributed Teams, Data, and Accountability Governed?', kicker: '',
+      root: { label: 'Work assigned to a delivery center', detail: 'Remote or shared team' },
+      question: 'Are cross-border data, security and local decision rights defined?',
+      branches: [
+        { condition: 'All defined', outcome: 'Proceed with agreed acceptance and escalation', tone: 'positive' },
+        { condition: 'Data transfer not yet assessed', outcome: 'Assess against personal-data and cyber law first', detail: 'Law No. 91/2025/QH15 and ISO/IEC 27001:2022 controls', tone: 'caution' },
+        { condition: 'Accountability unclear', outcome: 'Escalate before work starts', detail: 'Name decision rights and subcontractors', tone: 'negative' },
+      ],
+      note: 'Plan language and knowledge transfer so local teams keep ownership.',
+      takeaway: 'Global scale and local execution are complementary, but distributed delivery requires clear accountability, context and secure information flows.',
+    },
+  },
+};

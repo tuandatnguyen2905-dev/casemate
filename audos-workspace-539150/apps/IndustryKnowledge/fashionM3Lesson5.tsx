@@ -1,0 +1,202 @@
+import { F3DeepDive, citeF3, f3Chapter, f3Quiz } from './fashionM3Core';
+import type { FashionM3LessonBundle } from './fashionM3Core';
+
+const LESSON = '5. Distribution & Sales Channels';
+
+const deck = [
+  f3Chapter({
+    title: 'Physical Retail and Brand-Owned Stores', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe the main physical store formats and explain what each contributes to brand, sales and customer experience.',
+    mateIntro: 'A store does two jobs at once. It sells products, and it tells people what the brand is. A flagship and an outlet can carry the same logo and do completely different work.',
+    keyInsight: 'Physical stores remain important in fashion and sports retail because they let customers try products, receive advice and experience the brand. A store is both a sales outlet and a brand environment, and its value depends on location, operations, range and service working together.',
+    statTiles: [
+      { value: '6', label: 'Store formats and services', subtitle: 'Flagship to in-store services', description: 'Flagship, shopping-mall, specialty, outlet and department-store formats plus in-store services.' },
+      { value: '100+', label: 'Stores operated by Canifa', subtitle: 'Vendor case study', description: 'A Vietnamese fashion brand that runs a store network together with an app and a unified customer view.' },
+      { value: '20+', label: 'Planned H&M stores in Vietnam', subtitle: 'Reported expansion plan', description: 'Government portal reporting of the retailer’s plan, which shows continuing investment in physical presence.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the store counts are company or vendor-reported figures for individual retailers and do not describe the whole market.',
+    narrative: [
+      { label: 'What it is', text: 'Physical retail covers flagship stores that showcase brand identity, key collections and innovation; shopping-mall stores that benefit from concentrated traffic; specialty stores with category depth in athletic, outdoor or sports products; outlet stores that sell selected or previous-season stock at reduced prices; and department stores that provide a multi-brand environment. Many stores also provide fitting help, demonstrations, styling and collection of online orders.' },
+      { label: 'Why it is happening', text: 'Clothing and footwear are products customers want to touch, try and compare, and a store lets a brand control presentation, build trust and offer service that a screen cannot. At the same time rent, wages and fixed costs are high, so retailers look at the role of each store rather than simply adding more.' },
+      { label: 'Real-world example', text: 'A flagship builds the brand and tests new ideas, mall stores capture everyday traffic, specialty stores such as running or outdoor shops use expert staff to sell technical products, and outlets clear surplus goods away from full-price channels. Stores also act as pick-up points and fitting rooms for online customers, so a store’s contribution is not limited to the sales rung up at its own till.' },
+      { label: 'Vietnam example', text: 'Canifa operates more than 100 stores and links them to an app and a unified view of online and offline customers, according to a vendor case study. Government-portal reporting also describes H&M’s plan for more than 20 stores in Vietnam. Against that, YouNet’s first-half 2025 fashion review carried the headline that offline stores were closing, a reminder that store networks are being reviewed as well as expanded.' },
+      { label: 'Business impact', text: 'Store formats should be chosen for the role they play in the network: building the brand, reaching traffic, giving expert service or clearing stock. Retailers that judge each store on its sales, its brand effect and its support for online orders make better decisions on where to open, refit or close.' },
+    ],
+    visualKind: 'fashion-m3-51-stores', visualHeading: 'What each store format is for',
+    visualIntro: 'See the role each format plays and what it needs to work.',
+    imageAlt: 'Casemate table of physical store formats, their role in the network and what each needs to work',
+    keyTerms: [
+      { term: 'Flagship store', definition: 'A showcase store that presents the brand identity, key collections and innovation.' },
+      { term: 'Specialty store', definition: 'A store with depth in one category, such as running, outdoor or sports equipment.' },
+      { term: 'Outlet store', definition: 'A store that sells selected or previous-season goods at reduced prices.' },
+      { term: 'Footfall', definition: 'The number of people who visit a store or location.' },
+    ],
+    recap: [
+      'Physical stores let customers try products, get advice and experience the brand.',
+      'Each format has a different role in the network.',
+      'Outlets need discipline to protect full-price channels.',
+      'A store is both a sales outlet and a brand environment.',
+    ],
+    chapterRecap: 'Physical retail remains important for experience, trust and service. The value of a store depends on its location, operations, range and service, and each format has a distinct role in the retail network.',
+    deepDiveTitle: 'Why store value is more than store sales',
+    body: <F3DeepDive paragraphs={[
+      'A store that looks weak on its own sales may still lift online orders in its area, serve as a collection point and keep the brand visible. A store that looks strong may be selling heavily discounted goods that damage full-price demand elsewhere.',
+      'Judging stores only by the sales at their own till misses both effects. A network review looks at what each location contributes to sales, brand and online orders, and at what it costs to run.' ,
+    ]} evidence="The store formats are described qualitatively in the supplied material. The Canifa figures come from a vendor case study and the H&M plan from a government portal report, so both are company-level and as reported. The store-closure point is the headline of a YouNet report on authentic fashion sold on three marketplaces." />,
+    sources: citeF3('bofStateOfFashion', 'canifaCleverTap', 'hmVietnam', 'younetFashion'),
+  }),
+  f3Chapter({
+    title: 'E-commerce and Online Marketplaces', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Compare brand-owned online channels with third-party marketplaces and explain what decides online performance.',
+    mateIntro: 'Selling online sounds simple: put the product on a screen. In practice there are two very different routes, your own site and someone else’s marketplace, and each one sells you something in return.',
+    keyInsight: 'Online channels range from brand-owned websites and apps to third-party marketplaces. Online performance depends on discovery, conversion, platform costs, fulfilment quality and returns, not on traffic alone.',
+    statTiles: [
+      { value: '2', label: 'Online routes compared', subtitle: 'Own site and marketplace', description: 'Brand-owned websites and apps versus third-party marketplaces, compared on traffic, data, cost and control.' },
+      { value: 'US$2.4B', label: 'Fashion and accessories online GMV, H1 2025', description: 'Vietnam’s largest online category in the first half of 2025, as reported from platform data.' },
+      { value: '72.5%+', label: 'Online shoppers who are Gen Z or Millennial', description: 'Together the two cohorts make up over 72.5% of Vietnam’s online shoppers in first-half 2025 research.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the other two come from first-half 2025 platform research covering Vietnamese online shoppers, not from the whole retail market.',
+    narrative: [
+      { label: 'What it is', text: 'E-commerce includes brand-owned websites and apps, where the brand controls the range, the story and the customer data, and third-party marketplaces, which provide traffic, payments and selected fulfilment in return for fees or commissions. Online sales also depend on product pages, search and recommendation, delivery options, payment methods and a returns process customers trust.' },
+      { label: 'Why it is happening', text: 'Customers start many purchases online, comparing prices and reviews across platforms, and marketplaces have built large audiences that no single brand can match. Brands therefore use marketplaces for reach and discovery and their own channels for margin, loyalty and the full range, accepting different costs in each.' },
+      { label: 'Real-world example', text: 'A brand may list its core range on marketplaces to be found and compared, while keeping new collections, memberships and personalised offers on its own app. On its own site it has to buy traffic, run fulfilment and handle returns; on a marketplace it pays commission and works within platform templates, with limited access to customer data.' },
+      { label: 'Vietnam example', text: 'Fashion and accessories was the largest online category in Vietnam in the first half of 2025, at about US$2.4 billion of gross merchandise value, and Gen Z and Millennials made up over 72.5% of online shoppers. Cimigo, reporting YouNet data, found Gen Z favouring entertainment-led TikTok Shop and Millennials leaning toward the reliability of Shopee, so a brand’s online plan has to cover more than one platform and audience.' },
+      { label: 'Business impact', text: 'Online growth is only profitable when discovery, conversion, platform costs, fulfilment and returns are managed together. A brand that depends entirely on marketplaces gives up customer data and some control, while one that relies only on its own site may not reach enough customers, so most use both for different jobs.' },
+    ],
+    visualKind: 'fashion-m3-52-online', visualHeading: 'Brand website versus marketplace',
+    visualIntro: 'Compare the two online routes on traffic, data, cost, control and typical role.',
+    imageAlt: 'Casemate comparison of brand-owned online channels and third-party marketplaces',
+    keyTerms: [
+      { term: 'Marketplace', definition: 'A third-party platform where many sellers list products and the platform provides traffic and transaction services.' },
+      { term: 'Commission', definition: 'A fee a platform charges on each sale made through it.' },
+      { term: 'Conversion', definition: 'The share of visitors who go on to buy.' },
+      { term: 'Fulfilment', definition: 'Picking, packing and delivering an order to the customer.' },
+    ],
+    recap: [
+      'Online channels include brand-owned websites and apps and third-party marketplaces.',
+      'Marketplaces bring traffic and reach; own channels bring data and control.',
+      'Performance depends on discovery, conversion, platform costs, fulfilment and returns.',
+      'Traffic alone does not make an online channel profitable.',
+    ],
+    chapterRecap: 'E-commerce allows retailers to reach broader audiences, but online performance depends on discovery, conversion, platform costs, fulfilment quality and returns. Brands often combine owned channels and marketplaces for different roles.',
+    deepDiveTitle: 'Why owning the customer data changes the economics',
+    body: <F3DeepDive paragraphs={[
+      'A customer bought on a marketplace is, in practice, the platform’s customer. The brand may not see who bought, cannot message them freely and pays again each time it wants them back.',
+      'Customers who buy through the brand’s own site or app give it a record it can use to personalise offers and reduce the cost of selling again. That is why many brands use marketplaces to be found and their own channels to keep the relationship.' ,
+    ]} evidence="The channel comparison is described qualitatively in the supplied material. The Vietnam shares and values come from first-half 2025 platform research reported by Cimigo and cover online shoppers on major platforms only." />,
+    sources: citeF3('bofStateOfFashion', 'cimigoEcommerce', 'metricEcommerce', 'vnEcommerceDecree'),
+  }),
+  f3Chapter({
+    title: 'Social Commerce and Influencer-Led Sales', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how social commerce shortens the path to purchase and what makes an influencer partnership commercially effective.',
+    mateIntro: 'On social platforms the shop window and the checkout are a few taps apart. A creator shows a jacket, answers a question live and the buyer is already paying.',
+    keyInsight: 'Social commerce shortens the path from discovery to purchase by combining content, community and checkout. It converts only when the audience and the product fit, so creators should be judged on credibility and measurable commercial results, not reach alone.',
+    statTiles: [
+      { value: '6', label: 'Steps from content to measurement', subtitle: 'Creator to attribution', description: 'Creator content, demonstration, livestream, purchase, social proof and measurement.' },
+      { value: '148%', label: 'TikTok Shop GMV growth, H1 2025', subtitle: 'Year on year', description: 'Reported in first-half 2025 platform research for Vietnam.' },
+      { value: 'US$3.57B', label: 'TikTok Shop GMV, H1 2025', description: 'Platform sales value across all categories, not fashion alone and not brand revenue.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the other two come from first-half 2025 platform research for Vietnam and cover all TikTok Shop categories.',
+    narrative: [
+      { label: 'What it is', text: 'Social commerce sells products through social and video platforms, using creator content, demonstrations, livestreams and short videos with built-in or linked purchase options. Influencers, athletes and stylists show fit, styling and use, and comments, reviews and user-generated content act as social proof.' },
+      { label: 'Why it is happening', text: 'Younger shoppers discover products through creators and video rather than through search or store visits, and a live demonstration answers questions about fit and use in real time. Collapsing discovery and purchase into one place removes steps where customers would otherwise drop out.' },
+      { label: 'Real-world example', text: 'A brand may work with a runner to demonstrate a shoe on a livestream, offer a time-limited price during the broadcast, link directly to purchase and then collect reviews and customer clips that feed the next campaign. Results are measured through engagement, conversion, attributed revenue and customer acquisition cost, which separates creators who sell from those who only attract attention.' },
+      { label: 'Vietnam example', text: 'Cimigo, reporting YouNet data for the first half of 2025, described Gen Z driving “shoppertainment” on TikTok Shop, whose GMV grew 148% year on year to about US$3.57 billion. Gen Z shoppers favoured livestreams, influencer recommendations and discounts of more than 30%, so entertainment, social proof and price work together in a way that few other channels reproduce.' },
+      { label: 'Business impact', text: 'Social commerce can build awareness, conversion and community at the same time, but it carries platform dependence, discount pressure and returns. Retailers that pick creators for audience fit and credibility, and track revenue and acquisition cost, get more reliable results than those that buy reach.' },
+    ],
+    visualKind: 'fashion-m3-53-social', visualHeading: 'From content to checkout',
+    visualIntro: 'Follow the six steps from creator content to measurement.',
+    imageAlt: 'Casemate flow of social commerce from creator content to measurement',
+    keyTerms: [
+      { term: 'Social commerce', definition: 'Selling products directly through social and video platforms.' },
+      { term: 'Shoppertainment', definition: 'Shopping combined with entertainment, such as livestreams and short videos with purchase links.' },
+      { term: 'Social proof', definition: 'Reviews, comments and user content that show other people value a product.' },
+      { term: 'Customer acquisition cost', definition: 'The marketing cost of winning one new customer.' },
+    ],
+    recap: [
+      'Social commerce joins content, community and checkout.',
+      'It shortens the path from discovery to purchase.',
+      'It converts only when audience and product fit.',
+      'Judge creators on credibility and measurable results, not reach alone.',
+    ],
+    chapterRecap: 'Social commerce and influencer-led sales shorten the path from discovery to purchase and strengthen community engagement. Success depends on audience fit, credibility, content quality, operational readiness and measurable commercial outcomes.',
+    deepDiveTitle: 'Why reach is a poor measure of a creator',
+    body: <F3DeepDive paragraphs={[
+      'A creator with a very large audience may not match the product, and a smaller creator with a trusted voice among runners may sell more running shoes. Reach counts viewers, while the business needs buyers.',
+      'The sound test is the commercial one: how many viewers converted, what revenue was attributed to the partnership, and what it cost to win each customer. Without those measures, a partnership is a media purchase, not a sales channel.' ,
+    ]} evidence="The social commerce process is described qualitatively in the supplied material. The TikTok Shop figures are platform-level data for the first half of 2025 across all categories and are reported as published by Cimigo from YouNet data." />,
+    sources: citeF3('bofStateOfFashion', 'cimigoEcommerce', 'metricEcommerce'),
+  }),
+  f3Chapter({
+    title: 'Omnichannel Integration and Fulfillment', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Distinguish multichannel from omnichannel retail and identify the capabilities that make channels work as one.',
+    mateIntro: 'Having a store, a website and an app is not the same as having one business. Omnichannel means the customer sees one stock, one price and one record, whichever door they come through.',
+    keyInsight: 'Operating several channels is not omnichannel. Omnichannel retail depends on connected inventory, data, systems and processes that create a consistent customer experience and let stock be used wherever it can sell.',
+    statTiles: [
+      { value: '6', label: 'Omnichannel capabilities', subtitle: 'Inventory to customer data', description: 'Unified inventory, buy online pick up in store, ship from store, cross-channel returns, order management and customer data integration.' },
+      { value: '100+', label: 'Canifa stores linked to its app', subtitle: 'Vendor case study', description: 'Reported to combine online and offline customer data into one view for segmentation.' },
+      { value: '1 Jun 2025', label: 'Vietnam e-invoice rules took effect', subtitle: 'Decree 70/2025', description: 'Order and payment systems across channels have to produce documents that meet the rules.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the Canifa figure comes from a vendor case study and the date is the effective date of an official decree.',
+    narrative: [
+      { label: 'What it is', text: 'Omnichannel integration connects stores, websites, apps, marketplaces and social channels so that customers can move between them without friction. Typical capabilities include a unified view of inventory across stores, warehouses and online; buy online and pick up in store; shipping from store; returns and exchanges across designated channels; consistent order management covering routing, reservations, payment and delivery status; and customer data that joins purchases, loyalty and service history.' },
+      { label: 'Why it is happening', text: 'Customers now move between channels in a single purchase, expecting the same price, the same availability and a returns process that works wherever they bought. Retailers that run channels separately show different stock and prices, duplicate inventory and lose sales, so integration is a competitive requirement as well as a convenience.' },
+      { label: 'Real-world example', text: 'A customer sees that a shoe is out of stock online but available at a nearby store, reserves it, collects it the same day and later returns it to a different channel. For that to work, the retailer needs accurate stock records, store staff able to fulfil online orders, a clear returns policy and a connected order system. The visible service rests on inventory accuracy and process discipline behind it.' },
+      { label: 'Vietnam example', text: 'Canifa, which operates more than 100 stores and an app, describes joining online and offline customer data into a single view used for segmentation. Vietnam’s e-invoice rules under Decree 70/2025 took effect on 1 June 2025, so order and payment systems that sit under several channels also have to produce compliant documents, which is easier when they are connected.' },
+      { label: 'Business impact', text: 'Well-integrated omnichannel retail improves availability, customer experience and stock productivity, and can lower markdowns by moving goods to where they will sell. It also costs money in systems, data quality and store operations, so it is worth building in stages where customers and stock will benefit most.' },
+    ],
+    visualKind: 'fashion-m3-54-omnichannel', visualHeading: 'What makes a retailer genuinely omnichannel',
+    visualIntro: 'See the six capabilities, what each lets the customer do and what it depends on.',
+    imageAlt: 'Casemate table of omnichannel capabilities, what they let customers do and what they depend on',
+    keyTerms: [
+      { term: 'Omnichannel', definition: 'Retail in which all channels share stock, data and processes to give one consistent experience.' },
+      { term: 'Multichannel', definition: 'Selling through several channels that run separately.' },
+      { term: 'Click and collect', definition: 'Buying online and collecting the order at a participating store.' },
+      { term: 'Order management system', definition: 'Software that routes, reserves and tracks orders across channels.' },
+    ],
+    recap: [
+      'Several channels do not make an omnichannel business.',
+      'Connected inventory, data and processes create a consistent experience.',
+      'Capabilities include click and collect, ship from store and cross-channel returns.',
+      'Integration depends on accurate stock records and shared customer identity.',
+    ],
+    chapterRecap: 'Omnichannel integration depends on connected inventory, data, systems and processes. Retailers that coordinate channels effectively can improve customer experience, stock productivity and operational efficiency.',
+    deepDiveTitle: 'Why omnichannel fails on stock accuracy first',
+    body: <F3DeepDive paragraphs={[
+      'Every omnichannel promise, such as seeing store stock online or reserving an item for collection, assumes the stock record is right. If it is not, customers are told an item is available and then disappointed, and trust falls faster than any marketing can repair.',
+      'That is why many retailers start with inventory accuracy and a single order system before adding services. The visible features come last, and the foundation underneath them decides whether they work.' ,
+    ]} evidence="The omnichannel capabilities are described qualitatively in the supplied material. The Canifa details come from a vendor case study, and the e-invoice date is from an official summary of Decree 70/2025/ND-CP." />,
+    sources: citeF3('bofStateOfFashion', 'canifaCleverTap', 'vnEInvoice'),
+  }),
+];
+
+const quiz = f3Quiz('fashion-m3-l5', [
+  { chapter: '1', objective: 'Describe store formats', question: 'What is the role of a flagship store?', application: 'A brand opens a large central store to present its identity and key collections. What is it?', correct: 'To showcase the brand identity, key collections and innovation', wrong: ['To clear previous-season stock at reduced prices', 'To act only as a warehouse', 'To replace all other store formats'], explanation: 'Flagships showcase brand identity and key collections, while outlets clear stock. Review Chapter 1.' },
+  { chapter: '1', objective: 'Protect full-price channels', question: 'What must a retailer do when running outlet stores?', application: 'A brand sells previous-season goods in outlets. What discipline does it need?', correct: 'Protect full-price channels so outlet discounts do not weaken them', wrong: ['Stock only new collections at full price', 'Close all other channels', 'Avoid selling any discounted goods'], explanation: 'Outlets sell selected or previous-season goods at reduced prices and need discipline to protect full-price channels. Review Chapter 1.' },
+  { chapter: '1', objective: 'Judge store value', question: 'What does a store’s value depend on?', application: 'A manager is reviewing a mall store. What should be considered?', correct: 'Location, operations, range and service together', wrong: ['Only the size of the sign', 'Only the number of staff employed', 'Only the colour of the interior'], explanation: 'A store is a sales outlet and a brand environment; its value depends on location, operations, range and service. Review Chapter 1.' },
+  { chapter: '2', objective: 'Compare online routes', question: 'What is a main advantage of a brand-owned website or app over a marketplace?', application: 'A brand wants to keep customer records and control its story. Which route fits?', correct: 'The brand owns the customer data and controls range and presentation', wrong: ['The platform provides all traffic for free', 'There are no fulfilment costs', 'The brand never has returns'], explanation: 'Own channels give data and control, while marketplaces give traffic and reach. Review Chapter 2.' },
+  { chapter: '2', objective: 'Identify what drives online performance', question: 'What does online performance depend on?', application: 'A brand has high traffic but poor profit online. What else must be managed?', correct: 'Discovery, conversion, platform costs, fulfilment quality and returns', wrong: ['Traffic alone', 'Store opening hours', 'The number of physical outlets'], explanation: 'Online performance depends on discovery, conversion, platform costs, fulfilment and returns, not traffic alone. Review Chapter 2.' },
+  { chapter: '3', objective: 'Describe social commerce', question: 'What does social commerce do to the path to purchase?', application: 'A shopper sees a livestream and buys within minutes. What has social commerce done?', correct: 'It shortens the path from discovery to purchase', wrong: ['It lengthens the path with extra steps', 'It removes the need for products', 'It only affects store layouts'], explanation: 'Social commerce combines content, community and checkout, shortening the path from discovery to purchase. Review Chapter 3.' },
+  { chapter: '3', objective: 'Judge creator partnerships', question: 'How should a brand judge an influencer partnership?', application: 'A creator has a huge audience but few buyers. What should the brand look at?', correct: 'Audience fit, credibility and measurable commercial outcomes, not reach alone', wrong: ['Follower count only', 'The creator’s number of posts only', 'The length of the contract only'], explanation: 'Creators should be judged on audience fit, credibility and measurable results rather than reach. Review Chapter 3.' },
+  { chapter: '3', objective: 'Read platform data correctly', question: 'What does the TikTok Shop GMV figure in this lesson cover?', application: 'A learner quotes US$3.57 billion as fashion brand revenue. What is wrong?', correct: 'It is platform sales value across all categories, not fashion alone or brand revenue', wrong: ['It is the profit of fashion brands only', 'It is the revenue of one brand', 'It is the commission paid by customers'], explanation: 'The figure is platform-level GMV across all categories. Review Chapter 3.' },
+  { chapter: '4', objective: 'Define omnichannel', question: 'What separates omnichannel from simply having several channels?', application: 'A retailer has a store, a site and an app that show different stock. Is it omnichannel?', correct: 'Connected inventory, data, systems and processes that create a consistent experience', wrong: ['The number of stores it operates', 'The size of its advertising budget', 'The length of its product names'], explanation: 'Running several channels is not omnichannel; connected data, systems and processes are what create consistency. Review Chapter 4.' },
+  { chapter: '4', objective: 'List omnichannel capabilities', question: 'Which of these is an omnichannel capability?', application: 'A customer orders online and collects at a nearby store. Which capability is this?', correct: 'Buy online and pick up in store', wrong: ['Closing all stores at season end', 'Selling only through wholesale', 'Raising prices every week'], explanation: 'Capabilities include unified inventory, click and collect, ship from store, cross-channel returns, order management and customer data integration. Review Chapter 4.' },
+]);
+
+export const LESSON_3_5: FashionM3LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can describe the main physical store formats, compare brand-owned online channels with marketplaces, explain how social commerce shortens the path to purchase and tell omnichannel from simply running several channels.',
+    keyTakeaways: [
+      'A store is both a sales outlet and a brand environment.',
+      'Marketplaces bring reach; owned channels bring data and control.',
+      'Online performance depends on discovery, conversion, platform costs, fulfilment and returns.',
+      'Judge creators on credibility and commercial results, not reach alone.',
+      'Omnichannel needs connected stock, data, systems and processes, not just several channels.',
+    ],
+    businessImplications: 'Give each channel a clear job, measure it on what it contributes to sales, brand and other channels, and invest in stock accuracy and shared data before adding services that depend on them.',
+    remember: 'Channels earn their place by the job they do; omnichannel means they work as one.',
+    nextLesson: 'Industry Ecosystem & Stakeholders',
+  },
+};

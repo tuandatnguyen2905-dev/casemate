@@ -1,0 +1,202 @@
+import { F5DeepDive, citeF5, f5Chapter, f5Quiz } from './fashionM5Core';
+import type { FashionM5LessonBundle } from './fashionM5Core';
+
+const LESSON = '4. Regulatory & Sustainability Trends';
+
+const deck = [
+  f5Chapter({
+    title: 'Environmental Regulations and Product Transparency', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain why product information, evidence and market-specific compliance are becoming part of risk management and brand credibility.',
+    mateIntro: 'A label used to be a legal formality at the end of production. It is now a statement customers, regulators and platforms check. If the evidence is not in the file, the claim is a liability.',
+    keyInsight: 'Regulatory compliance and product transparency are becoming important elements of risk management and brand credibility. Businesses need reliable product information and evidence-based communication to reduce compliance risks and maintain consumer trust.',
+    statTiles: [
+      { value: '6', label: 'Transparency activities', subtitle: 'Labelling to compliance management', description: 'Product labelling, chemical safety, environmental claims, supply-chain documentation, market-specific compliance and compliance management.' },
+      { value: '15 Feb 2022', label: 'Vietnam’s amended goods-labelling rules took effect', subtitle: 'Decree 111/2021', description: 'Announced by the Ministry of Industry and Trade; applies to goods sold in Vietnam.' },
+      { value: 'Jun 2027', label: 'EU deadline for national textile EPR schemes', subtitle: 'Secondary summary', description: 'Brands selling into the EU, including online sellers based outside it, are expected to register, report and pay fees.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the decree date is from an official ministry notice and the EU date is from a secondary summary that should be checked against the EU texts.',
+    narrative: [
+      { label: 'What it is', text: 'Fashion, Sports & Lifestyle Retail businesses face growing expectations to disclose relevant information about products, materials, sourcing and environmental impacts. Requirements vary by market and may cover labelling, chemical safety, environmental claims, packaging, waste and supply-chain transparency. These developments affect product design, sourcing, documentation and marketing, and international businesses must understand the rules of each market rather than assume one approach fits every country.' },
+      { label: 'Why it is happening', text: 'Customers, investors and regulators want evidence of what products contain and where they come from, and unsupported environmental claims are drawing scrutiny. Markets regulate at different speeds, so a product that is compliant in one country may need changes for another.' },
+      { label: 'Real-world example', text: 'Businesses provide accurate information on fibre composition, care instructions, origin and other legally required details; assess materials, dyes, finishes and other substances against applicable product-safety requirements; substantiate statements about recycled content, emissions, biodegradability or environmental benefit; maintain records on suppliers, materials and product origins; monitor national and regional requirements before launching products; and coordinate legal, sourcing, product development and marketing teams to keep documentation consistent.' },
+      { label: 'Vietnam example', text: 'Vietnam’s Ministry of Industry and Trade announced that the amended goods-labelling rules under Decree 111/2021 took effect on 15 February 2022, and Decree 85/2021 sets requirements for product information on e-commerce sites. For exporters, the EU’s textile strategy aims for durable, repairable and recyclable products with a Digital Product Passport and producer-responsibility schemes, which one summary dates to June 2027, so a Vietnamese supplier may need different evidence for different markets.' },
+      { label: 'Business impact', text: 'Environmental and product-related regulation increases the importance of accurate documentation, transparent communication and compliance management. Businesses should integrate these requirements into product development and sourcing rather than treating compliance as a final-stage review.' },
+    ],
+    visualKind: 'fashion-m5-41-transparency', visualHeading: 'Evidence before claims',
+    visualIntro: 'See six transparency activities and the question each one has to answer.',
+    imageAlt: 'Casemate mind map of six product-transparency activities and the question each answers',
+    keyTerms: [
+      { term: 'Product transparency', definition: 'Clear, accurate information about what a product is made of, where it comes from and its impacts.' },
+      { term: 'Substantiation', definition: 'Evidence that supports an environmental or product claim.' },
+      { term: 'Market-specific compliance', definition: 'Meeting the rules of each country or region where a product is sold.' },
+      { term: 'Digital Product Passport', definition: 'A planned EU digital record of product and supply-chain information.' },
+    ],
+    recap: [
+      'Disclosure expectations cover labelling, chemicals, claims, packaging and supply chains.',
+      'Rules vary by market, so one approach does not fit every country.',
+      'Evidence-based communication reduces compliance and reputation risk.',
+      'Build compliance into product development and sourcing.',
+    ],
+    chapterRecap: 'Environmental and product-related regulation increases the importance of accurate documentation, transparent communication, and compliance management. Businesses should integrate these requirements into product development and sourcing rather than treating compliance as a final-stage review.',
+    deepDiveTitle: 'Why compliance belongs at the design stage',
+    body: <F5DeepDive paragraphs={[
+      'Changing a material or label after production is costly and may delay a launch. If compliance questions are asked while the product is still being specified, the cost of the answer is small.' ,
+      'A shared record that follows each product, covering materials, suppliers, tests and claims, also lets marketing and legal teams work from the same facts and respond quickly when a market changes its rules.',
+    ]} evidence="The activities are described qualitatively in the supplied material. The Vietnamese decrees are cited from an official ministry notice and a legal database, and the EU timing is from a secondary summary; confirm current requirements with the issuing authority and advisers." />,
+    sources: citeF5('bofStateOfFashion', 'vnLabelling', 'vnEcommerceDecree', 'euTextilesStrategy', 'carbonfactTextile'),
+  }),
+  f5Chapter({
+    title: 'Circular Fashion and Waste Reduction', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe circular approaches and the conditions that make them commercially and environmentally worthwhile.',
+    mateIntro: 'Circular fashion asks a simple question that is hard to answer: what happens to the product after the customer is finished with it? The answer has to work for the customer, the brand and the material.',
+    keyInsight: 'Circularity can create opportunities for resource efficiency and alternative revenue models, but its commercial and environmental benefits depend on product design, collection systems, consumer participation, and the practical feasibility of reuse or recycling.',
+    statTiles: [
+      { value: '6', label: 'Circular activities', subtitle: 'Durable design to measurement', description: 'Durable design, repair, resale, take-back, waste reduction and circularity measurement.' },
+      { value: '2030', label: 'EU vision for textiles', subtitle: 'European Commission strategy', description: 'Textiles on the EU market durable, repairable and recyclable, with repair and re-use services widely available.' },
+      { value: '1 Jan 2024', label: 'Vietnam’s packaging EPR obligations began', subtitle: 'Listed product groups', description: 'Covers food, cosmetics, medicines, detergents and similar groups; apparel is not among those named.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the supplied material gives no Vietnamese resale or repair figures, so the other tiles show the policy direction around circularity rather than market size.',
+    narrative: [
+      { label: 'What it is', text: 'Circular fashion seeks to reduce waste and extend the useful life of products through durability, repair, reuse, resale and recycling. These approaches challenge models that depend on producing and selling new products and disposing of items after short periods of use. Implementation varies by category, because footwear, technical sportswear, everyday apparel and luxury goods differ in material composition, durability, repair requirements and resale potential.' },
+      { label: 'Why it is happening', text: 'Regulators, investors and many customers expect less waste, and some businesses see resale, repair and rental as new sources of revenue and loyalty. Whether it works depends on practical details such as how items are collected, graded and re-sold, and whether materials can be recycled at scale.' },
+      { label: 'Real-world example', text: 'Businesses improve construction and material quality to extend product life; offer repair for selected footwear, apparel and outdoor equipment; enable secondhand sales through brand-operated or third-party channels; collect eligible used products for reuse, material recovery or recycling; improve cutting efficiency, packaging, production planning and unsold-stock management; and monitor collection rates, product reuse, material recovery and relevant environmental outcomes.' },
+      { label: 'Vietnam example', text: 'The supplied material gives no measured Vietnamese resale or repair figures, but the policy direction is clear. Vietnam has required producers and importers of specified packaging to recycle at set rates since 1 January 2024, covering groups such as food, cosmetics, medicines and detergents, and the EU, a major market for Vietnamese garment exporters, aims for durable, repairable and recyclable textiles by 2030 with textile producer responsibility to follow, so brands and suppliers should expect circularity requirements to reach apparel.' },
+      { label: 'Business impact', text: 'Circular fashion offers alternatives to linear production and consumption models. Businesses should prioritise approaches suited to their products and supply chains, with measurable outcomes and credible evidence of environmental benefits.' },
+    ],
+    visualKind: 'fashion-m5-42-circular', visualHeading: 'Keeping products in use for longer',
+    visualIntro: 'Follow five circular steps from durable design to recycling and see what to measure at each.',
+    imageAlt: 'Casemate flow of five circular-fashion steps with a measure for each',
+    keyTerms: [
+      { term: 'Circular fashion', definition: 'An approach that extends product life through repair, reuse, resale and recycling.' },
+      { term: 'Take-back scheme', definition: 'A programme that collects used products for reuse, recovery or recycling.' },
+      { term: 'Extended producer responsibility (EPR)', definition: 'A rule that makes producers responsible for the cost of collecting and recycling their products.' },
+      { term: 'Material recovery', definition: 'Reclaiming fibres or other materials from used products for new use.' },
+    ],
+    recap: [
+      'Circular approaches aim to cut waste and extend product life.',
+      'Feasibility varies by category and material.',
+      'Benefits depend on design, collection, participation and recycling capacity.',
+      'Measure outcomes and keep evidence for claims.',
+    ],
+    chapterRecap: 'Circular fashion offers alternatives to linear production and consumption models. Businesses should prioritize approaches suited to their products and supply chains, with measurable outcomes and credible evidence of environmental benefits.',
+    deepDiveTitle: 'Why collection is the hard part',
+    body: <F5DeepDive paragraphs={[
+      'Designing for repair or recycling means little if used products never come back. Collection needs convenient drop-off or return, incentives that customers notice and a process to grade items for repair, resale or recycling.' ,
+      'Pilots in one category, such as footwear or a single outdoor line, show whether the costs of collection and processing can be covered by resale value or other benefits before the model is extended.',
+    ]} evidence="The circular activities are described qualitatively in the supplied material, which gives no Vietnamese resale or repair data. The packaging rules cover specified product groups, and the EU material is from the European Commission’s strategy page." />,
+    sources: citeF5('bofStateOfFashion', 'emfFashion', 'euTextilesStrategy', 'vietnamplusEpr'),
+  }),
+  f5Chapter({
+    title: 'Responsible Sourcing and Supply-Chain Due Diligence', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain why due diligence has to reach beyond direct suppliers and what a risk-based approach involves.',
+    mateIntro: 'A brand may know its factories well and still not know who dyes the fabric or sews the subcontracted batch. Due diligence is the work of finding out, before someone else does.',
+    keyInsight: 'Responsible sourcing is both a governance responsibility and a supply-chain risk-management priority. Effective implementation requires supplier engagement, traceability, credible verification, and corrective action rather than relying solely on written policies.',
+    statTiles: [
+      { value: '6', label: 'Due-diligence activities', subtitle: 'Standards to traceability', description: 'Supplier standards, supply-chain mapping, risk assessment, monitoring, corrective action and traceability systems.' },
+      { value: '500+', label: 'Factories in Better Work Vietnam', subtitle: 'Nearly 800,000 workers reached by 2024', description: 'ILO and IFC programme covering garment, textile and footwear factories.' },
+      { value: '103', label: 'H&M partner factories in Vietnam', subtitle: '86,875 workers', description: 'Shows how many supplier relationships one international retailer manages in the country.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the programme and factory figures are as reported by the ILO and a government-portal report and describe specific programmes or companies, not the whole industry.',
+    narrative: [
+      { label: 'What it is', text: 'Responsible sourcing assesses the environmental, social and operational practices of the suppliers that produce apparel, footwear, accessories and sports equipment. Issues include working conditions, labour rights, material traceability, environmental management and supplier compliance. Global sourcing networks can be complex, with multiple production stages and subcontractors, so businesses need visibility beyond direct suppliers to identify risks and decide where corrective action or stronger monitoring is needed.' },
+      { label: 'Why it is happening', text: 'Brands are held responsible for how products are made, and rules and buyer expectations on due diligence are increasing. Written policies are easy to produce and hard to verify, so credible programmes combine supplier engagement, records and follow-up.' },
+      { label: 'Real-world example', text: 'Businesses establish expectations for labour conditions, workplace safety, environmental management and business conduct; identify suppliers, production locations and sourcing relationships; evaluate risks by geography, material, supplier and production process; use audits, documentation and follow-up to assess compliance; work with suppliers to address problems and improve performance; and keep records connecting products with materials and production stages.' },
+      { label: 'Vietnam example', text: 'The ILO reports that Better Work Vietnam now operates in over 500 garment, textile and footwear factories, with nearly 800,000 workers benefiting by 2024 and more than 60 international buyers registered. H&M reports working with 103 partner factories in Vietnam employing 86,875 workers, and advisers note that Vietnamese suppliers should expect EU due-diligence rules, expected to apply from 2028 under current timelines, to reach them through buyer requirements for documentation and corrective action.' },
+      { label: 'Business impact', text: 'Responsible sourcing requires ongoing visibility, supplier cooperation and risk-based oversight. Businesses that integrate due diligence into purchasing and supplier management are better equipped to identify problems and support more responsible operations.' },
+    ],
+    visualKind: 'fashion-m5-43-sourcing', visualHeading: 'Visibility has to reach beyond direct suppliers',
+    visualIntro: 'See the four tiers of a supply chain and the tool that gives visibility at each.',
+    imageAlt: 'Casemate pyramid of brand, direct suppliers, subcontractors and materials with a due-diligence tool for each tier',
+    keyTerms: [
+      { term: 'Due diligence', definition: 'A structured process of identifying, preventing and addressing risks in a business and its supply chain.' },
+      { term: 'Traceability', definition: 'Records that connect a product with its materials and production stages.' },
+      { term: 'Corrective action', definition: 'Steps agreed with a supplier to fix an identified problem.' },
+      { term: 'Subcontractor', definition: 'A business that carries out part of production on behalf of a supplier.' },
+    ],
+    recap: [
+      'Responsible sourcing covers labour, safety, environment and traceability.',
+      'Supply chains include subcontractors beyond direct suppliers.',
+      'Use risk-based assessment, monitoring and corrective action.',
+      'Policies alone are not enough; engage suppliers and verify.',
+    ],
+    chapterRecap: 'Responsible sourcing requires ongoing visibility, supplier cooperation, and risk-based oversight. Businesses that integrate due diligence into purchasing and supplier management are better equipped to identify problems and support more responsible operations.',
+    deepDiveTitle: 'Why a policy is the start, not the proof',
+    body: <F5DeepDive paragraphs={[
+      'A code of conduct states intent. Evidence comes from what is found in factories, what is recorded and how problems are fixed. A brand that audits but never follows up has a file, not a change.' ,
+      'Risk-based programmes focus effort where the risk is highest, such as a high-risk process or a subcontracted stage, and ask suppliers for records that can be checked. Shared programmes and reports can reduce duplicated audits for suppliers that serve several brands.',
+    ]} evidence="The activities are described qualitatively in the supplied material. Better Work figures are from an ILO news release, the H&M factory count is from a government-portal report, and the EU timeline is from secondary advisory analysis subject to change." />,
+    sources: citeF5('bofStateOfFashion', 'betterWorkIlo', 'hmVietnam', 'csdddBriefing', 'betterWork'),
+  }),
+  f5Chapter({
+    title: 'Sustainable Materials and Lower-Impact Production', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Evaluate materials and production changes holistically and explain why claims need evidence.',
+    mateIntro: 'A recycled fibre is not automatically a good fibre. It might wear out faster, cost more or be impossible to recycle again. Better materials are the ones that stay better after the trade-offs are counted.',
+    keyInsight: 'Sustainable materials create meaningful value when environmental objectives are balanced with product functionality, quality, affordability, and supply availability. Claims should reflect the actual characteristics of the material and the evidence available.',
+    statTiles: [
+      { value: '6', label: 'Material and production activities', subtitle: 'Recycled inputs to lifecycle assessment', description: 'Recycled materials, alternative fibres, resource efficiency, durability, traceability and lifecycle assessment.' },
+      { value: '~52%', label: 'Domestic value-added ratio in Vietnam’s textile and garment sector', subtitle: 'VITAS, 2025', description: 'Growing local supply of materials gives scope to improve inputs closer to home.' },
+      { value: '1.3–1.4B', label: 'Pairs of shoes of annual Vietnamese production capacity', subtitle: 'LEFASO', description: 'The scale of material demand that footwear alone creates.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the other two are association figures for whole industries and show the scale of material use rather than the share that is sustainable.',
+    narrative: [
+      { label: 'What it is', text: 'Material selection and production processes influence the environmental footprint, quality, cost and performance of fashion and sportswear. Businesses are exploring recycled fibres, alternative materials, more efficient manufacturing and better resource management. Material innovation must also meet functional and commercial requirements, since a material may offer environmental advantages in one dimension while creating trade-offs in durability, comfort, cost, recyclability or performance.' },
+      { label: 'Why it is happening', text: 'Customers, regulators and buyers ask for lower-impact products, and manufacturers are under pressure to cut energy, water and waste. Because no single material wins on every measure, businesses need data and testing to choose well and to describe their choices accurately.' },
+      { label: 'Real-world example', text: 'Businesses incorporate suitable recycled fibres or components where quality and product requirements permit; evaluate lower-impact material options using credible environmental and performance data; improve energy, water and material efficiency in manufacturing; design products that keep their function and appearance over an appropriate period of use; document material composition, origin and supplier information; and, where data is available, assess environmental impacts across relevant stages of a product’s lifecycle.' },
+      { label: 'Vietnam example', text: 'In August 2024 VietnamPlus reported that Vietnamese garment makers such as May 10 Corporation were investing in efficient machinery, rooftop solar and integrated supply chains that use more recycled and natural materials to meet EU requirements. VITAS reports a domestic value-added ratio of about 52% in textiles and garments, and Vietnam’s footwear industry has annual capacity of about 1.3–1.4 billion pairs, so choices on materials and processes in Vietnam affect a large volume of products.' },
+      { label: 'Business impact', text: 'Material and production innovation can support sustainability objectives while strengthening product differentiation. Businesses should evaluate materials holistically and verify environmental claims instead of assuming that a material is automatically sustainable because it is labelled recycled or alternative.' },
+    ],
+    visualKind: 'fashion-m5-44-materials', visualHeading: 'Every material choice has a trade-off to check',
+    visualIntro: 'Compare what each materials and production option can offer with the trade-off to check.',
+    imageAlt: 'Casemate comparison of six material and production options with what they offer and the trade-off to check',
+    keyTerms: [
+      { term: 'Recycled fibre', definition: 'A fibre made from reclaimed material instead of virgin raw material.' },
+      { term: 'Resource efficiency', definition: 'Using less energy, water and material to make the same product.' },
+      { term: 'Lifecycle assessment', definition: 'A method for evaluating environmental impacts across a product’s life stages.' },
+      { term: 'Material traceability', definition: 'Documented composition, origin and supplier information for a material.' },
+    ],
+    recap: [
+      'Materials and production affect footprint, quality, cost and performance.',
+      'A gain on one measure can create a trade-off on another.',
+      'Balance sustainability with function, quality, affordability and supply.',
+      'Verify claims with data instead of relying on labels.',
+    ],
+    chapterRecap: 'Material and production innovation can support sustainability objectives while strengthening product differentiation. Businesses should evaluate materials holistically and verify environmental claims instead of assuming that a material is automatically sustainable because it is labeled recycled or alternative.',
+    deepDiveTitle: 'Why a label is not an assessment',
+    body: <F5DeepDive paragraphs={[
+      'The word recycled says where a material came from, not how it performs or what happens at the end of its life. A jacket made with recycled fibre that wears out in a season may have a larger footprint than a durable alternative.' ,
+      'A fair assessment compares options on durability, comfort, cost, recyclability and available lifecycle data, and keeps the records. That evidence is what supports a claim when customers, platforms or regulators ask for it.',
+    ]} evidence="The activities are described qualitatively in the supplied material. The Vietnamese industry figures come from association data reported by VnEconomy and a government-portal summary, and the manufacturer example is from August 2024 reporting; none measures how much of the output is lower-impact." />,
+    sources: citeF5('bofStateOfFashion', 'vietnamplusGreen', 'vneconomyTextile', 'vneconomyFootwear', 'textileExchange'),
+  }),
+];
+
+const quiz = f5Quiz('fashion-m5-l4', [
+  { chapter: '1', objective: 'Identify what transparency covers', question: 'What may regulations on product transparency cover?', application: 'A brand reviews what it must disclose. Which areas apply?', correct: 'Labelling, chemical safety, environmental claims, packaging, waste and supply-chain transparency', wrong: ['Only advertising slogans', 'Only store opening hours', 'Only employee dress codes'], explanation: 'Requirements vary by market and span labelling, chemicals, claims, packaging, waste and supply chains. Review Chapter 1.' },
+  { chapter: '1', objective: 'Handle market differences', question: 'Why must international businesses check each market’s requirements?', application: 'A product is compliant in one country. Is that enough for all?', correct: 'Requirements vary by market, so one approach may not fit every country', wrong: ['All countries use identical rules', 'Compliance only matters in the home market', 'Rules never change'], explanation: 'Businesses must understand the requirements applicable to each market. Review Chapter 1.' },
+  { chapter: '1', objective: 'Integrate compliance early', question: 'When should compliance be integrated into the product process?', application: 'A team reviews compliance only after production. What is the better approach?', correct: 'During product development and sourcing, not as a final-stage review', wrong: ['Only after launch', 'Only when a complaint arrives', 'Never; marketing handles it'], explanation: 'Integrate requirements into development and sourcing. Review Chapter 1.' },
+  { chapter: '2', objective: 'Define circular fashion', question: 'What does circular fashion seek to do?', application: 'A brand adds repair and resale to its range. What is the aim?', correct: 'Reduce waste and extend product life through durability, repair, reuse, resale and recycling', wrong: ['Sell more new products faster', 'Discard items sooner', 'Avoid measuring outcomes'], explanation: 'Circular approaches challenge linear production and consumption models. Review Chapter 2.' },
+  { chapter: '2', objective: 'State the conditions for circularity', question: 'What do the benefits of circularity depend on?', application: 'A take-back scheme collects few items. What may be missing?', correct: 'Product design, collection systems, consumer participation and practical feasibility', wrong: ['Only advertising', 'Only the brand name', 'Only store size'], explanation: 'Benefits depend on design, collection, participation and feasibility. Review Chapter 2.' },
+  { chapter: '3', objective: 'Define responsible sourcing', question: 'What does responsible sourcing assess?', application: 'A buyer reviews its suppliers. What does it assess?', correct: 'Environmental, social and operational practices such as working conditions, traceability and compliance', wrong: ['Only the lowest price', 'Only the supplier’s advertising', 'Only delivery vehicle colours'], explanation: 'Issues include working conditions, labour rights, traceability and environmental management. Review Chapter 3.' },
+  { chapter: '3', objective: 'Reach beyond direct suppliers', question: 'Why do businesses need visibility beyond direct suppliers?', application: 'A supplier subcontracts some production. What does the buyer need?', correct: 'Networks involve multiple production stages and subcontractors, so risks may sit beyond direct suppliers', wrong: ['Subcontractors never affect products', 'Only direct suppliers matter', 'Visibility adds no information'], explanation: 'Due diligence needs mapping and traceability beyond tier-one suppliers. Review Chapter 3.' },
+  { chapter: '3', objective: 'Describe effective implementation', question: 'What does effective responsible sourcing require?', application: 'A brand has a code of conduct. What else does it need?', correct: 'Supplier engagement, traceability, credible verification and corrective action', wrong: ['A written policy alone', 'Fewer records', 'Less contact with suppliers'], explanation: 'Written policies alone are not enough. Review Chapter 3.' },
+  { chapter: '4', objective: 'Balance material trade-offs', question: 'When do sustainable materials create meaningful value?', application: 'A recycled fibre wears out quickly. What was overlooked?', correct: 'When environmental objectives are balanced with function, quality, affordability and supply availability', wrong: ['When the label alone says recycled', 'When cost is ignored', 'When durability is ignored'], explanation: 'A material may be better on one dimension and worse on another. Review Chapter 4.' },
+  { chapter: '4', objective: 'Verify claims', question: 'What should businesses do before calling a material sustainable?', application: 'A product is labelled recycled. What should the business check?', correct: 'Verify the claim with evidence about the material’s actual characteristics', wrong: ['Assume the label proves it', 'Hide the material information', 'Skip testing'], explanation: 'A label does not make a material automatically sustainable. Review Chapter 4.' },
+]);
+
+export const LESSON_5_4: FashionM5LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can explain why product transparency is part of risk management, how circular models work and what they depend on, what due diligence beyond direct suppliers involves, and how to judge materials holistically.',
+    keyTakeaways: [
+      'Compliance and transparency protect credibility; build them into development and sourcing.',
+      'Rules differ by market, so check each one.',
+      'Circular models depend on design, collection, participation and feasibility.',
+      'Responsible sourcing needs engagement, traceability, verification and corrective action.',
+      'A material label is not an assessment; verify claims with evidence.',
+    ],
+    businessImplications: 'Keep a shared evidence file for every product, pilot circular models in one category before scaling, map suppliers beyond tier one and judge materials on the full set of trade-offs.',
+    remember: 'Make every claim one you can prove, in every market you sell in.',
+    nextLesson: 'Growth Outlook & Strategic Opportunities',
+  },
+};

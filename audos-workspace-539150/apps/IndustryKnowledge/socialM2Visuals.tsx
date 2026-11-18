@@ -1,0 +1,1 @@
+import type{SocialM2VisualKind}from'./socialM2Core';import{VisualView}from'./fashionVisualKit';import{SOCIAL_M2_VISUALS}from'./socialM2VisualSpecs';export function renderSocialModule02Visual(kind:SocialM2VisualKind){const visual=SOCIAL_M2_VISUALS[kind];return visual?<VisualView spec={visual.spec}/>:null;}

@@ -45,7 +45,7 @@ import { expandQuestion } from './diagrammatic';
 export type LibraryDifficulty = 'easy' | 'medium' | 'hard';
 
 export const LIBRARY_DIFFICULTIES: LibraryDifficulty[] = ['easy', 'medium', 'hard'];
-export const TESTS_PER_DIFFICULTY = 10;
+export const TESTS_PER_DIFFICULTY = 15;
 export const QUESTIONS_PER_TEST = 30;
 
 const TIME_LIMIT_SECONDS: Record<LibraryDifficulty, number> = {
@@ -821,11 +821,16 @@ function generateQuestion(
   );
 }
 
-function generateTest(difficulty: LibraryDifficulty, indexInDifficulty: number): ExpandedTest {
+function generateTest(
+  difficulty: LibraryDifficulty,
+  indexInDifficulty: number,
+  idPrefix = 'dr',
+  forcedFormat?: 'matrix' | 'set_ab',
+): ExpandedTest {
   // Odd tests are matrix / sequence, even tests are Set A / Set B — same two
   // families as the AssessmentDay booklets, evenly represented.
-  const format: 'matrix' | 'set_ab' = indexInDifficulty % 2 === 1 ? 'matrix' : 'set_ab';
-  const id = `dr-${difficulty}-${pad2(indexInDifficulty)}`;
+  const format: 'matrix' | 'set_ab' = forcedFormat || (indexInDifficulty % 2 === 1 ? 'matrix' : 'set_ab');
+  const id = `${idPrefix}-${difficulty}-${pad2(indexInDifficulty)}`;
   const builders = format === 'matrix' ? MATRIX_BUILDERS[difficulty] : SET_BUILDERS[difficulty];
   // Per-test archetype rotation so every test covers the full rule vocabulary
   // in its own order.
@@ -852,10 +857,19 @@ function generateTest(difficulty: LibraryDifficulty, indexInDifficulty: number):
   };
 }
 
+/**
+ * A grid / sequence test for the Logical Reasoning family: the same validated
+ * matrix engine as the Diagrammatic library, drawn from its own seeds so no
+ * question repeats a Diagrammatic one.
+ */
+export function generateLogicalGridTest(difficulty: LibraryDifficulty, index: number): ExpandedTest {
+  return generateTest(difficulty, index, 'lg', 'matrix');
+}
+
 let cache: ExpandedTest[] | null = null;
 
 /**
- * The full 30-test Diagrammatic Reasoning library, expanded and ready for the
+ * The full 45-test Diagrammatic Reasoning library, expanded and ready for the
  * UI: 10 Easy, then 10 Medium, then 10 Hard, 30 questions each. Generation is
  * deterministic and the result is cached for the lifetime of the page.
  */

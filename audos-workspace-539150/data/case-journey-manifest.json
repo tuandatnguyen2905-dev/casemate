@@ -8,6 +8,25 @@
     "brandMapping": "Every company in jrn-13 to jrn-24 comes from the brief's mandated fictional-brand list (VitaFlow, PacificBev, CleanCo, SweetVale, ActiveShield, BakePure, DairyPeak, PawJoy, Summit Gear, Ridgeline Outdoor, FrostyBite, ClearCool, TangyTaste, GreenMart). Competitor and SKU names not covered by that list were invented for this workspace (MetroMart, CityFresh, Chewmaster, LottoPop, Ricecrest, Biba, CrispBite, Northwave, Crestline, Halcyon, TopSauce, KimLee, Adabi, LadyCraft).",
     "numericIntegrity": "Every dataset in jrn-13 to jrn-24 is internally reconciled: P&L lines sum, bridges close on the stated closing value, share tables total 100%, and every figure quoted in a model answer is recomputable from its exhibit. The numericalValidation array on each drill restates the decisive arithmetic."
   },
+  "dataIntegrityAudit": {
+    "date": "2026-10-29",
+    "scope": "All 14 Case Journeys shared between Case Drill and Case Pool (jrn-11 through jrn-24), 42 mapped Drill questions.",
+    "canonicalSource": "lib/caseJourneyContentF1.ts, lib/caseJourneyContentF2.ts, and lib/caseJourneyContentG1.ts through G9.ts; Case Pool references the same drill and exhibit objects through lib/casePoolLibrary.ts.",
+    "roundingConvention": "Displayed monetary and operational figures reconcile within ±0.1 in the stated unit; percentage compositions reconcile within ±2 points where displayed inputs are rounded.",
+    "checks": [
+      "Every shared Case Pool ID maps to exactly three Case Drill question IDs in canonical journey order.",
+      "Every chart series has the same number of values as categories and finite numeric values.",
+      "Waterfalls treat the opening value plus signed movements as the running total and never add the closing total as another movement.",
+      "Pie and donut percentages total approximately 100%.",
+      "Case Pool uses direct references to the Case Drill exhibits, answers and calculations rather than private copies."
+    ],
+    "corrected": [
+      "case-jrn-11 / charts-journey-731: removed the duplicated 486 billion VND closing ARR from the waterfall movement array; the bridge now ends at 412 + 96 + 58 - 31 - 49 = 486 billion VND.",
+      "case-jrn-14 / charts-journey-740: clarified that Exhibit 1 measures total category segment sales with SweetVale share as bubble area, while Exhibit 2 measures SweetVale's own sales; added explicit denominator, period, units and reconciliation examples.",
+      "case-jrn-12 / charts-journey-735: added parentheses to the weekday-utilisation average and stated the 58.6% versus 58.5% difference is rounding."
+    ],
+    "automatedGuard": "SHARED_CASE_DATA_INTEGRITY_AUDIT in lib/caseJourneys.ts"
+  },
   "openWork": {
     "sourceCasesNotBuilt": "Source cases 18 to 26 were cut off mid-sentence in the build brief (case 17, FreshMist packaging crisis, ends at 'Prioritize: wh'). Case 3 (PacificBev crisis management), case 8 (TechCore Systems HR recruitment), case 11 (GreenLeaf Distribution JBP recovery) and case 17 (FreshMist packaging crisis) were transmitted but not built in this pass.",
     "builtThisPass": [1, 2, 4, 5, 6, 7, 9, 10, 12, 13, 14, 15, 16],
@@ -195,7 +214,7 @@
       "industry": "Beauty and personal care",
       "domain": "Marketing",
       "businessProblem": "Marketing spend not converting to sales",
-      "decision": "Where to move VND 30bn of next-year media budget.",
+      "decision": "Where to move 30 billion VND of next-year media budget.",
       "timeframe": "FY2026",
       "provenance": "constructed-from-source-structure",
       "sourceSlot": "Source case 3 — marketing effectiveness and media mix",
@@ -876,7 +895,7 @@
       "drills": [
         { "drillId": "charts-journey-737", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Benchmark and Performance Gap", "estimatedMinutes": 6, "exhibits": ["bubble \u00b7 Demand Spaces \u2014 Size, Momentum and Crowding", "stacked-bar \u00b7 Chilled Dairy Snack Occasions by Time of Day"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-738" },
         { "drillId": "calculations-journey-738", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Unit Economics and Customer Value", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 Pack Economics by Channel", "grouped-bar \u00b7 Reach of the Target Consumer by Channel"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "creativity-journey-739" },
-        { "drillId": "creativity-journey-739", "stage": 3, "stageRole": "Decision", "skill": "creativity", "difficulty": "expert", "drillType": "Channel or Go-to-Market Innovation", "estimatedMinutes": 11, "exhibits": ["scatter \u00b7 Selling Models \u2014 Margin Against In-Window Reach", "financial-table \u00b7 Capacity, Cost and Payback by Selling Model", "stacked-bar \u00b7 Proposed Shape of the VND 25bn Launch Budget"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-740" }
+        { "drillId": "creativity-journey-739", "stage": 3, "stageRole": "Decision", "skill": "creativity", "difficulty": "expert", "drillType": "Channel or Go-to-Market Innovation", "estimatedMinutes": 11, "exhibits": ["scatter \u00b7 Selling Models \u2014 Margin Against In-Window Reach", "financial-table \u00b7 Capacity, Cost and Payback by Selling Model", "stacked-bar \u00b7 Proposed Shape of the 25 billion VND Launch Budget"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-740" }
       ]
     },
     {
@@ -895,7 +914,7 @@
       "reviewNote": "Built against the supplied source structure: segment growth map, competitor share slope, portfolio treemap, brand-stretch versus new-brand decision.",
       "analyticalApproach": "Portfolio choices",
       "drills": [
-        { "drillId": "charts-journey-740", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Mix-Shift Analysis", "estimatedMinutes": 6, "exhibits": ["bubble \u00b7 Segments \u2014 Size, Growth and SweetVale Presence", "treemap \u00b7 SweetVale Portfolio Value by Segment"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-741" },
+        { "drillId": "charts-journey-740", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Mix-Shift Analysis", "estimatedMinutes": 6, "exhibits": ["bubble \u00b7 Total Category Segment Value, Growth and SweetVale Share", "treemap \u00b7 SweetVale Own Portfolio Sales by Segment"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-741" },
         { "drillId": "calculations-journey-741", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Price\u2013Volume\u2013Mix Analysis", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 Category and SweetVale Value by Segment", "slope (multi-line) \u00b7 Value Share by Player"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "structures-journey-742" },
         { "drillId": "structures-journey-742", "stage": 3, "stageRole": "Decision", "skill": "structures", "difficulty": "expert", "drillType": "Structure Prioritization", "estimatedMinutes": 11, "exhibits": ["stacked-100 \u00b7 Confectionery Category Value Mix", "line \u00b7 Health and Wellness Snacking \u2014 Retail Value by Year", "sensitivity-table \u00b7 Entry Route Economics and Brand Risk"], "rubric": "Expert calculation 30/15/20/20/15", "modelAnswer": true, "nextInJourney": "charts-journey-743" }
       ]
@@ -928,7 +947,7 @@
       "industry": "Beauty and personal care",
       "domain": "Marketing",
       "businessProblem": "Line extension into an underserved consumer segment",
-      "decision": "Which benefit space, which ingredient anchor, and how to deploy a VND 30bn launch.",
+      "decision": "Which benefit space, which ingredient anchor, and how to deploy a 30 billion VND launch.",
       "timeframe": "Year 1 launch plan",
       "provenance": "constructed-from-source-structure",
       "sourceSlot": "Source case 6 \u2014 advanced-care body wash for men",
@@ -1012,7 +1031,7 @@
       "industry": "FMCG \u2014 packaged bakery",
       "domain": "Marketing",
       "businessProblem": "Brand equity decline driving volume loss",
-      "decision": "How to split VND 12bn between volume recovery and brand equity.",
+      "decision": "How to split 12 billion VND between volume recovery and brand equity.",
       "timeframe": "H1 this year to next twelve months",
       "provenance": "constructed-from-source-structure",
       "sourceSlot": "Source case 9 \u2014 soft cake brand rejuvenation",
@@ -1023,7 +1042,7 @@
       "drills": [
         { "drillId": "charts-journey-758", "stage": 1, "stageRole": "Diagnosis", "skill": "charts", "difficulty": "hard", "drillType": "Root-Cause Analysis", "estimatedMinutes": 6, "exhibits": ["stacked-100 \u00b7 Volume Mix by Format and Region", "slope (multi-line) \u00b7 Brand Health"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "calculations-journey-759" },
         { "drillId": "calculations-journey-759", "stage": 2, "stageRole": "Implication", "skill": "calculations", "difficulty": "hard", "drillType": "Root-Cause Analysis", "estimatedMinutes": 7, "exhibits": ["financial-table \u00b7 First-Half Volume Gap by Format and Region", "pareto (combo) \u00b7 Volume Gap by Cell, Ranked"], "rubric": "Hard 20/30/25/15/10", "modelAnswer": true, "nextInJourney": "creativity-journey-760" },
-        { "drillId": "creativity-journey-760", "stage": 3, "stageRole": "Decision", "skill": "creativity", "difficulty": "expert", "drillType": "Turnaround Levers", "estimatedMinutes": 12, "exhibits": ["grouped-bar \u00b7 Activity Efficiency \u2014 Volume and Equity per VND bn", "stacked-area \u00b7 Required Quarterly Recovery Path", "sensitivity-table \u00b7 Candidate Plans Against Both Targets"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-761" }
+        { "drillId": "creativity-journey-760", "stage": 3, "stageRole": "Decision", "skill": "creativity", "difficulty": "expert", "drillType": "Turnaround Levers", "estimatedMinutes": 12, "exhibits": ["grouped-bar \u00b7 Activity Efficiency \u2014 Volume and Equity per billion VND", "stacked-area \u00b7 Required Quarterly Recovery Path", "sensitivity-table \u00b7 Candidate Plans Against Both Targets"], "rubric": "Expert insight 30/25/20/15/10", "modelAnswer": true, "nextInJourney": "charts-journey-761" }
       ]
     },
     {

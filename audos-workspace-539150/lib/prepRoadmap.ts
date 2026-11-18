@@ -17,6 +17,10 @@
 //   - Case Drill  -> micro_drills (status='completed', session-scoped)
 //   - Aptitude    -> aptitude_attempts (shared read filtered by user_key,
 //                    the same identity the Aptitude Test history uses)
+//
+// The My Roadmap app itself counts through lib/roadmapProgress.ts, which adds
+// the Case Drill library / Structures attempts, de-duplicates retakes and
+// re-dates the weeks from the learner's Week 1 start (week1_start_date).
 
 import { findProgramTimeline, deadlineStatus, formatDateVN } from './programTimelines';
 import { resolveRankingUserId } from './performanceRankings';
@@ -106,6 +110,8 @@ export interface SavedRoadmap {
   window_label: string | null;
   anchor_date: string | null;
   start_date: string;
+  /** Learner-chosen Week 1 start ('YYYY-MM-DD'); null/absent = the roadmap's creation date. */
+  week1_start_date?: string | null;
   total_weeks: number;
   baseline_json: RoadmapBaseline | null;
   plan_json: RoadmapWeek[];
@@ -486,6 +492,7 @@ function normalizeRow(row: any): SavedRoadmap | null {
     window_label: row.window_label ? String(row.window_label) : null,
     anchor_date: row.anchor_date ? String(row.anchor_date).slice(0, 10) : null,
     start_date: String(row.start_date || '').slice(0, 10),
+    week1_start_date: typeof row.week1_start_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.week1_start_date) ? row.week1_start_date : null,
     total_weeks: Number(row.total_weeks) || plan.length,
     baseline_json: parseBaselineJson(row.baseline_json),
     plan_json: plan,
@@ -643,7 +650,7 @@ export async function generateAndSaveRoadmap(input: GenerateRoadmapInput): Promi
   const saved = await loadLatestRoadmap(input.sessionId, input.accountEmail).catch(() => null);
   if (saved) return saved;
   // Extremely defensive fallback: render from the local record.
-  return normalizeRow({ ...record, id: 0 }) as SavedRoadmap;
+  return normalizeRow({ ...record, id: 0, created_at: now.toISOString() }) as SavedRoadmap;
 }
 
 /* ----------------------------------------------------------------------------

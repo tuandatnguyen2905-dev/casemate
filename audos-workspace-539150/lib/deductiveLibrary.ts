@@ -1,4 +1,6 @@
-// Casemate — Deductive Reasoning FULL LIBRARY: 30 tests × 30 questions.
+// Casemate — Deductive Reasoning FULL LIBRARY: 46 generated tests × 30 questions
+// (Tests 1–30 are the original bank; Tests 31–46 extend it with fresh seeds and
+// rotate Easy / Medium / Hard).
 //
 // Built on top of lib/deductive.ts, the same way lib/inductiveLibrary.ts is
 // built on lib/inductive.ts. Hand-writing 900 question specs would be
@@ -33,7 +35,7 @@ import {
   type DeductiveTest,
 } from './deductive';
 
-export const DEDUCTIVE_TEST_COUNT = 30;
+export const DEDUCTIVE_TEST_COUNT = 46;
 export const DEDUCTIVE_QUESTIONS_PER_TEST = 30;
 export const DEDUCTIVE_TIME_LIMIT_SECONDS = 1500; // 25 minutes, as the real round runs.
 
@@ -79,6 +81,7 @@ const FAMILY_MIX: [DeductiveFamily, number][] = [
 function tierFor(testNumber: number): DeductiveDifficulty {
   // Keep Tests 1–10 byte-for-byte stable, then use the twenty new papers to
   // bring the complete 30-test library to ten Easy, ten Medium and ten Hard.
+  if (testNumber > 30) return (['easy', 'medium', 'hard'] as const)[(testNumber - 31) % 3];
   if (testNumber <= 3 || (testNumber >= 11 && testNumber <= 17)) return 'easy';
   if ((testNumber >= 4 && testNumber <= 6) || (testNumber >= 18 && testNumber <= 24)) return 'medium';
   return 'hard';
@@ -121,7 +124,12 @@ function generateTest(testNumber: number, taken: Set<string>): DeductiveTest {
     const qid = `${id}-q${pad2(q)}`;
     let chosen: DeductiveExpandedQuestion | null = null;
     for (let attempt = 0; attempt < 40; attempt += 1) {
-      const candidate = buildDeductiveQuestion(attempt === 0 ? qid : `${qid}r${attempt}`, family, tier);
+      let candidate: DeductiveExpandedQuestion;
+      try {
+        candidate = buildDeductiveQuestion(attempt === 0 ? qid : `${qid}r${attempt}`, family, tier);
+      } catch (error) {
+        continue;
+      }
       const sig = signature(candidate);
       if (!taken.has(sig)) {
         taken.add(sig);
@@ -130,6 +138,7 @@ function generateTest(testNumber: number, taken: Set<string>): DeductiveTest {
       }
       if (attempt === 39) chosen = { ...candidate, id: qid }; // give up de-duping, still valid
     }
+    if (!chosen) chosen = { ...(questions[questions.length - 1] || buildDeductiveQuestion(`${qid}-fallback`, 'syllogism', 'easy')), id: qid };
     questions.push(chosen as DeductiveExpandedQuestion);
   }
 

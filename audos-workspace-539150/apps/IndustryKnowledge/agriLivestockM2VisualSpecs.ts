@@ -1,0 +1,308 @@
+import type { AgriLivestockChapterVisual } from './agriLivestockVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Livestock & Animal Feed Module 02, keyed by visualKind. */
+export const AGRI_LIVESTOCK_M2_VISUALS: Record<string, AgriLivestockChapterVisual> = {
+  'agri-livestock-m2-1': {
+    heading: 'From soy meal and corn to retail meat through a chain of handoffs',
+    intro: 'The value chain connects agricultural inputs, feed, animals, farms, processors and end markets. Soy meal and corn become formulated feed, animal growth, processed meat and retail products across several participants.',
+    spec: {
+      layout: 'flow', title: '01 How Does the Livestock Value Chain Work?', kicker: '',
+      steps: [
+        { label: 'Ingredient production', detail: 'Soy meal and corn', owner: 'Ingredient supplier' },
+        { label: 'Feed formulation', detail: 'Ingredients become formulated feed', owner: 'Feed manufacturer' },
+        { label: 'Livestock farming', detail: 'Feed becomes animal growth', owner: 'Farm' },
+        { label: 'Processing', detail: 'Animals become processed meat', owner: 'Processor' },
+        { label: 'Distribution', detail: 'Retail products reach buyers', kind: 'outcome' },
+      ],
+      note: 'Map physical product, quality, health, documents, cash and risk at every handoff.',
+      takeaway: 'Value depends on coordination between feed and livestock because nutrition, performance and cost are tightly linked.',
+    },
+  },
+  'agri-livestock-m2-2': {
+    heading: 'Each link adds a different kind of value and hands off something to track',
+    intro: 'Value is created by several participants, not one. Feed manufacturing, animal health and the cold chain each add value the next participant depends on.',
+    spec: {
+      layout: 'table', title: '02 Who Creates Value Along the Livestock Production Chain?', kicker: '',
+      headers: ['Link', 'Value it adds', 'Handoff to track'],
+      rows: [
+        { label: 'Ingredient production', a: 'Raw energy and protein', b: 'Quality and documents' },
+        { label: 'Feed manufacturing', a: 'Formulated nutrition', b: 'Feed quality and cost' },
+        { label: 'Animal health', a: 'Protects animal performance', b: 'Health status' },
+        { label: 'Livestock farming', a: 'Converts feed into growth', b: 'Animals and cash' },
+        { label: 'Processing', a: 'Turns animals into meat', b: 'Product and risk' },
+        { label: 'Cold chain', a: 'Keeps product saleable to retail', b: 'Physical product condition' },
+      ],
+      takeaway: 'Value depends on coordinating feed, health and livestock because nutrition, performance and cost are tightly linked.',
+    },
+  },
+  'agri-livestock-m2-3': {
+    heading: 'Feed, money, advice, risk and oversight all meet at the farmer',
+    intro: 'Commercial and institutional participants supply inputs, advice, production, processing and oversight. A feed maker provides nutrition and technical service while the farm converts feed into animal output.',
+    spec: {
+      layout: 'ecosystem', title: '03 How Do Animals, Feed, Information, Money, and Risk Flow?', kicker: '',
+      center: { label: 'Farmer', detail: 'Converts feed into animal output' },
+      actors: [
+        { label: 'Feed manufacturer', relation: 'Sells feed and technical service', flows: ['product', 'service', 'money'] },
+        { label: 'Ingredient supplier', relation: 'Supplies the feed maker', flows: ['product', 'risk'] },
+        { label: 'Nutritionist', relation: 'Advises on formulas and feeding', flows: ['information'] },
+        { label: 'Veterinarian', relation: 'Diagnoses and protects animal health', flows: ['service', 'information'] },
+        { label: 'Processor', relation: 'Buys animals and pays the farm', flows: ['product', 'money'] },
+        { label: 'Regulator', relation: 'Oversees safety and compliance', flows: ['oversight'] },
+      ],
+      note: 'Clarify ownership, quality, credit, performance, disease, purchase and claim responsibilities across contracts.',
+      takeaway: 'Participants contribute different capabilities while coordination determines productivity, quality and margin distribution.',
+    },
+  },
+  'agri-livestock-m2-4': {
+    heading: 'Upstream supply: energy, protein, micro-ingredients and genetics',
+    intro: 'Upstream activities supply the energy, protein and micro-ingredients for feed plus the breeding animals and genetics for production. Their availability and price feed directly into livestock cost.',
+    spec: {
+      layout: 'taxonomy', title: '04 How Do Breeding and Genetics Affect Livestock Production?', kicker: '',
+      root: 'Upstream inputs', rootDetail: 'Each affects feed and livestock cost',
+      groups: [
+        { label: 'Energy', items: ['Maize'] },
+        { label: 'Protein', items: ['Soybean meal'] },
+        { label: 'Micro-ingredients', items: ['Amino acid', 'Minerals'] },
+        { label: 'Breeding animals and genetics', detail: 'Set the production potential the feed must support' },
+      ],
+      note: 'Track origin, specification, contamination, currency, freight, substitute limits and inventory for imported and local inputs.',
+      takeaway: 'Availability, composition, import exposure and price volatility directly affect feed and livestock cost.',
+    },
+  },
+  'agri-livestock-m2-5': {
+    heading: 'What each sourced ingredient contributes and what to check when buying it',
+    intro: 'A formula balances energy, amino acids, minerals, quality and price under ingredient availability constraints. Sourcing wheat, fishmeal and vitamins and minerals means tracking more than price.',
+    spec: {
+      layout: 'table', title: '05 How Are Feed and Animal Nutrition Inputs Sourced?', kicker: '',
+      headers: ['Ingredient', 'Role in the formula', 'Check when sourcing'],
+      rows: [
+        { label: 'Wheat', a: 'Energy', b: 'Availability, price, substitute limits' },
+        { label: 'Fishmeal', a: 'Protein and amino acids', b: 'Origin and contamination' },
+        { label: 'Vitamin and mineral', a: 'Micro-ingredients', b: 'Specification and inventory' },
+        { label: 'Any imported input', a: 'Fills local supply gaps', b: 'Currency and freight exposure' },
+      ],
+      takeaway: 'Availability, composition, import exposure and price volatility directly affect feed and livestock cost.',
+    },
+  },
+  'agri-livestock-m2-6': {
+    heading: 'Housing, ventilation and health tools reduce heat and disease stress',
+    intro: 'Veterinary services, equipment, facilities and monitoring support animal health and farm efficiency. In poultry, ventilation, water, vaccination and controlled entry reduce heat and disease stress.',
+    spec: {
+      layout: 'driverTree', title: '06 How Do Farm Infrastructure and Animal Sourcing Influence Operations?', kicker: '',
+      root: { label: 'Lower loss and reliable output', detail: 'Example: a poultry house' },
+      drivers: [
+        { label: 'Heat stress control', children: [{ label: 'Housing' }, { label: 'Ventilation' }, { label: 'Water' }] },
+        { label: 'Disease stress control', children: [{ label: 'Vaccine' }, { label: 'Biosecurity' }, { label: 'Diagnostic' }] },
+        { label: 'Daily operation', children: [{ label: 'Feeding system' }, { label: 'Farm software' }] },
+      ],
+      note: 'Fit technology to species, climate, scale, skills, maintenance, power, water and outbreak protocols.',
+      takeaway: 'Health, housing and prevention investment can reduce loss and improve welfare and reliability.',
+    },
+  },
+  'agri-livestock-m2-7': {
+    heading: 'How a species- and stage-specific feed is formulated, processed and released',
+    intro: 'Midstream activity selects, formulates, processes and tests ingredients into species- and stage-specific products. A broiler starter and a layer feed need different nutrient density and pellet specifications.',
+    spec: {
+      layout: 'flow', title: '07 How Are Livestock Farms Operated and Managed?', kicker: '',
+      steps: [
+        { label: 'Ingredient selection', detail: 'Consistent, verified inputs' },
+        { label: 'Nutrient formula', detail: 'Density set for species and stage' },
+        { label: 'Mixing', detail: 'Dosing without cross-contamination' },
+        { label: 'Extrusion or pelleting', detail: 'Meets the physical specification' },
+        { label: 'Quality release', detail: 'Moisture and nutrients verified', kind: 'decision' },
+        { label: 'Stage-specific feed', detail: 'Such as broiler starter or layer feed', kind: 'outcome' },
+      ],
+      note: 'Control formula version, dosing, cross-contamination, moisture, nutrient verification, traceability and release.',
+      takeaway: 'Feed performance depends on nutrition balance, ingredient consistency, process precision and local production conditions.',
+    },
+  },
+  'agri-livestock-m2-8': {
+    heading: 'Routine biosecurity runs daily; abnormal mortality goes to a veterinarian',
+    intro: 'Biosecurity is operational prevention: controlled entry, zoning, clean and dirty flows, records, surveillance, movement management and sanitation. A farm escalates to a veterinarian when abnormal mortality appears.',
+    spec: {
+      layout: 'decision', title: '08 How Do Animal Health and Biosecurity Systems Work?', kicker: '',
+      root: { label: 'Health monitoring and surveillance', detail: 'Records checked every day' },
+      question: 'Does monitoring show abnormal mortality or signs?',
+      branches: [
+        { condition: 'Within the normal pattern', outcome: 'Keep routine controls', detail: 'Controlled access, separation, cleaning and sanitation, movement control', tone: 'positive' },
+        { condition: 'Abnormal mortality appears', outcome: 'Veterinary escalation', detail: 'Diagnosis and treatment are veterinary decisions', tone: 'negative' },
+      ],
+      note: 'This covers prevention and escalation only, not drug dosing or treatment protocols.',
+      takeaway: 'Biosecurity reduces introduction and spread risk but cannot guarantee disease prevention; diagnosis and treatment belong to qualified veterinary professionals.',
+    },
+  },
+  'agri-livestock-m2-9': {
+    heading: 'A pig finisher’s cost per kilogram traced to its performance drivers',
+    intro: 'Daily feeding, housing, health and breeding convert inputs into animal output. A pig finisher tracks feed intake, daily gain, mortality and sale weight to manage cost per kilogram.',
+    spec: {
+      layout: 'driverTree', title: '09 How Are Growth, Reproduction, and Productivity Managed?', kicker: '',
+      root: { label: 'Cost per kilogram', detail: 'Pig finisher example' },
+      drivers: [
+        { label: 'Feed conversion ratio', detail: 'Feed used per unit of gain', children: [{ label: 'Ration' }, { label: 'Feed intake' }] },
+        { label: 'Average daily gain', detail: 'Speed of growth', children: [{ label: 'Water' }, { label: 'Housing' }] },
+        { label: 'Mortality', detail: 'Animals lost before sale' },
+        { label: 'Sale weight', detail: 'Output each animal delivers' },
+        { label: 'Reproduction', detail: 'Supply of animals into the cycle' },
+      ],
+      note: 'Compare farms only with matched species, genetics, stage, feed basis, output definition and health status.',
+      takeaway: 'Feed conversion, growth, mortality, reproduction and disease control determine farm economics.',
+    },
+  },
+  'agri-livestock-m2-10': {
+    heading: 'Chilled meat’s path from collected animal to controlled display',
+    intro: 'Downstream activity moves and transforms animals, milk and eggs into packaged products. Chilled meat requires controlled slaughter, cutting, packaging, transport and display conditions.',
+    spec: {
+      layout: 'flow', title: '10 How Are Livestock Products Prepared for Commercial Sale?', kicker: '',
+      steps: [
+        { label: 'Live-animal collection', detail: 'Welfare and veterinary documents' },
+        { label: 'Slaughter', detail: 'Controlled, hygienic conditions' },
+        { label: 'Cutting and packaging', detail: 'Yield and product form set' },
+        { label: 'Cold chain', detail: 'Temperature kept controlled in transport' },
+        { label: 'Chilled display', detail: 'Product reaches the buyer', kind: 'outcome' },
+      ],
+      note: 'Milk processing follows its own route; coordinate capacity, hygiene, temperature, yield and channel demand for each product.',
+      takeaway: 'Collection, processing, cold chain and traceability determine market access, safety and product value.',
+    },
+  },
+  'agri-livestock-m2-11': {
+    heading: 'One transport and preparation trunk, then wholesale, retail or foodservice',
+    intro: 'Animals, milk and eggs are moved and prepared before they are sold. The product then reaches wholesale, retail or foodservice buyers.',
+    spec: {
+      layout: 'pathway', title: '11 How Do Livestock Reach Processors, Traders, and Buyers?', kicker: '',
+      trunk: [
+        { label: 'Farm output', detail: 'Animals, milk and eggs' },
+        { label: 'Transport', detail: 'Welfare, documents and temperature' },
+        { label: 'Meat cutting or egg grading', detail: 'Prepared for the buyer' },
+      ],
+      optionsLabel: 'Sales channels — alternatives, not steps',
+      options: [
+        { label: 'Wholesale', detail: 'Traders and bulk buyers' },
+        { label: 'Retail', detail: 'Packaged consumer products' },
+        { label: 'Foodservice', detail: 'Kitchens and caterers' },
+      ],
+      note: 'Match capacity, hygiene, temperature and yield to each channel’s demand.',
+      takeaway: 'Collection, processing, cold chain and traceability determine market access, safety and product value.',
+    },
+  },
+  'agri-livestock-m2-12': {
+    heading: 'A traceability chain lets one residue result lead back to the farm',
+    intro: 'Records and controls link animals, feed, treatments, processing, testing, cold chain and incident response. A residue issue is traced from processing lot to farm and treatment record for targeted action.',
+    spec: {
+      layout: 'flow', title: '12 How Do Quality, Logistics, and Market Access Affect Production Value?', kicker: '',
+      steps: [
+        { label: 'Animal origin', detail: 'Identifier for each animal or group', owner: 'Farm record' },
+        { label: 'Feed use', detail: 'What the animals ate', owner: 'Farm record' },
+        { label: 'Veterinary treatment', detail: 'Treatments given and when', owner: 'Farm record' },
+        { label: 'Processing batch', detail: 'Lot linked to source farms', owner: 'Processor' },
+        { label: 'Residue test', detail: 'Checks the lot', kind: 'decision' },
+        { label: 'Recall', detail: 'Targeted action on the traced source', kind: 'outcome' },
+      ],
+      loop: 'A failed test is traced back from processing lot to farm and treatment record.',
+      note: 'Define identifiers, record ownership, data quality, retention, testing, recall authority and buyer requirements.',
+      takeaway: 'Traceability and compliance strengthen confidence and access to higher-value markets.',
+    },
+  },
+  'agri-livestock-m2-13': {
+    heading: 'A feed mill and a farm track different inputs and outputs',
+    intro: 'Material, biological, financial, technology and human resources are converted into feed, growth, milk, meat and eggs. A mill tracks tonnes, nutrient consistency and rejects while a farm tracks feed, growth, survival and yield.',
+    spec: {
+      layout: 'compare', title: '13 What Inputs Determine Livestock Production Outcomes?', kicker: '',
+      leftTitle: 'Feed mill tracks', rightTitle: 'Farm tracks',
+      rows: [
+        { label: 'Main input', a: 'Feed ingredients', b: 'Feed, water and labor' },
+        { label: 'Volume', a: 'Tonnes produced', b: 'Feed used' },
+        { label: 'Quality', a: 'Nutrient consistency', b: 'Growth' },
+        { label: 'Loss', a: 'Rejects', b: 'Survival' },
+        { label: 'Marketable output', a: 'Feed released', b: 'Yield of meat, milk or eggs' },
+      ],
+      note: 'Keep feed volume, livestock count, live weight, carcass yield, milk or eggs and saleable output distinct.',
+      takeaway: 'Input-output relationships reveal inefficiency and production-performance drivers.',
+    },
+  },
+  'agri-livestock-m2-14': {
+    heading: 'Saleable output is what survives the conversion from placed animals',
+    intro: 'Breeding stock, feed energy and veterinary care are converted into growth and then output. Feed efficiency, health and mortality each reduce or protect what reaches sale.',
+    spec: {
+      layout: 'flow', title: '14 How Do Feed Efficiency, Health, and Mortality Affect Output?', kicker: '',
+      steps: [
+        { label: 'Breeding stock placed', detail: 'Sets growth potential' },
+        { label: 'Feed and energy intake', detail: 'Converted at the feed efficiency achieved' },
+        { label: 'Growth', detail: 'Weight gained per animal' },
+        { label: 'Survival', detail: 'Veterinary care limits mortality', kind: 'decision' },
+        { label: 'Saleable output', detail: 'Meat, milk or eggs sold', kind: 'outcome' },
+      ],
+      note: 'Track feed, growth, survival and yield together so a loss can be traced to its stage.',
+      takeaway: 'Input-output relationships reveal where feed efficiency, health and mortality limit performance.',
+    },
+  },
+  'agri-livestock-m2-15': {
+    heading: 'Mill, farm and business metrics each reveal a different cost or loss',
+    intro: 'Operating and financial measures apply to mills, farms and integrated businesses. Lower FCR improves economics only when weight gain, survival, quality and feed cost are comparable.',
+    spec: {
+      layout: 'table', title: '15 Where Are Costs, Losses, and Value Created Across a Farm?', kicker: '',
+      headers: ['Metric', 'Where it applies', 'What it reveals'],
+      rows: [
+        { label: 'Cost per tonne', a: 'Feed mill', b: 'Cost of making feed' },
+        { label: 'Capacity utilization', a: 'Feed mill', b: 'How fully the plant is used' },
+        { label: 'Quality rejection', a: 'Feed mill', b: 'Product lost to failed quality' },
+        { label: 'Feed conversion ratio', a: 'Farm', b: 'Feed used per unit of gain' },
+        { label: 'Daily gain', a: 'Farm', b: 'Speed of growth' },
+        { label: 'Mortality', a: 'Farm', b: 'Animals lost' },
+        { label: 'Return on capital', a: 'Integrated business', b: 'Profit relative to capital used' },
+      ],
+      note: 'State species, stage, cohort, feed basis, period, denominator and output price for every benchmark.',
+      takeaway: 'Higher output does not guarantee profit without cost, health, quality and environmental performance.',
+    },
+  },
+  'agri-livestock-m2-16': {
+    heading: 'A feed business draws grains, genetics and technology from global markets',
+    intro: 'Global trade moves grains, meals, additives, genetics, animal products and production technologies. A feed buyer diversifies soybean meal origin and keeps safety stock within quality and working-capital limits.',
+    spec: {
+      layout: 'ecosystem', title: '16 How Do Global Livestock Production Systems Operate?', kicker: '',
+      center: { label: 'Feed or livestock business', detail: 'Buys internationally' },
+      actors: [
+        { label: 'Commodity market', relation: 'Prices grains and meals', flows: ['money', 'risk'] },
+        { label: 'Ingredient origins', relation: 'Supply soybean meal and grains', flows: ['product'] },
+        { label: 'Exchange rate', relation: 'Changes landed cost', flows: ['risk'] },
+        { label: 'Freight', relation: 'Ships inputs; adds delay risk', flows: ['service', 'risk'] },
+        { label: 'Breeding resource suppliers', relation: 'Provide genetics', flows: ['product'] },
+        { label: 'Technology suppliers', relation: 'Provide production technologies', flows: ['product', 'service'] },
+      ],
+      note: 'Inventory strategy: diversify origin and hold safety stock within quality and working-capital limits.',
+      takeaway: 'International sourcing improves access but adds currency, freight, geopolitical and commodity exposure.',
+    },
+  },
+  'agri-livestock-m2-17': {
+    heading: 'An imported ingredient’s route from purchase to formula, and its risk points',
+    intro: 'Vietnam’s chain relies on imported grains, meals and additives that must be shipped and meet sanitary requirements. Each step adds price, lead-time or specification risk.',
+    spec: {
+      layout: 'flow', title: "17 How Does Vietnam's Livestock Value Chain Work?", kicker: '',
+      steps: [
+        { label: 'Imported ingredient purchase', detail: 'Price, basis and FX exposure' },
+        { label: 'Shipping', detail: 'Lead time and freight' },
+        { label: 'Port arrival', detail: 'Exposed to port disruption' },
+        { label: 'Sanitary requirement check', detail: 'Specification and safety met', kind: 'decision' },
+        { label: 'Feed formula', detail: 'Used, or replaced within formula limits', kind: 'outcome' },
+      ],
+      note: 'Scenario-test price, basis, FX, lead time, specification, port disruption and alternative formula constraints.',
+      takeaway: 'International sourcing improves access but adds currency, freight, geopolitical and commodity exposure.',
+    },
+  },
+  'agri-livestock-m2-18': {
+    heading: 'Local scale, inputs, climate, disease and reach decide how a global model must adapt',
+    intro: 'Domestic production structures and resources shape feed, farm support, logistics and channels. A technical program for small pig farms differs from automated integrated poultry production.',
+    spec: {
+      layout: 'taxonomy', title: '18 How Do Local Conditions Affect Production Efficiency and Competitiveness?', kicker: '',
+      root: 'Local conditions to adapt for', rootDetail: 'Considered together, not in sequence',
+      groups: [
+        { label: 'Farm scale', items: ['Smallholder', 'Commercial farm'] },
+        { label: 'Ingredient base', items: ['Local ingredient', 'Imported input'] },
+        { label: 'Climate', detail: 'Shapes housing and animal stress' },
+        { label: 'Biosecurity', detail: 'Local disease pressure' },
+        { label: 'Distribution coverage', detail: 'Reach to farms in each region' },
+      ],
+      note: 'Design product pack, credit, delivery, advice, health and sourcing for the actual region and farm system.',
+      takeaway: 'Global models require adaptation to local ingredients, farm scale, climate, disease and market access.',
+    },
+  },
+};

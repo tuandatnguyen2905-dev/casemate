@@ -1,0 +1,202 @@
+import { F4DeepDive, citeF4, f4Chapter, f4Quiz } from './fashionM4Core';
+import type { FashionM4LessonBundle } from './fashionM4Core';
+
+const LESSON = '3. Competitor Benchmarking';
+
+const deck = [
+  f4Chapter({
+    title: 'Benchmarking Framework', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Build a benchmarking framework with the right dimensions for a segment and explain why capabilities matter more than visible outcomes.',
+    mateIntro: 'Comparing prices and product ranges is easy. The harder and more useful question is why a rival can sell at that price or launch that range, because the answer is a capability you may not have.',
+    keyInsight: 'Benchmarking is most valuable when it identifies the underlying capabilities behind competitor performance rather than simply comparing visible outcomes such as prices or product ranges.',
+    statTiles: [
+      { value: '6', label: 'Benchmarking dimensions', subtitle: 'Product to operations', description: 'Product, pricing, brand, channel, customer experience and operational benchmarking.' },
+      { value: '4', label: 'Indices in YouNet’s brand ranking', subtitle: 'Performance, Shop, Variant, Price Range', description: 'A published example of a multi-dimension benchmark for fashion brands online.' },
+      { value: '3', label: 'Marketplaces in the fashion ranking', subtitle: 'Shopee, Lazada, Tiki', description: 'Scope matters: the data covers authentic fashion on these three platforms only.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the other two describe the method and scope of a YouNet ECI ranking for the first half of 2025.',
+    narrative: [
+      { label: 'What it is', text: 'Competitor benchmarking is the systematic comparison of a business’s products, pricing, brand positioning, distribution and operational performance against relevant competitors. It helps a business understand its relative market position and identify capabilities that need improvement. A useful framework reflects the brand’s target customers and business model, since luxury fashion, fast fashion, sportswear and value retail operate under different competitive priorities.' },
+      { label: 'Why it is happening', text: 'Without a framework, comparisons drift toward whatever is easiest to see, such as price tags and product ranges. A consistent set of dimensions makes results comparable between competitors and across time, and keeps attention on what actually influences customer choice and commercial performance.' },
+      { label: 'Real-world example', text: 'Product benchmarking compares quality, design, materials, fit, durability and technical functionality. Pricing benchmarking evaluates price ranges, promotional frequency, perceived value and price consistency. Brand benchmarking assesses awareness, positioning, perception and differentiation, and channel benchmarking compares store networks, e-commerce capability, marketplace presence and fulfilment. Customer experience benchmarking looks at service, convenience, delivery, returns and loyalty programmes, and operational benchmarking at inventory turnover, availability, replenishment speed and markdown management.' },
+      { label: 'Vietnam example', text: 'YouNet ECI’s ranking of fashion brands in the first half of 2025 combined four indices: a Performance Index (market share and growth), a Shop Index (the number and quality of stores), a Variant Index (diversity and revenue of product lines) and a Price Range Index (diversity and revenue of price segments). It drew on Shopee, Lazada and Tiki data and excluded sportswear, imported fashion, accessories and counterfeit goods, so the scope of a benchmark is part of the result.' },
+      { label: 'Business impact', text: 'A structured framework lets a business compare competitors consistently and find real performance gaps. The criteria selected should reflect the target segment, strategic priorities and available data, so that the benchmark answers a question the business actually needs answered.' },
+    ],
+    visualKind: 'fashion-m4-31-framework', visualHeading: 'Six lenses for comparing competitors',
+    visualIntro: 'See what each benchmarking dimension looks at.',
+    imageAlt: 'Casemate cards of product, pricing, brand, channel, customer experience and operations benchmarking',
+    keyTerms: [
+      { term: 'Benchmarking', definition: 'Systematic comparison of your performance and practices against relevant competitors.' },
+      { term: 'Capability', definition: 'The ability behind a result, such as fast replenishment or strong product development.' },
+      { term: 'Benchmark scope', definition: 'The categories, channels and period a comparison covers.' },
+      { term: 'Performance gap', definition: 'The difference between your result and a competitor’s on a given measure.' },
+    ],
+    recap: [
+      'Benchmarking compares products, pricing, brand, channels, customer experience and operations.',
+      'The framework should reflect target customers and the business model.',
+      'Look for the capability behind the result, not just the visible outcome.',
+      'State the scope of every benchmark.',
+    ],
+    chapterRecap: 'A structured benchmarking framework helps businesses compare competitors consistently and identify performance gaps. The selected criteria should reflect the target segment, strategic priorities, and available market data.',
+    deepDiveTitle: 'Why a benchmark must name its scope',
+    body: <F4DeepDive paragraphs={[
+      'A ranking that covers three marketplaces and excludes sportswear tells you about those three marketplaces and not about sportswear. A comparison of two brands over different periods or categories may make one look stronger than it is.',
+      'Stating the categories, channels, period and data source next to every result keeps benchmarks honest and prevents a narrow finding from being read as a market-wide one.' ,
+    ]} evidence="The six benchmarking dimensions are described qualitatively in the supplied material. The YouNet indices and scope are as published by YouNet ECI for the first half of 2025." />,
+    sources: citeF4('bofStateOfFashion', 'younetFashion', 'younetGrowthRanking'),
+  }),
+  f4Chapter({
+    title: 'Brand-to-Brand Comparison', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Compare competing brands on how they create value and use the comparison to inform strategy without imitation.',
+    mateIntro: 'Two brands can sell similar shirts and run completely different businesses. Putting them side by side shows choices you could make, and also choices that would not fit you.',
+    keyInsight: 'Competitors selling similar products may create value in fundamentally different ways. Understanding these differences helps businesses avoid imitation and identify strategies that fit their own capabilities and target customers.',
+    statTiles: [
+      { value: '5', label: 'Comparison pairs in the lesson', subtitle: 'From Nike and Adidas to global and local', description: 'Each pair highlights a different contrast in how value is created.' },
+      { value: '64 vs 47', label: 'Adidas and Nike stores in Vietnam, March 2025', description: 'Two direct competitors with different retail footprints in the same market.' },
+      { value: '283 vs 214', label: 'Yody and Owen stores, March 2025', description: 'Two Vietnamese apparel chains with large networks of different sizes.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; store counts are from a Q&Me Vietnam desktop survey as of March 2025 and show network size, not sales or share.',
+    narrative: [
+      { label: 'What it is', text: 'Brand-to-brand comparison evaluates how competing businesses differentiate themselves through products, prices, marketing and customer experience. It gives a more focused view of competitive positioning than analysing the industry as a single market. Comparisons should prioritise brands with overlapping audiences or similar categories, while brands with different positioning can also reveal alternative business models, emerging trends and opportunities to differentiate.' },
+      { label: 'Why it is happening', text: 'Industry averages hide the differences that matter. Looking at specific rivals shows which choices produce which results, and which of those choices depend on capabilities, such as supply speed or store scale, that a business may not share.' },
+      { label: 'Real-world example', text: 'Nike versus Adidas compares sports performance, footwear innovation, athlete partnerships, lifestyle collections and brand communication. Zara versus Uniqlo contrasts trend-led fashion and frequent assortment changes with functional everyday apparel and product consistency. Lululemon versus broader sportswear brands compares premium athleisure positioning, community and specialisation; luxury versus premium fashion compares exclusivity, craftsmanship, accessibility and perceived status; and global versus local brands compare recognition, cultural relevance, product adaptation, pricing and responsiveness to domestic demand.' },
+      { label: 'Vietnam example', text: 'A March 2025 desktop count shows Adidas with 64 stores and Nike with 47 in Vietnam, and Yody with 283 stores against Owen with 214. In online fashion, YouNet ECI contrasts Coolmate, which built a loyal following with practical basics and creator content, and Calem.Club, a Gen Z brand with no offline stores that sells through TikTok content and livestreams. Brands in similar categories are using quite different routes to the customer.' },
+      { label: 'Business impact', text: 'Brand-to-brand comparison reveals how competitors serve similar needs through different strategies. The findings can inform product development, pricing, positioning and customer engagement without requiring a business to copy a competitor directly.' },
+    ],
+    visualKind: 'fashion-m4-32-brands', visualHeading: 'How differently brands show up in Vietnam',
+    visualIntro: 'See the store-network size of the brands compared in this lesson, then ask what lies behind each difference.',
+    imageAlt: 'Casemate bar chart of store counts for eight brands in Vietnam, March 2025',
+    keyTerms: [
+      { term: 'Brand-to-brand comparison', definition: 'A focused comparison of how two named competitors create value.' },
+      { term: 'Peer set', definition: 'The group of brands with similar audiences, positioning or models used for comparison.' },
+      { term: 'Imitation risk', definition: 'The danger of copying a competitor’s tactic without the capability that makes it work.' },
+      { term: 'Value creation', definition: 'The way a business turns products and services into something customers pay for.' },
+    ],
+    recap: [
+      'Comparisons should focus on brands with overlapping audiences or categories.',
+      'Similar products can create value in very different ways.',
+      'Different models can reveal alternatives and opportunities.',
+      'Use findings to inform strategy, not to copy.',
+    ],
+    chapterRecap: 'Brand-to-brand comparison reveals how competitors serve similar needs through different strategies. The findings can inform product development, pricing, positioning, and customer engagement without requiring businesses to copy competitors directly.',
+    deepDiveTitle: 'Why copying a rival’s tactic often fails',
+    body: <F4DeepDive paragraphs={[
+      'A visible tactic, such as launching a new range every week, depends on invisible capabilities such as fast design, flexible factories and accurate forecasting. Copying the tactic without them produces the cost without the benefit.',
+      'The more useful question is which of a rival’s choices fit your own strengths and customers. Some will, some will need adaptation and some are best left to those who are built for them.' ,
+    ]} evidence="The comparison pairs are described qualitatively in the supplied material. Store counts are a Q&Me Vietnam desktop survey as of March 2025, and the online brand descriptions come from YouNet ECI’s first-half 2025 reporting." />,
+    sources: citeF4('bofStateOfFashion', 'qmeStoreCount', 'younetFashion'),
+  }),
+  f4Chapter({
+    title: 'Competitive Performance Indicators', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Select a balanced set of market, commercial, customer, operational, digital and brand indicators and explain why no single metric is enough.',
+    mateIntro: 'A competitor’s revenue growth tells you what happened. Its return rate, margin and repeat purchases tell you whether it is healthy. You need both views to understand who is really strong.',
+    keyInsight: 'No single metric can fully explain competitive strength. Businesses should combine financial, customer, market and operational indicators to understand both current performance and the capabilities supporting future growth.',
+    statTiles: [
+      { value: '6', label: 'Indicator groups', subtitle: 'Market to brand', description: 'Market, commercial, customer, operational, digital and brand performance.' },
+      { value: '+37%', label: 'Coolmate revenue growth, H1 2025', subtitle: 'On Shopee, Lazada and Tiki', description: 'A growth indicator that needs margin, retention and return data beside it.' },
+      { value: '15–35%', label: 'Reported fashion return rates', subtitle: 'Informal Shopee seller survey', description: 'An indicative digital indicator that shows how return rates can offset revenue growth.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the growth figure is from YouNet ECI for the first half of 2025 and the return range is an informal seller survey, so neither is a measured industry benchmark.',
+    narrative: [
+      { label: 'What it is', text: 'Competitive performance indicators provide measurable evidence of how a brand performs relative to its peers. They help a business evaluate whether its positioning and operating strategy translates into growth, profitability, customer retention and operational effectiveness. The choice depends on objectives and data availability: listed companies may disclose financial and operational results, while private brands may require estimates, consumer research, retail observation or other indirect measures.' },
+      { label: 'Why it is happening', text: 'Each metric has blind spots. Revenue growth can be bought with discounts, high margin can hide falling customer numbers, and strong online sales can conceal high returns, so a balanced set is needed to see the real position.' },
+      { label: 'Real-world example', text: 'Market performance tracks share, revenue growth, geographic expansion and category penetration. Commercial performance covers gross margin, average selling price, sales per store and revenue per customer. Customer performance measures repeat purchase rate, retention, satisfaction, loyalty participation and acquisition cost, operational performance covers inventory turnover, availability, fulfilment time and markdown rates, digital performance covers conversion, online revenue contribution, return rates and engagement, and brand performance tracks awareness, consideration, perceived quality and preference.' },
+      { label: 'Vietnam example', text: 'YouNet ECI reported Coolmate’s first-half 2025 revenue on Shopee, Lazada and Tiki as above VND 64 billion, up 37%, and ranked brands on growth, store quality, product variety and price range rather than revenue alone. An informal survey of Shopee Vietnam sellers reported fashion return rates of 15–35%, a reminder that a digital indicator such as returns can change what a revenue figure is worth.' },
+      { label: 'Business impact', text: 'Competitive indicators turn market observations into measurable evidence. A balanced set of metrics helps a business identify strengths, diagnose underperformance and judge whether strategic initiatives are delivering results, and private-brand data limits should be stated openly.' },
+    ],
+    visualKind: 'fashion-m4-33-indicators', visualHeading: 'Six groups of competitive indicators',
+    visualIntro: 'See what each indicator group tracks and what it reveals.',
+    imageAlt: 'Casemate table of market, commercial, customer, operational, digital and brand indicators',
+    keyTerms: [
+      { term: 'Performance indicator', definition: 'A measurable signal of how well a business or brand is doing.' },
+      { term: 'Sell-through', definition: 'The share of delivered stock that has been sold in a period.' },
+      { term: 'Customer acquisition cost', definition: 'The marketing cost of winning one new customer.' },
+      { term: 'Return rate', definition: 'The share of sold items that customers send back.' },
+    ],
+    recap: [
+      'Indicators give measurable evidence of performance relative to peers.',
+      'Six groups: market, commercial, customer, operational, digital and brand.',
+      'Private brands may need estimates and indirect measures.',
+      'No single metric explains competitive strength.',
+    ],
+    chapterRecap: 'Competitive indicators turn market observations into measurable evidence. Using a balanced set of metrics helps businesses identify strengths, diagnose underperformance, and evaluate whether strategic initiatives are delivering results.',
+    deepDiveTitle: 'Why growth without margin and retention can mislead',
+    body: <F4DeepDive paragraphs={[
+      'A brand growing fast through deep discounts and heavy advertising may look like the leader while earning little and keeping few customers. A slower-growing rival with higher margin and strong repeat purchase may be the healthier business.',
+      'Pairing a growth measure with a quality measure, such as margin, retention or returns, shows which kind of growth it is. The pairing is what makes a benchmark a diagnosis instead of a scoreboard.' ,
+    ]} evidence="The indicator groups are described qualitatively in the supplied material. The Coolmate figures come from YouNet ECI for the first half of 2025 on three marketplaces, and the return-rate range is an informal Shopee seller survey that is indicative only." />,
+    sources: citeF4('bofStateOfFashion', 'younetFashion', 'nsqReturns'),
+  }),
+  f4Chapter({
+    title: 'Benchmarking and Strategic Implications', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Turn benchmarking findings into prioritised, measurable actions that fit the business’s own resources.',
+    mateIntro: 'A benchmark that ends in a slide has not done its job. The value comes from asking why a rival is ahead, deciding what you can adapt and then checking whether it worked.',
+    keyInsight: 'The purpose of benchmarking is to improve competitive decisions, not simply to rank competitors. Businesses should prioritise improvements that strengthen their own value proposition and create advantages that are difficult for rivals to imitate.',
+    statTiles: [
+      { value: '5', label: 'Steps from benchmark to action', subtitle: 'Gaps to monitoring', description: 'Identify gaps, analyse root causes, adapt best practice, prioritise investment and monitor results.' },
+      { value: '29 → 32', label: 'UNIQLO stores in Vietnam', subtitle: 'August 2025 to August 2026', description: 'Fast Retailing’s own count shows the pace of one competitor’s expansion.' },
+      { value: '13 → 20+', label: 'H&M stores in Vietnam', subtitle: 'June 2025 count and stated plan', description: 'A reported plan that gives a second benchmark for the pace of international competitors.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; store counts are company-reported or press-reported, and the H&M figure is a stated plan, not a result.',
+    narrative: [
+      { label: 'What it is', text: 'Benchmarking becomes strategically useful when its findings are turned into decisions about products, pricing, marketing, distribution and operations. Identifying a competitor’s advantage is only the first step: a business must determine why the advantage exists and whether it can be replicated or adapted. The implications should be assessed against internal resources, customer needs and long-term objectives.' },
+      { label: 'Why it is happening', text: 'A strategy that works for a global sportswear company may not suit a small local brand with limited investment and distribution capacity. Without the step from observation to decision, benchmarking becomes a descriptive exercise that changes nothing.' },
+      { label: 'Real-world example', text: 'Businesses identify competitive gaps in product quality, pricing, customer experience or channel availability, then analyse whether the gaps result from limited capabilities, inefficient processes, weak positioning or insufficient customer understanding. They adapt relevant best practices to their own model and market, allocate resources to improvements with the strongest potential effect on customer value and profitability, and reassess performance indicators regularly to see whether the changes improved outcomes.' },
+      { label: 'Vietnam example', text: 'Fast Retailing’s counts show UNIQLO Vietnam growing from 29 stores in August 2025 to 32 in August 2026, and H&M reported 13 stores in June 2025 with a plan for more than 20. A Vietnamese competitor can read both as a benchmark for how fast international rivals are building reach, and compare it with the 13.6% and 18.8% average US tariff rates Reuters reported on Vietnamese footwear and apparel when judging cost and sourcing options.' },
+      { label: 'Business impact', text: 'Benchmarking should lead to specific strategic actions rather than remain descriptive. Businesses can use competitor insights to strengthen differentiation, allocate resources more effectively and improve long-term competitiveness, concentrating on advantages that rivals find hard to imitate.' },
+    ],
+    visualKind: 'fashion-m4-34-implications', visualHeading: 'From benchmark to decision',
+    visualIntro: 'Follow the five steps from finding a gap to monitoring the result.',
+    imageAlt: 'Casemate flow of the five steps from competitive gap to monitored result',
+    keyTerms: [
+      { term: 'Root-cause analysis', definition: 'Working out why a gap exists rather than only measuring it.' },
+      { term: 'Best-practice adaptation', definition: 'Fitting a competitor’s useful practice to your own model, market and resources.' },
+      { term: 'Prioritisation', definition: 'Choosing the improvements with most effect on value and profit first.' },
+      { term: 'Difficult to imitate', definition: 'An advantage that rivals cannot copy quickly because it rests on capabilities, not tactics.' },
+    ],
+    recap: [
+      'Identifying a rival’s advantage is only the first step.',
+      'Find out why it exists and whether it can be adapted.',
+      'Assess implications against your resources, customers and objectives.',
+      'Prioritise improvements that rivals cannot easily copy and monitor results.',
+    ],
+    chapterRecap: 'Benchmarking should lead to specific strategic actions rather than remain a descriptive exercise. Businesses can use competitor insights to strengthen differentiation, allocate resources more effectively, and improve long-term competitiveness.',
+    deepDiveTitle: 'Why the aim is a better position, not a higher rank',
+    body: <F4DeepDive paragraphs={[
+      'A ranking invites the response “close the gap”, which can mean chasing a rival on a dimension that does not matter to your customers. A value proposition invites a better question: what can we do that our customers value and that others find hard to match?',
+      'That shifts effort from imitation to differentiation. It also makes monitoring simple: re-measure the indicators that the chosen action was meant to move, and keep or drop the action on that evidence.' ,
+    ]} evidence="The five steps are described qualitatively in the supplied material. Store counts come from Fast Retailing’s published outlet table and a government-portal report on H&M; the tariff rates are averages reported by Reuters in April 2025 and trade policy has since been changing." />,
+    sources: citeF4('bofStateOfFashion', 'fastRetailingOutlets', 'hmVietnam', 'reutersTariffs'),
+  }),
+];
+
+const quiz = f4Quiz('fashion-m4-l3', [
+  { chapter: '1', objective: 'Define benchmarking', question: 'What is competitor benchmarking?', application: 'A manager compares her products, pricing, brand, distribution and operations with rivals. What is this?', correct: 'The systematic comparison of products, pricing, brand positioning, distribution and operational performance against relevant competitors', wrong: ['Copying a rival’s advertising', 'Ranking suppliers by price only', 'Counting a rival’s employees'], explanation: 'Benchmarking is a systematic comparison that reveals relative position and capabilities to improve. Review Chapter 1.' },
+  { chapter: '1', objective: 'State the main value of benchmarking', question: 'When is benchmarking most valuable?', application: 'A team only compares price tags. What should it look for instead?', correct: 'When it identifies the underlying capabilities behind competitor performance', wrong: ['When it lists the lowest price only', 'When it ranks brands alphabetically', 'When it counts store windows'], explanation: 'Look for the capabilities behind outcomes, not only visible outcomes. Review Chapter 1.' },
+  { chapter: '1', objective: 'Match dimensions to a segment', question: 'Why should a benchmarking framework reflect the target customers and business model?', application: 'A value retailer uses a luxury scorecard. Why is this a problem?', correct: 'Different segments operate under different competitive priorities', wrong: ['All segments share priorities', 'Luxury has no competitors', 'Frameworks must be identical for everyone'], explanation: 'Comparisons should focus on dimensions that influence choice in the segment. Review Chapter 1.' },
+  { chapter: '2', objective: 'Choose comparison peers', question: 'Which brands should comparisons prioritise?', application: 'A sportswear brand builds a comparison set. Whom should it prioritise?', correct: 'Brands with overlapping target audiences or similar product categories', wrong: ['Brands with the most stores regardless of category', 'Brands in unrelated industries only', 'Brands with the longest histories only'], explanation: 'Prioritise overlapping audiences or similar categories, with other models as a secondary lens. Review Chapter 2.' },
+  { chapter: '2', objective: 'Describe Zara versus Uniqlo', question: 'How does the lesson contrast Zara and Uniqlo?', application: 'One brand sells trend-led fashion with frequent changes; the other everyday functional apparel. Which is which?', correct: 'Zara is trend-led with frequent assortment changes; Uniqlo is functional everyday apparel with product consistency', wrong: ['Both are luxury houses', 'Both sell only outdoor equipment', 'Zara sells basics only and Uniqlo sells trends only'], explanation: 'Similar categories can be served through different strategies. Review Chapter 2.' },
+  { chapter: '2', objective: 'Avoid imitation', question: 'What is the benefit of brand-to-brand comparison without copying?', application: 'A brand studies a rival but does not clone it. What does it gain?', correct: 'Insight for product, pricing, positioning and engagement that fits its own capabilities', wrong: ['A guaranteed identical result', 'A lower product cost automatically', 'No need for its own strategy'], explanation: 'Findings can inform strategy without requiring businesses to copy competitors directly. Review Chapter 2.' },
+  { chapter: '3', objective: 'Use a balanced set of indicators', question: 'Why combine financial, customer, market and operational indicators?', application: 'A brand relies on revenue growth only. What does it risk?', correct: 'No single metric explains competitive strength', wrong: ['Revenue growth always shows health', 'Customer data is never useful', 'Operational data is only for factories'], explanation: 'A balanced set shows both current performance and the capabilities supporting growth. Review Chapter 3.' },
+  { chapter: '3', objective: 'Handle limited data', question: 'How can private brands be assessed when they do not publish results?', application: 'A competitor is privately owned. What can an analyst use?', correct: 'Estimates, consumer research, retail observations or other indirect measures', wrong: ['Nothing, because comparison is impossible', 'Only the competitor’s logo', 'Only the competitor’s opening hours'], explanation: 'Private brands may require estimates, consumer research, retail observations or indirect measures. Review Chapter 3.' },
+  { chapter: '4', objective: 'List the steps from benchmark to action', question: 'What is the first step after a benchmark reveals a competitor’s advantage?', application: 'A team finds a rival with faster replenishment. What should it do next?', correct: 'Determine why the advantage exists and whether it can be replicated or adapted', wrong: ['Copy it immediately without analysis', 'Ignore it', 'Raise prices'], explanation: 'Identifying an advantage is only the first step; analyse causes and fit. Review Chapter 4.' },
+  { chapter: '4', objective: 'State the purpose of benchmarking', question: 'What is the purpose of benchmarking?', application: 'A manager is asked why the company benchmarks. What is the best answer?', correct: 'To improve competitive decisions and strengthen its own value proposition, not to rank competitors', wrong: ['To publish a league table of rivals', 'To avoid making decisions', 'To copy the largest rival'], explanation: 'Prioritise improvements that strengthen your value proposition and are difficult to imitate. Review Chapter 4.' },
+]);
+
+export const LESSON_4_3: FashionM4LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can build a benchmarking framework, compare brands without imitating them, choose a balanced set of competitive indicators and turn findings into prioritised actions.',
+    keyTakeaways: [
+      'Benchmark capabilities, not only visible outcomes such as prices or ranges.',
+      'Use dimensions that fit the segment and state the scope of every comparison.',
+      'Similar products can create value in very different ways.',
+      'No single metric explains competitive strength.',
+      'Benchmarking should lead to actions that strengthen your own value proposition.',
+    ],
+    businessImplications: 'Choose peers and dimensions deliberately, pair growth metrics with quality metrics, and convert each benchmark into a prioritised action and a measure that shows whether it worked.',
+    remember: 'Benchmark to decide, not to rank.',
+    nextLesson: 'Key Success Factors',
+  },
+};

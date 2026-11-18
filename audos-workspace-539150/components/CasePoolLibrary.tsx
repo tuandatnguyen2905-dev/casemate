@@ -1,10 +1,11 @@
 /**
- * CasePoolLibrary.tsx - 114 prebuilt full cases: the preserved 100-case core plus 14 eligible Case Journey adaptations.
+ * CasePoolLibrary.tsx - 173 selectable full cases plus 29 retired records retained for saved-history reopen.
  *
  * Unlike the “Case Room” tab (where Mate generates and grades a bespoke case),
  * this tab opens a fully prepared case instantly: situation, key question, data
- * tables and charts, suggested frameworks, and a model answer kept hidden until
- * the learner finishes their own attempt. No AI call anywhere on this path.
+ * tables and charts, a Domain Knowledge framework where one fits, how-to-approach
+ * tips, and a model answer kept hidden until the learner finishes their own
+ * attempt. No AI call anywhere on this path.
  *
  * The “Recommended for you” row merges two history sources: cases practised in
  * the library (localStorage, with both industry and case type) and AI cases done
@@ -31,45 +32,105 @@ import {
   Network,
   PenLine,
   RefreshCw,
-  Search,
+  RotateCcw,
   Shuffle,
   Sparkles,
   Target,
   XCircle,
 } from 'lucide-react';
 import { tw } from '../lib/colors';
+import { trackStepError, trackStepView, useActiveTimeThreshold } from '../lib/engagementTracking';
 import { CaseExhibitList } from './CaseExhibits';
 import ExhibitRenderer from './ExhibitRenderer';
 import PercentileRankingWidget from './PercentileRankingWidget';
-import { DIFFICULTY_LABELS, DIFFICULTY_ORDER } from '../lib/caseLibraryShared';
+import StructuresWorkspace from '../apps/CaseDrill/StructuresWorkspace';
+import { DIFFICULTY_LABELS } from '../lib/caseLibraryShared';
 import type { CaseDifficulty } from '../lib/caseLibraryShared';
 import {
   CASE_POOL_LIBRARY,
+  SELECTABLE_CASE_POOL_LIBRARY,
   POOL_INDUSTRIES,
   POOL_INDUSTRY_LABELS,
-  POOL_TYPES,
   POOL_TYPE_LABELS,
   poolRecommendationReason,
   recommendPoolCases,
 } from '../lib/casePoolLibrary';
 import type { FullCase, PoolHistoryRecord } from '../lib/casePoolLibrary';
+import { QUESTION_LIBRARY } from '../lib/skillQuestionLibrary';
+import { structuresEasySuggestedTree } from '../lib/structuresEasyBank';
+import { DOMAIN_KNOWLEDGE_APP_ID, DOMAIN_KNOWLEDGE_TOOLKIT_PATH, domainKnowledgeFramework } from '../lib/caseGuidance';
+import { BASIC_ECONOMICS_SLUG, BASIC_ECONOMICS_TOOLKITS_PILLAR, writeDomainPendingRoute } from '../lib/domainKnowledgeRoute';
+import type { LibraryExhibit, LibraryQuestion } from '../lib/skillQuestionLibrary';
+import type { SuggestedStructureTree } from '../lib/structureSuggestedTrees';
+import CalculationAnswerBuilder, { CalculationResultSummaryView } from './CalculationAnswerBuilder';
+import CaseResultView from './CaseResultView';
+import { calculationCaseById, calculationWorkedItems, scoreSerializedCalculationAnswer } from '../lib/calculationsCycle1';
+import {
+  createCalculationAnswerPayload,
+  serializeCalculationAnswer,
+  type CalculationAnswerPayload,
+} from '../lib/calculationAnswerModel';
+import { deriveOverallScore, normalizeEasyCalculationScoring, type HonestScoreResult } from '../lib/caseScoringRubrics';
+import { buildFeedbackPriorities, type FeedbackAction } from '../lib/feedbackPresentation';
+import {
+  buildReasoningFeedback,
+  chooseNextAction,
+  emptyWorkedAnswer,
+  hasLearnerResponse,
+  marketSizingBankWorkedAnswer,
+  poolCaseEvidence,
+  poolCaseWorkedAnswer,
+  resultOutcome,
+  retryAction,
+  type AttemptHistoryEntry,
+  type WorkedAnswerModel,
+} from '../lib/caseResultModel';
+import { MARKET_SIZING_REVEAL_NOTICE, getMarketSizingBankCase } from '../lib/marketSizingBank';
+import { marketSizingWorkedAnswerModel, marketSizingWorkedModelForSource, parseComponentValue } from '../lib/marketSizingWorkedModels';
+import MarketSizingWorkedAnswer, { MarketSizingAttemptFeedback } from './MarketSizingWorkedAnswer';
+import { scoreBand } from '../lib/scorePresentation';
+import MarketSizingAnswerBuilder, {
+  MarketSizingAttemptSummary,
+  calculateMarketSizingResult,
+  createInitialMarketSizingDraft,
+  parseMarketSizingAttempt,
+  serializeMarketSizingAttempt,
+  type MarketSizingAnswerDraft,
+} from './MarketSizingAnswerBuilder';
+import { CREATIVITY_CATEGORY_LABELS } from '../lib/creativityCycle2';
+import { MARKET_SIZING_CYCLE_3_QUESTIONS, MARKET_SIZING_FORMAT_LABELS } from '../lib/marketSizingCycle3';
+import { formatNumbersInText } from '../lib/numberDisplay';
+import { clarifyUnitLabel, clarifyUnitText, clarifyUnitsDeep } from '../lib/unitLabels';
+import { formatCanonicalNumber, numericUnitSpec } from '../lib/numericUnits';
+import { CASE_POOL_REQUEST_KEY, casePoolCaseIdFromHash } from './SolveFullCaseCta';
+import CasePoolFilters from './CasePoolFilters';
+import {
+  DEFAULT_POOL_FILTERS,
+  businessProblemForCase,
+  businessProblemLabel,
+  businessProblemsPresent,
+  filterPoolCases,
+  isDefaultPoolFilters,
+  type PoolFilters,
+} from '../lib/casePoolBusinessProblems';
 
 const HISTORY_LIMIT = 200;
 
-/** Cases shown per page - dumping all 114 at once makes the list too long to scan. */
+/** Opens Domain Knowledge on the Basic Economics card behind the first Suggested Framework chip. */
+function openFrameworkInDomainKnowledge(frameworkLabels: string[]) {
+  const card = frameworkLabels
+    .map((label) => domainKnowledgeFramework(label)?.card)
+    .find((title): title is string => Boolean(title));
+  if (card) {
+    writeDomainPendingRoute({ industrySlug: BASIC_ECONOMICS_SLUG, pillar: BASIC_ECONOMICS_TOOLKITS_PILLAR, cardTitle: card });
+  }
+  window.dispatchEvent(new CustomEvent('openApp', { detail: { appId: DOMAIN_KNOWLEDGE_APP_ID } }));
+}
+
+/** Cases shown per page - rendering the full library at once makes the list too long to scan. */
 const PAGE_SIZE = 24;
 
-/** Shorter answers cannot carry a structure, a number, and a recommendation. */
-const MIN_ANSWER_LENGTH = 80;
-const CASE_POOL_REQUEST_KEY = 'casemate-open-case-pool';
-
-const SKILL_LABELS: Record<string, string> = {
-  charts: 'Charts',
-  calculations: 'Calculations',
-  structures: 'Issue structuring',
-  creativity: 'Creative options',
-  'market-sizing': 'Market sizing',
-};
+const BUSINESS_PROBLEM_CHIPS = businessProblemsPresent(SELECTABLE_CASE_POOL_LIBRARY);
 
 export interface LibraryGradeDimension {
   key: string;
@@ -88,12 +149,91 @@ export interface LibraryGradeResult {
   matched: string[];
   missing: string[];
   recommendations: Array<{ action: string; why: string }>;
+  evidenceToRevisit?: string[];
+  legacyEvidence?: string[];
+  nextStep?: FeedbackAction | null;
+  furtherImprovements?: FeedbackAction[];
+  /** New weighted /10 report. Missing on historical /5 attempts. */
+  scoring?: HonestScoreResult | null;
+  sectionFeedback?: Array<{ section: string; assessment: string; evidence: string; improvement: string }>;
+  integratedAssessment?: Record<string, unknown>;
+  workedAnswerStatus?: string;
+  /** When the saved attempt was graded - shown when a solved case is reopened. */
+  completedOn?: string;
+  /** Earlier graded attempts at this case, newest first. */
+  history?: AttemptHistoryEntry[];
 }
 
-function scoreBadge(score: number): string {
-  if (score >= 4) return tw.badge.success;
-  if (score >= 3) return tw.badge.warning;
-  return tw.badge.danger;
+/**
+ * Re-marks saved Calculations bank attempts with the current rules, so a reopened
+ * attempt shows the same graduated score and notes as a fresh submission. Rows that
+ * cannot be parsed (older formats) are returned untouched.
+ */
+function remarkCalculationResults(results: Record<string, LibraryGradeResult>): Record<string, LibraryGradeResult> {
+  let next: Record<string, LibraryGradeResult> | null = null;
+  Object.keys(results).forEach((caseId) => {
+    const saved = results[caseId];
+    if (!saved || typeof saved.answer !== 'string' || !saved.answer.includes('FINAL NUMERICAL ANSWERS')) return;
+    const bank = calculationCaseById(CASE_POOL_LIBRARY.find((item) => item.id === caseId)?.source_case_id);
+    if (!bank) return;
+    try {
+      const feedback = scoreSerializedCalculationAnswer(bank, saved.answer);
+      if (!feedback.outcome.results.length) return;
+      const good = feedback.outcome.results.filter((result) => result.status === 'exact' || result.status === 'close' || result.status === 'carried');
+      const rest = feedback.outcome.results.filter((result) => !good.includes(result));
+      next = next || { ...results };
+      next[caseId] = {
+        ...saved,
+        score: Math.round(feedback.scoring.overallScore),
+        scoring: feedback.scoring,
+        summary: feedback.summary,
+        matched: good.map((result) => `${result.label}: ${result.note}`),
+        missing: rest.map((result) => `${result.label}: ${result.note}`),
+        recommendations: feedback.revisions.map((action) => ({ action, why: '' })),
+        sectionFeedback: [],
+        integratedAssessment: {},
+      };
+    } catch {
+      /* Keep the saved report as-is when an older answer cannot be re-marked. */
+    }
+  });
+  return next || results;
+}
+
+function formatSavedDate(iso?: string): string {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function resultScale(result: Pick<LibraryGradeResult, 'scoring'>): 5 | 10 {
+  return result.scoring?.scale === 10 ? 10 : 5;
+}
+
+function scoreBadge(score: number, scale: number = 5): string {
+  return scoreBand(score, scale).badgeClassName;
+}
+
+/** The saved answer is re-scored and shown as submitted, so only the report text is clarified. */
+function clarifyLibraryResult(result: LibraryGradeResult): LibraryGradeResult {
+  const { answer, history, ...report } = result;
+  return { ...clarifyUnitsDeep(report), answer, history };
+}
+
+function numericUnitHint(unit?: string): string {
+  const label = clarifyUnitLabel(unit);
+  if (!label) return '';
+  const spec = numericUnitSpec(label);
+  if (spec.kind === 'percent' || spec.kind === 'percentage-point' || spec.scale <= 1) return `Unit: ${label}`;
+  const base = label.replace(/(?:billion|million|thousand|tỷ|triệu|nghìn)\s*/iu, '').trim();
+  return `Unit: ${label} · 1.5 or ${formatCanonicalNumber(1.5 * spec.scale)}${base ? ` ${base}` : ''} both accepted`;
+}
+
+const MARKET_SIZING_ANSWER_UNITS = new Map(MARKET_SIZING_CYCLE_3_QUESTIONS.map((question) => [question.sourceCaseId, question.answerUnit]));
+
+function marketSizingAnswerUnit(item: Pick<FullCase, 'source_case_id'>): string {
+  return MARKET_SIZING_ANSWER_UNITS.get(item.source_case_id ?? '') || 'VND per year';
 }
 
 function historyKey(sessionId: string): string {
@@ -118,22 +258,10 @@ function difficultyBadge(difficulty: CaseDifficulty): string {
   return 'bg-[var(--space-semantic-warning-100)] text-[var(--space-neutral-800)]';
 }
 
-/** Strip diacritics so accent-free typing still finds cases. */
-function normalize(value: string): string {
-  const lowered = String(value || '').toLowerCase().normalize('NFD');
-  let out = '';
-  for (const ch of lowered) {
-    const code = ch.codePointAt(0) || 0;
-    if (code >= 0x0300 && code <= 0x036f) continue;
-    out += ch === 'đ' ? 'd' : ch;
-  }
-  return out.trim();
-}
-
 export default function CasePoolLibrary({
   sessionId,
   extraHistory = [],
-  results = {},
+  results: rawResults = {},
   onGrade,
   onOpen,
   openRequest = null,
@@ -149,24 +277,24 @@ export default function CasePoolLibrary({
   /** Host asks for one case to be opened (e.g. tapped in the dashboard history). */
   openRequest?: { id: string; nonce: number } | null;
 }) {
+  const results = useMemo(() => remarkCalculationResults(rawResults), [rawResults]);
   const [history, setHistory] = useState<PoolHistoryRecord[]>([]);
-  const [difficulty, setDifficulty] = useState<CaseDifficulty | 'all'>('all');
-  const [type, setType] = useState<string>('all');
-  const [industry, setIndustry] = useState<string>('all');
-  const [skillFocus, setSkillFocus] = useState<string>('all');
-  const [estimatedTime, setEstimatedTime] = useState<'all' | 'under-25' | '25-30' | '30-plus'>('all');
-  const [completion, setCompletion] = useState<'all' | 'not-started' | 'opened' | 'completed'>('all');
-  const [query, setQuery] = useState('');
+  const [filters, setFilters] = useState<PoolFilters>(DEFAULT_POOL_FILTERS);
   const [active, setActive] = useState<FullCase | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [attempt, setAttempt] = useState('');
+  const [marketSizingDraft, setMarketSizingDraft] = useState<MarketSizingAnswerDraft>(createInitialMarketSizingDraft);
+  const [calculationAnswer, setCalculationAnswer] = useState<CalculationAnswerPayload>(() => createCalculationAnswerPayload([{ id: 'final-1', label: 'Final result' }], 2));
   const [grading, setGrading] = useState(false);
   const [gradeError, setGradeError] = useState('');
   const [justGraded, setJustGraded] = useState<LibraryGradeResult | null>(null);
   // Set while re-attempting a case that already has a saved grade, so the old
   // report steps aside for the answer box instead of overwriting the new one.
   const [retrying, setRetrying] = useState(false);
+  // Gates the destructive Redo: a saved grade is only replaced after an
+  // explicit confirmation, so reopening a solved case never loses its feedback.
+  const [confirmRedo, setConfirmRedo] = useState(false);
   // Percentile ranking for a case graded on THIS page load. Opening a case
   // stamps the clock; submitting turns the elapsed time + grade into one
   // ranking record. Reopened saved grades have no timing, so no widget.
@@ -176,6 +304,8 @@ export default function CasePoolLibrary({
     scorePercent: number;
     timeSeconds: number;
   } | null>(null);
+  const consumedHashRequestRef = useRef('');
+  const solvingTrackedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     setHistory(readHistory(sessionId));
@@ -212,17 +342,28 @@ export default function CasePoolLibrary({
     (item: FullCase | null) => {
       if (!item) return;
       setActive(item);
-      setShowAnswer(false);
-      // Reopening a solved case restores the answer that earned its grade.
-      setAttempt(results[item.id]?.answer || '');
+      // Completed attempts may reopen their worked answer; pending or new
+      // attempts always start with it hidden.
+      setShowAnswer(Boolean(results[item.id]));
+      // Reopening a solved case restores legacy/free-text answers read-only in
+      // the saved report. A new CM-CALC attempt starts with its structured fields.
+      const savedAnswer = results[item.id]?.answer || '';
+      setAttempt(savedAnswer);
+      setMarketSizingDraft(parseMarketSizingAttempt(savedAnswer) || createInitialMarketSizingDraft());
+      setCalculationAnswer(createCalculationAnswerPayload(
+        (item.numeric_checks || []).map((check, index) => ({ id: `final-${index + 1}`, label: check.label, unit: check.unit, tolerance: check.tolerance })),
+        item.difficulty === 'hard' || item.difficulty === 'expert' ? 2 : 1,
+      ));
       setJustGraded(null);
       setRetrying(false);
+      setConfirmRedo(false);
       setGradeError('');
       openedAtRef.current = Date.now();
       setFreshRanking(null);
       remember(item);
       if (onOpen) {
         void onOpen(item).catch((error) => {
+          trackStepError('case-drill-log', 'choose_case', error, { mode: 'library' });
           setGradeError(error instanceof Error ? error.message : 'Mate could not start your drill log. Please reopen the case and try again.');
         });
       }
@@ -241,99 +382,231 @@ export default function CasePoolLibrary({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openRequest?.id, openRequest?.nonce]);
 
-  // Case Drill writes this request before opening Case Pool. Listening to the
-  // openApp event also handles a Case Pool window that is already mounted.
+  // Case Drill writes a same-tab request and the URL carries the durable route.
+  // The URL path survives refresh, a copied link, a new tab, and the email gate.
   useEffect(() => {
     const consumeRequest = () => {
-      try {
-        const id = sessionStorage.getItem(CASE_POOL_REQUEST_KEY);
-        if (!id) return;
-        const requested = CASE_POOL_LIBRARY.find((item) => item.id === id);
-        if (!requested) return;
-        sessionStorage.removeItem(CASE_POOL_REQUEST_KEY);
-        openCase(requested);
-      } catch {
-        /* sessionStorage can be unavailable in strict browser modes */
+      let storedId = '';
+      try { storedId = sessionStorage.getItem(CASE_POOL_REQUEST_KEY) || ''; } catch { /* URL remains available. */ }
+      const hashId = casePoolCaseIdFromHash(window.location.hash) || '';
+      const id = storedId || hashId;
+      if (!id) return;
+      const hashSignature = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      if (!storedId && consumedHashRequestRef.current === hashSignature) return;
+      const requested = SELECTABLE_CASE_POOL_LIBRARY.find((item) => item.id === id);
+      if (!requested) return;
+      if (storedId) {
+        try { sessionStorage.removeItem(CASE_POOL_REQUEST_KEY); } catch { /* best effort */ }
       }
+      consumedHashRequestRef.current = hashSignature;
+      openCase(requested);
     };
     consumeRequest();
     const onOpenApp = (event: Event) => {
       if ((event as CustomEvent).detail?.appId === 'case-drill-log') consumeRequest();
     };
     window.addEventListener('openApp', onOpenApp);
-    return () => window.removeEventListener('openApp', onOpenApp);
+    window.addEventListener('hashchange', consumeRequest);
+    return () => {
+      window.removeEventListener('openApp', onOpenApp);
+      window.removeEventListener('hashchange', consumeRequest);
+    };
   }, [openCase]);
 
   const savedResult = active ? results[active.id] : undefined;
   const rawShownResult = retrying ? null : justGraded || savedResult || null;
+  const clarifiedResult = useMemo(() => (rawShownResult ? clarifyLibraryResult(rawShownResult) : null), [rawShownResult]);
   // Keep the result screen render-safe even when a stale host or legacy row
   // violates the typed contract and omits one of the report arrays.
-  const shownResult = rawShownResult
+  const shownResult = clarifiedResult
     ? {
-        ...rawShownResult,
-        breakdown: Array.isArray(rawShownResult.breakdown) ? rawShownResult.breakdown : [],
-        matched: Array.isArray(rawShownResult.matched) ? rawShownResult.matched : [],
-        missing: Array.isArray(rawShownResult.missing) ? rawShownResult.missing : [],
-        recommendations: Array.isArray(rawShownResult.recommendations) ? rawShownResult.recommendations : [],
+        ...clarifiedResult,
+        breakdown: Array.isArray(clarifiedResult.breakdown) ? clarifiedResult.breakdown : [],
+        matched: Array.isArray(clarifiedResult.matched) ? clarifiedResult.matched : [],
+        missing: Array.isArray(clarifiedResult.missing) ? clarifiedResult.missing : [],
+        recommendations: Array.isArray(clarifiedResult.recommendations) ? clarifiedResult.recommendations.slice(0, 3) : [],
+        evidenceToRevisit: Array.isArray(clarifiedResult.evidenceToRevisit) ? clarifiedResult.evidenceToRevisit : [],
+        legacyEvidence: Array.isArray(clarifiedResult.legacyEvidence) ? clarifiedResult.legacyEvidence : [],
+        furtherImprovements: Array.isArray(clarifiedResult.furtherImprovements) ? clarifiedResult.furtherImprovements : [],
+        sectionFeedback: Array.isArray(clarifiedResult.sectionFeedback) ? clarifiedResult.sectionFeedback : [],
+        integratedAssessment: clarifiedResult.integratedAssessment && typeof clarifiedResult.integratedAssessment === 'object'
+          ? clarifiedResult.integratedAssessment
+          : {},
       }
     : null;
+  const journeyExhibits = useMemo(() => (active ? clarifyUnitsDeep(active.journey_exhibits) : undefined), [active]);
+  const dataExhibits = useMemo(() => (active ? clarifyUnitsDeep(active.data_exhibits) : []), [active]);
+  // Easy Calculations are scored on four criteria; a stored Commercial interpretation row stays in the data but is never shown.
+  const easyCalculationCase = Boolean(active && active.difficulty === 'easy' && (active.skill_focus || []).includes('calculations'));
+  const easyScoring = easyCalculationCase && shownResult?.scoring ? normalizeEasyCalculationScoring(shownResult.scoring) : null;
+  const visibleScoringCriteria = (easyScoring || shownResult?.scoring)?.criteria.filter((criterion) => !active?.market_sizing_format || !['scope', 'assumptions', 'reasonableness', 'interpretation_check', 'assumption_rationale'].includes(criterion.key)) || [];
+  const visibleScore = easyScoring
+    ? easyScoring.overallScore
+    : active?.market_sizing_format && shownResult?.scoring
+    ? deriveOverallScore(visibleScoringCriteria)
+    : shownResult?.score || 0;
+  const visibleScoreBand = scoreBand(visibleScore, shownResult ? resultScale(shownResult) : 10);
+  const rankedCriteria = visibleScoringCriteria.slice().sort((a, b) => a.score - b.score || b.weight - a.weight);
+  const feedbackPriorities = buildFeedbackPriorities({
+    evidenceToRevisit: shownResult?.evidenceToRevisit || [],
+    legacyEvidence: shownResult?.legacyEvidence || [],
+    nextStep: shownResult?.nextStep,
+    furtherImprovements: shownResult?.furtherImprovements || [],
+    legacyRecommendations: shownResult?.recommendations || [],
+    fallbackActions: rankedCriteria.map((item) => ({ action: item.strongerAnswer, why: item.reason })),
+  });
+
+  const calculationWorked = useMemo(() => {
+    if (!active?.worked_answer && !active?.source_case_id) return null;
+    const bank = calculationCaseById(active?.source_case_id);
+    if (bank) {
+      let outcome: ReturnType<typeof scoreSerializedCalculationAnswer>['outcome'] | null = null;
+      if (shownResult?.answer && shownResult.answer.includes('FINAL NUMERICAL ANSWERS')) {
+        try { outcome = scoreSerializedCalculationAnswer(bank, shownResult.answer).outcome; } catch { outcome = null; }
+      }
+      return calculationWorkedItems(bank, outcome);
+    }
+    return active?.worked_answer ? { items: active.worked_answer.results, decision: active.worked_answer.decision } : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active?.id, active?.source_case_id, shownResult?.answer]);
+
+  const structureQuestion = useMemo<LibraryQuestion | null>(() => {
+    if (!active || !(active.skill_focus || []).includes('structures')) return null;
+    const linkedIds = [
+      ...(active.related_drill_ids || []),
+      ...(active.journey_stages || []).map((stage) => stage.drillId),
+    ];
+    const linked = QUESTION_LIBRARY.structures.find((question) => linkedIds.includes(question.id));
+    // The linked Case Drill item may be multiple choice. Case Pool shows its own open task and never the drill's options.
+    if (linked) return linked.options?.length ? { ...linked, options: undefined, question: structuresEasySuggestedTree(linked.id)?.root.text || active.key_question } : linked;
+    const adaptedExhibits: LibraryExhibit[] = (active.data_exhibits || []).map((exhibit, index): LibraryExhibit => {
+      if (exhibit.type === 'table') return {
+        id: `${active.id}-structure-exhibit-${index + 1}`,
+        kind: 'table',
+        title: exhibit.title,
+        unit: 'As shown',
+        columns: exhibit.columns,
+        rows: exhibit.rows.map((row) => row.map(String)),
+        footnote: exhibit.note,
+      };
+      if (exhibit.type === 'chart_data') return {
+        id: `${active.id}-structure-exhibit-${index + 1}`,
+        kind: exhibit.chart_type,
+        title: exhibit.title,
+        unit: exhibit.unit || '',
+        labels: exhibit.labels,
+        values: exhibit.values,
+      };
+      return {
+        id: `${active.id}-structure-exhibit-${index + 1}`,
+        kind: 'table',
+        title: exhibit.label,
+        unit: 'As shown',
+        columns: ['Metric', 'Value'],
+        rows: [[exhibit.context, exhibit.value]],
+      };
+    });
+    return {
+      id: `pool-structure-${active.id}`,
+      skill: 'structures',
+      difficulty: active.difficulty,
+      title: `${active.title} Structure`,
+      question: active.key_question,
+      correctAnswer: active.model_answer.issue_tree?.join('\n') || active.model_answer.framework_applied || 'Build a case-specific issue tree.',
+      explanation: active.model_answer.framework_applied || 'A strong tree separates the decision into testable, non-overlapping branches.',
+      answerMode: 'text',
+      businessContext: active.situation,
+      exhibits: active.journey_exhibits?.length ? active.journey_exhibits : adaptedExhibits,
+      industry: POOL_INDUSTRY_LABELS[active.industry] || active.industry,
+      businessProblem: businessProblemLabel(businessProblemForCase(active.id)) || POOL_TYPE_LABELS[active.type] || active.type,
+      drillType: 'Issue Tree',
+      estimatedMinutes: 8,
+    };
+  }, [active]);
+
+  // An unlinked structure case is graded and explained against its own published issue tree,
+  // the same model answer the full-case result shows, instead of a generic template tree.
+  const structureTreeOverride = useMemo<SuggestedStructureTree | null>(() => {
+    if (!active || !structureQuestion || !structureQuestion.id.startsWith('pool-structure-')) return null;
+    const branches = (active.model_answer.issue_tree || []).map((line) => String(line || '').trim()).filter(Boolean).slice(0, 8);
+    if (branches.length < 2) return null;
+    const ids = branches.map((_, index) => `${structureQuestion.id}-branch-${index + 1}`);
+    const framework = String(active.model_answer.framework_applied || '').trim();
+    return {
+      caseId: structureQuestion.id,
+      root: { id: `${structureQuestion.id}-root`, text: structureQuestion.question },
+      branches: branches.map((text, index) => ({ id: ids[index], text, children: [] })),
+      explanations: framework ? [{ branchId: ids[0], title: 'Why this structure', explanation: framework }] : [],
+      investigateFirst: '',
+    };
+  }, [active, structureQuestion]);
 
   const submitAttempt = useCallback(async () => {
     if (!active || !onGrade) return;
-    const text = attempt.trim();
-    if (text.length < MIN_ANSWER_LENGTH) {
-      setGradeError(
-        `Write at least ${MIN_ANSWER_LENGTH} characters - your structure, the numbers you worked out, and your recommendation - so the grade is useful.`,
-      );
+    const marketSizingCalculation = calculateMarketSizingResult(marketSizingDraft.components);
+    if (active.market_sizing_format && Object.keys(marketSizingCalculation.errors).length > 0) {
+      setGradeError('Fix the invalid Component values before submitting.');
       return;
     }
+    const text = active.source_case_id?.startsWith('CM-CALC-')
+      ? serializeCalculationAnswer(calculationAnswer)
+      : active.market_sizing_format
+        ? serializeMarketSizingAttempt(marketSizingDraft, marketSizingAnswerUnit(active))
+        : attempt.trim();
     setGrading(true);
     setGradeError('');
     try {
-      const result = await onGrade(active, text);
+      const serverResult = await onGrade(active, text);
+      let result = serverResult;
+      if (active.source_case_id?.startsWith('CM-CALC-')) {
+        const bank = calculationCaseById(active.source_case_id);
+        if (bank) {
+          const feedback = scoreSerializedCalculationAnswer(bank, text);
+          const good = feedback.outcome.results.filter((entry) => entry.status === 'exact' || entry.status === 'close' || entry.status === 'carried');
+          const rest = feedback.outcome.results.filter((entry) => !good.includes(entry));
+          result = {
+            ...serverResult,
+            score: Math.round(feedback.scoring.overallScore),
+            scoring: feedback.scoring,
+            summary: feedback.summary,
+            matched: good.map((entry) => `${entry.label}: ${entry.note}`),
+            missing: rest.map((entry) => `${entry.label}: ${entry.note}`),
+            recommendations: feedback.revisions.map((action) => ({ action, why: '' })),
+          };
+        }
+      }
       setJustGraded(result);
       // Time = case open → submission; the Date.now() suffix makes a "Try
       // again" re-grade its own ranking record instead of reusing the old one.
       setFreshRanking({
         key: `case-pool-lib:${active.id}:${Date.now()}`,
-        scorePercent: Math.round((Number(result.score) / 5) * 100),
+        scorePercent: Math.round((Number(result.score) / resultScale(result)) * 100),
         timeSeconds: Math.round((Date.now() - openedAtRef.current) / 1000),
       });
       setRetrying(false);
       setShowAnswer(true);
+      trackStepView('case-drill-log', 'answer', {
+        mode: 'library',
+        dedupeKey: active.id,
+        properties: { case_id: active.id, score: Number(result.score), score_scale: resultScale(result), trigger: 'graded' },
+      });
     } catch (error) {
+      trackStepError('case-drill-log', 'answer', error, { mode: 'library' });
       setGradeError(error instanceof Error ? error.message : 'Mate could not grade this answer. Please try again.');
     } finally {
       setGrading(false);
     }
-  }, [active, attempt, onGrade]);
+  }, [active, attempt, marketSizingDraft, calculationAnswer, onGrade]);
 
   const recommendations = useMemo(() => recommendPoolCases(combinedHistory, 3), [combinedHistory]);
 
-  const matches = useMemo(() => {
-    const q = normalize(query);
-    const tokens = q.split(' ').filter(Boolean);
-    return CASE_POOL_LIBRARY.filter((item) => {
-      if (difficulty !== 'all' && item.difficulty !== difficulty) return false;
-      if (type !== 'all' && item.type !== type) return false;
-      if (industry !== 'all' && item.industry !== industry) return false;
-      if (skillFocus !== 'all' && !(item.skill_focus || []).includes(skillFocus as any)) return false;
-      const minutes = item.estimated_minutes || 25;
-      if (estimatedTime === 'under-25' && minutes >= 25) return false;
-      if (estimatedTime === '25-30' && (minutes < 25 || minutes > 30)) return false;
-      if (estimatedTime === '30-plus' && minutes < 30) return false;
-      const isCompleted = Boolean(results[item.id]);
-      const isOpened = practicedIds.has(item.id);
-      if (completion === 'completed' && !isCompleted) return false;
-      if (completion === 'opened' && (!isOpened || isCompleted)) return false;
-      if (completion === 'not-started' && (isOpened || isCompleted)) return false;
-      if (tokens.length === 0) return true;
-      const haystack = normalize(
-        [item.title, item.situation, item.key_question, item.objective || '', item.tags.join(' ')].join(' '),
-      );
-      return tokens.every((token) => haystack.includes(token));
-    });
-  }, [query, difficulty, type, industry, skillFocus, estimatedTime, completion, practicedIds, results]);
+  const completedIds = useMemo(() => new Set(Object.keys(results).filter((id) => Boolean(results[id]))), [results]);
+  const matches = useMemo(
+    () => filterPoolCases(SELECTABLE_CASE_POOL_LIBRARY, filters, { completedIds, openedIds: practicedIds }),
+    [filters, completedIds, practicedIds],
+  );
+  const filtersActive = !isDefaultPoolFilters(filters);
+  const resetFilters = useCallback(() => setFilters(DEFAULT_POOL_FILTERS), []);
 
   const drawRandom = useCallback(() => {
     const unseen = matches.filter((item) => !practicedIds.has(item.id));
@@ -344,39 +617,160 @@ export default function CasePoolLibrary({
 
   const solvedCount = useMemo(() => Object.keys(results).length, [results]);
 
+  const trackSolving = useCallback((item: FullCase, trigger: 'active_2min' | 'answer_typed', activeSeconds: number | null) => {
+    if (solvingTrackedRef.current.has(item.id)) return;
+    solvingTrackedRef.current.add(item.id);
+    trackStepView('case-drill-log', 'solving_case', {
+      mode: 'library',
+      dedupeKey: item.id,
+      properties: {
+        case_id: item.id,
+        trigger,
+        active_seconds: activeSeconds,
+        seconds_since_open: Math.round((Date.now() - openedAtRef.current) / 1000),
+      },
+    });
+  }, []);
+  useActiveTimeThreshold(Boolean(active) && !rawShownResult && !showAnswer, active?.id, (activeSeconds) => {
+    if (active) trackSolving(active, 'active_2min', activeSeconds);
+  });
+
   // Changing filters resets to the first page instead of keeping the previous list length.
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [query, difficulty, type, industry, skillFocus, estimatedTime, completion]);
+  }, [filters]);
+
+  const leaveCase = () => {
+    const calculationDraft = calculationAnswer.caveat.trim()
+      || calculationAnswer.finalAnswers.some((answer) => answer.value.trim())
+      || calculationAnswer.formulaRows.some((row) => row.numbers.some((slot) => slot.value.trim() || slot.label.trim()));
+    const sizingDraft = marketSizingDraft.manualResult?.trim()
+      || marketSizingDraft.components.some((component: any) => String(component?.value ?? '').trim());
+    const hasUnfinishedWork = !shownResult && !showAnswer && Boolean(attempt.trim() || calculationDraft || sizingDraft);
+    if (hasUnfinishedWork && !window.confirm('Back to the Case Pool Library? Your unfinished answer will be discarded.')) return;
+    setConfirmRedo(false);
+    setActive(null);
+  };
 
   /* ------------------------------------------------------------ open case */
   if (active) {
+    const isSizingCase = Boolean(active.market_sizing_format) || (active.skill_focus || []).includes('market-sizing' as any);
+    const nf = (value: string) => clarifyUnitText(isSizingCase ? formatNumbersInText(value) : value);
+    const isCalculationCase = Boolean(active.source_case_id?.startsWith('CM-CALC-'));
+    const savedSizingAttempt = shownResult && active.market_sizing_format ? parseMarketSizingAttempt(shownResult.answer) : null;
+    const learnerAnswered = !shownResult
+      ? false
+      : savedSizingAttempt
+        ? savedSizingAttempt.components.some((component: any) => String(component?.value ?? '').trim()) || Boolean(savedSizingAttempt.manualResult?.trim())
+        : isCalculationCase
+          ? /\d/.test(shownResult.answer.replace(/^[\s\S]*?FINAL NUMERICAL ANSWERS/i, '').replace(/\b(?:result|step|row)\s*\d+/gi, ''))
+          : hasLearnerResponse(shownResult.answer);
+    const legacyCriteria = !shownResult?.scoring && shownResult
+      ? shownResult.breakdown.map((dimension) => ({ key: dimension.key, label: dimension.label, weight: 25, score: Math.round(dimension.score * 2 * 10) / 10, evidence: '', reason: dimension.evidence, strongerAnswer: dimension.nextStep }))
+      : [];
+    const resultCriteria = visibleScoringCriteria.length ? visibleScoringCriteria : legacyCriteria;
+    const resultScaleValue = shownResult ? resultScale(shownResult) : 10;
+    const outcome = resultOutcome(visibleScore, resultScaleValue, { answered: learnerAnswered });
+    const focus = feedbackPriorities.nextStep?.action || '';
+    const resultFeedback = buildReasoningFeedback({
+      criteria: resultCriteria,
+      matched: active.market_sizing_format ? [] : shownResult?.matched || [],
+      missing: active.market_sizing_format ? [] : shownResult?.missing || [],
+      evidenceToRevisit: [...(shownResult?.evidenceToRevisit || []), ...(shownResult?.legacyEvidence || [])],
+      exclude: focus ? [focus] : [],
+    });
+    const sizingModel = active.market_sizing_format ? marketSizingWorkedModelForSource(active.source_case_id, marketSizingAnswerUnit(active)) : null;
+    const savedSizingResult = savedSizingAttempt
+      ? calculateMarketSizingResult(savedSizingAttempt.components).result ?? parseComponentValue({ label: '', value: savedSizingAttempt.manualResult || '', unit: 'number' })
+      : null;
+    const rawPoolWorkedAnswer: WorkedAnswerModel | null = !shownResult
+      ? null
+      : sizingModel
+        ? (sizingModel.contentRepair ? null : marketSizingWorkedAnswerModel(sizingModel))
+        : active.market_sizing_bank
+        ? marketSizingBankWorkedAnswer(getMarketSizingBankCase(active.source_case_id), MARKET_SIZING_REVEAL_NOTICE)
+        : calculationWorked && calculationWorked.items.length
+          ? { ...emptyWorkedAnswer('reference'), calculations: calculationWorked.items, conclusion: calculationWorked.decision || '' }
+          : poolCaseWorkedAnswer(active.model_answer);
+    const poolWorkedAnswer = rawPoolWorkedAnswer && clarifyUnitsDeep(rawPoolWorkedAnswer);
+    const frameworkCard = active.framework_hints.map((hint) => domainKnowledgeFramework(hint)).find(Boolean) || null;
+    const nextCase = recommendations.find((item) => item.id !== active.id && !results[item.id])
+      || SELECTABLE_CASE_POOL_LIBRARY.find((item) => item.id !== active.id && item.type === active.type && !results[item.id])
+      || null;
+    const startRetry = () => {
+      setConfirmRedo(false);
+      setShowAnswer(false);
+      setRetrying(true);
+      setJustGraded(null);
+      setAttempt('');
+      setMarketSizingDraft(createInitialMarketSizingDraft());
+      setCalculationAnswer(createCalculationAnswerPayload(
+        (active.numeric_checks || []).map((check, index) => ({ id: `final-${index + 1}`, label: check.label, unit: check.unit, tolerance: check.tolerance })),
+        active.difficulty === 'hard' || active.difficulty === 'expert' ? 2 : 1,
+      ));
+      setGradeError('');
+      openedAtRef.current = Date.now();
+      setFreshRanking(null);
+    };
+    const retry = retryAction(startRetry, { focus, label: structureQuestion ? 'Retry full case' : undefined });
+    const nextAction = chooseNextAction(outcome, {
+      'domain-knowledge': frameworkCard ? { kind: 'domain-knowledge', label: `Review ${frameworkCard.label}`, detail: `See how this framework works in ${DOMAIN_KNOWLEDGE_TOOLKIT_PATH}, then come back to this case.`, onSelect: () => openFrameworkInDomainKnowledge(active.framework_hints) } : null,
+      'next-question': nextCase ? { kind: 'next-question', label: 'Next recommended case', detail: `Practise on “${nextCase.title}”.`, onSelect: () => openCase(nextCase) } : null,
+    });
     return (
-      <div data-testid="pool-library-case">
+      <div data-testid="pool-library-case" data-retry-anchor onInput={() => { if (!rawShownResult) trackSolving(active, 'answer_typed', null); }}>
+        <button type="button" onClick={leaveCase} className={`mb-3 inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold ${tw.button.secondary}`} data-testid="button-back-to-pool-library-top">
+          <ArrowLeft className="h-4 w-4" /> Back to Case Pool Library
+        </button>
         <div className="flex flex-wrap items-center gap-2">
-          <span className={`${tw.badge.default} ${tw.badge.primary}`}>
-            {POOL_TYPE_LABELS[active.type] || active.type}
-          </span>
+          {businessProblemForCase(active.id) ? (
+            <span className={`${tw.badge.default} ${tw.badge.primary}`} data-testid="pool-case-business-problem">
+              {businessProblemLabel(businessProblemForCase(active.id))}
+            </span>
+          ) : null}
           <span className={`${tw.badge.default} ${tw.badge.accent}`}>
             {POOL_INDUSTRY_LABELS[active.industry] || active.industry}
           </span>
-          <span className={`${tw.badge.default} ${difficultyBadge(active.difficulty)}`}>
-            {DIFFICULTY_LABELS[active.difficulty]}
-          </span>
+          {active.creativity_category ? (
+            <span className={`${tw.badge.default} ${tw.badge.accent}`}>{CREATIVITY_CATEGORY_LABELS[active.creativity_category]}</span>
+          ) : (
+            <>
+              <span className={`${tw.badge.default} ${difficultyBadge(active.difficulty)}`} title={active.market_sizing_bank ? `Counts as ${DIFFICULTY_LABELS[active.difficulty]} in the difficulty filters` : undefined}>
+                {active.market_sizing_bank?.sourceLabel || DIFFICULTY_LABELS[active.difficulty]}
+              </span>
+              {active.market_sizing_format ? <span className={`${tw.badge.default} ${tw.badge.accent}`}>{MARKET_SIZING_FORMAT_LABELS[active.market_sizing_format]}</span> : null}
+              {active.market_sizing_bank ? (
+                <>
+                  <span className={`${tw.badge.default} ${tw.badge.accent}`} data-testid="market-sizing-bank-industry">{active.market_sizing_bank.industry}</span>
+                  <span className={`${tw.badge.default} ${tw.badge.accent}`} data-testid="market-sizing-bank-geography">{active.market_sizing_bank.geography}</span>
+                </>
+              ) : null}
+            </>
+          )}
           {savedResult ? (
             <span
-              className={`${tw.badge.default} ${scoreBadge(savedResult.score)} flex items-center gap-1`}
+              className={`${tw.badge.default} ${scoreBadge(savedResult.score, resultScale(savedResult))} flex items-center gap-1`}
               data-testid="pool-case-saved-score"
             >
               <CheckCircle2 className="h-3 w-3" />
-              Solved · {savedResult.score}/5
+              Solved · {savedResult.score}/{resultScale(savedResult)} · {scoreBand(savedResult.score, resultScale(savedResult)).label}
             </span>
           ) : null}
           <span className="inline-flex items-center gap-1 text-[11px] text-[var(--space-text-muted)]"><Clock className="h-3 w-3" /> {active.estimated_minutes || 25} min</span>
-          <span className="text-[11px] text-[var(--space-text-muted)]">{active.id}</span>
         </div>
 
-        <h2 className="mt-2 text-xl font-bold leading-7 text-[var(--space-text-primary)]">{active.title}</h2>
+        <h2 className="mt-2 text-xl font-bold leading-7 text-[var(--space-text-primary)]">{nf(active.title)}</h2>
+
+        {structureQuestion ? (
+          <section className="mt-4" data-testid="pool-structures-workspace">
+            <StructuresWorkspace
+              initialCaseId={structureQuestion.id}
+              caseOverride={structureQuestion}
+              suggestedTreeOverride={structureTreeOverride}
+              onBackToLibrary={leaveCase}
+            />
+          </section>
+        ) : null}
 
         {/* The page is full-bleed, so every block of running prose carries its
             own reading measure - a case narrative stretched across a 1920px
@@ -384,201 +778,132 @@ export default function CasePoolLibrary({
             width they need. */}
         <div className="mt-3 rounded-xl bg-[var(--space-surface-muted)] p-4">
           <p className="max-w-[80ch] whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-primary)]">
-            {active.situation}
+            {nf(active.situation)}
           </p>
         </div>
 
-        {active.objective ? (
-          <div className="mt-3 grid gap-3 lg:grid-cols-2">
-            <section className="rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Objective</p>
-              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{active.objective}</p>
-            </section>
-            <section className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3.5">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Constraints</p>
-              <ul className="mt-1.5 space-y-1">
-                {(active.constraints || []).map((constraint) => <li key={constraint} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {constraint}</li>)}
-              </ul>
-            </section>
+        {active.objective || (active.constraints || []).length ? (
+          <div className={`mt-3 grid gap-3 ${active.objective && (active.constraints || []).length ? 'lg:grid-cols-2' : ''}`}>
+            {active.objective ? (
+              <section className="rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Objective</p>
+                <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{nf(active.objective)}</p>
+              </section>
+            ) : null}
+            {(active.constraints || []).length ? (
+              <section className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3.5">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Constraints</p>
+                <ul className="mt-1.5 space-y-1">
+                  {(active.constraints || []).map((constraint) => <li key={constraint} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {nf(constraint)}</li>)}
+                </ul>
+              </section>
+            ) : null}
           </div>
         ) : null}
 
-        {active.journey_exhibits?.length ? (
-          <div className="mt-4"><ExhibitRenderer exhibits={active.journey_exhibits} displayMode="advanced" /></div>
+        {journeyExhibits?.length ? (
+          <div className="mt-4"><ExhibitRenderer exhibits={journeyExhibits} displayMode="advanced" /></div>
         ) : (
-          <CaseExhibitList exhibits={active.data_exhibits} className="mt-4" />
+          <CaseExhibitList exhibits={dataExhibits} className="mt-4" />
         )}
 
         <div className="mt-4 rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5">
           <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Case task</p>
-          <p className="mt-1 max-w-[90ch] text-sm font-semibold leading-6 text-[var(--space-text-primary)]">
-            {active.key_question}
+          <p className="mt-1 max-w-[90ch] whitespace-pre-wrap text-sm font-semibold leading-6 text-[var(--space-text-primary)]">
+            {nf(active.key_question)}
           </p>
         </div>
 
-        <div className="mt-4">
-          <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-            <Lightbulb className="h-3.5 w-3.5 shrink-0" />
-            Suggested frameworks
-          </p>
-          <div className="mt-1.5 flex flex-wrap gap-1.5">
-            {active.framework_hints.map((hint) => (
-              <span
-                key={hint}
-                className="rounded-full border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-2.5 py-1 text-[11px] text-[var(--space-text-secondary)]"
+        {active.framework_hints.length ? (
+          <section className="mt-4" data-testid="pool-case-suggested-framework">
+            <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
+              <Lightbulb className="h-3.5 w-3.5 shrink-0" />
+              Suggested Framework
+            </p>
+            <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+              {active.framework_hints.map((hint) => (
+                <span
+                  key={hint}
+                  title={`Explained in ${DOMAIN_KNOWLEDGE_TOOLKIT_PATH}`}
+                  className="rounded-full border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-2.5 py-1 text-[11px] text-[var(--space-text-secondary)]"
+                >
+                  {hint}
+                </span>
+              ))}
+              <button
+                type="button"
+                onClick={() => openFrameworkInDomainKnowledge(active.framework_hints)}
+                className="inline-flex min-h-8 items-center gap-1 rounded-lg px-1.5 text-[11px] font-semibold text-[var(--space-text-brand)] hover:underline"
+                data-testid="pool-framework-domain-link"
               >
-                {hint}
-              </span>
-            ))}
-          </div>
-        </div>
+                <BookOpen className="h-3.5 w-3.5 shrink-0" />
+                Explained in {DOMAIN_KNOWLEDGE_TOOLKIT_PATH}
+              </button>
+            </div>
+          </section>
+        ) : null}
+
+        {active.approach_tips?.length ? (
+          <section className="mt-4" data-testid="pool-case-how-to-approach">
+            <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
+              <Target className="h-3.5 w-3.5 shrink-0" />
+              How to approach
+            </p>
+            <ul className="mt-1.5 max-w-[85ch] space-y-1">
+              {active.approach_tips.map((tip) => (
+                <li key={tip} className="text-xs leading-5 text-[var(--space-text-secondary)]">{nf(tip)}</li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         {onGrade ? (
           <section
-            className="mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4"
+            className={shownResult ? 'mt-4' : 'mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4'}
             data-testid="pool-library-attempt"
           >
             {shownResult ? (
               <div data-testid="pool-library-grade">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex min-w-0 items-center gap-2.5">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--space-surface-accent-soft)]">
-                      <span className="text-base font-extrabold leading-none text-[var(--space-text-brand)]">
-                        {shownResult.score}
-                        <span className="text-[10px] font-bold">/5</span>
-                      </span>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-[var(--space-text-primary)]">Your grade for this case</p>
-                      <p className="text-[11px] leading-4 text-[var(--space-text-muted)]">
-                        Saved to your dashboard, progress ring, and grade trend
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRetrying(true);
-                      setJustGraded(null);
-                      setGradeError('');
-                    }}
-                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold ${tw.button.secondary}`}
-                    data-testid="button-retry-library-case"
-                  >
-                    <RefreshCw className="h-3.5 w-3.5" />
-                    Try again
-                  </button>
-                </div>
-
-                {shownResult.summary ? (
-                  <p className="mt-3 max-w-[85ch] text-xs leading-6 text-[var(--space-text-secondary)]">
-                    {shownResult.summary}
-                  </p>
-                ) : null}
-
-                {justGraded && freshRanking ? (
-                  <PercentileRankingWidget
-                    className="mt-3"
-                    app="case_pool"
-                    scorePercent={freshRanking.scorePercent}
-                    timeSeconds={freshRanking.timeSeconds}
-                    submissionKey={freshRanking.key}
-                  />
-                ) : null}
-
-                {shownResult.breakdown.length > 0 ? (
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                    {shownResult.breakdown.map((dimension) => (
-                      <div
-                        key={dimension.key}
-                        className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-xs font-bold text-[var(--space-text-primary)]">{dimension.label}</p>
-                          <span className={`${tw.badge.default} ${scoreBadge(dimension.score)} shrink-0`}>
-                            {dimension.score}/5
-                          </span>
-                        </div>
-                        <p className="mt-1.5 text-[11px] leading-4 text-[var(--space-text-secondary)]">
-                          {dimension.evidence}
-                        </p>
-                        {dimension.nextStep ? (
-                          <p className="mt-1.5 text-[11px] leading-4 text-[var(--space-text-muted)]">
-                            <span className="font-semibold">Next: </span>
-                            {dimension.nextStep}
-                          </p>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
-
-                {shownResult.matched.length > 0 || shownResult.missing.length > 0 ? (
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                    {shownResult.matched.length > 0 ? (
-                      <div className="rounded-xl border border-[var(--space-border-default)] p-3">
-                        <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-semantic-success)]">
-                          <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
-                          You got this right
-                        </p>
-                        <ul className="mt-1.5 space-y-1">
-                          {shownResult.matched.map((item, index) => (
-                            <li key={index} className="text-[11px] leading-4 text-[var(--space-text-secondary)]">
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null}
-                    {shownResult.missing.length > 0 ? (
-                      <div className="rounded-xl border border-[var(--space-border-default)] p-3">
-                        <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--space-semantic-danger)]">
-                          <XCircle className="h-3.5 w-3.5 shrink-0" />
-                          You missed this
-                        </p>
-                        <ul className="mt-1.5 space-y-1">
-                          {shownResult.missing.map((item, index) => (
-                            <li key={index} className="text-[11px] leading-4 text-[var(--space-text-secondary)]">
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
-
-                {shownResult.recommendations.length > 0 ? (
-                  <div className="mt-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
-                      Practise next
-                    </p>
-                    <ul className="mt-1.5 space-y-1.5">
-                      {shownResult.recommendations.map((item, index) => (
-                        <li key={index} className="rounded-xl bg-[var(--space-surface-muted)] p-2.5">
-                          <p className="text-xs font-semibold leading-5 text-[var(--space-text-primary)]">{item.action}</p>
-                          {item.why ? (
-                            <p className="mt-1 text-[11px] leading-4 text-[var(--space-text-muted)]">
-                              <span className="font-semibold">Why? </span>
-                              {item.why}
-                            </p>
-                          ) : null}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
-
-                {shownResult.answer ? (
-                  <details className="mt-3">
-                    <summary className="cursor-pointer text-[11px] font-semibold text-[var(--space-text-brand)]">
-                      Show the answer you submitted
-                    </summary>
-                    <p className="mt-2 whitespace-pre-wrap rounded-xl bg-[var(--space-surface-muted)] p-3 text-[11px] leading-5 text-[var(--space-text-secondary)]">
-                      {shownResult.answer}
-                    </p>
-                  </details>
-                ) : null}
+                <CaseResultView
+                  score={visibleScore}
+                  scale={resultScaleValue}
+                  outcome={outcome}
+                  completedOn={!justGraded ? savedResult?.completedOn : undefined}
+                  feedback={resultFeedback}
+                  criteria={resultCriteria}
+                  learnerResponse={learnerAnswered && isCalculationCase ? (
+                    <CalculationResultSummaryView
+                      serialized={shownResult.answer}
+                      specs={(active.numeric_checks || []).map((check, index) => ({ id: `final-${index + 1}`, label: clarifyUnitText(check.label), unit: check.unit, tolerance: check.tolerance }))}
+                      title="Your submitted results"
+                    />
+                  ) : learnerAnswered && savedSizingAttempt ? (
+                    <MarketSizingAttemptSummary value={savedSizingAttempt} answerUnit={marketSizingAnswerUnit(active)} />
+                  ) : undefined}
+                  learnerResponseText={learnerAnswered && !isCalculationCase && !savedSizingAttempt ? shownResult.answer : ''}
+                  workedAnswer={poolWorkedAnswer}
+                  workedAnswerBody={poolWorkedAnswer && sizingModel ? <MarketSizingWorkedAnswer model={sizingModel} /> : undefined}
+                  layout={sizingModel ? 'stacked' : undefined}
+                  unavailableReason={`${poolCaseEvidence(active.model_answer).trustworthy ? 'No verified worked answer is stored for this case.' : poolCaseEvidence(active.model_answer).reason} (Case ${active.id}.)`}
+                  retry={retry}
+                  nextAction={nextAction}
+                  history={shownResult.history || []}
+                  extras={(justGraded && freshRanking) || sizingModel ? (
+                    <>
+                      {justGraded && freshRanking ? (
+                        <PercentileRankingWidget
+                          app="case_pool"
+                          scorePercent={freshRanking.scorePercent}
+                          timeSeconds={freshRanking.timeSeconds}
+                          submissionKey={freshRanking.key}
+                        />
+                      ) : null}
+                      {sizingModel ? <MarketSizingAttemptFeedback model={sizingModel} components={savedSizingAttempt?.components || []} result={savedSizingResult} /> : null}
+                    </>
+                  ) : undefined}
+                  format={nf}
+                  testId="pool-library-result"
+                />
               </div>
             ) : (
               <div>
@@ -587,22 +912,52 @@ export default function CasePoolLibrary({
                   Solve it here
                 </p>
                 <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">
-                  Write your structure, the numbers you worked out from the exhibits, and your recommendation. Mate
-                  grades it against this case’s own model answer and saves the score to your dashboard.
+                  {active.source_case_id?.startsWith('CM-CALC-')
+                    ? 'Enter every requested final number, then show the arithmetic in formula rows. Mate grades the same case ID and saves the score to your dashboard.'
+                    : active.creativity_category
+                      ? `Write a complete ${CREATIVITY_CATEGORY_LABELS[active.creativity_category]} response, then integrate the most important trade-off, decision gate, and recommendation. This full-case answer is saved separately from the linked Case Drill fields.`
+                      : active.market_sizing_format === 'provided-data'
+                        ? 'Break the case into determinants, add the supplied ones to Components, and build the bottom-up result. The issue tree is saved but never graded.'
+                        : active.market_sizing_format === 'ambiguous-estimation'
+                          ? 'Build an issue tree, choose the determinants you need as Components, assign values, and calculate the result. Mate grades only Components, model logic, and the result.'
+                          : 'Write your structure, the numbers you worked out from the exhibits, and your recommendation. Mate grades it against this case’s own model answer and saves the score to your dashboard.'}
                 </p>
-                <textarea
-                  value={attempt}
-                  onChange={(event) => setAttempt(event.target.value)}
-                  rows={8}
-                  disabled={grading}
-                  placeholder={'1) My structure…\n2) From Exhibit 1 I calculated…\n3) My recommendation is…'}
-                  aria-label="Your answer to this case"
-                  className={`${tw.input.base} ${tw.input.default} mt-2.5 text-sm leading-6`}
-                  data-testid="input-library-answer"
-                />
-                <p className="mt-1.5 text-[10px] text-[var(--space-text-muted)]">
-                  {attempt.trim().length} characters · {MIN_ANSWER_LENGTH} minimum
-                </p>
+                {active.source_case_id?.startsWith('CM-CALC-') ? (
+                  <>
+                    {(active.numeric_checks || []).some((check) => check.unit) ? (
+                      <ul className="mt-2 space-y-0.5" data-testid="calculation-unit-hints">
+                        {(active.numeric_checks || []).map((check, index) => (check.unit ? (
+                          <li key={`final-${index + 1}`} className="text-[11px] leading-4 text-[var(--space-text-muted)]">
+                            <span className="font-semibold text-[var(--space-text-secondary)]">{clarifyUnitText(check.label)}</span> · {numericUnitHint(check.unit)}
+                          </li>
+                        ) : null))}
+                      </ul>
+                    ) : null}
+                    <CalculationAnswerBuilder value={calculationAnswer} onChange={setCalculationAnswer} disabled={grading} showCaveat={active.difficulty !== 'easy'} />
+                  </>
+                ) : active.market_sizing_format ? (
+                  <div className="mt-3">
+                    <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setGradeError(''); }} answerUnit={marketSizingAnswerUnit(active)} disabled={grading} rootText={active.key_question} />
+                  </div>
+                ) : (
+                  <>
+                    <textarea
+                      value={attempt}
+                      onChange={(event) => setAttempt(event.target.value)}
+                      rows={5}
+                      disabled={grading}
+                      placeholder={active.creativity_category
+                        ? '1) Problem and audience…\n2) Case-grounded mechanism…\n3) Feasibility and trade-offs…\n4) Test, success measure, and recommendation…'
+                        : '1) My structure…\n2) From Exhibit 1 I calculated…\n3) My recommendation is…'}
+                      aria-label="Your answer to this case"
+                      className={`${tw.input.base} ${tw.input.default} mt-2.5 text-sm leading-6`}
+                      data-testid="input-library-answer"
+                    />
+                    <p className="mt-1.5 text-[10px] text-[var(--space-text-muted)]">
+                      {attempt.trim().length} characters · Empty or near-empty submissions are scored 0–1/10
+                    </p>
+                  </>
+                )}
                 {gradeError ? (
                   <p className="mt-2 text-[11px] leading-4 text-[var(--space-semantic-danger)]" role="alert">
                     {gradeError}
@@ -634,130 +989,32 @@ export default function CasePoolLibrary({
           </section>
         ) : null}
 
-        {showAnswer ? (
-          <div
-            className="mt-4 space-y-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4"
-            data-testid="pool-model-answer"
-          >
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Model answer</p>
-
-            <section>
-              <p className="text-xs font-bold text-[var(--space-text-primary)]">Reading the situation</p>
-              <p className="mt-1 max-w-[85ch] text-xs leading-6 text-[var(--space-text-secondary)]">
-                {active.model_answer.situation_analysis}
-              </p>
-            </section>
-
-            <section>
-              <p className="text-xs font-bold text-[var(--space-text-primary)]">Framework applied</p>
-              <p className="mt-1 max-w-[85ch] text-xs leading-6 text-[var(--space-text-secondary)]">
-                {active.model_answer.framework_applied}
-              </p>
-            </section>
-
-            {active.model_answer.issue_tree?.length ? (
-              <section>
-                <p className="text-xs font-bold text-[var(--space-text-primary)]">Issue tree</p>
-                <ol className="mt-1 grid gap-2 sm:grid-cols-2">
-                  {active.model_answer.issue_tree.map((branch, index) => <li key={branch} className="rounded-xl bg-[var(--space-surface-muted)] p-2.5 text-xs leading-5 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-brand)]">{index + 1}. </span>{branch}</li>)}
-                </ol>
-              </section>
-            ) : null}
-
-            {active.model_answer.key_calculations?.length ? (
-              <section>
-                <p className="text-xs font-bold text-[var(--space-text-primary)]">Key calculations</p>
-                <ul className="mt-1 space-y-1.5">{active.model_answer.key_calculations.map((item) => <li key={item} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {item}</li>)}</ul>
-              </section>
-            ) : null}
-
-            <section>
-              <p className="text-xs font-bold text-[var(--space-text-primary)]">Insights and evidence</p>
-              <ul className="mt-1 max-w-[85ch] space-y-1.5">
-                {active.model_answer.key_findings.map((finding, index) => (
-                  <li key={index} className="flex gap-2 text-xs leading-5 text-[var(--space-text-secondary)]">
-                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[var(--space-surface-accent-soft)] text-[9px] font-bold text-[var(--space-text-brand)]">
-                      {index + 1}
-                    </span>
-                    <span className="min-w-0">{finding}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            {active.model_answer.implications?.length ? (
-              <section>
-                <p className="text-xs font-bold text-[var(--space-text-primary)]">Implications</p>
-                <ul className="mt-1 space-y-1.5">{active.model_answer.implications.map((item) => <li key={item} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {item}</li>)}</ul>
-              </section>
-            ) : null}
-
-            <section className="rounded-xl border border-[var(--space-brand-primary-200)] bg-[var(--space-surface-accent-soft)] p-3">
-              <p className="text-xs font-bold text-[var(--space-text-brand)]">Recommendation</p>
-              <p className="mt-1 max-w-[85ch] text-xs leading-6 text-[var(--space-text-secondary)]">
-                {active.model_answer.recommendation}
-              </p>
-            </section>
-
-            {active.model_answer.plausible_alternatives?.length ? (
-              <section>
-                <p className="text-xs font-bold text-[var(--space-text-primary)]">Plausible alternatives</p>
-                <ul className="mt-1 space-y-1.5">{active.model_answer.plausible_alternatives.map((item) => <li key={item} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {item}</li>)}</ul>
-              </section>
-            ) : null}
-
-            {active.journey_stages?.length ? (
-              <section className="rounded-xl border border-[var(--space-border-default)] p-3" data-testid="related-case-drills">
-                <p className="flex items-center gap-1.5 text-xs font-bold text-[var(--space-text-primary)]"><Network className="h-3.5 w-3.5 text-[var(--space-text-brand)]" /> Practise the related skills in Case Drill</p>
-                <p className="mt-1 text-[11px] leading-4 text-[var(--space-text-muted)]">Drill scores stay separate from this full-case result.</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {active.journey_stages.map((stage) => {
-                    let drillCompleted = false;
-                    try { drillCompleted = Boolean(localStorage.getItem(`casemate-expert-completed:${stage.drillId}`)); } catch { /* best effort */ }
-                    return (
-                      <button key={stage.drillId} type="button" onClick={() => {
-                        try { sessionStorage.setItem('casemate-open-case-drill', stage.drillId); } catch { /* best effort */ }
-                        window.dispatchEvent(new CustomEvent('openApp', { detail: { appId: 'case-drill' } }));
-                      }} className={`inline-flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-semibold ${tw.button.secondary}`}>
-                        {stage.role}: {stage.drillType}{drillCompleted ? ' · Completed' : ''}
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-            ) : null}
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setShowAnswer(true)}
-            className={`mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.secondary}`}
-            data-testid="button-reveal-model-answer"
-          >
-            <Eye className="h-4 w-4" />
-            Done with my attempt - show the model answer
-          </button>
-        )}
-
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <button
-            type="button"
-            onClick={drawRandom}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.primary}`}
-            data-testid="button-next-random-pool-case"
-          >
-            <Shuffle className="h-4 w-4" />
-            Next case
-          </button>
-          <button
-            type="button"
-            onClick={() => setActive(null)}
-            className={`flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.secondary}`}
-            data-testid="button-back-to-pool-library"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to library
-          </button>
+        <div className="mt-4 flex flex-col gap-2 pb-20 sm:flex-row sm:pb-0">
+              {shownResult ? null : showAnswer ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAnswer(false);
+                    setRetrying(false);
+                    setJustGraded(null);
+                    setGradeError('');
+                  }}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.primary}`}
+                  data-testid="button-revise-pool-answer"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Revise my answer
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={leaveCase}
+                className={`flex ${showAnswer && !shownResult ? '' : 'flex-1'} items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm ${tw.button.secondary}`}
+                data-testid="button-back-to-pool-library"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to case library
+              </button>
         </div>
       </div>
     );
@@ -789,16 +1046,22 @@ export default function CasePoolLibrary({
               data-testid={`pool-recommended-${item.id}`}
             >
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className={`${tw.badge.default} ${tw.badge.primary}`}>
-                  {POOL_TYPE_LABELS[item.type] || item.type}
-                </span>
-                <span className={`${tw.badge.default} ${difficultyBadge(item.difficulty)}`}>
-                  {DIFFICULTY_LABELS[item.difficulty]}
-                </span>
+                {businessProblemForCase(item.id) ? (
+                  <span className={`${tw.badge.default} ${tw.badge.primary}`}>
+                    {businessProblemLabel(businessProblemForCase(item.id))}
+                  </span>
+                ) : null}
+                {item.creativity_category ? (
+                  <span className={`${tw.badge.default} ${tw.badge.accent}`}>{CREATIVITY_CATEGORY_LABELS[item.creativity_category]}</span>
+                ) : (
+                  <span className={`${tw.badge.default} ${difficultyBadge(item.difficulty)}`}>
+                    {item.market_sizing_bank?.sourceLabel || DIFFICULTY_LABELS[item.difficulty]}
+                  </span>
+                )}
                 {results[item.id] ? (
-                  <span className={`${tw.badge.default} ${scoreBadge(results[item.id].score)} flex items-center gap-1`}>
+                  <span className={`${tw.badge.default} ${scoreBadge(results[item.id].score, resultScale(results[item.id]))} flex items-center gap-1`}>
                     <CheckCircle2 className="h-3 w-3" />
-                    {results[item.id].score}/5
+                    {results[item.id].score}/{resultScale(results[item.id])} · {scoreBand(results[item.id].score, resultScale(results[item.id])).label}
                   </span>
                 ) : null}
               </div>
@@ -822,104 +1085,21 @@ export default function CasePoolLibrary({
           </div>
           <div className="min-w-0">
             <p className="text-sm font-bold text-[var(--space-text-primary)]">
-              Library of {CASE_POOL_LIBRARY.length} full cases
+              Library of {SELECTABLE_CASE_POOL_LIBRARY.length} full cases
             </p>
             <p className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)]">
-              Every case comes with a situation, data tables and charts, suggested frameworks, and a model answer kept hidden until you finish your own attempt.
+              Every case comes with a situation, data tables and charts, and a model answer kept hidden until you finish your own attempt. Where useful, a case also shows how to approach it and a Domain Knowledge framework that fits it.
             </p>
           </div>
         </div>
 
-        <div className="relative mt-3">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--space-text-muted)]" />
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by company, situation, or keyword…"
-            aria-label="Search cases"
-            className={`${tw.input.base} ${tw.input.default} py-2.5 pl-9 text-sm`}
-            data-testid="input-pool-search"
-          />
-        </div>
-
-        <div className="mt-3 space-y-2.5">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Industry</p>
-            <div className="mt-1.5 flex flex-wrap gap-1.5">
-              {['all', ...POOL_INDUSTRIES].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => setIndustry(item)}
-                  className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                    industry === item
-                      ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]'
-                      : 'border border-[var(--space-border-default)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]'
-                  }`}
-                  data-testid={`filter-industry-${item}`}
-                >
-                  {item === 'all' ? 'All' : POOL_INDUSTRY_LABELS[item] || item}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Business problem</p>
-            <div className="mt-1.5 flex flex-wrap gap-1.5">
-              {['all', ...POOL_TYPES].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => setType(item)}
-                  className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                    type === item
-                      ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]'
-                      : 'border border-[var(--space-border-default)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]'
-                  }`}
-                  data-testid={`filter-pool-type-${item}`}
-                >
-                  {item === 'all' ? 'All' : POOL_TYPE_LABELS[item] || item}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Skill focus</p>
-            <div className="mt-1.5 flex flex-wrap gap-1.5">
-              {['all', ...Object.keys(SKILL_LABELS)].map((value) => <button key={value} type="button" onClick={() => setSkillFocus(value)} className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${skillFocus === value ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]' : 'border border-[var(--space-border-default)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]'}`}>{value === 'all' ? 'All' : SKILL_LABELS[value]}</button>)}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Difficulty</p>
-            <div className="mt-1.5 flex flex-wrap gap-1.5">
-              {(['all', ...DIFFICULTY_ORDER] as Array<CaseDifficulty | 'all'>).map((level) => (
-                <button
-                  key={level}
-                  type="button"
-                  onClick={() => setDifficulty(level)}
-                  className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                    difficulty === level
-                      ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]'
-                      : 'border border-[var(--space-border-default)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]'
-                  }`}
-                  data-testid={`filter-pool-difficulty-${level}`}
-                >
-                  {level === 'all' ? 'All' : DIFFICULTY_LABELS[level]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-2 sm:grid-cols-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Estimated time<select value={estimatedTime} onChange={(event) => setEstimatedTime(event.target.value as typeof estimatedTime)} className={`${tw.input.base} ${tw.input.default} mt-1.5 py-2 text-xs normal-case tracking-normal`}><option value="all">Any length</option><option value="under-25">Under 25 min</option><option value="25-30">25–30 min</option><option value="30-plus">30+ min</option></select></label>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Completion status<select value={completion} onChange={(event) => setCompletion(event.target.value as typeof completion)} className={`${tw.input.base} ${tw.input.default} mt-1.5 py-2 text-xs normal-case tracking-normal`}><option value="all">Any status</option><option value="not-started">Not started</option><option value="opened">Opened</option><option value="completed">Completed</option></select></label>
-          </div>
-        </div>
-
+        <CasePoolFilters
+          filters={filters}
+          onChange={setFilters}
+          industries={POOL_INDUSTRIES}
+          industryLabels={POOL_INDUSTRY_LABELS}
+          problems={BUSINESS_PROBLEM_CHIPS}
+        />
         <button
           type="button"
           onClick={drawRandom}
@@ -932,21 +1112,45 @@ export default function CasePoolLibrary({
           <Shuffle className="h-4 w-4" />
           Random case
         </button>
-        <p className="mt-2 text-center text-[10px] text-[var(--space-text-muted)]">
-          {matches.length} cases match your filters · {solvedCount} solved and graded · {practicedIds.size}/
-          {CASE_POOL_LIBRARY.length} opened
-        </p>
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[10px] text-[var(--space-text-muted)]">
+          <span data-testid="pool-match-count">
+            {matches.length} cases match your filters · {solvedCount} solved and graded · {practicedIds.size}/{SELECTABLE_CASE_POOL_LIBRARY.length} opened
+          </span>
+          {filtersActive ? (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="inline-flex min-h-8 items-center gap-1 rounded-lg px-1.5 text-[11px] font-semibold text-[var(--space-text-brand)] hover:underline"
+              data-testid="button-reset-pool-filters"
+            >
+              <RotateCcw className="h-3 w-3" /> Reset filters
+            </button>
+          ) : null}
+        </div>
       </section>
 
       {/* Case list */}
       <section className="mt-5">
         <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">
-          {matches.length === CASE_POOL_LIBRARY.length ? 'The whole library' : 'Filtered results'}
+          {filtersActive ? 'Filtered results' : 'The whole library'}
         </h3>
         {matches.length === 0 ? (
-          <p className="mt-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-6 text-center text-xs text-[var(--space-text-secondary)]">
-            No cases match. Try loosening the filters or clearing the search keyword.
-          </p>
+          <div
+            className="mt-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-6 text-center text-xs text-[var(--space-text-secondary)]"
+            data-testid="pool-no-results"
+          >
+            <p>No cases match these filters. Loosen a filter or clear the search keyword.</p>
+            {filtersActive ? (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className={`mt-3 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold ${tw.button.secondary}`}
+                data-testid="button-reset-pool-filters-empty"
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> Reset filters
+              </button>
+            ) : null}
+          </div>
         ) : (
           <ul className="mt-2 divide-y divide-[var(--space-border-default)] rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)]">
             {matches.slice(0, visibleCount).map((item) => (
@@ -963,19 +1167,19 @@ export default function CasePoolLibrary({
                     </span>
                     <span className="mt-1 block text-[10px] text-[var(--space-text-muted)]">
                       {POOL_INDUSTRY_LABELS[item.industry] || item.industry} ·{' '}
-                      {POOL_TYPE_LABELS[item.type] || item.type} · {DIFFICULTY_LABELS[item.difficulty]} · {item.estimated_minutes || 25} min
+                      {businessProblemForCase(item.id) ? `${businessProblemLabel(businessProblemForCase(item.id))} · ` : ''}{item.creativity_category ? CREATIVITY_CATEGORY_LABELS[item.creativity_category] : item.market_sizing_format ? `${MARKET_SIZING_FORMAT_LABELS[item.market_sizing_format]} · ${item.market_sizing_bank?.sourceLabel || DIFFICULTY_LABELS[item.difficulty]}` : DIFFICULTY_LABELS[item.difficulty]} · {item.estimated_minutes || 25} min
                       {results[item.id] ? ' · completed' : practicedIds.has(item.id) ? ' · opened' : ' · not started'}
                     </span>
-                    <span className="mt-1.5 block line-clamp-2 text-[11px] leading-4 text-[var(--space-text-secondary)]">{item.objective || item.key_question}</span>
+                    <span className="mt-1.5 block line-clamp-2 text-[11px] leading-4 text-[var(--space-text-secondary)]">{item.market_sizing_format ? formatNumbersInText(item.objective || item.key_question) : item.objective || item.key_question}</span>
                   </span>
                   {results[item.id] ? (
                     <span
-                      className={`${tw.badge.default} ${scoreBadge(results[item.id].score)} mt-0.5 flex shrink-0 items-center gap-1`}
-                      title={`You scored ${results[item.id].score} out of 5 on this case`}
+                      className={`${tw.badge.default} ${scoreBadge(results[item.id].score, resultScale(results[item.id]))} mt-0.5 flex shrink-0 items-center gap-1`}
+                      title={`You scored ${results[item.id].score} out of ${resultScale(results[item.id])} on this case`}
                       data-testid={`pool-case-score-${item.id}`}
                     >
                       <CheckCircle2 className="h-3 w-3" />
-                      {results[item.id].score}/5
+                      {results[item.id].score}/{resultScale(results[item.id])} · {scoreBand(results[item.id].score, resultScale(results[item.id])).label}
                     </span>
                   ) : null}
                 </button>

@@ -1,0 +1,202 @@
+import { F3DeepDive, citeF3, f3Chapter, f3Quiz } from './fashionM3Core';
+import type { FashionM3LessonBundle } from './fashionM3Core';
+
+const LESSON = '3. Customer Segments & Needs';
+
+const deck = [
+  f3Chapter({
+    title: 'Demographic and Lifestyle Segmentation', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain why useful segmentation focuses on differences in need and behaviour rather than on demographic categories alone.',
+    mateIntro: 'Two shoppers of the same age and income can want completely different things, and two very different people can want the same jacket. Segmentation is the search for the pattern that actually predicts the purchase.',
+    keyInsight: 'Effective segmentation focuses on meaningful differences in consumer needs rather than relying solely on broad demographic categories. Consumers of similar ages or income levels may have very different purchasing motivations, while consumers from different demographic groups may share similar lifestyles and product preferences.',
+    statTiles: [
+      { value: '7', label: 'Segments profiled', description: 'Young consumers, working professionals, fitness-oriented, outdoor, affluent, family and lifestyle-based groups.' },
+      { value: 'Needs > age', label: 'The segmentation principle', description: 'Meaningful differences in need matter more than broad demographic categories.' },
+      { value: '2', label: 'Inputs combined', subtitle: 'Demographics and behaviour', description: 'Demographic information is most actionable when combined with actual purchasing behaviour.' },
+    ],
+    statsNote: 'Counts describe the segmentation framework used in this lesson; the supplied material gives no measured segment sizes.',
+    narrative: [
+      { label: 'What it is', text: 'Demographic and lifestyle segmentation groups consumers by characteristics such as age, income, occupation, household circumstances, location, interests and daily routines. These factors influence clothing preferences, spending capacity, shopping frequency and the channels used to discover and buy products. Demographics alone rarely explain the full complexity of behaviour, so retailers also consider lifestyle, usage occasions, personal values and attitudes toward brands.' },
+      { label: 'Why it is happening', text: 'Shoppers in the same demographic group often want different things, and shoppers in different groups often want the same thing. Retailers therefore segment by meaningful differences in need, because that is what lets them tailor assortment, pricing, marketing and distribution.' },
+      { label: 'Real-world example', text: 'Young consumers may prioritise self-expression, trends, affordability and digital convenience; working professionals versatile, comfortable and durable clothing; fitness-oriented consumers performance and technical features; outdoor enthusiasts durability and weather protection; affluent consumers design, materials and heritage; and family buyers affordability, durability and size availability. Lifestyle segments such as streetwear enthusiasts, minimalist consumers, fashion followers, casual athletes and outdoor adventurers cut across all of these.' },
+      { label: 'Vietnam example', text: 'Gen Z (under 27) and Millennials (28–44) make up over 72.5% of Vietnam’s online shoppers, but they behave differently. According to first-half 2025 data from YouNet reported by Cimigo, Gen Z prefers entertainment-led, trend-sensitive TikTok Shop, while Millennials lean toward the reliability and trust of Shopee. The same age bracket of shoppers is split by platform because their needs differ.' },
+      { label: 'Business impact', text: 'Segmentation turns a broad market into groups a retailer can serve with specific products, prices and channels. Combining demographic information with actual purchasing behaviour produces more actionable insight than either alone, and prevents a plan built on an average customer who does not exist.' },
+    ],
+    visualKind: 'fashion-m3-31-segments', visualHeading: 'Who shops, and what each group weighs first',
+    visualIntro: 'Compare each segment’s priorities with what they imply for the retailer.',
+    imageAlt: 'Casemate table of fashion customer segments, their priorities and the implication for retailers',
+    keyTerms: [
+      { term: 'Segmentation', definition: 'Dividing customers into groups with similar needs or behaviour so each can be served specifically.' },
+      { term: 'Lifestyle segment', definition: 'A group defined by interests, routines and preferences rather than by age or income.' },
+      { term: 'Usage occasion', definition: 'The situation a product is bought for, such as work, exercise or travel.' },
+      { term: 'Purchasing behaviour', definition: 'What customers actually buy, how often and through which channel.' },
+    ],
+    recap: [
+      'Demographics describe who customers are; lifestyle and behaviour describe what they do.',
+      'Meaningful differences in need predict purchases better than age or income alone.',
+      'Similar demographics can hide very different motivations, and the reverse.',
+      'Combine demographic information with real purchasing behaviour.',
+    ],
+    chapterRecap: 'Demographic and lifestyle segmentation helps retailers identify distinct customer groups and tailor product assortments, pricing, marketing, and distribution. Combining demographic information with actual purchasing behavior produces more actionable customer insights.',
+    deepDiveTitle: 'Why the average customer is a poor planning tool',
+    body: <F3DeepDive paragraphs={[
+      'Planning for a typical shopper tends to produce a range that no one in particular wants. A student and a young professional of the same age may differ on budget, occasion and the channels they trust, while a parent and a retiree may both be looking for durable, easy-care clothing.',
+      'The more useful question is which need is driving the purchase: self-expression, performance, durability, value or status. Once that is clear, age and income help to find the people with that need and the places where they shop, but they stop being the definition of the segment.' ,
+    ]} evidence="The supplied material describes segments qualitatively and gives no segment sizes. The Gen Z and Millennial figures come from a first-half 2025 e-commerce report covering Vietnamese online platforms only." />,
+    sources: citeF3('bofStateOfFashion', 'cimigoEcommerce'),
+  }),
+  f3Chapter({
+    title: 'Functional, Emotional, and Social Needs', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Distinguish the functional, emotional and social needs behind a purchase and explain how each affects brand preference.',
+    mateIntro: 'A shopper buys a pair of trainers because they fit. They choose this pair because of how it makes them feel and who it says they are. Three kinds of need are working at once.',
+    keyInsight: 'Product features may initiate consumer interest, but emotional and social benefits can influence brand preference and willingness to pay. Retailers therefore compete not only through physical product attributes but also through the identities, experiences, and communities associated with their brands.',
+    statTiles: [
+      { value: '3', label: 'Need types', subtitle: 'Functional, emotional, social', description: 'Comfort and fit; confidence and aspiration; belonging and recognition.' },
+      { value: 'Features → preference', label: 'How the needs interact', description: 'Features start interest; emotional and social benefits shape preference and willingness to pay.' },
+      { value: 'Varies', label: 'By product and occasion', description: 'The weight of each need changes with category, purchase occasion and individual.' },
+    ],
+    statsNote: 'Counts describe the need framework used in this lesson; the supplied material gives no measured weighting of the need types.',
+    narrative: [
+      { label: 'What it is', text: 'Consumers buy fashion, sports and lifestyle products to satisfy a combination of functional, emotional and social needs. Functional needs relate to comfort, durability, fit, protection and performance; emotional needs involve confidence, enjoyment, aspiration and personal identity; and social needs concern belonging, recognition, community and cultural expression. Their relative importance varies by product category, purchase occasion and individual consumer.' },
+      { label: 'Why it is happening', text: 'Because most products in a category meet the functional need adequately, differences in brand preference come from the emotional and social layers. Retailers compete on the identities, experiences and communities that surround the product as well as on its physical attributes.' },
+      { label: 'Real-world example', text: 'Consumers weigh comfort, fit, quality, durability and weather protection; clothing and footwear can support confidence, expression and aspiration; logos, recognisable designs, collaborations and cultural associations communicate tastes and group affiliations; and sports clubs, running communities and fitness events strengthen engagement. Reliable sizing, easy returns, reviews and clear product information reduce purchase uncertainty. Patagonia connects outdoor products with environmental values, and Converse carries a recognisable cultural identity tied to casual fashion and self-expression.' },
+      { label: 'Vietnam example', text: 'Vietnamese Gen Z shoppers favour livestreaming, influencer recommendations and discounts of over 30%, a blend of entertainment, social proof and value that goes well beyond product features, according to first-half 2025 platform research. Millennials, in the same data, prioritise efficiency, product reliability and professional service, which is the reassurance end of the same range of needs.' },
+      { label: 'Business impact', text: 'Brands that connect credible product benefits with relevant identities and experiences build stronger differentiation and more meaningful relationships with customers. A brand that competes only on features is easy to substitute, while one that also answers the emotional and social need earns preference and some freedom on price.' },
+    ],
+    visualKind: 'fashion-m3-32-needs', visualHeading: 'Layers of need behind one purchase',
+    visualIntro: 'See what the shopper looks for in each layer and how a brand can answer it.',
+    imageAlt: 'Casemate pyramid of social, emotional, functional and reassurance needs',
+    keyTerms: [
+      { term: 'Functional need', definition: 'A practical requirement such as fit, comfort, durability, protection or performance.' },
+      { term: 'Emotional need', definition: 'A need for confidence, enjoyment, aspiration and self-expression.' },
+      { term: 'Social identity', definition: 'How a product signals belonging to a group or cultural style.' },
+      { term: 'Brand community', definition: 'A group of customers connected by a brand, through clubs, events or online spaces.' },
+    ],
+    recap: [
+      'Purchases satisfy functional, emotional and social needs together.',
+      'Features start interest; emotional and social benefits shape preference and willingness to pay.',
+      'Brands compete on identities, experiences and communities as well as product attributes.',
+      'Reliable sizing, easy returns and clear information reduce uncertainty.',
+    ],
+    chapterRecap: 'Functional, emotional, and social needs jointly shape purchasing decisions. Brands that connect credible product benefits with relevant identities and experiences can create stronger differentiation and more meaningful consumer relationships.',
+    deepDiveTitle: 'Why features alone make a brand easy to replace',
+    body: <F3DeepDive paragraphs={[
+      'When several brands offer a comfortable, well-made product at a similar price, the functional need is already met and cannot separate them. What separates them is what the customer feels and what the product says about them to other people.',
+      'That is why logos, collaborations and communities are commercial tools and not decoration. They give a customer a reason to choose one of several adequate products, and they are also the part of a brand that is hardest for a competitor to copy quickly.',
+    ]} evidence="The supplied material describes the need types qualitatively. The Vietnam behaviours come from first-half 2025 platform research on online shoppers and describe tendencies, not the whole market." />,
+    sources: citeF3('bofStateOfFashion', 'cimigoEcommerce'),
+  }),
+  f3Chapter({
+    title: 'Consumer Behavior and Purchasing Motivations', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Trace the path to purchase and identify the triggers and barriers that decide whether a shopper converts.',
+    mateIntro: 'Nobody shops in a straight line. A customer may find a jacket on a video, compare it on three apps, try it on in a store and buy it online a week later. Each step is a chance to lose them.',
+    keyInsight: 'The path to purchase is rarely linear. Consumers may discover a product on social media, compare prices across platforms, visit a physical store to assess fit, and complete the purchase online. Understanding these behaviors helps retailers improve product discovery, conversion, and retention.',
+    statTiles: [
+      { value: 'Non-linear', label: 'The path to purchase', description: 'Discovery, comparison, fitting and purchase often happen across different channels.' },
+      { value: '5', label: 'Purchase barriers named', description: 'High prices, uncertain sizing, inconsistent quality, shipping costs and complicated returns.' },
+      { value: '4', label: 'Purchase triggers named', subtitle: 'Need, trend, promotion, impulse', description: 'Replacement needs, viral styles, discounts and product drops each start different purchases.' },
+    ],
+    statsNote: 'Counts describe the behaviour framework used in this lesson; the supplied material gives no measured conversion or return figures.',
+    narrative: [
+      { label: 'What it is', text: 'Consumer behaviour covers how individuals discover products, evaluate alternatives, decide, use and respond after purchase. Decisions are influenced by price, quality, convenience, brand familiarity, recommendations, social media, product reviews, promotions and personal preference, and patterns differ by category: shoppers may research technical running shoes at length, buy basic apparel routinely, or buy trend-sensitive items emotionally.' },
+      { label: 'Why it is happening', text: 'Discovery, comparison and purchase now happen on different channels, so the route from interest to sale rarely runs in a line. Understanding that route is how retailers improve product discovery, conversion and retention rather than treating each channel separately.' },
+      { label: 'Real-world example', text: 'Need-based purchases replace worn-out shoes or buy seasonal clothing; trend-driven purchases follow viral styles and celebrity influence; promotions and loyalty rewards shift timing and brand switching; reviews and price comparisons reduce uncertainty; and limited-time drops and personalised recommendations encourage impulse buying. High prices, uncertain sizing, inconsistent quality, shipping costs and complicated returns all stop conversion. Limited sneaker releases can create scarcity-driven demand, and seasonal promotions can pull forward purchases that had been postponed.' },
+      { label: 'Vietnam example', text: 'Fashion and accessories was the largest online category in Vietnam in the first half of 2025, at about US$2.4 billion of gross merchandise value, and Gen Z is driving “shoppertainment” on TikTok Shop, whose GMV grew 148% year on year to about US$3.57 billion. An informal survey of Shopee Vietnam sellers reported fashion return rates of 15–35%, an indicative figure that shows how sizing and fit uncertainty can undo a sale.' },
+      { label: 'Business impact', text: 'Retailers that find the purchase triggers and barriers along the customer journey can remove friction where it costs most. Effective strategies balance product relevance, price, convenience, credibility and the shopping experience, and keep price and availability consistent across the channels a customer moves between.' },
+    ],
+    visualKind: 'fashion-m3-33-journey', visualHeading: 'The path to purchase is rarely a straight line',
+    visualIntro: 'Follow the five steps a shopper can take and the barriers that stop them.',
+    imageAlt: 'Casemate flow of the shopper path to purchase from discovery to return or repeat',
+    keyTerms: [
+      { term: 'Path to purchase', definition: 'The sequence of steps from first discovering a product to buying it and responding afterwards.' },
+      { term: 'Conversion', definition: 'The share of interested shoppers who actually buy.' },
+      { term: 'Impulse buying', definition: 'An unplanned purchase prompted by a display, offer or recommendation.' },
+      { term: 'Purchase barrier', definition: 'A factor such as price, sizing uncertainty or hard returns that prevents a sale.' },
+    ],
+    recap: [
+      'Behaviour includes discovery, evaluation, decision, use and the response after purchase.',
+      'The route to purchase usually crosses several channels.',
+      'Triggers include need, trends, promotions and impulse prompts.',
+      'Barriers such as price, sizing, quality, shipping and returns stop conversion.',
+    ],
+    chapterRecap: 'Understanding consumer behavior allows retailers to identify purchase triggers, barriers, and opportunities across the customer journey. Effective strategies balance product relevance, price, convenience, credibility, and the shopping experience.',
+    deepDiveTitle: 'Why fit uncertainty is the quiet conversion killer',
+    body: <F3DeepDive paragraphs={[
+      'In clothing and footwear the product cannot be fully judged before it is worn. That uncertainty is why shoppers visit a store to check fit, read reviews for sizing and, when buying online, order more than one size.',
+      'Retailers that reduce the uncertainty with reliable size charts, clear product information and easy returns remove one of the largest barriers. Those that ignore it pay twice, once in sales that never happen and again in goods that come back.',
+    ]} evidence="The supplied material describes triggers and barriers qualitatively. The Vietnam figures are platform-level data for the first half of 2025 and an informal seller survey; they are indicative and not a measured national return rate." />,
+    sources: citeF3('bofStateOfFashion', 'cimigoEcommerce', 'nsqReturns'),
+  }),
+  f3Chapter({
+    title: 'Customer Loyalty and Brand Engagement', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Separate repeat purchase from genuine loyalty and identify the levers that build lasting brand relationships.',
+    mateIntro: 'A customer who keeps coming back is not always a loyal customer. They may just be tired, or chasing the discount. Real loyalty shows up when a cheaper option is right there and they still choose you.',
+    keyInsight: 'Repeat purchases do not always indicate strong emotional loyalty. Consumers may return because of convenience or discounts, while deeper brand relationships involve trust, preference, advocacy, and a willingness to choose the brand even when alternatives are available.',
+    statTiles: [
+      { value: '2', label: 'Behaviours separated', subtitle: 'Repeat purchase and loyalty', description: 'Returning customers may be motivated by convenience or discounts rather than attachment.' },
+      { value: '6', label: 'Loyalty levers', description: 'Programmes, personalised communication, communities, exclusive releases, advocacy and retention measurement.' },
+      { value: '4', label: 'Retention metrics', subtitle: 'Repeat rate, frequency, CLV, churn', description: 'Together these show whether loyalty is real or only habitual.' },
+    ],
+    statsNote: 'Counts describe the loyalty framework used in this lesson; the supplied material gives no measured retention rates.',
+    narrative: [
+      { label: 'What it is', text: 'Customer loyalty is a consumer’s tendency to keep buying from a brand or retailer over time, and brand engagement covers interactions beyond transactions, such as following social media accounts, joining communities, attending events, reviewing products and engaging with brand content. Loyalty can result from satisfaction, trust, product consistency, convenience, emotional attachment, membership benefits or a lack of suitable alternatives.' },
+      { label: 'Why it is happening', text: 'Repeat purchase can be driven by convenience or discounts, which a rival can match, while deeper relationships rest on trust, preference and advocacy that survive an alternative being available. Retailers therefore try to build benefits that go beyond short-term promotions.' },
+      { label: 'Real-world example', text: 'Retailers use loyalty programmes with points, member benefits, exclusive offers and early access; personalised messages that respect customer preferences; brand communities such as fitness events, running clubs and product workshops; member-only releases; and customer advocacy through reviews and user-generated content. They track repeat purchase rate, purchase frequency, customer lifetime value and churn. Lululemon uses community-oriented experiences as part of its brand approach, and major sportswear brands use membership ecosystems to connect digital content, products and customer benefits.' },
+      { label: 'Vietnam example', text: 'Canifa, which operates more than 100 stores and an app, describes building a single customer view that combines online and offline data and uses it to segment customers. Coolmate, the direct-to-consumer menswear brand, is reported to draw about 45% of its revenue from returning customers, according to secondary agency analysis, which illustrates how owning the customer relationship lowers the cost of selling again.' },
+      { label: 'Business impact', text: 'Customer loyalty and engagement give a retailer a more stable base of customers. Sustainable loyalty depends on consistent product value, reliable service, meaningful engagement and benefits that go beyond short-term promotions, which is why retention metrics are read together rather than one at a time.' },
+    ],
+    visualKind: 'fashion-m3-34-loyalty', visualHeading: 'Repeat purchase is not the same as loyalty',
+    visualIntro: 'Compare behavioural repeat purchase with genuine brand loyalty across five dimensions.',
+    imageAlt: 'Casemate comparison of behavioural repeat purchase and genuine brand loyalty',
+    keyTerms: [
+      { term: 'Customer loyalty', definition: 'A customer’s tendency to keep buying from a brand over time, even when alternatives exist.' },
+      { term: 'Brand engagement', definition: 'Interactions beyond purchase, such as following, reviewing, joining communities or attending events.' },
+      { term: 'Customer lifetime value', definition: 'The total value a customer is expected to bring over the whole relationship.' },
+      { term: 'Churn', definition: 'The rate at which customers stop buying from a brand.' },
+    ],
+    recap: [
+      'Repeat purchase does not always mean emotional loyalty.',
+      'Deeper loyalty involves trust, preference, advocacy and choosing the brand despite alternatives.',
+      'Programmes, communities, exclusives and advocacy all support engagement.',
+      'Read repeat rate, frequency, lifetime value and churn together.',
+    ],
+    chapterRecap: 'Customer loyalty and brand engagement help retailers develop more stable customer relationships. Sustainable loyalty depends on consistent product value, reliable service, meaningful engagement, and benefits that go beyond short-term promotions.',
+    deepDiveTitle: 'How to tell loyalty from habit',
+    body: <F3DeepDive paragraphs={[
+      'A discount-driven customer shows high repeat rates in a promotional period and disappears when the offer ends. A loyal customer keeps buying at full price, recommends the brand and forgives an occasional mistake.',
+      'That is why a single metric misleads. High repeat rate with low advocacy and heavy discount usage suggests habit or price-chasing, while moderate repeat rate with strong reviews and community activity suggests a relationship that will survive a competitor’s offer.',
+    ]} evidence="The supplied material describes loyalty qualitatively. Canifa details come from a vendor case study and the Coolmate repeat-customer share from secondary agency analysis, so both are illustrative rather than audited." />,
+    sources: citeF3('bofStateOfFashion', 'canifaCleverTap', 'scaleCommerceD2c'),
+  }),
+];
+
+const quiz = f3Quiz('fashion-m3-l3', [
+  { chapter: '1', objective: 'State the segmentation principle', question: 'What should effective segmentation focus on?', application: 'A plan groups customers only by age. What is it missing?', correct: 'Meaningful differences in consumer needs, not only broad demographic categories', wrong: ['Only the age of each customer', 'Only the income of each household', 'Only the city where the store is located'], explanation: 'Effective segmentation focuses on meaningful differences in needs rather than demographics alone. Review Chapter 1.' },
+  { chapter: '1', objective: 'Recognise what demographics miss', question: 'Why can consumers of similar age or income behave very differently?', application: 'Two shoppers with equal income buy very different products. What explains it?', correct: 'They may have very different purchasing motivations and lifestyles', wrong: ['Demographics decide behaviour completely', 'They must use different currencies', 'Income always determines the brand chosen'], explanation: 'Similar demographics can hide different motivations, while different groups can share lifestyles. Review Chapter 1.' },
+  { chapter: '1', objective: 'Make segmentation actionable', question: 'What produces more actionable customer insight?', application: 'A retailer wants segments it can act on. What should it combine?', correct: 'Demographic information combined with actual purchasing behaviour', wrong: ['Demographic information alone', 'Store size information alone', 'Competitor price lists alone'], explanation: 'Combining demographic information with actual purchasing behaviour produces more actionable insight. Review Chapter 1.' },
+  { chapter: '2', objective: 'List the need types', question: 'Which need types shape fashion and lifestyle purchases?', application: 'A shopper buys a jacket for fit, confidence and group identity. Which needs are at work?', correct: 'Functional, emotional and social needs', wrong: ['Only functional and legal needs', 'Only financial and logistical needs', 'Only seasonal and storage needs'], explanation: 'Consumers purchase to satisfy a combination of functional, emotional and social needs. Review Chapter 2.' },
+  { chapter: '2', objective: 'Understand brand preference', question: 'What can influence brand preference and willingness to pay beyond features?', application: 'Two brands have equal quality. What can still tip the choice?', correct: 'Emotional and social benefits, including identities, experiences and communities', wrong: ['Only the colour of the packaging', 'Only the weight of the product', 'Only the store opening hours'], explanation: 'Features start interest, but emotional and social benefits can influence preference and willingness to pay. Review Chapter 2.' },
+  { chapter: '3', objective: 'Describe the path to purchase', question: 'How does the path to purchase typically run?', application: 'A shopper sees a product on social media, compares prices, tries it in store and buys online. What does this show?', correct: 'It is rarely linear and often crosses several channels', wrong: ['It always runs in a single store visit', 'It always begins and ends online', 'It is identical for every product category'], explanation: 'Consumers may discover on social media, compare across platforms, check fit in a store and buy online. Review Chapter 3.' },
+  { chapter: '3', objective: 'Identify purchase barriers', question: 'Which factors can prevent a purchase?', application: 'A shopper abandons an order because of delivery costs and a complicated return policy. What are these?', correct: 'High prices, uncertain sizing, inconsistent quality, shipping costs and complicated returns', wrong: ['Only extra loyalty points', 'Only larger product photographs', 'Only longer store opening hours'], explanation: 'Barriers include high prices, uncertain sizing, inconsistent quality, shipping costs and complicated returns. Review Chapter 3.' },
+  { chapter: '3', objective: 'Recognise trigger types', question: 'What can accelerate trend-driven purchases?', application: 'A sneaker release sells out quickly. Which trigger is at work?', correct: 'Viral styles, celebrity influence and scarcity-driven product releases', wrong: ['Lower raw material prices', 'Longer supplier lead times', 'Reduced advertising spending'], explanation: 'Trend-driven purchases follow viral styles and influence, and limited releases can create scarcity-driven demand. Review Chapter 3.' },
+  { chapter: '4', objective: 'Separate repeat purchase from loyalty', question: 'Do repeat purchases always signal strong loyalty?', application: 'Customers return only during sales. Is that deep loyalty?', correct: 'No; customers may return for convenience or discounts rather than attachment', wrong: ['Yes; repeat purchase always proves loyalty', 'Yes; discounts are the definition of loyalty', 'No; loyalty cannot be measured'], explanation: 'Repeat purchases do not always indicate emotional loyalty; deeper relationships involve trust, preference and advocacy. Review Chapter 4.' },
+  { chapter: '4', objective: 'Pick retention metrics', question: 'Which measures evaluate loyalty performance?', application: 'A team wants to judge whether customers are staying. Which measures fit?', correct: 'Repeat purchase rate, purchase frequency, customer lifetime value and churn', wrong: ['Only the number of stores opened', 'Only the weight of goods shipped', 'Only the size of the advertising budget'], explanation: 'Repeat purchase rate, frequency, customer lifetime value and churn evaluate loyalty performance. Review Chapter 4.' },
+]);
+
+export const LESSON_3_3: FashionM3LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can segment fashion shoppers by need and behaviour, explain the functional, emotional and social drivers of purchase, trace the path to purchase, and tell loyalty from habit.',
+    keyTakeaways: [
+      'Segments defined by need and behaviour are more useful than demographics alone.',
+      'Features start interest; emotional and social benefits shape preference and willingness to pay.',
+      'The path to purchase crosses channels, and barriers can stop it at any step.',
+      'Repeat purchase is not the same as loyalty.',
+      'Read repeat rate, frequency, lifetime value and churn together.',
+    ],
+    businessImplications: 'Ask what need is driving a segment before designing range, price or channel for it, and judge loyalty by what customers do when an alternative is available, not by how often they return.',
+    remember: 'Segment by need and behaviour, and measure loyalty by choice, not by habit.',
+    nextLesson: 'Revenue Streams & Cost Structure',
+  },
+};

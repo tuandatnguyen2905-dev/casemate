@@ -23,7 +23,9 @@ import {
   type SpatialTest,
 } from './spatial';
 
-export const SPATIAL_TEST_COUNT = 30;
+import { loadAssessmentDaySpatialTests } from './assessmentDaySpatialTests';
+
+export const SPATIAL_TEST_COUNT = 46;
 export const SPATIAL_QUESTIONS_PER_TEST = 30;
 export const SPATIAL_TIME_LIMIT_SECONDS = 1200;
 
@@ -94,7 +96,14 @@ function buildUnique(
       // same outline. A fresh deterministic seed redraws that question.
     }
   }
-  throw new Error(`Could not generate a unique spatial question for ${baseId}.`);
+  for (let attempt = 80; attempt < 200; attempt += 1) {
+    try {
+      return { ...buildSpatialQuestion(`${baseId}x${attempt}`, subtype, difficulty), id: baseId };
+    } catch (error) {
+      /* redraw with the next seed */
+    }
+  }
+  throw new Error(`Could not generate a spatial question for ${baseId}.`);
 }
 
 function generateTest(testNumber: number, taken: Set<string>): SpatialTest {
@@ -127,7 +136,8 @@ export function loadSpatialLibrary(): SpatialTest[] {
     const tests: SpatialTest[] = [];
     const taken = new Set<string>();
     for (let test = 1; test <= SPATIAL_TEST_COUNT; test += 1) tests.push(generateTest(test, taken));
-    cache = tests;
+    // Source-attributed AssessmentDay tests are listed ahead of the originals.
+    cache = [...loadAssessmentDaySpatialTests(), ...tests];
   }
   return cache;
 }

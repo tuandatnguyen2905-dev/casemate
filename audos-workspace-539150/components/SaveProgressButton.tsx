@@ -7,7 +7,7 @@ type SaveProgressButtonProps = {
   onSave: () => void;
 };
 
-const BASE = 'pointer-events-auto inline-flex h-9 !min-h-0 items-center gap-2 rounded-full border px-4 text-xs font-extrabold shadow-lg transition-colors disabled:cursor-default';
+const BASE = 'pointer-events-auto inline-flex h-9 min-w-36 shrink-0 !min-h-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border px-4 text-xs font-extrabold shadow-lg transition-colors disabled:cursor-default';
 
 const TONE: Record<ProgressSaveStatus, string> = {
   idle: 'border-[var(--space-border-strong)] bg-[var(--space-surface-card)] text-[var(--space-text-primary)] hover:bg-[var(--space-surface-muted)]',

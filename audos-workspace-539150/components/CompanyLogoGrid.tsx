@@ -1,8 +1,9 @@
 import { COMPANY_LOGO_ASSETS } from '../data/companyLogos';
 
-const CLOUDINARY_TRIM_URL = 'https://res.cloudinary.com/asfzhhej/image/fetch/e_trim/c_fit,w_180,h_72';
+const CLOUDINARY_TRIM_URL = 'https://res.cloudinary.com/asfzhhej/image/fetch/f_webp,q_auto,e_trim,c_fit,w_180,h_72';
 
 function trimmedLogoUrl(sourceUrl: string) {
+  if (sourceUrl.startsWith('data:')) return sourceUrl;
   return `${CLOUDINARY_TRIM_URL}/${sourceUrl}`;
 }
 
@@ -18,10 +19,11 @@ function LogoSequence({ duplicate = false }: { duplicate?: boolean }) {
           <img
             src={trimmedLogoUrl(brand.url)}
             alt={duplicate ? '' : brand.name}
+            width={132}
+            height={48}
             loading="lazy"
             decoding="async"
-            className="h-12 w-[132px] object-contain object-center mix-blend-multiply"
-            style={{ backgroundColor: 'transparent', filter: 'none' }}
+            className="h-12 w-[132px] bg-transparent object-contain object-center mix-blend-multiply"
             onError={(event) => {
               if (event.currentTarget.src !== brand.url) event.currentTarget.src = brand.url;
             }}
@@ -38,11 +40,13 @@ export default function CompanyLogoGrid() {
     <div className="mt-10 overflow-hidden" role="region" aria-label="Companies represented by Casemate users">
       <style>{`
         @keyframes casemate-logo-marquee { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
-        .casemate-logo-track { animation: casemate-logo-marquee 36s linear infinite; will-change: transform; }
+        .casemate-logo-track { animation: casemate-logo-marquee 36s linear infinite; backface-visibility: hidden; will-change: transform; }
+        .casemate-logo-marquee { contain: layout paint; }
         .casemate-logo-marquee:hover .casemate-logo-track { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) { .casemate-logo-track { animation: none; transform: none; } }
       `}</style>
       <div className="casemate-logo-marquee overflow-hidden">
-        <div className="casemate-logo-track flex w-max" style={{ animation: 'casemate-logo-marquee 36s linear infinite', willChange: 'transform' }}>
+        <div className="casemate-logo-track flex w-max">
           <LogoSequence />
           <LogoSequence duplicate />
         </div>

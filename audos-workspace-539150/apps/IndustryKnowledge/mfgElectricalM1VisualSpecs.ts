@@ -1,0 +1,400 @@
+import type { MfgElectricalChapterVisual } from './mfgElectricalVisualSpecs';
+
+/** Chapter-specific Learning Visuals for Electrical & Energy Equipment Manufacturing Module 01 (industry definition, history, markets and drivers), keyed by visualKind. */
+export const MFG_ELECTRICAL_M1_VISUALS: Record<string, MfgElectricalChapterVisual> = {
+  'mfg-electrical-m1-1': {
+    heading: 'Equipment carries electrical energy from its source to the point of use',
+    intro: 'Manufacturers make products that generate, convert, transmit, distribute, control, protect, store and manage electrical energy. This chapter follows generation equipment, distribution and storage along that path.',
+    spec: {
+      layout: 'flow', title: '01 What Is Electrical & Energy Equipment Manufacturing?', kicker: '',
+      steps: [
+        { label: 'Generation equipment', detail: 'Produces electrical energy at the power source' },
+        { label: 'Conversion and transmission', detail: 'Converts and moves energy across the network' },
+        { label: 'Distribution', detail: 'Delivers power to sites and facilities' },
+        { label: 'Storage and management', detail: 'Stores energy and manages when it is used' },
+        { label: 'End use', detail: 'Utilities, industry, buildings, transport and renewable projects', kind: 'outcome' },
+      ],
+      loop: 'Digital control and lifecycle services keep the whole path working after installation.',
+      note: 'A substation combines transformers, switchgear, protection, communications and control rather than operating as isolated products.',
+      takeaway: 'The industry connects power sources to end use through physical equipment, digital control and lifecycle services.',
+    },
+  },
+  'mfg-electrical-m1-2': {
+    heading: 'Electrical equipment is judged as part of a working system, not as a stand-alone product',
+    intro: 'A substation combines transformers, switchgear, protection, communications and control. Transmission, control and protection, and energy management only create value when they work together.',
+    spec: {
+      layout: 'compare', title: '02 What Makes Electrical Equipment Manufacturing Unique?', kicker: '',
+      leftTitle: 'Stand-alone product view', rightTitle: 'System view (e.g. a substation)',
+      rows: [
+        { label: 'What is supplied', a: 'One product at a time', b: 'Transformers, switchgear, protection, communications and control together' },
+        { label: 'Transmission', a: 'Rating checked in isolation', b: 'Voltage or capacity matched to the application' },
+        { label: 'Control and protection', a: 'Treated as add-ons', b: 'Link the products into one coordinated system' },
+        { label: 'Energy management', a: 'Value ends at delivery', b: 'Digital control and lifecycle services continue in operation' },
+      ],
+      note: 'Evaluate the product boundary, application, customer requirement, compliance evidence and service model before acting.',
+      takeaway: 'The industry connects power sources to end use through physical equipment, digital control and lifecycle services.',
+    },
+  },
+  'mfg-electrical-m1-3': {
+    heading: 'Manufacturers design, produce and test — other roles operate, deliver and install',
+    intro: 'Manufacturing is not electricity generation, utility operation, EPC delivery, installation or commissioning. Each role works under its own defined scope.',
+    spec: {
+      layout: 'table', title: '03 Where Does the Industry Begin and End?', kicker: '',
+      headers: ['Role', 'What it does', 'In the transformer example'],
+      rows: [
+        { label: 'Equipment manufacturer', a: 'Designs, produces and tests products', b: 'Supplies the tested transformer' },
+        { label: 'EPC contractor', a: 'Delivers the project', b: 'Installs the transformer' },
+        { label: 'Installer / commissioning provider', a: 'Performs site work under a defined scope', b: 'Works on site within the project scope' },
+        { label: 'Utility operator', a: 'Operates the system', b: 'Accepts and operates the asset' },
+        { label: 'Electricity generator', a: 'Produces electricity', b: 'Outside the manufacturing boundary' },
+      ],
+      note: 'Product certification is not factory quality control, and a technical specification does not prove field performance. Verify product, factory, project and professional requirements separately.',
+      takeaway: 'Manufacturing is not electricity generation, utility operation, EPC delivery, installation or commissioning; certification and specifications do not prove field performance.',
+    },
+  },
+  'mfg-electrical-m1-4': {
+    heading: 'Equipment categories differ in function, materials, tests and economics',
+    intro: 'A transformer uses magnetic cores and windings; an inverter uses power semiconductors and controls; a storage system adds cells, conversion, protection, monitoring and thermal management.',
+    spec: {
+      layout: 'taxonomy', title: '04 Understanding Electrical and Energy Equipment Categories', kicker: '',
+      root: 'Electrical and energy equipment', rootDetail: 'Categories — each with its own ratings and capacity measures',
+      groups: [
+        { label: 'Magnetic power equipment', detail: 'Transformers use magnetic cores and windings', items: ['Transformer', 'Motor and generator'] },
+        { label: 'Switching and protection', detail: 'Interrupt, isolate and protect circuits', items: ['Switchgear', 'Circuit breaker', 'Protection and control'] },
+        { label: 'Conversion electronics', detail: 'Power semiconductors and controls', items: ['Power electronics', 'Inverter'] },
+        { label: 'Energy storage', detail: 'Cells, conversion, protection, monitoring and thermal management', items: ['Battery storage'] },
+      ],
+      note: 'Segment evidence, capability and demand by equipment class, voltage or capacity, customer and project context.',
+      takeaway: 'A transformer is not an inverter or battery system; ratings and capacity measures must be tied to the product and application.',
+    },
+  },
+  'mfg-electrical-m1-5': {
+    heading: 'Who counts as a customer depends on where the category boundary is drawn',
+    intro: 'The chapter separates electrical equipment from the wider energy sector, focusing on equipment that moves, converts, controls, stores and uses electricity. Renewable equipment and project services need their own segments.',
+    spec: {
+      layout: 'taxonomy', title: "05 Who Are the Industry's Customers and Stakeholders?", kicker: '',
+      root: 'Category boundary', rootDetail: 'Equipment that moves, converts, controls, stores and uses electricity',
+      groups: [
+        { label: 'Equipment segments', items: ['Cables', 'Panels', 'Transformers', 'Drives', 'Power electronics'] },
+        { label: 'Renewable equipment', detail: 'Includes storage interfaces for renewable integration' },
+        { label: 'Project services', detail: 'A separate segment from the hardware itself' },
+        { label: 'Outside the boundary', items: ['Electricity generation', 'Retail services'] },
+        { label: 'Broad studies', detail: 'Also include appliances and lighting — not directly comparable' },
+      ],
+      note: 'A broad study including appliances and lighting cannot be compared directly with a transformer, switchgear or grid-infrastructure study.',
+      takeaway: 'Market sizing and competitor comparisons require consistent product boundaries.',
+    },
+  },
+  'mfg-electrical-m1-6': {
+    heading: 'Grid expansion, standardization and protection built the long-lived core categories',
+    intro: 'Generators, transformers, cables, motors, switches and protection grew as networks expanded in voltage, capacity and complexity.',
+    spec: {
+      layout: 'driverTree', title: '06 How Did Industrial Electrification Shape Equipment Manufacturing?', kicker: '',
+      root: { label: 'Long-lived core equipment categories', detail: 'Established by electrification, industrialization and urbanization' },
+      drivers: [
+        { label: 'Grid expansion', detail: 'Networks grew in voltage, capacity and complexity', children: [{ label: 'Generators and transformers' }, { label: 'Cables and switches' }] },
+        { label: 'Industrial electrification', detail: 'Factories and cities adopted electric power', children: [{ label: 'Motors' }] },
+        { label: 'Standardization', detail: 'Common ratings, insulation and testing', children: [{ label: 'Multi-supplier compatibility' }] },
+        { label: 'Protection', detail: 'Lets equipment operate in coordinated systems' },
+      ],
+      note: 'Long-lived utility and industrial assets create recurring needs for expansion, replacement, testing and maintenance.',
+      takeaway: 'Electrification, industrialization and urbanization established the industry’s long-lived core categories.',
+    },
+  },
+  'mfg-electrical-m1-7': {
+    heading: 'Power equipment evolved from early electrification to higher voltages, shared standards and asset renewal',
+    intro: 'As networks expanded in voltage, capacity and complexity, standardized ratings, insulation, testing and protection let equipment from many participants work together.',
+    spec: {
+      layout: 'timeline', title: '07 How Did Power Equipment and Technical Standards Develop?', kicker: '',
+      events: [
+        { period: 'Origins', label: 'Industrial electrification', detail: 'Generators, motors, cables and switches', status: 'historical' },
+        { period: 'Expansion', label: 'Higher voltage and capacity', detail: 'Transformers and protection for larger networks', status: 'historical' },
+        { period: 'Coordination', label: 'Technical standards', detail: 'Standardized ratings, insulation and testing', status: 'historical' },
+        { period: 'Now', label: 'Asset renewal', detail: 'Replacement, testing and maintenance of long-lived assets', status: 'current' },
+      ],
+      note: 'Periods are broad stages of development described in the chapter, not dated milestones.',
+      takeaway: 'Electrification, industrialization and urbanization established the industry’s long-lived core categories.',
+    },
+  },
+  'mfg-electrical-m1-8': {
+    heading: 'Products shifted from electromechanical devices to power electronics and two-way power flow',
+    intro: 'The industry moved from predominantly electromechanical products toward semiconductor converters, digital relays, automation, communications and energy-management platforms.',
+    spec: {
+      layout: 'compare', title: '08 How Did Automation and Global Supply Chains Transform Manufacturing?', kicker: '',
+      leftTitle: 'Predominantly electromechanical', rightTitle: 'Digital and power-electronic',
+      rows: [
+        { label: 'Power electronics', a: 'Electromechanical products', b: 'Semiconductor converters and inverters' },
+        { label: 'Protection and control', a: 'Electromechanical devices', b: 'Digital relays, automation and communications' },
+        { label: 'Storage integration', a: 'Not a core equipment need', b: 'Renewable-plus-storage projects' },
+        { label: 'Bidirectional flow', a: 'Power delivered to the load', b: 'Controls and data exchange coordinate two-way power' },
+      ],
+      note: 'A renewable-plus-storage project needs inverters, protection, controls and data exchange to coordinate variable generation and bidirectional power.',
+      takeaway: 'Electrification, digitalization and decarbonization are converging in equipment design.',
+    },
+  },
+  'mfg-electrical-m1-9': {
+    heading: "Vietnam's firms enter through panels and integration, then deepen toward digital and low-carbon systems",
+    intro: 'Local firms can participate through panels, controls, integration, monitoring, commissioning and service while building deeper technology capability.',
+    spec: {
+      layout: 'pathway', title: "09 How Has Vietnam's Electrical Equipment Industry Developed?", kicker: '',
+      trunk: [
+        { label: 'Panels and controls', detail: 'Entry point for local firms' },
+        { label: 'Integration and commissioning', detail: 'Monitoring, commissioning and service' },
+      ],
+      optionsLabel: 'Where deeper capability can grow — alternatives, not steps',
+      options: [
+        { label: 'Smart grid', detail: 'Digital relays, communications and energy-management platforms' },
+        { label: 'Connected assets', detail: 'Monitoring and data exchange for installed equipment' },
+        { label: 'Decarbonization', detail: 'Inverters, protection and controls for renewable-plus-storage' },
+      ],
+      note: 'Revised PDP8 sets a battery-storage target of 10,000–16,300 MW by 2030; planning targets are not completed projects or guaranteed procurement.',
+      takeaway: 'Electrification, digitalization and decarbonization are converging in equipment design.',
+    },
+  },
+  'mfg-electrical-m1-10': {
+    heading: 'Broad market estimates bundle different mixes of electrical categories',
+    intro: 'Commercial estimates span different combinations of power generation, transmission and distribution, wiring, accessories, lighting and other electrical categories.',
+    spec: {
+      layout: 'taxonomy', title: '10 How Is the Global Electrical Equipment Market Structured?', kicker: '',
+      root: 'Broad electrical-equipment estimates', rootDetail: 'Each estimate combines these categories in its own way',
+      groups: [
+        { label: 'Infrastructure', items: ['Power generation', 'Transmission and distribution'] },
+        { label: 'Wiring and accessories', detail: 'Cables, wiring devices and accessories' },
+        { label: 'Lighting', detail: 'Included in some broad scopes' },
+        { label: 'Other electrical categories', detail: 'Vary by research provider' },
+      ],
+      note: 'Narrow transformer, cable, storage or grid markets follow different boundaries from broad estimates.',
+      takeaway: 'The global market is large, but broad commercial estimates are not interchangeable.',
+    },
+  },
+  'mfg-electrical-m1-11': {
+    heading: 'One order passes through production, shipment, acceptance, revenue and cash at different times',
+    intro: 'Factory output, shipment, customer acceptance, recognized revenue and cash can occur in different periods; backlog is future contracted work subject to scope and execution.',
+    spec: {
+      layout: 'flow', title: '11 How Are Electrical Equipment Markets Measured?', kicker: '',
+      steps: [
+        { label: 'Order intake', detail: 'Adds to backlog — future contracted work' },
+        { label: 'Production volume', detail: 'Factory completes the switchgear (December)' },
+        { label: 'Shipment', detail: 'Equipment leaves the factory (January)' },
+        { label: 'Customer acceptance', detail: 'Customer accepts the delivered equipment' },
+        { label: 'Recognized revenue', detail: 'Per the contract and accounting policy', kind: 'outcome' },
+        { label: 'Cash', detail: 'May arrive in yet another period' },
+      ],
+      note: 'Rated capacity is not operating output, and a market estimate or broad power-project value is not equipment-market revenue. State scope, rating, unit, geography, entity and period before comparing.',
+      takeaway: 'Rated capacity is not operating output, production is not shipment or revenue, and backlog is not current revenue.',
+    },
+  },
+  'mfg-electrical-m1-12': {
+    heading: 'Two 2025 estimates of the same market differ by methodology — keep both, never average',
+    intro: 'Fortune Business Insights estimates US$1,660.20B for 2025 while The Business Research Company estimates US$1,752.23B. Size opportunities by product, application and route to market instead.',
+    spec: {
+      layout: 'table', title: '12 Which Regions and Applications Drive Equipment Demand?', kicker: '',
+      headers: ['Estimate', '2025 value', 'Methodology note'],
+      rows: [
+        { label: 'Fortune Business Insights', a: 'US$1.660T', b: 'Commercial estimate under its own category scope' },
+        { label: 'The Business Research Company', a: 'US$1.752T', b: 'Different coverage and methodology' },
+        { label: 'Narrow segment studies', a: 'Not comparable', b: 'Transformer, cable, storage or grid boundaries' },
+      ],
+      note: 'Use broad estimates as directional context; size Vietnam opportunities by product, application and route to market.',
+      takeaway: 'The global market is large, but broad commercial estimates are not interchangeable.',
+    },
+  },
+  'mfg-electrical-m1-13': {
+    heading: 'Equipment sales follow grid, industrial and replacement investment — not electricity demand alone',
+    intro: 'Electricity-demand growth creates a backdrop, but equipment sales depend on investment, approvals, replacement and financing.',
+    spec: {
+      layout: 'driverTree', title: '13 Who Are the Major Global Equipment Participants?', kicker: '',
+      root: { label: 'Equipment sales', detail: 'Not the same as electricity consumption' },
+      drivers: [
+        { label: 'Grid expansion', detail: 'Grid infrastructure investment and approvals', children: [{ label: 'Renewable integration' }, { label: 'Connection queues' }] },
+        { label: 'Industry', detail: 'Industrial production and facilities', children: [{ label: 'Data centers' }, { label: 'Buildings' }] },
+        { label: 'Replacement', detail: 'Renewal of aging assets' },
+        { label: 'Financing', detail: 'Decides whether projects proceed' },
+      ],
+      note: 'IEA forecasts average global electricity-demand growth of 3.6% annually in 2026–2030 — electricity consumption, not equipment revenue.',
+      takeaway: 'Electricity-demand growth creates a backdrop, but equipment sales depend on investment, approvals, replacement and financing.',
+    },
+  },
+  'mfg-electrical-m1-14': {
+    heading: 'Electricity-demand growth becomes equipment orders only through funded project pipelines',
+    intro: 'IEA forecasts global electricity demand growing 3.6% a year in 2026–2030, driven by industry, EVs, cooling and data centers. Translating that into orders depends on pipelines, finance and procurement timing.',
+    spec: {
+      layout: 'flow', title: '14 How Do Electricity Infrastructure and Equipment Demand Interact?', kicker: '',
+      steps: [
+        { label: 'Electricity-demand growth', detail: 'IEA forecast: 3.6% a year, 2026–2030' },
+        { label: 'Project pipeline', detail: 'Renewables, data centers, grids and industry' },
+        { label: 'Customer finance', detail: 'Projects proceed only when funded', kind: 'decision' },
+        { label: 'Procurement timing', detail: 'Local standards and approvals set the schedule' },
+        { label: 'Equipment orders', detail: 'Backed by service readiness', kind: 'outcome' },
+      ],
+      note: 'IEA figures (including ~1,100 TWh added a year and 33,600 TWh forecast for 2030) describe electricity quantity, not product sales.',
+      takeaway: 'Electricity-demand growth creates a backdrop, but equipment sales depend on investment, approvals, replacement and financing.',
+    },
+  },
+  'mfg-electrical-m1-15': {
+    heading: 'Vietnam mixes traditional grid and building demand with emerging storage and renewable needs',
+    intro: 'Demand is supported by industrialization, urbanization, manufacturing, construction, grid development, renewable energy and critical facilities.',
+    spec: {
+      layout: 'taxonomy', title: "15 What Does Vietnam's Electrical Equipment Market Look Like?", kicker: '',
+      root: "Vietnam's equipment demand", rootDetail: 'Demand sources — considered together, not in sequence',
+      groups: [
+        { label: 'Grid infrastructure', detail: 'Traditional infrastructure demand', items: ['Grid development', 'Industrialization'] },
+        { label: 'Buildings', detail: 'Urbanization and construction', items: ['Manufacturing sites', 'Critical facilities'] },
+        { label: 'Renewables', detail: 'Emerging integration needs', items: ['Renewable energy', 'Battery storage', 'Digital grid'] },
+      ],
+      note: 'Revised PDP8 raises planned battery-storage capacity to 10,000–16,300 MW by 2030 — a planning target, not installed capacity.',
+      takeaway: 'Vietnam combines traditional infrastructure demand with emerging storage, digital-grid and renewable-integration needs.',
+    },
+  },
+  'mfg-electrical-m1-16': {
+    heading: "Vietnam's storage target rose sharply in the 2025 plan revision — still a plan, not orders",
+    intro: 'Revised PDP8, approved on 15 Apr 2025, raises planned battery-storage capacity to 10,000–16,300 MW by 2030. Realized opportunity for storage, industrial and critical-power equipment depends on execution.',
+    spec: {
+      layout: 'timeline', title: '16 Which Equipment Segments Are Manufactured in Vietnam?', kicker: '',
+      events: [
+        { period: 'Before revision', label: 'Previous storage target', detail: '300 MW baseline cited by Trade.gov — not delivered capacity', status: 'historical' },
+        { period: '15 Apr 2025', label: 'Revised PDP8 approved', detail: 'Decision 768/QD-TTg', status: 'historical' },
+        { period: 'By 2030', label: 'Battery-storage target', detail: '10,000–16,300 MW planned — not guaranteed procurement', status: 'forecast' },
+      ],
+      note: 'Realized opportunity depends on projects, finance, procurement, grid readiness and regulatory execution — across storage, industrial systems and critical power.',
+      takeaway: 'Vietnam combines traditional infrastructure demand with emerging storage, digital-grid and renewable-integration needs.',
+    },
+  },
+  'mfg-electrical-m1-17': {
+    heading: 'Vietnam plays several supply-chain roles at once, from producer to service base',
+    intro: 'Vietnam acts as a producer, importer, exporter, panel builder, integrator and service base across cables, components and selected equipment.',
+    spec: {
+      layout: 'ecosystem', title: '17 Who Are the Key Manufacturers and Supply-Chain Participants?', kicker: '',
+      center: { label: "Vietnam's electrical supply chain", detail: 'Cables, components and selected equipment' },
+      actors: [
+        { label: 'Domestic manufacturers', relation: 'Produce cables, components and selected equipment', flows: ['product'] },
+        { label: 'Importers', relation: 'Bring in equipment and components', flows: ['product', 'money'] },
+        { label: 'Exporters', relation: 'Ship products to foreign buyers', flows: ['product', 'money'] },
+        { label: 'Panel builders', relation: 'Assemble and configure panels', flows: ['product', 'service'] },
+        { label: 'Integrators', relation: 'Combine equipment into working systems', flows: ['service', 'information'] },
+        { label: 'Service providers', relation: 'Commissioning and lifecycle service', flows: ['service'] },
+      ],
+      note: 'Preliminary Customs-based reporting places 2025 broad wire-and-cable imports above US$4.55B and exports above US$4.39B — trade activity, not market size.',
+      takeaway: 'Trade demonstrates supply-chain activity, but customs values do not equal market size or domestic value added.',
+    },
+  },
+  'mfg-electrical-m1-18': {
+    heading: 'Two-way cable trade shows activity, but neither side measures local value added',
+    intro: 'Preliminary Customs-based reporting places 2025 broad wire-and-cable imports above US$4.55B and exports above US$4.39B. Imported equipment and local testing both shape how much value stays in Vietnam.',
+    spec: {
+      layout: 'compare', title: '18 How Do Imports, Exports and Local Value Addition Interact?', kicker: '',
+      leftTitle: 'Wire and cable imports (>US$4.55B, 2025)', rightTitle: 'Wire and cable exports (>US$4.39B, 2025)',
+      rows: [
+        { label: 'Basis', a: 'Preliminary Customs-based, broad category', b: 'Preliminary Customs-based, broad category' },
+        { label: 'What it shows', a: 'Reliance on imported inputs and equipment', b: 'Products shipped from Vietnam' },
+        { label: 'What it does not prove', a: 'Total electrical-equipment demand', b: 'Revenue, profit or domestic value added' },
+      ],
+      note: 'Two-way trade shows import and export activity without proving local ownership or capability depth; testing and certification are part of moving beyond assembly.',
+      takeaway: 'Trade demonstrates supply-chain activity, but customs values do not equal market size or domestic value added.',
+    },
+  },
+  'mfg-electrical-m1-19': {
+    heading: 'Localization means moving beyond distribution and assembly into qualified capabilities',
+    intro: 'Localization is the development of qualified domestic materials, components, engineering, production and service capability. Capability gaps, not demand alone, shape what Vietnam can supply.',
+    spec: {
+      layout: 'pathway', title: '19 What Demand and Capability Constraints Shape Vietnam?', kicker: '',
+      trunk: [
+        { label: 'Distribution', detail: 'Reselling imported products' },
+        { label: 'Assembly', detail: 'Local integration of supplied parts' },
+      ],
+      optionsLabel: 'Capabilities to build — each can be developed separately',
+      options: [
+        { label: 'Engineering', detail: 'Design and application capability' },
+        { label: 'Qualified components', detail: 'Domestic parts that pass qualification' },
+        { label: 'Testing and certification', detail: 'Evidence customers and markets accept' },
+        { label: 'Commissioning', detail: 'Accountable site start-up' },
+        { label: 'Lifecycle service', detail: 'Support after installation' },
+      ],
+      note: 'Customs values do not equal market size or domestic value added.',
+      takeaway: 'Trade demonstrates supply-chain activity, but customs values do not equal market size or domestic value added.',
+    },
+  },
+  'mfg-electrical-m1-20': {
+    heading: 'Investment turns into equipment orders only when the project schedule is approved',
+    intro: 'A factory expansion drives transformers, switchgear, motors, drives, panels, protection and monitoring, but orders depend on the approved project schedule.',
+    spec: {
+      layout: 'flow', title: '20 How Do Infrastructure and Industrial Investment Affect Demand?', kicker: '',
+      steps: [
+        { label: 'Investment decision', detail: 'Utilities, factories, buildings or transport' },
+        { label: 'Approved project schedule', detail: 'Sets when equipment is needed', kind: 'decision' },
+        { label: 'Equipment orders', detail: 'Transformers, switchgear, motors, drives, panels' },
+        { label: 'Installed base', detail: 'Protection and monitoring in operation', kind: 'outcome' },
+      ],
+      loop: 'Aging electrical assets return as replacement demand, extending the electrification cycle.',
+      note: 'Long cycles support demand, but capital timing makes sales volatile.',
+      takeaway: 'Long infrastructure and electrification cycles support demand, while capital timing makes sales volatile.',
+    },
+  },
+  'mfg-electrical-m1-21': {
+    heading: 'Factories, transport and replacement are separate demand signals to track',
+    intro: 'Investment in industrial facilities, transport and replacement of aging electrical assets each moves on its own approval and capital timing, so track them separately.',
+    spec: {
+      layout: 'taxonomy', title: '21 Why Do Safety, Regulation and Technical Standards Matter?', kicker: '',
+      root: 'Demand signals', rootDetail: 'Track separately — each follows its own approvals and timing',
+      groups: [
+        { label: 'Factories', detail: 'Industrial parks and factory expansions' },
+        { label: 'Transport', detail: 'Transport electrification investment' },
+        { label: 'Replacement', detail: 'Installed-base replacement of aging assets' },
+        { label: 'Utility plans', detail: 'Grid investment programmes' },
+        { label: 'Renewable and storage approvals', detail: 'Projects that have passed approval' },
+        { label: 'Data centers and construction', detail: 'Buildings and critical facilities' },
+      ],
+      note: 'Approvals and capital timing decide when each signal turns into orders.',
+      takeaway: 'Long infrastructure and electrification cycles support demand, while capital timing makes sales volatile.',
+    },
+  },
+  'mfg-electrical-m1-22': {
+    heading: 'A cheaper protection device is only equivalent if its rating and evidence also match',
+    intro: 'A lower-cost protection device is not equivalent if its rating, test evidence, documentation, traceability or service support is unsuitable.',
+    spec: {
+      layout: 'decision', title: '22 How Are Electrification and the Energy Transition Changing Products?', kicker: '',
+      root: { label: 'Lower-cost alternative device', detail: 'Protection or power-electronics product' },
+      question: 'Do its rating, test evidence, documentation, traceability and service support meet the requirement?',
+      branches: [
+        { condition: 'All evidence matches', outcome: 'Qualify as an approved alternative', detail: 'Technical compliance demonstrated', tone: 'positive' },
+        { condition: 'Documentation or support gaps', outcome: 'Close gaps before approval', detail: 'Traceability and service support', tone: 'caution' },
+        { condition: 'Rating or test evidence unsuitable', outcome: 'Not equivalent — reject', detail: 'Lower price does not compensate', tone: 'negative' },
+      ],
+      note: 'Applicable standards and conformity routes remain product- and market-specific.',
+      takeaway: 'Competitiveness depends on compliance, technology, supply resilience and support—not manufacturing cost alone.',
+    },
+  },
+  'mfg-electrical-m1-23': {
+    heading: 'Materials, environmental rules and trade exposure all shape competitiveness beyond cost',
+    intro: 'Manufacturers face product testing, safety, materials, semiconductors, software, certification, tariffs, exchange rates, logistics and long component qualification cycles.',
+    spec: {
+      layout: 'driverTree', title: '23 How Do Raw Materials and Supply Chains Affect Manufacturers?', kicker: '',
+      root: { label: 'Manufacturer competitiveness', detail: 'Not manufacturing cost alone' },
+      drivers: [
+        { label: 'Materials and components', detail: 'Long component qualification cycles', children: [{ label: 'Semiconductors' }, { label: 'Traceable materials' }] },
+        { label: 'Environmental rules', detail: 'Product-specific ecodesign requirements', children: [{ label: 'Digital product passport' }] },
+        { label: 'Trade exposure', detail: 'Cross-border cost and delivery', children: [{ label: 'Tariffs' }, { label: 'Exchange rates' }, { label: 'Logistics' }] },
+        { label: 'Certification', detail: 'Product testing and safety evidence' },
+      ],
+      note: 'Regulation (EU) 2024/1781 is a framework for future product-specific requirements, not identical automatic duties for every electrical product.',
+      takeaway: 'Competitiveness depends on compliance, technology, supply resilience and support—not manufacturing cost alone.',
+    },
+  },
+  'mfg-electrical-m1-24': {
+    heading: 'Each external risk has a matching resilience or after-sales response',
+    intro: 'Export and infrastructure suppliers need product-specific standards maps, qualified alternatives, traceable materials and local technical response.',
+    spec: {
+      layout: 'table', title: '24 What External Risks and Opportunities Shape the Industry?', kicker: '',
+      headers: ['External factor', 'Risk', 'Response'],
+      rows: [
+        { label: 'Component supply', a: 'Long qualification cycles', b: 'Qualified alternative suppliers' },
+        { label: 'Materials', a: 'Weak traceability', b: 'Traceable materials' },
+        { label: 'Standards and certification', a: 'Market-specific conformity routes', b: 'Product-specific standards maps' },
+        { label: 'Tariffs, exchange rates, logistics', a: 'Cost and delivery exposure', b: 'Supplier resilience' },
+        { label: 'After-sales', a: 'Unsuitable service support', b: 'Local technical response' },
+      ],
+      note: 'A lower-cost device is not equivalent if its service support is unsuitable.',
+      takeaway: 'Competitiveness depends on compliance, technology, supply resilience and support—not manufacturing cost alone.',
+    },
+  },
+};

@@ -1,0 +1,202 @@
+import { G3DeepDive, citeG3, g3Chapter, g3Quiz } from './groceryM3Core';
+import type { GroceryM3LessonBundle } from './groceryM3Core';
+
+const LESSON = '5. Distribution & Sales Channels';
+
+const deck = [
+  g3Chapter({
+    title: 'Physical Retail Networks', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how retailers plan store networks and why catchment demand, format fit and sales per unit of space decide their value.',
+    mateIntro: 'Where a store stands, how big it is and what it stocks decide whether people use it. A network is a set of such choices, repeated across a country.',
+    keyInsight: 'Physical stores remain valuable as both sales locations and customer-access points. Their performance depends on catchment-area demand, accessibility, sales per unit of space, inventory availability, and the fit between store format and local shopping behavior.',
+    statTiles: [
+      { value: '6', label: 'Key network activities', subtitle: 'Planning to optimisation', description: 'Store network planning, format selection, catchment analysis, productivity management, local assortment adaptation and network optimisation.' },
+      { value: '~15%', label: 'Modern trade share of Vietnam’s market in 2025', subtitle: 'Up about 1.5 percentage points', description: 'Kantar estimate reported in Masan Group’s annual report.' },
+      { value: '26% vs 6%', label: 'Modern grocery share in urban versus rural areas, nine months of 2025', subtitle: 'Rural areas hold over 60% of the population', description: 'The gap shows where physical network growth has room to run.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the shares are Kantar estimates relayed by a company annual report, and the definitions of modern trade and grocery may differ from government statistics.',
+    narrative: [
+      { label: 'What it is', text: 'Physical retail networks include supermarkets, hypermarkets, convenience stores, minimarts, traditional markets, independent shops and specialised general merchandise outlets. These channels let customers inspect products, buy immediately, get in-person help and combine shopping needs in one trip. Store networks differ in location, size, assortment, opening hours and service model, and retailers must decide how many outlets to run, where, and which products each store should carry to meet local demand without creating unnecessary cost.' },
+      { label: 'Why it is happening', text: 'Customers still want to see fresh products and buy now, and a nearby store is the quickest way to give them that. Each additional store, however, adds cost, so the network has to be matched to where demand is.' },
+      { label: 'Real-world example', text: 'Retailers select locations by population density, competition, accessibility and demand; choose between large-format stores, neighbourhood outlets, convenience stores and specialised shops; estimate the customers and purchasing potential in each service area; monitor sales per square metre, transactions and basket value; adapt ranges to regional preferences; and open, relocate, refurbish or close stores according to commercial performance.' },
+      { label: 'Vietnam example', text: 'At the end of 2024 Vietnam had 8,274 markets, 1,293 supermarkets, 276 shopping centres and about 7,000 convenience stores. Kantar estimates modern trade at about 15% of the market in 2025, with modern grocery share near 26% in urban areas but about 6% in rural areas, which is why WinCommerce directs about 80% of its new openings to rural minimarts and Bach Hoa Xanh placed nearly half of its new stores in Central Vietnam. FiinGroup found 60.9% of modern-trade points of sale in the South, 31.4% in the North and 7.7% in the Centre in 2023.' },
+      { label: 'Business impact', text: 'Physical networks give direct access to customers and support immediate fulfilment. Effective network planning aligns location, format, assortment and operating costs with local demand.' },
+    ],
+    visualKind: 'grocery-m3-51-physical', visualHeading: 'Modern grocery share in cities, nationwide and in rural areas',
+    visualIntro: 'Compare modern-channel grocery share in urban areas, nationwide and in rural areas.',
+    imageAlt: 'Casemate bar chart of modern grocery share in urban, national and rural areas of Vietnam',
+    keyTerms: [
+      { term: 'Catchment area', definition: 'The area from which a store draws most of its customers.' },
+      { term: 'Sales density', definition: 'Sales earned per square metre of selling space.' },
+      { term: 'Store format', definition: 'The type of store, such as hypermarket, supermarket, minimart or convenience store.' },
+      { term: 'Network optimisation', definition: 'Opening, moving, refurbishing or closing stores based on performance.' },
+    ],
+    recap: [
+      'Physical networks include large, small, traditional and specialised outlets.',
+      'Stores are both sales locations and customer-access points.',
+      'Performance depends on catchment demand, accessibility and sales per unit of space.',
+      'Format must fit local shopping behaviour.',
+    ],
+    chapterRecap: 'Physical networks provide direct access to customers and support immediate product fulfilment. Effective network planning aligns location, format, assortment, and operating costs with local demand.',
+    deepDiveTitle: 'Why rural areas became a growth frontier for small formats',
+    body: <G3DeepDive paragraphs={[
+      'Over 60% of Vietnam’s population lives in rural areas, where modern grocery share is only about 6%. A small format with low set-up cost can reach those shoppers without the rent and size of a supermarket.',
+      'Masan reports that rural minimart daily sales have reached about 93% of urban ones, which suggests that once a store is in place, demand can be close to that in cities. Results depend on careful site selection and are company-reported.',
+    ]} evidence="The network activities are described qualitatively in the supplied material. Outlet counts are from Vietnamese government reporting, channel shares and rural results are Kantar and company-reported figures in Masan Group’s annual report, the Bach Hoa Xanh openings are from VnExpress, and the regional split is a FiinGroup estimate for all modern trade." />,
+    sources: citeG3('masanAr2025', 'vnRetailPromote', 'vnexpressBhx', 'fiinModernTrade'),
+  }),
+  g3Chapter({
+    title: 'Wholesale, Distributors, and Business-to-Business Channels', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain what wholesalers and distributors add for fragmented retail and what they cost in margin and visibility.',
+    mateIntro: 'A manufacturer cannot deliver to a million small shops one by one. Wholesalers and distributors do that job, and charge for it.',
+    keyInsight: 'Intermediaries can improve market coverage and reduce the complexity of serving fragmented customers. However, each additional stage may add cost, extend lead times, and reduce visibility into end-market demand.',
+    statTiles: [
+      { value: '6', label: 'Key wholesale and B2B activities', subtitle: 'Wholesale distribution to direct supply', description: 'Wholesale distribution, brand distribution, business-to-business sales, territory management, credit and order management and direct-to-retail supply.' },
+      { value: '55%', label: 'Share of MM Mega Market sales to professional customers', subtitle: 'Hotels, restaurants, traders and offices', description: 'Within those sales, hotels, restaurants and catering account for 44%, traders 40% and offices and companies 16%.' },
+      { value: '~2M', label: 'Registered customers of MM Mega Market', subtitle: '85% of sales to members', description: 'A national wholesaler serving businesses and households.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the customer figures are from an investor presentation by MM Mega Market’s prospective owner and describe one wholesaler in 2025.',
+    narrative: [
+      { label: 'What it is', text: 'Wholesale and distribution channels connect manufacturers and producers with retailers, food-service operators, institutional buyers and independent shops. Wholesalers typically consolidate products from many suppliers, while distributors may specialise in particular brands, territories or categories. They matter when suppliers cannot economically serve many small outlets individually, and can provide warehousing, transportation, credit, product information and sales support.' },
+      { label: 'Why it is happening', text: 'Serving thousands of small buyers directly is costly for a manufacturer, so intermediaries bundle orders and deliveries. Each extra stage, however, adds margin and distance between the producer and the shopper.' },
+      { label: 'Real-world example', text: 'Wholesalers supply mixed assortments to independent retailers; distributors manage a manufacturer’s products within defined markets; business-to-business sellers supply offices, hotels, restaurants and canteens; teams coordinate delivery routes and regional targets; suppliers extend approved payment terms and manage business orders; and manufacturers connect directly with larger retailers when scale justifies it.' },
+      { label: 'Vietnam example', text: 'MM Mega Market Vietnam runs 19 cash-and-carry centres among its 30 outlets, with about 30,000 products in the centres, and sells 55% of its volume to professional customers: hotels, restaurants and catering at 44%, traders at 40% and offices and companies at 16%. It has about two million registered customers, five direct-sourcing platforms for vegetables, fruit, fish and pork, and its Gia Tot programme had reached about 3,500 partner grocery stores by 2025. Masan’s Retail Supreme platform covers about 420,000 outlets directly, replacing several layers of intermediaries with one digital route.' },
+      { label: 'Business impact', text: 'Wholesale and distribution extend market reach across fragmented retail networks. Their value depends on coverage, delivery efficiency, commercial terms and the services they provide to buyers and suppliers.' },
+    ],
+    visualKind: 'grocery-m3-52-wholesale', visualHeading: 'Six things wholesalers and distributors do and the trade-off of each',
+    visualIntro: 'See six wholesale and B2B activities branching from the centre and the trade-off each brings.',
+    imageAlt: 'Casemate tree mind map of six wholesale and B2B activities and the trade-off of each',
+    keyTerms: [
+      { term: 'Cash and carry', definition: 'A wholesale format where business customers choose, pay for and collect goods themselves.' },
+      { term: 'Distributor', definition: 'A business that holds and delivers a manufacturer’s products within a territory.' },
+      { term: 'HoReCa', definition: 'Hotels, restaurants and catering businesses.' },
+      { term: 'Direct-to-retail supply', definition: 'Supply from a manufacturer straight to a larger retailer without a wholesaler.' },
+    ],
+    recap: [
+      'Wholesalers consolidate products; distributors cover brands, territories or categories.',
+      'They matter when suppliers cannot serve many small outlets economically.',
+      'They can supply warehousing, transport, credit and sales support.',
+      'Each added stage can add cost, lead time and loss of demand visibility.',
+    ],
+    chapterRecap: 'Wholesale and distribution channels extend market reach, especially across fragmented retail networks. Their value depends on coverage, delivery efficiency, commercial terms, and the services they provide to buyers and suppliers.',
+    deepDiveTitle: 'Why intermediaries are being digitised, not removed',
+    body: <G3DeepDive paragraphs={[
+      'Small shops order small quantities often, which suits a nearby wholesaler better than a factory. Rather than removing intermediaries, programmes now give them digital ordering, data and delivery so that more orders move with less cost and more visibility.',
+      'The aim is to keep the reach of traditional trade while shortening the information chain, so suppliers see what sells and small shops get reliable stock.',
+    ]} evidence="The channel activities are described qualitatively in the supplied material. MM Mega Market figures are from an investor presentation by its prospective owner, and the Retail Supreme figure is company-reported by Masan Group." />,
+    sources: citeG3('bjcMmvn', 'masanAr2025'),
+  }),
+  g3Chapter({
+    title: 'E-commerce, Marketplaces, and Digital Commerce', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Describe the digital channels a retailer can use and why online range must be backed by stock and delivery.',
+    mateIntro: 'Online, a shop can list thousands of products and reach customers far from any store. That only helps if the goods are there and can be delivered at a sensible cost.',
+    keyInsight: 'Digital channels can expand geographic reach and improve shopping convenience, but performance depends on the integration of online demand with physical inventory and fulfilment capacity. A large online assortment has limited value if products are unavailable or delivery costs are uneconomical.',
+    statTiles: [
+      { value: '6', label: 'Key digital commerce activities', subtitle: 'Owned e-commerce to channel management', description: 'Owned e-commerce, third-party marketplaces, digital product discovery, online promotions, order fulfilment and channel performance management.' },
+      { value: '56.04%', label: 'Shopee share of marketplace sales in 2025', subtitle: 'TikTok Shop 41.31%', description: 'Share of gross merchandise value across four platforms.' },
+      { value: '7M+', label: 'Online transactions at Bach Hoa Xanh in 2025', subtitle: 'Nearly 5% of chain revenue', description: 'A grocery chain’s own app and website orders.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the platform shares cover all product categories as measured by Metric, and the Bach Hoa Xanh figure is a company result reported by VnExpress.',
+    narrative: [
+      { label: 'What it is', text: 'Digital commerce includes retailer-owned websites and applications, third-party marketplaces and other online ordering channels. These let consumers search products, compare prices, access promotions, pay digitally and arrange fulfilment without visiting a store. Retailers may fulfil orders from dedicated warehouses, physical stores, supplier facilities or a combination, and each approach creates different trade-offs in inventory visibility, delivery speed, operating cost and control over the customer experience.' },
+      { label: 'Why it is happening', text: 'Smartphones and digital payments make ordering easy, and marketplaces give sellers instant reach. The costs sit in fulfilment, so success depends on matching online demand to real stock.' },
+      { label: 'Real-world example', text: 'Retailers sell through their own website or app; list products on third-party platforms; use search, filters and recommendations to support purchase decisions; run digital campaigns and targeted offers; coordinate picking, packing, dispatch and delivery; and measure conversion, order value, fulfilment cost, repeat purchases and returns by channel.' },
+      { label: 'Vietnam example', text: 'Shopee and TikTok Shop together held about 97% of the marketplace sales measured by Metric in 2025 (56.04% and 41.31%), on total gross merchandise value of VND 429.7 trillion. Groceries and food were the fastest-growing category on the top five platforms in 2024, up 76.3%, and ShopeeMart offers grocery delivery integrated with ShopeePay and 15-day returns. Bach Hoa Xanh handled over 7 million online transactions in 2025, nearly 5% of its revenue.' },
+      { label: 'Business impact', text: 'Digital commerce creates an additional route to market and strengthens customer access. Retailers need coordinated technology, inventory, fulfilment and customer-service capabilities to make digital channels commercially sustainable.' },
+    ],
+    visualKind: 'grocery-m3-53-digital-commerce', visualHeading: 'Six parts of running a digital channel and what to measure',
+    visualIntro: 'See six digital-commerce activities around the centre and the measure that shows how each performs.',
+    imageAlt: 'Casemate orbit mind map of six digital commerce activities and what to measure for each',
+    keyTerms: [
+      { term: 'Gross merchandise value (GMV)', definition: 'The total value of goods sold through a platform before costs.' },
+      { term: 'Conversion rate', definition: 'The share of visitors who place an order.' },
+      { term: 'Marketplace', definition: 'A platform where many sellers offer products to customers.' },
+      { term: 'Fulfilment', definition: 'Picking, packing, dispatching and delivering an order.' },
+    ],
+    recap: [
+      'Digital commerce includes owned apps and sites and third-party marketplaces.',
+      'It expands geographic reach and convenience.',
+      'Performance depends on integrating online demand with stock and fulfilment.',
+      'A large online range is of little value without availability and affordable delivery.',
+    ],
+    chapterRecap: 'Digital commerce creates an additional route to market and strengthens customer access. Retailers need coordinated technology, inventory, fulfilment, and customer-service capabilities to make digital channels commercially sustainable.',
+    deepDiveTitle: 'Why marketplace share does not equal grocery share',
+    body: <G3DeepDive paragraphs={[
+      'The platform shares in this chapter cover every product category, and groceries are only a part of them. A platform that leads in fashion or electronics may not lead in groceries, where freshness and fast delivery matter more.',
+      'Retailers choose between owning their channel, which gives control and data but needs investment, and using a marketplace, which gives reach but charges commission and limits control of the customer relationship.',
+    ]} evidence="The channel activities are described qualitatively in the supplied material. Platform shares and values are Metric data reported by The Investor and Viet Nam News and cover all categories, and Bach Hoa Xanh figures are company results reported by VnExpress." />,
+    sources: citeG3('metricEcommerce2025', 'superApps', 'vnexpressBhx'),
+  }),
+  g3Chapter({
+    title: 'Omnichannel Integration and Last-Mile Fulfilment', chapterTitle: LESSON, readingTime: '6',
+    objective: 'Explain how stores, apps, inventory and delivery connect in omnichannel retail and why last-mile cost is hardest in grocery.',
+    mateIntro: 'A customer may check a product online, order by app and pick it up at the store. For that to work, every system behind the scenes has to agree on what is in stock.',
+    keyInsight: 'Omnichannel advantage comes from integration rather than simply having multiple channels. Retailers must determine the most efficient fulfilment method for each order while maintaining reliable service and consistent customer information.',
+    statTiles: [
+      { value: '6', label: 'Key omnichannel activities', subtitle: 'Inventory visibility to cross-channel service', description: 'Unified inventory visibility, click-and-collect, store-based picking, home delivery, last-mile optimisation and cross-channel service.' },
+      { value: '+150%', label: 'Growth of Bach Hoa Xanh online revenue in 2025', subtitle: 'About VND 2.3T, nearly 5% of revenue', description: 'Company-reported online growth from a small base.' },
+      { value: '15 days', label: 'Return window offered by ShopeeMart', subtitle: 'With free return shipping', description: 'Unusual for fast-moving consumer goods, according to Viet Nam News.' },
+    ],
+    statsNote: 'The first tile is a count from this lesson; the growth rate is company-reported from a small base, and the return policy is a platform feature described by a news outlet at one point in time.',
+    narrative: [
+      { label: 'What it is', text: 'Omnichannel retail connects stores, digital platforms, inventory systems, customer accounts and fulfilment operations into one coordinated experience. Customers may research online, inspect in a store, order through an application and choose home delivery or collection. Last-mile fulfilment covers the final movement of an order to the customer or collection point and is especially challenging in grocery because of delivery-time expectations, perishable products, order accuracy and the cost of handling many small baskets.' },
+      { label: 'Why it is happening', text: 'Customers expect the same prices, stock and service in every channel. Meeting that expectation needs shared data and flexible fulfilment, not simply an app next to a store.' },
+      { label: 'Real-world example', text: 'Retailers show accurate availability across stores and online channels; prepare online orders for collection at a store or pickup point; use existing outlets to fulfil nearby orders; coordinate delivery windows, routing and customer communication; consolidate orders and choose delivery methods by cost and service; and support returns, loyalty benefits and assistance across touchpoints.' },
+      { label: 'Vietnam example', text: 'Bach Hoa Xanh reported online revenue of about VND 2.3 trillion in 2025, up about 150% and nearly 5% of its total. GrabMart delivers in 15–30 minutes and partners with chains such as WinMart, and ShopeeMart offers 15-day returns with free return shipping. Saigon Co.op reported double-digit online sales growth in 2025 and opened a distribution centre in western Ho Chi Minh City to improve logistics capacity.' },
+      { label: 'Business impact', text: 'Omnichannel integration connects customer convenience with operational coordination. Efficient last-mile fulfilment, accurate stock information and consistent service are essential to delivering value across channels.' },
+    ],
+    visualKind: 'grocery-m3-54-last-mile', visualHeading: 'From online order to the customer’s door',
+    visualIntro: 'Follow six omnichannel steps from stock visibility to cross-channel service and what to control at each.',
+    imageAlt: 'Casemate flow of six omnichannel and last-mile steps and what to control at each',
+    keyTerms: [
+      { term: 'Omnichannel', definition: 'Connected stores, apps and delivery sharing the same stock, prices and customer data.' },
+      { term: 'Store-based picking', definition: 'Staff picking online orders from the shelves of a nearby store.' },
+      { term: 'Last mile', definition: 'The final leg of delivery from a local point to the customer.' },
+      { term: 'Unified inventory', definition: 'One view of stock across stores, warehouses and online channels.' },
+    ],
+    recap: [
+      'Omnichannel connects stores, platforms, inventory, accounts and fulfilment.',
+      'Last-mile delivery is hard in grocery: perishables, short windows and small baskets.',
+      'Advantage comes from integration, not from the number of channels.',
+      'Choose the most efficient fulfilment for each order and keep service consistent.',
+    ],
+    chapterRecap: 'Omnichannel integration connects customer convenience with operational coordination. Efficient last-mile fulfilment, accurate stock information, and consistent service are essential to delivering value across channels.',
+    deepDiveTitle: 'Why store-based picking is both attractive and limited',
+    body: <G3DeepDive paragraphs={[
+      'Using stores to fulfil online orders avoids building new warehouses and puts stock close to customers. But staff who pick orders are not serving shoppers in the aisle, and small stores can run out of space or stock if online demand grows quickly.',
+      'That is why retailers watch cost per order, picking accuracy and stock availability together, and decide for each order which store or warehouse should serve it.',
+    ]} evidence="The omnichannel activities are described qualitatively in the supplied material. Bach Hoa Xanh figures are company results reported by VnExpress, delivery and returns details are from Viet Nam News, and Saigon Co.op results are company-reported by the Ho Chi Minh City Government portal." />,
+    sources: citeG3('vnexpressBhx', 'superApps', 'coop2025'),
+  }),
+];
+
+const quiz = g3Quiz('grocery-m3-l5', [
+  { chapter: '1', objective: 'Identify network decisions', question: 'Which decisions does store network planning involve?', application: 'A retailer decides where to open stores. What should it consider?', correct: 'Population density, competition, accessibility and demand', wrong: ['Only logo design', 'Only competitors’ colours', 'Only product packaging'], explanation: 'Network planning matches stores to demand. Review Chapter 1.' },
+  { chapter: '1', objective: 'State what drives store performance', question: 'What does physical store performance depend on?', application: 'Two stores of the same size perform differently. Why?', correct: 'Catchment demand, accessibility, sales per unit of space, inventory availability and fit with local behaviour', wrong: ['Only the building colour', 'Only the number of signs', 'Only the age of the store'], explanation: 'Format must fit local needs. Review Chapter 1.' },
+  { chapter: '2', objective: 'Explain the role of intermediaries', question: 'Why are wholesalers and distributors important?', application: 'A manufacturer cannot serve thousands of small shops directly. What helps?', correct: 'They improve coverage and reduce the complexity of serving fragmented customers', wrong: ['They always lower costs', 'They remove the need for retailers', 'They give perfect demand visibility'], explanation: 'Intermediaries bundle small orders. Review Chapter 2.' },
+  { chapter: '2', objective: 'State the cost of intermediaries', question: 'What can each additional stage in distribution add?', application: 'A product passes through several intermediaries. What is the effect?', correct: 'Cost and lead time, and less visibility into end-market demand', wrong: ['Lower costs always', 'Faster delivery always', 'Better data always'], explanation: 'Every stage takes margin and distance. Review Chapter 2.' },
+  { chapter: '3', objective: 'List digital channels', question: 'Which are digital commerce channels?', application: 'A grocer sells through its own app and on marketplaces. What are these?', correct: 'Retailer-owned websites and apps and third-party marketplaces', wrong: ['Only physical markets', 'Only wholesale depots', 'Only printed catalogues'], explanation: 'Digital channels include owned and third-party platforms. Review Chapter 3.' },
+  { chapter: '3', objective: 'State the limit of a big online range', question: 'When has a large online assortment little value?', application: 'An app lists thousands of products but many are out of stock. What is the problem?', correct: 'When products are unavailable or delivery costs are uneconomical', wrong: ['When the range is small', 'When customers like the app', 'When payments are digital'], explanation: 'Online demand must meet physical stock. Review Chapter 3.' },
+  { chapter: '3', objective: 'Read platform data carefully', question: 'Why is marketplace share not the same as grocery share?', application: 'A platform has a high share of total online sales. What should you check?', correct: 'The shares cover all product categories, and groceries are only part of them', wrong: ['Platform shares only measure groceries', 'Shares are the same in every category', 'Shares measure store sales'], explanation: 'Category mix differs by platform. Review Chapter 3.' },
+  { chapter: '4', objective: 'Define omnichannel integration', question: 'Where does omnichannel advantage come from?', application: 'A retailer has an app, stores and delivery. What creates the advantage?', correct: 'Integration, not simply having multiple channels', wrong: ['The number of channels alone', 'Lowest prices alone', 'Closing stores'], explanation: 'Integrated stock, service and information matter. Review Chapter 4.' },
+  { chapter: '4', objective: 'Explain last-mile difficulty in grocery', question: 'Why is last-mile fulfilment challenging in grocery?', application: 'A retailer delivers food orders to homes. What makes this hard?', correct: 'Delivery-time expectations, perishable products, order accuracy and the cost of handling many small baskets', wrong: ['Orders are always large', 'Products never spoil', 'Customers do not care about timing'], explanation: 'Small, perishable baskets raise cost per order. Review Chapter 4.' },
+  { chapter: '4', objective: 'Choose fulfilment per order', question: 'How should retailers choose a fulfilment method?', application: 'Orders come from different areas and sizes. What is the best approach?', correct: 'Determine the most efficient method for each order while keeping service and information consistent', wrong: ['Use one method for every order', 'Always use home delivery', 'Never use stores'], explanation: 'Efficiency varies by order. Review Chapter 4.' },
+]);
+
+export const LESSON_G3_5: GroceryM3LessonBundle = {
+  deck,
+  quiz,
+  takeaways: {
+    learned: 'You can explain how physical, wholesale, digital and omnichannel channels reach shoppers and what each needs to work.',
+    keyTakeaways: [
+      'Physical stores remain sales points and access points; format must fit catchment and local behaviour.',
+      'Intermediaries widen coverage but add cost, lead time and distance from demand.',
+      'A large online range is useful only with stock and affordable delivery.',
+      'Omnichannel advantage comes from integration, not from the number of channels.',
+      'Last-mile grocery delivery is costly because baskets are small and often perishable.',
+    ],
+    businessImplications: 'Match store networks to catchment demand, digitise wholesale links rather than just remove them, and judge digital channels on fulfilment cost as well as sales.',
+    remember: 'Reach customers through the channel that fits the product, the place and the cost.',
+    nextLesson: 'Industry Ecosystem & Stakeholders',
+  },
+};
