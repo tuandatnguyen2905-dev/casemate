@@ -46,6 +46,9 @@ const VI: Record<string, string> = {
   'Your answer:': 'Câu trả lời của bạn:',
   'Correct answer:': 'Đáp án đúng:',
   'Not answered': 'Chưa trả lời',
+  'Answer recorded.': 'Đã ghi nhận câu trả lời.',
+  'Answer recorded. You can change it before you submit.': 'Đã ghi nhận câu trả lời. Bạn có thể đổi đáp án trước khi nộp bài.',
+  'Knowledge Check progress': 'Tiến độ Kiểm tra kiến thức',
   'Knowledge Check submitted': 'Đã nộp bài Kiểm tra kiến thức',
   'Submitted earlier': 'Đã nộp trước đó',
   'Retake check': 'Làm lại bài kiểm tra',
@@ -199,6 +202,9 @@ export const uiCountOf = (value: number, total: number) => (vi() ? `${value}/${t
 export const uiChecksToGo = (remaining: number) => (vi() ? `Còn ${remaining} bài kiểm tra` : `${remaining} ${remaining === 1 ? 'check' : 'checks'} to go`);
 export const uiQuestionPosition = (number: number, total: number, answered: number) => (vi() ? `Câu ${number}/${total} · đã trả lời ${answered}` : `Question ${number} of ${total} · ${answered} answered`);
 export const uiAnswerAll = (total: number) => (vi() ? `Hãy trả lời cả ${total} câu để nộp bài.` : `Answer all ${total} questions to submit.`);
+export const uiMovingToQuestion = (number: number, total: number) => (vi() ? `Đã ghi nhận câu trả lời. Đang chuyển sang câu ${number}/${total}…` : `Answer recorded. Moving to question ${number} of ${total}…`);
+export const uiGoToQuestion = (number: number) => (vi() ? `Đến câu ${number}` : `Go to question ${number}`);
+export const uiQuestionDot = (number: number, answered: boolean) => (vi() ? `Câu ${number}, ${answered ? 'đã trả lời' : 'chưa trả lời'}` : `Question ${number}${answered ? ', answered' : ', not answered'}`);
 export const uiReviewQuestion = (number: number, correct: boolean) => (vi() ? `Câu ${number} · ${correct ? 'Đúng' : 'Chưa đúng'}` : `Question ${number} · ${correct ? 'Correct' : 'Incorrect'}`);
 export const uiScoreLine = (correct: number, total: number) => (vi() ? `${correct}/${total} câu đúng` : `${correct} of ${total} correct`);
 export const uiEarlierAttempt = (accuracy: number) => (vi() ? `${accuracy}% ở lần làm trước` : `${accuracy}% on an earlier attempt`);

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import type { QuestionLike } from './lessonFlowCore';
 import { autoAdvanceDelay, planAnswer, prefersReducedMotion } from './assessmentAutoAdvance';
-import { uiAnswerAll, uiQuestionPosition, uiText } from './localization/uiText';
+import { uiAnswerAll, uiGoToQuestion, uiMovingToQuestion, uiQuestionDot, uiQuestionPosition, uiText } from './localization/uiText';
 
 const shell = 'mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10';
 const primaryButton = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none';
@@ -103,8 +103,8 @@ export function LessonAssessmentStage<Q extends QuestionLike>({
 
   const current = answers[question.id];
   const feedback = pending
-    ? `Answer recorded. Moving to question ${index + 2} of ${total}…`
-    : current ? (isLast ? 'Answer recorded. You can change it before you submit.' : 'Answer recorded.') : '';
+    ? uiMovingToQuestion(index + 2, total)
+    : current ? uiText(isLast ? 'Answer recorded. You can change it before you submit.' : 'Answer recorded.') : '';
 
   return (
     <main className={shell} data-testid="lesson-assessment">
@@ -118,14 +118,14 @@ export function LessonAssessmentStage<Q extends QuestionLike>({
         <span className="text-xs font-semibold text-slate-500" data-testid="assessment-position">{uiQuestionPosition(index + 1, total, answered)}</span>
       </div>
       {total > 1 && (
-        <div className="mt-3 flex gap-1" role="list" aria-label="Knowledge Check progress">
+        <div className="mt-3 flex gap-1" role="list" aria-label={uiText('Knowledge Check progress')}>
           {questions.map((item, position) => (
             <button
               key={item.id}
               type="button"
               role="listitem"
               onClick={() => go(position)}
-              aria-label={`Question ${position + 1}${answers[item.id] ? ', answered' : ', not answered'}`}
+              aria-label={uiQuestionDot(position + 1, Boolean(answers[item.id]))}
               aria-current={position === index ? 'step' : undefined}
               className={`h-1.5 flex-1 rounded-full transition motion-reduce:transition-none ${position === index ? 'bg-red-600' : answers[item.id] ? 'bg-slate-400' : 'bg-slate-200 hover:bg-slate-300'}`}
             />
@@ -170,7 +170,7 @@ export function LessonAssessmentStage<Q extends QuestionLike>({
       {isLast && !allAnswered && total > 1 && (
         <p className="mt-3 text-right text-xs text-slate-500">
           {uiAnswerAll(total)}{' '}
-          {firstUnanswered >= 0 && <button type="button" onClick={() => go(firstUnanswered)} className="font-semibold text-red-600 underline underline-offset-2">Go to question {firstUnanswered + 1}</button>}
+          {firstUnanswered >= 0 && <button type="button" onClick={() => go(firstUnanswered)} className="font-semibold text-red-600 underline underline-offset-2">{uiGoToQuestion(firstUnanswered + 1)}</button>}
         </p>
       )}
     </main>
