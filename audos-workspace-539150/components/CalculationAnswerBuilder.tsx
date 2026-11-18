@@ -260,6 +260,7 @@ function FormulaRowEditor({
                   aria-label={`Drag to reorder calculation step ${numberIndex + 1}`}
                   data-testid={`calculation-step-handle-${row.id}-${numberIndex}`}
                 ><GripVertical className="h-4 w-4" /></button>
+                <span className="min-w-0 flex-1" aria-hidden="true" />
                 <button
                   type="button"
                   onClick={() => updateFormula(row.id, (current) => ({ ...current, numbers: current.numbers.map((item) => item.id === slot.id ? { ...item, openParenthesis: !item.openParenthesis } : item) }))}
@@ -269,15 +270,6 @@ function FormulaRowEditor({
                   aria-label={`Toggle opening parenthesis for number ${numberIndex + 1}`}
                 >(
                 </button>
-                <input
-                  value={slot.label}
-                  onChange={(event) => updateFormula(row.id, (current) => ({ ...current, numbers: current.numbers.map((item) => item.id === slot.id ? { ...item, label: event.target.value } : item) }))}
-                  disabled={disabled}
-                  maxLength={28}
-                  placeholder="Label"
-                  aria-label={`Label for number ${numberIndex + 1} in ${resultLabel}`}
-                  className="min-w-0 flex-1 bg-transparent px-1 text-[11px] font-semibold text-[var(--space-text-secondary)] outline-none placeholder:text-[var(--space-text-muted)]"
-                />
                 <button
                   type="button"
                   onClick={() => updateFormula(row.id, (current) => ({ ...current, numbers: current.numbers.map((item) => item.id === slot.id ? { ...item, closeParenthesis: !item.closeParenthesis } : item) }))}
@@ -288,6 +280,19 @@ function FormulaRowEditor({
                 >)
                 </button>
               </div>
+              <textarea
+                rows={2}
+                value={slot.label}
+                onChange={(event) => updateFormula(row.id, (current) => ({ ...current, numbers: current.numbers.map((item) => item.id === slot.id ? { ...item, label: event.target.value.replace(/\s*\n+\s*/g, ' ') } : item) }))}
+                onKeyDown={(event) => { if (event.key === 'Enter') event.preventDefault(); }}
+                disabled={disabled}
+                maxLength={40}
+                placeholder="Label, e.g. units sold"
+                title={slot.label || undefined}
+                aria-label={`Label for number ${numberIndex + 1} in ${resultLabel}`}
+                data-testid={`calculation-step-label-${row.id}-${numberIndex}`}
+                className="mt-1 block w-full resize-none break-words bg-transparent px-1 text-xs font-semibold leading-4 text-[var(--space-text-secondary)] outline-none placeholder:text-[var(--space-text-muted)]"
+              />
               <FormattedNumberInput
                 inputMode="decimal"
                 value={slot.value}
