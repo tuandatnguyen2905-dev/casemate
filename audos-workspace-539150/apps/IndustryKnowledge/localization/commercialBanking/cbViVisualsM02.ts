@@ -183,7 +183,7 @@ export const CB_VI_VISUALS_M02: Record<string, ViVisualSpec> = {
         { label: 'Dự phòng', detail: 'Chi phí tín dụng; so với dư nợ cho vay bình quân ra chi phí tín dụng trên dư nợ (Cost of Risk)', op: '−' },
         { label: 'Thuế', detail: 'Được trừ trước khi ra lợi nhuận ròng', op: '−' },
       ],
-      note: 'Vietcombank báo cáo lợi nhuận ròng hợp nhất VND16.699 tỷ cho H1-2024 (nửa đầu năm 2024; kết quả của ngân hàng, theo The Investor): đây chỉ là lợi nhuận ròng của một nữa năm, không phải doanh thu hay thước đo của cả năm.',
+      note: 'Vietcombank báo cáo lợi nhuận ròng hợp nhất VND16.699 tỷ cho H1-2024 (nửa đầu năm 2024; kết quả của ngân hàng, theo The Investor): đây chỉ là lợi nhuận ròng của một nửa năm, không phải doanh thu hay thước đo của cả năm.',
       takeaway: 'Quy mô nằm ở đầu; chi phí vốn, chi phí hoạt động và chi phí tín dụng quyết định phần lợi nhuận còn lại.',
     },
   },

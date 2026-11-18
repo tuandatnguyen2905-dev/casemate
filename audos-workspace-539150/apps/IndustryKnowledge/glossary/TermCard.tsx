@@ -2,6 +2,7 @@ import { ExternalLink } from 'lucide-react';
 import type { GlossaryLanguage } from './glossaryTypes';
 import type { ResolvedTerm } from './glossaryStore';
 import { LANGUAGE_OPTIONS } from './glossaryLanguage';
+import { uiText, useUiLanguage } from '../localization/uiText';
 
 export function termHeading(term: Pick<ResolvedTerm, 'term' | 'acronym'>): { title: string; badge: string | null } {
   if (term.acronym && term.acronym !== term.term) return { title: term.term, badge: term.acronym };
@@ -15,10 +16,10 @@ export function definitionFor(term: ResolvedTerm, language: GlossaryLanguage): {
 
 function VerificationBadge({ term }: { term: ResolvedTerm }) {
   if (term.verificationStatus === 'verified') return null;
-  const label = term.verificationStatus === 'needs-review' ? 'Needs review' : 'Source check pending';
+  const label = term.verificationStatus === 'needs-review' ? uiText('Needs review') : uiText('Source check pending');
   return (
     <p className="mt-2 rounded-lg bg-amber-50 px-2.5 py-1.5 text-[11px] leading-5 text-amber-800 ring-1 ring-amber-200" data-testid="term-verification-flag">
-      <span className="font-bold">{label}.</span> {term.reviewNote ?? 'This explanation has not been matched to a cited source yet.'}
+      <span className="font-bold">{label}.</span> {term.reviewNote ?? uiText('This explanation has not been matched to a cited source yet.')}
     </p>
   );
 }
@@ -27,7 +28,7 @@ function SourceLine({ term }: { term: ResolvedTerm }) {
   if (!term.sources.length) return null;
   return (
     <p className="mt-2 text-[11px] leading-5 text-slate-400">
-      <span className="font-semibold text-slate-500">Source{term.sources.length > 1 ? 's' : ''}:</span>{' '}
+      <span className="font-semibold text-slate-500">{uiText(term.sources.length > 1 ? 'Sources' : 'Source')}:</span>{' '}
       {term.sources.map((source, index) => (
         <span key={source.id}>
           {index > 0 ? ' · ' : ''}
@@ -43,6 +44,7 @@ function SourceLine({ term }: { term: ResolvedTerm }) {
 }
 
 export function TermCard({ term, language, compact = false, chapterLabel }: { term: ResolvedTerm; language: GlossaryLanguage; compact?: boolean; chapterLabel?: string }) {
+  useUiLanguage();
   const heading = termHeading(term);
   const definition = definitionFor(term, language);
   const showVi = language === 'both' && Boolean(term.definitionVi);
@@ -59,7 +61,7 @@ export function TermCard({ term, language, compact = false, chapterLabel }: { te
       {term.fullForm && term.fullForm !== heading.title ? <p className="mt-0.5 text-xs font-semibold text-slate-500">{term.fullForm}</p> : null}
       <p className="mt-2 text-sm leading-6 text-slate-700">
         {definition.text}
-        {definition.fallback ? <span className="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">English only</span> : null}
+        {definition.fallback ? <span className="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">{uiText('English only')}</span> : null}
       </p>
       {!compact && context ? <p className="mt-1.5 text-xs leading-5 text-slate-500"><span className="font-bold text-slate-600">{language === 'vi' ? 'Bối cảnh:' : 'Why it matters:'}</span> {context}</p> : null}
       {!compact && lessonContext ? <p className="mt-1.5 text-xs leading-5 text-slate-500"><span className="font-bold text-slate-600">{language === 'vi' ? 'Trong bài này:' : 'In this lesson:'}</span> {lessonContext}</p> : null}
@@ -78,13 +80,14 @@ export function TermCard({ term, language, compact = false, chapterLabel }: { te
 }
 
 export function LanguageToggle({ value, onChange }: { value: GlossaryLanguage; onChange: (language: GlossaryLanguage) => void }) {
+  useUiLanguage();
   return (
-    <div className="inline-flex rounded-xl bg-slate-100 p-0.5" role="group" aria-label="Definition language">
+    <div className="inline-flex rounded-xl bg-slate-100 p-0.5" role="group" aria-label={uiText('Definition language')}>
       {LANGUAGE_OPTIONS.map((option) => (
         <button
           key={option.id}
           type="button"
-          title={option.title}
+          title={uiText(option.title)}
           aria-pressed={value === option.id}
           onClick={() => onChange(option.id)}
           className={`min-h-8 rounded-[10px] px-2.5 text-[11px] font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 ${value === option.id ? 'bg-white text-red-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}

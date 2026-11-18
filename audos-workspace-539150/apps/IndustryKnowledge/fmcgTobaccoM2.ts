@@ -238,7 +238,7 @@ export const FMCG_TOBACCO_M2: FxModule = {
             ['What happens in primary processing?', 'Leaf is conditioned, blended and cut into cut tobacco', ['Cigarettes are sold to retailers', 'Warnings are designed', 'Excise rates are set'], 'Primary processing prepares the tobacco filler.'],
             ['Why does Vietnam manage the capacity of tobacco machinery?', 'To support control of production output', ['To increase advertising', 'To reduce warnings', 'To set retail displays'], 'Machinery control is an output-control measure.'],
           ],
-          seq: { evidence: 'Leaf is conditioned and blended, cut, made into cigarettes, then packed with warnings and marks before quality release.', steps: [['Condition and blend leaf', 'Leaf must be prepared first.'], ['Cut tobacco', 'Cut filler is needed to make cigarettes.'], ['Make cigarettes', 'Machines form cigarettes from cut tobacco.'], ['Pack with warnings and marks', 'Packing follows making.'], ['Release after quality checks', 'Only checked product leaves the factory.']] },
+          seq: { evidence: 'Leaf is conditioned and blended, cut, made into cigarettes, then packed with warnings and marks before quality release.', steps: [['Condition and blend leaf', 'Leaf must be prepared first: it is conditioned and blended before it is cut.'], ['Cut tobacco', 'Cut filler is needed to make cigarettes.'], ['Make cigarettes', 'Machines form cigarettes from cut tobacco.'], ['Pack with warnings and marks', 'Packing follows making: packing machines place cigarettes into packs with warnings and tax marks.'], ['Release after quality checks', 'Only checked product leaves the factory.']] },
         },
         {
           t: 'Why are capacity and output controls central to tobacco manufacturing?',

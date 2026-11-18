@@ -228,6 +228,60 @@ const VI: Record<string, string> = {
     'Bạn chưa đánh giá thẻ nào, điều đó không sao: việc đánh giá là không bắt buộc. Các thẻ chưa đánh giá không được tính là đã nhớ và không được lên lịch ôn tập.',
   'Mastery comes only from your ratings: a card is mastered when its next review is at least three weeks away. Forgetting it later moves it back to learning.':
     'Mức thành thạo chỉ dựa trên đánh giá của bạn: một thẻ được xem là đã thành thạo khi lần ôn tiếp theo cách ít nhất ba tuần. Nếu sau này bạn quên thẻ, thẻ sẽ quay lại trạng thái đang học.',
+
+  // Flashcards deck overview, Practice Journey and Essential Terms sheet
+  'This chapter': 'Chương này',
+  'This lesson': 'Bài học này',
+  'This module': 'Học phần này',
+  From: 'Từ',
+  'Cards to study': 'Thẻ cần học',
+  'They open chapter by chapter: submit the Knowledge Check of a chapter (any score) and the next chapter, with its cards, opens.':
+    'Thẻ được mở theo từng chương: khi bạn nộp bài Kiểm tra kiến thức của một chương (với bất kỳ điểm số nào), chương tiếp theo cùng các thẻ của chương đó sẽ mở.',
+  'They open chapter by chapter in each lesson: submit the Knowledge Check of a chapter (any score) and the next chapter, with its cards, opens. The first chapter of every lesson is always open.':
+    'Thẻ được mở theo từng chương trong mỗi bài học: khi bạn nộp bài Kiểm tra kiến thức của một chương (với bất kỳ điểm số nào), chương tiếp theo cùng các thẻ của chương đó sẽ mở. Chương đầu tiên của mỗi bài học luôn được mở.',
+  'Available now': 'Đang mở',
+  Mastery: 'Mức thành thạo',
+  ' Every answer is text its chapter shows: the key insight, a key term or a worked example.':
+    ' Mọi đáp án đều là nội dung có trong chương của thẻ: ý chính, một thuật ngữ chính hoặc một ví dụ minh họa.',
+  ' Other lessons could not be loaded, so totals cover this lesson only.': ' Không tải được các bài học khác nên số liệu tổng chỉ tính cho bài học này.',
+  'Cards rated': 'Thẻ đã đánh giá',
+  Available: 'Đã mở',
+  Due: 'Đến hạn',
+  Mastered: 'Đã thành thạo',
+  'No cards in this scope are open yet.': 'Chưa có thẻ nào trong phạm vi này được mở.',
+  'This chapter has no cards of its own.': 'Chương này không có thẻ riêng.',
+  'Its chapters open as you submit each Knowledge Check.': 'Các chương sẽ lần lượt mở khi bạn nộp từng bài Kiểm tra kiến thức.',
+  'Show the whole lesson': 'Xem cả bài học',
+  'Every rated card is scheduled for later.': 'Mọi thẻ đã đánh giá đều được lên lịch ôn ở thời điểm sau.',
+  'Cards you rate are scheduled for review automatically.': 'Các thẻ bạn đánh giá sẽ tự động được lên lịch ôn tập.',
+  'Start practising': 'Bắt đầu luyện tập',
+  'Study available cards': 'Học các thẻ đã mở',
+  'Nothing due for review.': 'Chưa có thẻ nào đến hạn ôn tập.',
+  'All cards rated. Nothing due for review.': 'Bạn đã đánh giá mọi thẻ. Chưa có thẻ nào đến hạn ôn tập.',
+  'Key terms & saved notes': 'Thuật ngữ chính & ghi chú đã lưu',
+  Chapter: 'Chương',
+  'This chapter lists no key terms.': 'Chương này không có thuật ngữ chính nào.',
+  'My saved note': 'Ghi chú đã lưu của bạn',
+  'No cards yet': 'Chưa có thẻ',
+  'No activities yet': 'Chưa có hoạt động',
+  'Final Lesson Takeaways': 'Điểm chính cuối bài học',
+  'After the final check': 'Sau bài kiểm tra cuối',
+  'Whole module': 'Cả học phần',
+  'Close term sheet': 'Đóng bảng thuật ngữ',
+  'Search terms': 'Tìm thuật ngữ',
+  'Search terms, acronyms or Vietnamese': 'Tìm thuật ngữ, từ viết tắt hoặc tiếng Việt',
+  'Which terms to show': 'Chọn phạm vi thuật ngữ',
+  'Optional reference. Terms never lock chapters or count toward completion. Vietnamese explanations are pending native-speaker review.':
+    'Tài liệu tham khảo không bắt buộc. Thuật ngữ không bao giờ khóa chương và không được tính vào tiến độ hoàn thành. Phần giải thích tiếng Việt đang chờ người bản ngữ rà soát.',
+  'Needs review': 'Cần rà soát',
+  'Source check pending': 'Đang chờ kiểm tra nguồn',
+  'This explanation has not been matched to a cited source yet.': 'Phần giải thích này chưa được đối chiếu với nguồn trích dẫn.',
+  'English only': 'Chỉ có tiếng Anh',
+  'Definition language': 'Ngôn ngữ định nghĩa',
+  'English with Vietnamese explanation': 'Tiếng Anh kèm giải thích tiếng Việt',
+  'Tiếng Việt (English when no Vietnamese is available)': 'Tiếng Việt (hiển thị tiếng Anh khi chưa có bản tiếng Việt)',
+  'Essential term': 'Thuật ngữ thiết yếu',
+  'Close definition': 'Đóng định nghĩa',
 };
 
 export const uiVocabularySize = () => Object.keys(VI).length;
@@ -379,3 +433,26 @@ export const uiCheckLockedNotice = (lockedNumber: number, lockedTitle: string, c
     ? `Chapter ${lockedNumber} (${lockedTitle}) opens after Knowledge Check ${checkNumber}, which could not load just now. Open it to try again.`
     : `Chapter ${lockedNumber} (${lockedTitle}) opens after you submit Knowledge Check ${checkNumber}, with any score. Flashcards never unlock chapters.`;
 };
+
+// Flashcards deck overview, Practice Journey and Essential Terms sheet ---------------------------------
+
+export const uiCardCount = (count: number) => (vi() ? `${count} thẻ` : cardsOf(count));
+export const uiActivityCount = (count: number) => (vi() ? `${count} hoạt động` : `${count} ${count === 1 ? 'activity' : 'activities'}`);
+export const uiAllCards = (industryLabel: string) => (vi() ? `Tất cả thẻ ${industryLabel}` : `All ${industryLabel} cards`);
+export const uiOpenNow = (available: number, total: number) => (vi()
+  ? `${available} thẻ đang mở${total > available ? ` · tổng ${total} thẻ` : ''}`
+  : `${available} open now${total > available ? ` · ${total} in total` : ''}`);
+export const uiCardsUnlockLater = (count: number) => (vi() ? `Còn ${count} thẻ sẽ mở sau.` : `${count} more ${count === 1 ? 'card' : 'cards'} unlock later.`);
+/** Follows the curriculum card total, which the overview renders in bold just before it. */
+export const uiIndustryTotalTail = (available: number, lessons: number) => (vi()
+  ? ` tổng cộng, ${available} thẻ đang mở, thuộc ${lessons} bài học.`
+  : ` in total, ${available} open now, across ${lessons} ${lessons === 1 ? 'lesson' : 'lessons'}.`);
+export const uiChapterCardsRated = (rated: number, total: number) => (vi() ? `Đã đánh giá ${rated}/${total} thẻ của chương` : `${rated} of ${total} chapter cards rated`);
+export const uiReviewDueCount = (due: number) => (vi() ? `Ôn ${due} thẻ đến hạn` : `Review ${due} due`);
+export const uiSessionLimitNote = (limit: number, unseen: number) => (vi()
+  ? `Mỗi phiên học gồm tối đa ${limit} thẻ: Học bắt đầu với các thẻ bạn chưa đánh giá (còn ${unseen} thẻ); Ôn tập gồm các thẻ đang đến hạn.`
+  : `Each session takes up to ${limit} cards: Study starts with cards you have not rated yet (${unseen} left); Review takes the cards due now.`);
+export const uiRetryWeakCount = (count: number) => (vi() ? `Ôn lại ${count} khái niệm chưa vững` : `Retry ${count} ${count === 1 ? 'weak concept' : 'weak concepts'}`);
+export const uiChapterShort = (numbers: string) => (vi() ? `Chương ${numbers}` : `Ch. ${numbers}`);
+export const uiNoTermsMatch = (query: string) => (vi() ? `Không có thuật ngữ nào khớp với \u201c${query}\u201d.` : `No terms match \u201c${query}\u201d.`);
+export const uiTermDefinitionLabel = (term: string) => (vi() ? `Định nghĩa ${term}` : `${term} definition`);

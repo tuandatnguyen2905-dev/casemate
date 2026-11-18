@@ -3,12 +3,13 @@ import { ChevronDown, Lightbulb, Lock } from 'lucide-react';
 import { JourneyChapter } from '../../IndustryKnowledge/lessonFlow';
 import type { JourneyRow } from '../../IndustryKnowledge/lessonFlowCore';
 import type { PracticeJourney as PracticeJourneyData } from './practiceLessonStore';
+import { uiActivityCount, uiCardCount, uiChapterOf, uiText, useUiLanguage } from '../../IndustryKnowledge/localization/uiText';
 
 const focusRing = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2';
 
 const countLabel = (modeId: string, count: number) => {
-  if (modeId === 'flashcards') return count ? `${count} ${count === 1 ? 'card' : 'cards'}` : 'No cards yet';
-  return count ? `${count} ${count === 1 ? 'activity' : 'activities'}` : 'No activities yet';
+  if (modeId === 'flashcards') return count ? uiCardCount(count) : uiText('No cards yet');
+  return count ? uiActivityCount(count) : uiText('No activities yet');
 };
 
 const isOpenRow = (row: JourneyRow) => row.state !== 'locked' && row.state !== 'under-review';
@@ -29,6 +30,7 @@ export function PracticeJourney({ journey, chapterIndex, modeId, counts, onSelec
   onSelectCheck: (index: number) => void;
   onSelectTakeaways: () => void;
 }) {
+  useUiLanguage();
   const listId = useId();
   const [open, setOpen] = useState(false);
   const current = journey.rows[chapterIndex];
@@ -38,7 +40,7 @@ export function PracticeJourney({ journey, chapterIndex, modeId, counts, onSelec
     onSelectChapter(index);
   };
   return (
-    <nav aria-label="Learning journey" className="min-w-0 lg:sticky lg:top-6" data-testid="practice-journey">
+    <nav aria-label={uiText('Learning journey')} className="min-w-0 lg:sticky lg:top-6" data-testid="practice-journey">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -48,13 +50,13 @@ export function PracticeJourney({ journey, chapterIndex, modeId, counts, onSelec
         data-testid="practice-journey-toggle"
       >
         <span className="min-w-0">
-          <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Learning journey · Chapter {chapterIndex + 1} of {journey.rows.length}</span>
+          <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{uiText('Learning journey')} · {uiChapterOf(chapterIndex + 1, journey.rows.length)}</span>
           <span className="block truncate text-sm font-semibold text-slate-800">{current?.title}</span>
         </span>
         <ChevronDown className={`h-4 w-4 shrink-0 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
       </button>
       <div id={listId} className={`${open ? 'mt-2 block' : 'hidden'} lg:mt-0 lg:block`}>
-        <p className="mb-2 hidden px-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 lg:block">Learning journey</p>
+        <p className="mb-2 hidden px-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 lg:block">{uiText('Learning journey')}</p>
         <div className="space-y-1">
           {journey.rows.map((row) => (
             <JourneyChapter
@@ -84,8 +86,8 @@ export function PracticeJourney({ journey, chapterIndex, modeId, counts, onSelec
               {takeawaysLocked ? <Lock className="h-3 w-3" /> : <Lightbulb className="h-3 w-3" />}
             </span>
             <span className="min-w-0">
-              <span className={`block text-xs font-medium leading-5 ${takeawaysLocked ? 'text-slate-400' : 'text-slate-600'}`}>Final Lesson Takeaways</span>
-              <span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">{takeawaysLocked ? 'After the final check' : 'Available'}</span>
+              <span className={`block text-xs font-medium leading-5 ${takeawaysLocked ? 'text-slate-400' : 'text-slate-600'}`}>{uiText('Final Lesson Takeaways')}</span>
+              <span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">{takeawaysLocked ? uiText('After the final check') : uiText('Available')}</span>
             </span>
           </button>
         </div>

@@ -6,7 +6,7 @@ import { FLASHCARD_SCOPES, cardsInScope, coverageSummary, originLesson, resolveI
 import type { FlashcardScopeId, IndustryFlashcards, LessonCards } from './flashcardScopes';
 import type { PracticeMode, PracticeModeBodyProps } from './modes';
 import { flashcardAdapterFor } from './practiceStorage';
-import { uiCardsLocked, uiCardsRated, uiText } from '../../IndustryKnowledge/localization/uiText';
+import { uiCardsLocked, uiCardsRated, uiText, useUiLanguage } from '../../IndustryKnowledge/localization/uiText';
 
 export interface LessonFlashcardsPractice {
   industry: IndustryFlashcards;
@@ -22,6 +22,7 @@ const lockedText = uiCardsLocked;
 const isScope = (value: unknown): value is FlashcardScopeId => FLASHCARD_SCOPES.includes(value as FlashcardScopeId);
 
 function FlashcardsModeBody({ resolved, context, onSessionChange, chrome }: PracticeModeBodyProps<LessonFlashcardsPractice>) {
+  useUiLanguage();
   const { industry } = resolved;
   const adapter = useMemo(() => flashcardAdapterFor(context.learnerScope), [context.learnerScope]);
   const chapterOnly = Boolean(context.chapterOnly);
@@ -104,7 +105,7 @@ function FlashcardsModeBody({ resolved, context, onSessionChange, chrome }: Prac
         />
       </div>
       {inSession ? null : (
-        <aside className="mt-6 min-w-0 xl:sticky xl:top-6 xl:mt-0" aria-label="Key terms">
+        <aside className="mt-6 min-w-0 xl:sticky xl:top-6 xl:mt-0" aria-label={uiText('Key terms')}>
           <ChapterSupportPanel origin={industry.origin} />
         </aside>
       )}

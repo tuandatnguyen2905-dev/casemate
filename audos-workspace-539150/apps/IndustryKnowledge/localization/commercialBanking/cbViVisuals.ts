@@ -1,5 +1,7 @@
 import type { ViVisualSpec } from '../visualLocalization';
 import { CB_VI_VISUALS_M02 } from './cbViVisualsM02';
+import { CB_VI_VISUALS_M04 } from './cbViVisualsM04';
+import { CB_VI_VISUALS_M05 } from './cbViVisualsM05';
 
 // Vietnamese Learning Visual text for Commercial Banking, keyed by visualKind (commercialBankingM0xVisualSpecs.ts).
 // Text only: layout, kinds, tones and numbers come from the English spec (see visualLocalization.ts). Terminology
@@ -88,4 +90,4 @@ const CB_VI_VISUALS_M01: Record<string, ViVisualSpec> = {
   },
 };
 
-export const CB_VI_VISUALS: Record<string, ViVisualSpec> = { ...CB_VI_VISUALS_M01, ...CB_VI_VISUALS_M02 };
+export const CB_VI_VISUALS: Record<string, ViVisualSpec> = { ...CB_VI_VISUALS_M01, ...CB_VI_VISUALS_M02, ...CB_VI_VISUALS_M04, ...CB_VI_VISUALS_M05 };

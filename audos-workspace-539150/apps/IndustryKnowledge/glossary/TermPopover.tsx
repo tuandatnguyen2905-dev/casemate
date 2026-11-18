@@ -10,6 +10,7 @@ import { useLessonGlossary } from './glossaryStore';
 import type { LessonGlossary, ResolvedTerm } from './glossaryStore';
 import { useGlossaryLanguage } from './glossaryLanguage';
 import { TermCard } from './TermCard';
+import { uiTermDefinitionLabel, uiText, useUiLanguage } from '../localization/uiText';
 
 const OPEN_EVENT = 'casemate:glossary-popover-open';
 const POPOVER_WIDTH = 320;
@@ -32,6 +33,7 @@ export function TermLookup({ term, children }: { term: ResolvedTerm; children: R
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<Placement>({ mode: 'sheet' });
   const [language] = useGlossaryLanguage();
+  useUiLanguage();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const popoverId = useId();
@@ -83,7 +85,7 @@ export function TermLookup({ term, children }: { term: ResolvedTerm; children: R
       ref={popoverRef}
       id={popoverId}
       role="dialog"
-      aria-label={`${term.term} definition`}
+      aria-label={uiTermDefinitionLabel(term.term)}
       tabIndex={-1}
       data-testid="glossary-popover"
       onKeyDown={(event) => {
@@ -99,8 +101,8 @@ export function TermLookup({ term, children }: { term: ResolvedTerm; children: R
       style={placement.mode === 'anchored' ? { top: placement.top, left: placement.left, width: Math.min(POPOVER_WIDTH, window.innerWidth - 16), transform: placement.above ? 'translateY(-100%)' : undefined } : undefined}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-red-600">Essential term</p>
-        <button type="button" onClick={() => close()} className="-mr-1 -mt-1 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label="Close definition">
+        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-red-600">{uiText('Essential term')}</p>
+        <button type="button" onClick={() => close()} className="-mr-1 -mt-1 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label={uiText('Close definition')}>
           <X className="h-4 w-4" />
         </button>
       </div>

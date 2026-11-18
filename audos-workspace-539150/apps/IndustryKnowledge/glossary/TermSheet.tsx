@@ -6,6 +6,7 @@ import { searchKey } from './glossaryMatch';
 import { useGlossaryLanguage } from './glossaryLanguage';
 import { GlossaryDialog } from './GlossaryDialog';
 import { LanguageToggle, TermCard } from './TermCard';
+import { uiChapterNumber, uiChapterShort, uiNoTermsMatch, uiText, useUiLanguage } from '../localization/uiText';
 
 export type TermSheetScope = 'chapter' | 'lesson' | 'module';
 
@@ -29,13 +30,14 @@ export function TermSheet({
   returnFocus?: HTMLElement | null;
   initialScope?: TermSheetScope;
 }) {
+  useUiLanguage();
   const titleId = useId();
   const [language, setLanguage] = useGlossaryLanguage();
   const chapterIds = chapterIndex !== undefined ? glossary.byChapter[chapterIndex] ?? [] : [];
   const scopes: Array<{ id: TermSheetScope; label: string; count: number }> = [
-    ...(chapterIds.length ? [{ id: 'chapter' as const, label: `Chapter ${(chapterIndex ?? 0) + 1}`, count: chapterIds.length }] : []),
-    { id: 'lesson', label: 'This lesson', count: glossary.terms.length },
-    ...(glossary.moduleTerms.length > glossary.terms.length ? [{ id: 'module' as const, label: 'Whole module', count: glossary.moduleTerms.length }] : []),
+    ...(chapterIds.length ? [{ id: 'chapter' as const, label: uiChapterNumber((chapterIndex ?? 0) + 1), count: chapterIds.length }] : []),
+    { id: 'lesson', label: uiText('This lesson'), count: glossary.terms.length },
+    ...(glossary.moduleTerms.length > glossary.terms.length ? [{ id: 'module' as const, label: uiText('Whole module'), count: glossary.moduleTerms.length }] : []),
   ];
   const [scope, setScope] = useState<TermSheetScope>(() => (initialScope && scopes.some((item) => item.id === initialScope) ? initialScope : scopes[0].id));
   const [query, setQuery] = useState('');
@@ -49,23 +51,23 @@ export function TermSheet({
       <header className="border-b border-slate-100 px-5 pb-4 pt-5 sm:px-6">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-red-600">Essential Terms · {glossary.subIndustry}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-red-600">{uiText('Essential Terms')} · {glossary.subIndustry}</p>
             <h2 id={titleId} className="mt-1 text-lg font-black tracking-tight text-slate-900 sm:text-xl">{glossary.lessonTitle}</h2>
             <p className="mt-0.5 text-xs text-slate-500">{glossary.moduleTitle}</p>
           </div>
-          <button type="button" onClick={onClose} data-autofocus className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label="Close term sheet">
+          <button type="button" onClick={onClose} data-autofocus className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500" aria-label={uiText('Close term sheet')}>
             <X className="h-4 w-4" />
           </button>
         </div>
         <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="relative block flex-1">
-            <span className="sr-only">Search terms</span>
+            <span className="sr-only">{uiText('Search terms')}</span>
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden />
             <input
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search terms, acronyms or Vietnamese"
+              placeholder={uiText('Search terms, acronyms or Vietnamese')}
               className="min-h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-800 outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100"
               data-testid="glossary-search"
             />
@@ -73,7 +75,7 @@ export function TermSheet({
           <LanguageToggle value={language} onChange={setLanguage} />
         </div>
         {scopes.length > 1 ? (
-          <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Which terms to show">
+          <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label={uiText('Which terms to show')}>
             {scopes.map((item) => (
               <button
                 key={item.id}
@@ -91,7 +93,7 @@ export function TermSheet({
       </header>
       <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-4 sm:px-6" data-testid="glossary-term-list">
         {groups.length === 0 ? (
-          <p className="py-10 text-center text-sm text-slate-500" role="status">No terms match “{query}”.</p>
+          <p className="py-10 text-center text-sm text-slate-500" role="status">{uiNoTermsMatch(query)}</p>
         ) : groups.map((group) => (
           <section key={group.category.id} className="mb-6 last:mb-2" aria-label={group.category.label}>
             <h3 className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
@@ -103,7 +105,7 @@ export function TermSheet({
                   key={term.id}
                   term={term}
                   language={language}
-                  chapterLabel={scope === 'lesson' && term.chapters.length ? `Ch. ${term.chapters.map((index) => index + 1).join(', ')}` : undefined}
+                  chapterLabel={scope === 'lesson' && term.chapters.length ? uiChapterShort(term.chapters.map((index) => index + 1).join(', ')) : undefined}
                 />
               ))}
             </div>
@@ -111,7 +113,7 @@ export function TermSheet({
         ))}
       </div>
       <footer className="border-t border-slate-100 px-5 py-3 text-[11px] leading-5 text-slate-400 sm:px-6">
-        Optional reference. Terms never lock chapters or count toward completion. Vietnamese explanations are pending native-speaker review.
+        {uiText('Optional reference. Terms never lock chapters or count toward completion. Vietnamese explanations are pending native-speaker review.')}
       </footer>
     </GlossaryDialog>
   );

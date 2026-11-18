@@ -6,11 +6,13 @@ import type { FlashcardDeckContent } from '../models';
 import { defineLessonDeck } from './factory';
 import type { CardSpec } from './factory';
 import { FMCG_EXPANSION_BUILT } from '../../../IndustryKnowledge/fmcgExpansionRegistry';
-import { FX_MODULE_TITLES } from '../../../IndustryKnowledge/fmcgExpansionCore';
+import { FX_FIGURE_PATTERN, FX_MODULE_TITLES } from '../../../IndustryKnowledge/fmcgExpansionCore';
 import type { FxBuilt, FxLesson } from '../../../IndustryKnowledge/fmcgExpansionCore';
 
 const slug = (text: string) => text.toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 const stableTail = (text: string) => (/\d$/.test(text) ? `${text}-term` : text);
+/** Cards carry no figures or dates, so a takeaway that cites one gives way to the chapter's figure-free rationale or risk. */
+const figureFree = (...texts: string[]) => texts.find((text) => !FX_FIGURE_PATTERN.test(text)) ?? texts[0];
 const sourceFile = (key: string, module: number) => `apps/IndustryKnowledge/${key.toLowerCase().replace(/_([a-z])/g, (_, char: string) => char.toUpperCase())}M${module}.ts`;
 
 function lessonDeck(built: FxBuilt, moduleIndex: number, lessonIndex: number, lesson: FxLesson, nextTitle?: string): FlashcardDeckContent {
@@ -29,7 +31,7 @@ function lessonDeck(built: FxBuilt, moduleIndex: number, lessonIndex: number, le
       ch: chapterIndex + 1,
       front: `What does \u201c${term}\u201d mean?`,
       back: definition,
-      explanation: chapter.take,
+      explanation: figureFree(chapter.take, chapter.why, chapter.risk),
       example: chapter.apply,
       terms: [term],
       refs: [[chapterIndex + 1, definition]],

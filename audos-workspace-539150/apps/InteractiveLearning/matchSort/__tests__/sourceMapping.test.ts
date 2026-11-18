@@ -4,6 +4,7 @@
 // new curriculum module is checked as soon as it is registered there.
 import { BANKING_SOURCES } from '../../../IndustryKnowledge/commercialBankingCore';
 import { CONSUMER_FINANCE_SOURCES } from '../../../IndustryKnowledge/consumerFinanceCore';
+import { FMCG_EXPANSION_BUILT } from '../../../IndustryKnowledge/fmcgExpansionRegistry';
 import { applyReviewHolds } from '../../../IndustryKnowledge/reviewHolds';
 import { PRACTICE_SOURCE_MODULES } from '../../practiceReview/sourceDecks';
 import { allActivities } from '../content';
@@ -11,7 +12,13 @@ import { resolveAvailableActivities } from '../validation';
 import type { SourceDecks } from '../validation';
 import { eq, ok, runSuite } from './assert';
 
-const registryFor = (moduleKey: string): Record<string, unknown> => (moduleKey.startsWith('COMMERCIAL_BANKING') ? BANKING_SOURCES : CONSUMER_FINANCE_SOURCES);
+/** FMCG registries store `url`; FMCG chapter cards cite the same source as `href`. */
+const fmcgRegistryFor = (moduleKey: string): Record<string, { title: string; href: string }> | undefined => {
+  const built = FMCG_EXPANSION_BUILT.find((entry) => entry.modules.some((module) => module.key === moduleKey));
+  return built && Object.fromEntries(Object.entries(built.curriculum.sources).map(([id, source]) => [id, { title: source.title, href: source.url }]));
+};
+
+const registryFor = (moduleKey: string): Record<string, unknown> => fmcgRegistryFor(moduleKey) ?? (moduleKey.startsWith('COMMERCIAL_BANKING') ? BANKING_SOURCES : CONSUMER_FINANCE_SOURCES);
 
 const modules = new Map(PRACTICE_SOURCE_MODULES.map(([key, decks, quizzes, takeaways]) => [key, { decks, quizzes, takeaways }]));
 
