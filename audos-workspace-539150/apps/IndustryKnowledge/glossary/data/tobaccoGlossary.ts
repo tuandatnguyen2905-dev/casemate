@@ -1,9 +1,11 @@
-// Tobacco & Next-Generation Products Essential Terms (Modules 1 and 2: 11 of 27 lessons). Every term is a
-// Key Term (or an alias of one) rendered in the mapped chapter of fmcgTobaccoM1.ts / fmcgTobaccoM2.ts, so the
+// Tobacco & Next-Generation Products Essential Terms (Modules 1-5: all 27 lessons; Modules 3-5 are authored in
+// tobaccoGlossaryM345.ts and merged below). Every term is a Key Term (or an alias of one) rendered in the mapped
+// chapter of fmcgTobaccoM1.ts to fmcgTobaccoM5.ts, so the
 // whole-word match in that chapter is by construction. Verification is separate from structure: a term is
 // 'verified' only when an official text fetched in this sprint states or defines it (see TOB_SOURCES);
 // everything else is 'needs-review' (a fetched text is related but does not define it) or 'needs-source'.
 import type { CurriculumGlossaryData, DefinitionBasis, GlossaryCategory, GlossarySource, GlossaryTermDef } from '../glossaryTypes';
+import { TOB_M345_LESSONS, TOB_M345_SOURCES, TOB_M345_TERMS } from './tobaccoGlossaryM345';
 
 const LAW = 'tob-law09';
 const TPD = 'tob-eu-tpd';
@@ -49,7 +51,7 @@ const TOB_TERMS: GlossaryTermDef[] = [
   R('tob.combustible', 'Combustible tobacco', 'products-services', 'Tobacco products that are burned when used, such as cigarettes and cigars.', 'Thuốc lá đốt: các sản phẩm thuốc lá được đốt khi sử dụng, ví dụ thuốc lá điếu và xì gà.', [TPD, WHO],
     'Directive 2014/40/EU Art. 2(10)-(11) defines cigarette and cigar as rolls of tobacco consumed via combustion, and the WHO fact sheet lists them among tobacco products; no fetched source defines "combustible tobacco" as a category.'),
   V('tob.heated-tobacco', 'Heated tobacco product', 'products-services', 'A tobacco product that produces an aerosol containing nicotine and toxic chemicals when the tobacco is heated, or when a device containing the tobacco is activated.', 'Sản phẩm thuốc lá làm nóng: sản phẩm thuốc lá tạo ra sol khí chứa nicotine và các hóa chất độc hại khi thuốc lá được làm nóng hoặc khi thiết bị chứa thuốc lá được kích hoạt.', [WHO],
-    { aliases: ['heated tobacco products', 'heated tobacco'], ctxEn: 'The curriculum teaches that Vietnam bans these products from 2025 under Resolution 173/2024/QH15 (source register vnRes173; the official text was not re-read in this sprint).', ctxVi: 'Chương trình nêu rằng Việt Nam cấm các sản phẩm này từ năm 2025 theo Nghị quyết 173/2024/QH15 (nguồn trong danh mục vnRes173; văn bản chính thức chưa được đọc lại trong đợt này).' }),
+    { aliases: ['heated tobacco products', 'heated tobacco'], ctxEn: 'The curriculum teaches that Vietnam bans these products from 2025 under Resolution 173/2024/QH15 (source register vnRes173; the signed resolution text was read by OCR in this sprint and confirms the ban).', ctxVi: 'Chương trình nêu rằng Việt Nam cấm các sản phẩm này từ năm 2025 theo Nghị quyết 173/2024/QH15 (nguồn trong danh mục vnRes173; văn bản nghị quyết có chữ ký đã được đọc bằng OCR trong đợt này và xác nhận lệnh cấm).' }),
   V('tob.nicotine-pouch', 'Nicotine pouch', 'products-services', 'A pre-portioned pouch of nicotine designed to be placed between the gum and lip; often promoted as "tobacco-free", although the nicotine may have been extracted from tobacco.', 'Túi nicotine: túi chứa nicotine chia sẵn liều, đặt giữa nướu và môi; thường được quảng bá là “không thuốc lá” dù nicotine có thể được chiết xuất từ thuốc lá.', [WHO],
     { aliases: ['nicotine pouches'] }),
   R('tob.legal-classification', 'Legal classification', 'regulatory', 'The legal category a product falls into, which decides the rules that apply to it, for example tobacco product, novel tobacco product or electronic cigarette in EU law.', 'Phân loại pháp lý: nhóm pháp lý mà một sản phẩm thuộc về, quyết định các quy định áp dụng – ví dụ sản phẩm thuốc lá, sản phẩm thuốc lá mới hoặc thuốc lá điện tử theo luật EU.', [TPD],
@@ -78,12 +80,9 @@ const TOB_TERMS: GlossaryTermDef[] = [
     'The WHO fact sheet groups heated tobacco products, e-cigarettes and nicotine pouches as "newer tobacco and nicotine products"; "next-generation product" is the curriculum and industry label.', { aliases: ['next-generation products'] }),
   N('tob.product-authorisation', 'Product authorisation', 'regulatory', 'Official permission to sell a specific product.', 'Cấp phép sản phẩm: sự cho phép chính thức để bán một sản phẩm cụ thể.', { aliases: ['product authorisations'] }),
   N('tob.regulatory-divergence', 'Regulatory divergence', 'regulatory', 'Different countries adopting different rules for the same product.', 'Phân kỳ quy định: các quốc gia áp dụng quy định khác nhau cho cùng một sản phẩm.'),
-  N('tob.excise-tax', 'Excise tax', 'regulatory', 'A tax on specific goods such as tobacco, often designed to reduce consumption.', 'Thuế tiêu thụ đặc biệt: thuế đánh vào một số hàng hóa như thuốc lá, thường nhằm giảm tiêu dùng.', {},
-    'Law 66/2025/QH15 (source register vnExcise66) was fetched but the official page returned only metadata, so the statute text was not read and the definition is not verified.'),
-  N('tob.specific-tax', 'Specific tax', 'regulatory', 'A fixed tax amount per unit, such as per pack.', 'Thuế tuyệt đối: mức thuế cố định trên mỗi đơn vị, ví dụ mỗi bao.', {},
-    'Law 66/2025/QH15 (source register vnExcise66) was fetched but the statute text could not be read, so the definition is not verified.'),
-  N('tob.ad-valorem', 'Ad valorem tax', 'regulatory', 'A tax calculated as a percentage of value.', 'Thuế theo giá trị (ad valorem): thuế tính theo tỷ lệ phần trăm trên giá trị.', { aliases: ['ad valorem'] },
-    'Law 66/2025/QH15 (source register vnExcise66) was fetched but the statute text could not be read, so the definition is not verified.'),
+  V('tob.excise-tax', 'Excise tax', 'regulatory', 'A tax on specific goods such as tobacco; in Vietnam the Special Consumption Tax Law 66/2025/QH15 taxes tobacco goods and applies from 1 January 2026.', 'Thuế tiêu thụ đặc biệt: thuế đánh vào một số hàng hóa như thuốc lá; ở Việt Nam Luật Thuế tiêu thụ đặc biệt 66/2025/QH15 đánh thuế thuốc lá và áp dụng từ ngày 1/1/2026.', ['tob-law66']),
+  V('tob.specific-tax', 'Specific tax', 'regulatory', 'A fixed tax amount per unit, such as per pack; Law 66/2025/QH15 calls this the absolute-amount method and sets it for cigarettes per pack of 20.', 'Thuế tuyệt đối: mức thuế cố định trên mỗi đơn vị, ví dụ mỗi bao; Luật 66/2025/QH15 gọi đây là phương pháp tính thuế tuyệt đối và quy định mức thuế này cho thuốc lá điếu trên bao 20 điếu.', ['tob-law66']),
+  V('tob.ad-valorem', 'Ad valorem tax', 'regulatory', 'A tax calculated as a percentage of value; Law 66/2025/QH15 computes it as the taxable price multiplied by the rate, which is 75% for cigarettes.', 'Thuế theo giá trị (ad valorem): thuế tính theo tỷ lệ phần trăm trên giá trị; Luật 66/2025/QH15 tính bằng giá tính thuế nhân với thuế suất, thuế suất với thuốc lá điếu là 75%.', ['tob-law66'], { aliases: ['ad valorem'] }),
 
   // ---- 1.3 How the Global Market Is Structured
   N('tob.state-monopoly', 'State monopoly', 'business-models', 'A market where a state-owned entity is the only legal supplier.', 'Độc quyền nhà nước: thị trường mà một đơn vị thuộc sở hữu nhà nước là nhà cung cấp hợp pháp duy nhất.'),
@@ -117,12 +116,11 @@ const TOB_TERMS: GlossaryTermDef[] = [
   R('tob.direct-marketing', 'Direct marketing', 'regulatory', 'Marketing aimed directly at individual consumers, which Vietnamese law prohibits for tobacco.', 'Tiếp thị trực tiếp: hoạt động tiếp thị nhắm trực tiếp tới từng người tiêu dùng, bị pháp luật Việt Nam cấm đối với thuốc lá.', [LAW],
     'Law 09/2012/QH13 Art. 9(2) prohibits marketing tobacco directly to consumers "in any form" but does not define the term.'),
   V('tob.smoke-free-place', 'Smoke-free place', 'regulatory', 'A place where smoking is prohibited by law; in Vietnam, Law 09/2012/QH13 Art. 11 bans smoking completely in health facilities, schools, workplaces, indoor public places and public transport, with limited exceptions in Art. 12.', 'Nơi không khói thuốc: nơi pháp luật cấm hút thuốc; ở Việt Nam, Điều 11 Luật 09/2012/QH13 cấm hút thuốc hoàn toàn tại cơ sở y tế, cơ sở giáo dục, nơi làm việc, địa điểm công cộng trong nhà và phương tiện giao thông công cộng, với một số ngoại lệ hạn chế tại Điều 12.', [LAW, WHO],
-    { aliases: ['smoke-free places'] }),
+    { aliases: ['smoke-free places', 'smoke-free environment', 'smoke-free environments'] }),
   V('tob.display-limit', 'Display limit', 'regulatory', 'A legal cap on how many tobacco products a retailer may display; in Vietnam, no more than one pack, carton or box of each brand.', 'Giới hạn trưng bày: mức trần pháp lý về số sản phẩm thuốc lá mà điểm bán được trưng bày; ở Việt Nam là không quá một bao, một tút hoặc một hộp của mỗi nhãn hiệu.', [LAW]),
   V('tob.fund', 'Tobacco Harm Prevention Fund', 'institutions', 'Vietnam’s national fund, under the Ministry of Health, that is non-profit and mobilises, provides and coordinates financial resources for tobacco-harm prevention activities nationwide.', 'Quỹ Phòng, chống tác hại của thuốc lá: quỹ quốc gia trực thuộc Bộ Y tế, hoạt động không vì lợi nhuận, huy động, cung cấp và điều phối nguồn lực tài chính cho các hoạt động phòng, chống tác hại của thuốc lá trên phạm vi toàn quốc.', [LAW]),
   V('tob.mandatory-contribution', 'Mandatory contribution', 'regulatory', 'A payment required by law; for tobacco producers and importers, the contribution to the Tobacco Harm Prevention Fund is a percentage of the excise tax base (1.0% from 1 May 2013, 1.5% from 1 May 2016, 2.0% from 1 May 2019), declared and paid with the excise tax.', 'Khoản đóng góp bắt buộc: khoản thanh toán do luật yêu cầu; với cơ sở sản xuất, nhập khẩu thuốc lá, khoản đóng góp cho Quỹ tính theo tỷ lệ phần trăm trên giá tính thuế tiêu thụ đặc biệt (1,0% từ 1/5/2013, 1,5% từ 1/5/2016, 2,0% từ 1/5/2019), khai và nộp cùng thuế tiêu thụ đặc biệt.', [LAW]),
-  R('tob.excise-base', 'Excise tax base', 'financial-metrics', 'The value on which excise tax is calculated.', 'Giá tính thuế tiêu thụ đặc biệt: giá trị làm căn cứ để tính thuế tiêu thụ đặc biệt.', [LAW],
-    'Law 09/2012/QH13 Art. 30(1)(a) uses the excise tax base as the basis of the Fund contribution but does not define it; the excise statute text was not readable in this sprint.'),
+  V('tob.excise-base', 'Excise tax base', 'financial-metrics', 'The taxable price on which excise tax is calculated: the selling price before excise tax, environmental protection tax and value-added tax (Law 66/2025/QH15 Art. 6), and the basis of the Fund contribution under Law 09/2012/QH13.', 'Giá tính thuế tiêu thụ đặc biệt: giá bán ra chưa có thuế tiêu thụ đặc biệt, thuế bảo vệ môi trường và thuế giá trị gia tăng, làm căn cứ để tính thuế (Điều 6 Luật 66/2025/QH15) và là cơ sở tính khoản đóng góp cho Quỹ theo Luật 09/2012/QH13.', ['tob-law66', LAW]),
 
   // ---- 1.5 What Drives Industry Change
   N('tob.price-elasticity', 'Price elasticity of demand', 'financial-metrics', 'The percentage change in the quantity demanded for a one percent change in price.', 'Độ co giãn của cầu theo giá: phần trăm thay đổi của lượng cầu khi giá thay đổi một phần trăm.', {},
@@ -250,8 +248,8 @@ export const FMCG_TOBACCO_GLOSSARY: CurriculumGlossaryData = {
   curriculumId: 'fmcg-tobacco',
   industry: 'FMCG',
   subIndustry: 'Tobacco & Next-Generation Products',
-  terms: TOB_TERMS,
-  sources: TOB_SOURCES,
+  terms: [...TOB_TERMS, ...TOB_M345_TERMS],
+  sources: [...TOB_SOURCES, ...TOB_M345_SOURCES],
   lessons: [
     {
       key: '1.1', title: 'What the Industry Includes', module: 'How the Industry Works',
@@ -374,6 +372,7 @@ export const FMCG_TOBACCO_GLOSSARY: CurriculumGlossaryData = {
       },
       essential: ['tob.controlled-system', 'tob.permitted-import', 'tob.destination-labelling', 'tob.treaty-obligation', 'tob.smuggling-incentive', 'tob.country-specific-pack', 'tob.global-sourcing', 'tob.import-control', 'tob.customs-enforcement', 'tob.price-gap', 'tob.international-cooperation', 'tob.implementation-report', 'tob.regional-factory', 'tob.state-planning'],
     },
+    ...TOB_M345_LESSONS,
   ],
   flaggedAcronyms: [
     { acronym: 'GATS', status: 'ambiguous', note: 'Also the General Agreement on Trade in Services. In the Tobacco chapters it means the Global Adult Tobacco Survey, so it is not auto-annotated.' },
