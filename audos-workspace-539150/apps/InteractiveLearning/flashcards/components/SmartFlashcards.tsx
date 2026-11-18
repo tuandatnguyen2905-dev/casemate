@@ -14,6 +14,7 @@ import type { SessionMode, SessionResult } from './FlashcardSession';
 import FlashcardSession from './FlashcardSession';
 import ReviewSummary from './ReviewSummary';
 import type { SummaryLessonActions } from './ReviewSummary';
+import { uiNextReviewIs, uiRetryWeak, uiReviewDue, uiStudyNext, uiStudyRemaining, uiText, useUiLanguage } from '../../../IndustryKnowledge/localization/uiText';
 
 /** What a host overview needs to show progress and start sessions for its single deck. */
 export interface FlashcardOverviewApi {
@@ -74,6 +75,7 @@ export default function SmartFlashcards({
   decks = FLASHCARD_DECKS, adapter, clock = systemClock, learnerKey, toolbar, embedded = false, backLabel = 'All decks', onViewChange,
   renderOverview, sessionLimit, prevalidated = false, sourceLabelFor, lessonActions,
 }: SmartFlashcardsProps) {
+  useUiLanguage();
   const store = useMemo(() => adapter ?? createLocalStorageAdapter({ learnerKey }), [adapter, learnerKey]);
   const reviews = useFlashcardReviews(store, clock);
   const [view, setView] = useState<View>({ name: 'decks' });
@@ -152,7 +154,7 @@ export default function SmartFlashcards({
     if (!deck) {
       body = null;
     } else if (view.name === 'session') {
-      heading = `${deck.title} · ${SESSION_TITLE[view.mode]}`;
+      heading = `${deck.title} · ${uiText(SESSION_TITLE[view.mode])}`;
       const sessionCards = view.cards;
       const sessionMode = view.mode;
       body = (
@@ -172,7 +174,10 @@ export default function SmartFlashcards({
       heading = deck.title;
       const stats = deckStats(deck, reviews.states, now);
       const sessionIds = new Set(view.cards.map((card) => card.cardId));
-      const moreToStudy = Boolean(sessionLimit) && deck.cards.some((card) => !sessionIds.has(card.cardId) && !isSeen(reviews.states[card.cardId]));
+      // Cards this session did not include and the learner has not rated: what the next Study session continues with.
+      const remaining = sessionLimit ? deck.cards.filter((card) => !sessionIds.has(card.cardId) && !isSeen(reviews.states[card.cardId])).length : 0;
+      const moreToStudy = remaining > 0;
+      const studyMoreLabel = sessionLimit && remaining > sessionLimit ? uiStudyNext(sessionLimit, remaining) : uiStudyRemaining(remaining);
       const lastCards = view.cards;
       body = (
         <ReviewSummary
@@ -185,7 +190,7 @@ export default function SmartFlashcards({
           onStudyAgain={() => open(deck, 'study', { cards: lastCards, reasons: {} })}
           onRetryWeak={() => start(deck, 'weak')}
           onRestart={stats.due > 0 ? () => start(deck, 'review') : moreToStudy ? () => start(deck, 'study', sessionIds) : undefined}
-          restartLabel={stats.due > 0 ? `Review due cards (${stats.due})` : moreToStudy ? 'Study more cards' : undefined}
+          restartLabel={stats.due > 0 ? uiReviewDue(stats.due) : moreToStudy ? studyMoreLabel : undefined}
           onExit={toDecks}
           exitLabel={backLabel}
           lessonActions={lessonActions}
@@ -196,21 +201,21 @@ export default function SmartFlashcards({
       const stats = deckStats(deck, reviews.states, now);
       body = (
         <section className="cmfc-panel" data-testid="nothing-due">
-          <h2 className="cmfc-panel-title">Nothing due right now</h2>
+          <h2 className="cmfc-panel-title">{uiText('Nothing due right now')}</h2>
           <p className="cmfc-panel-text">
             {stats.unseen === stats.total
-              ? 'Study this deck first. Cards you rate are scheduled for review automatically.'
+              ? uiText('Study this deck first. Cards you rate are scheduled for review automatically.')
               : stats.nextDueAt
-                ? `Your next review is ${formatDueFromNow(stats.nextDueAt, now)}.`
-                : 'Every studied card is scheduled for later.'}
+                ? uiNextReviewIs(formatDueFromNow(stats.nextDueAt, now))
+                : uiText('Every studied card is scheduled for later.')}
           </p>
           <div className="cmfc-panel-actions">
             {stats.weak > 0 && (
               <button type="button" className="cmfc-btn cmfc-btn-primary" onClick={() => start(deck, 'weak')}>
-                Retry weak concepts ({stats.weak})
+                {uiRetryWeak(stats.weak)}
               </button>
             )}
-            <button type="button" className="cmfc-btn" onClick={() => start(deck, 'study')}>Study deck</button>
+            <button type="button" className="cmfc-btn" onClick={() => start(deck, 'study')}>{uiText('Study deck')}</button>
             <button type="button" className="cmfc-btn cmfc-btn-ghost" onClick={toDecks}>{backLabel}</button>
           </div>
         </section>

@@ -348,7 +348,7 @@ export const entryCases = [
     resolveLessonFlashcards(cbLesson(5), decks());
     eq([...storage.values.keys()], [LESSON_PROGRESS_KEY], 'pure resolution');
   } },
-  { name: 'Study takes at most 12 cards in a wider scope, and Study more cards continues with the rest', run: async () => {
+  { name: 'Study takes at most 12 cards in a wider scope, and Study Next 12 Cards continues with the rest', run: async () => {
     seedDomain();
     await renderBody(cbLesson(5));
     await click(tid('flashcards-scope-lesson'));
@@ -360,7 +360,7 @@ export const entryCases = [
       await click($('button[data-rating="good"]'));
     }
     ok(text('review-summary').includes('You rated 12 of 12 cards'), 'twelve cards rated');
-    await click(byText('Study more cards'));
+    await click(byText('Study Next 12 Cards (30 remaining)'));
     ok(text('session-progress').startsWith('Card 1 of 12'), 'the next session starts with the cards not studied yet and is capped too');
     await cleanup();
   } },

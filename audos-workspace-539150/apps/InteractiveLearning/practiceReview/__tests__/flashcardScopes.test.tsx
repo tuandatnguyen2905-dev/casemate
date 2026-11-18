@@ -477,7 +477,7 @@ const domCases = [
     eq(tid('practice-flashcards').getAttribute('data-scope'), 'all', 'data-scope follows the selection');
     await cleanup();
   } },
-  { name: 'Study takes at most 12 cards, Reveal answer shows the answer, and Study more cards continues with the rest', run: async () => {
+  { name: 'Study takes at most 12 cards, Reveal answer shows the answer, and Study Remaining Cards continues with the 3 cards not studied yet', run: async () => {
     seedStorage();
     const { resolved } = await mountMode(bigLesson());
     const deck = scopeDeck(resolved.industry, 'chapter');
@@ -496,9 +496,12 @@ const domCases = [
     await click($('button[data-rating="good"]'));
     for (let i = 1; i < FLASHCARD_SESSION_LIMIT; i += 1) await revealAndRate('good');
     ok(text('review-summary').includes('You rated 12 of 12 cards'), `12 cards rated: ${text('review-summary')}`);
-    await click(byText('Study more cards'));
-    ok(text('session-progress').startsWith('Card 1 of 12'), 'the next session is capped too');
     const unstudied = deck.cards.slice(12).map((card) => card.cardId);
+    eq(unstudied.length, 3, 'fixture: three cards are still unstudied');
+    ok(has('study-again'), 'Study again (the same cards) stays a separate button');
+    ok(!Array.from(document.querySelectorAll('button')).some((node) => /Study more cards/i.test(node.textContent ?? '')), 'the ambiguous label is gone');
+    await click(byText('Study Remaining Cards (3)'));
+    ok(text('session-progress').startsWith('Card 1 of 3'), `the continuation holds only the remaining cards: ${text('session-progress')}`);
     eq(unstudied.includes(tid('flashcard-front').getAttribute('data-card-id')!), true, 'it starts with the cards not studied yet');
     for (let i = 0; i < unstudied.length; i += 1) {
       const shown = tid('flashcard-front').getAttribute('data-card-id')!;
@@ -507,6 +510,23 @@ const domCases = [
     }
     await click(tid('flashcards-session-back'));
     eq(tiles(), ['15', '0', '0%'], 'back on the overview');
+  } },
+  { name: 'Study Remaining Cards: finishing the continuation without rating leaves those cards unrated, never mastered', run: async () => {
+    seedStorage();
+    await mountMode(bigLesson());
+    await click(tid('flashcards-study'));
+    for (let i = 0; i < FLASHCARD_SESSION_LIMIT; i += 1) await revealAndRate('good');
+    await click(byText('Study Remaining Cards (3)'));
+    ok(text('session-progress').startsWith('Card 1 of 3'), 'three cards remain');
+    await click(tid('session-next'));
+    await click(tid('session-next'));
+    await click(tid('session-finish'));
+    ok(text('review-summary').includes('You rated 0 of 3 cards'), `nothing rated: ${text('review-summary')}`);
+    eq([text('summary-viewed'), text('summary-rated'), text('summary-unrated')], ['3', '0', '3'], 'viewed, rated and not rated stay distinct');
+    ok(has('summary-no-ratings'), 'the no-rating note is shown');
+    ok(!Array.from(document.querySelectorAll('button')).some((node) => /^Study Remaining Cards/.test((node.textContent ?? '').trim())), 'the three viewed cards are not offered again');
+    await click(tid('flashcards-session-back'));
+    eq(tiles(), ['15', '0', '0%'], 'viewing without rating changes neither due nor mastery');
   } },
   { name: 'Review takes at most 12 due cards, forgotten cards first, and the overview shows the due count', run: async () => {
     seedStorage();

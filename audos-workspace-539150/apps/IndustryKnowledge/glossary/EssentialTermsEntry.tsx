@@ -5,6 +5,7 @@ import { hasLessonGlossary } from './glossaryIndex';
 import { loadLessonGlossary, useLessonGlossary } from './glossaryStore';
 import { EssentialTermsPreview } from './EssentialTermsPreview';
 import { TermSheet } from './TermSheet';
+import { uiText, useUiLanguage } from '../localization/uiText';
 
 export { GlossaryText, GlossaryTermRef } from './TermPopover';
 
@@ -106,6 +107,7 @@ export function useEssentialTermsEntry() {
 
 /** Reopens the lesson's Essential Terms from the reader. Renders nothing for lessons without glossary content. */
 export function EssentialTermsReaderButton({ chapterIndex, className = '' }: { chapterIndex: number; className?: string }) {
+  useUiLanguage();
   const flow = useLessonFlow();
   const identity = flow?.identity && hasLessonGlossary(flow.identity) ? flow.identity : null;
   const { status, glossary, retry } = useLessonGlossary(identity);
@@ -122,7 +124,7 @@ export function EssentialTermsReaderButton({ chapterIndex, className = '' }: { c
         className={`inline-flex min-h-8 items-center gap-1.5 rounded-full border border-red-100 bg-white px-3 py-1 text-[11px] font-bold normal-case tracking-normal text-red-600 shadow-sm transition hover:border-red-200 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 ${className}`}
         data-testid="essential-terms-reader-button"
       >
-        <BookOpen className="h-3.5 w-3.5" aria-hidden /> Essential Terms
+        <BookOpen className="h-3.5 w-3.5" aria-hidden /> {uiText('Essential Terms')}
       </button>
       {open && glossary ? <TermSheet glossary={glossary} chapterIndex={chapterIndex} onClose={() => setOpen(false)} returnFocus={buttonRef.current} /> : null}
     </>

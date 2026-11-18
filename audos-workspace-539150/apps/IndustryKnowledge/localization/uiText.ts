@@ -177,6 +177,57 @@ const VI: Record<string, string> = {
   ' Practise again any time; your Knowledge Check results stay as they are.': ' Bạn có thể luyện tập lại bất cứ lúc nào; kết quả Kiểm tra kiến thức vẫn được giữ nguyên.',
   'No Match & Sort activities are open here yet.': 'Chưa có hoạt động Ghép & Phân loại nào được mở ở đây.',
   'Match & Sort activities': 'Các hoạt động Ghép & Phân loại',
+
+  // Flashcards: Session Complete
+  'Session complete': 'Hoàn thành phiên học',
+  Viewed: 'Đã xem',
+  Rated: 'Đã đánh giá',
+  'Not rated': 'Chưa đánh giá',
+  'Recall this session': 'Mức ghi nhớ trong phiên này',
+  'Latest rating per card this session': 'Đánh giá gần nhất của từng thẻ trong phiên này',
+  'Deck mastery': 'Mức thành thạo của bộ thẻ',
+  'Study again': 'Học lại các thẻ này',
+  'All decks': 'Tất cả bộ thẻ',
+  'Answer checks are practice only: they are not recall ratings and do not count towards mastery.':
+    'Kiểm tra đáp án chỉ để luyện tập: đây không phải đánh giá mức ghi nhớ và không được tính vào mức thành thạo.',
+  'General Info': 'Thông tin chung',
+  'Prefer to read first? I\u2019ll walk you through the key ideas with examples and visuals.':
+    'Bạn muốn đọc trước? Mình sẽ cùng bạn đi qua các ý chính với ví dụ và sơ đồ.',
+  'Want to test your memory? Recall each answer, then flip the card to check.':
+    'Bạn muốn kiểm tra trí nhớ? Hãy tự nhớ lại từng đáp án, rồi lật thẻ để đối chiếu.',
+  'Prefer to learn by doing? Try a quick matching, grouping, or ordering activity.':
+    'Bạn muốn học bằng cách làm? Hãy thử một hoạt động ghép, phân nhóm hoặc sắp xếp thứ tự nhanh.',
+  'Read the chapter': 'Đọc chương',
+  Current: 'Đang chọn',
+  'Close learning mode chooser': 'Đóng bảng chọn cách học',
+  'Hey, I\u2019m Mate. How would you like to learn this chapter?': 'Chào bạn, mình là Mate. Bạn muốn học chương này theo cách nào?',
+  'Learning modes': 'Các cách học',
+  'Your reading progress, notes, Knowledge Checks and practice history are kept whichever way you learn.':
+    'Tiến độ đọc, ghi chú, Kiểm tra kiến thức và lịch sử luyện tập của bạn đều được giữ nguyên dù bạn học theo cách nào.',
+  'Change learning mode': 'Đổi cách học',
+  'Essential Terms': 'Thuật ngữ thiết yếu',
+  'Before You Start': 'Trước khi bắt đầu',
+  'Close Essential Terms': 'Đóng Thuật ngữ thiết yếu',
+  'New to this topic? Here are the key terms worth knowing before you dive in.':
+    'Bạn mới làm quen với chủ đề này? Đây là những thuật ngữ chính nên biết trước khi bắt đầu.',
+  'Loading terms': 'Đang tải thuật ngữ',
+  'Skip for Now': 'Để sau',
+  'Start Learning': 'Bắt đầu học',
+  'Opens the check in this lesson': 'Mở bài kiểm tra ngay trong bài học này',
+  'Back to Your Learning Path': 'Quay lại Lộ trình học của bạn',
+  'You have reached the last lesson of this curriculum.': 'Bạn đã học đến bài cuối cùng của chương trình này.',
+  'Pick your next lesson from the module overview.': 'Hãy chọn bài học tiếp theo từ phần tổng quan học phần.',
+  Study: 'Học',
+  Review: 'Ôn tập',
+  'Difficult cards': 'Thẻ khó',
+  'Nothing due right now': 'Hiện chưa có thẻ nào đến hạn',
+  'Study this deck first. Cards you rate are scheduled for review automatically.': 'Hãy học bộ thẻ này trước. Các thẻ bạn đánh giá sẽ tự động được lên lịch ôn tập.',
+  'Every studied card is scheduled for later.': 'Mọi thẻ đã học đều được lên lịch ôn ở thời điểm sau.',
+  'Study deck': 'Học bộ thẻ',
+  'You did not rate any card, which is fine: rating is optional. Cards without a rating are not counted as remembered and are not scheduled for review.':
+    'Bạn chưa đánh giá thẻ nào, điều đó không sao: việc đánh giá là không bắt buộc. Các thẻ chưa đánh giá không được tính là đã nhớ và không được lên lịch ôn tập.',
+  'Mastery comes only from your ratings: a card is mastered when its next review is at least three weeks away. Forgetting it later moves it back to learning.':
+    'Mức thành thạo chỉ dựa trên đánh giá của bạn: một thẻ được xem là đã thành thạo khi lần ôn tiếp theo cách ít nhất ba tuần. Nếu sau này bạn quên thẻ, thẻ sẽ quay lại trạng thái đang học.',
 };
 
 export const uiVocabularySize = () => Object.keys(VI).length;
@@ -269,3 +320,62 @@ export const uiStepsArranged = (total: number) => (vi() ? `Đã sắp xếp ${to
 export const uiNotMatched = (prompt: string, chosen: string) => (vi() ? `${prompt} không ghép với ${chosen}` : `${prompt} is not matched to ${chosen}`);
 export const uiNotInGroup = (item: string, group: string) => (vi() ? `${item} không thuộc nhóm ${group}` : `${item} does not belong in ${group}`);
 export const uiOutOfPlace = (position: number, step: string) => (vi() ? `Vị trí ${position}: ${step} chưa đúng chỗ` : `Position ${position}: ${step} is out of place`);
+
+// Flashcards: Session Complete (ReviewSummary) -----------------------------------------------------------
+
+const cardsOf = (count: number) => `${count} ${count === 1 ? 'card' : 'cards'}`;
+
+/** scheduler.formatDueFromNow output ("now", "not scheduled", "in 3 days"). */
+export const uiDueFromNow = (text: string) => {
+  if (!vi()) return text;
+  if (text === 'now') return 'ngay bây giờ';
+  if (text === 'not scheduled') return 'chưa lên lịch';
+  return text.startsWith('in ') ? `sau ${uiInterval(text.slice(3))}` : text;
+};
+export const uiSessionRated = (rated: number, cards: number, deckTitle: string) => (vi()
+  ? `Bạn đã đánh giá ${rated}/${cards} thẻ trong ${deckTitle}.`
+  : `You rated ${rated} of ${cardsOf(cards)} in ${deckTitle}.`);
+export const uiAnswerChecks = (correct: number, cards: number, firstTry: number, shown: number, skipped: number) => (vi()
+  ? `Kiểm tra đáp án (trắc nghiệm và điền vào chỗ trống): ${correct}/${cards} thẻ trả lời đúng${firstTry !== correct ? ` (${firstTry} thẻ đúng ngay lần đầu)` : ''}${shown ? ` \u00b7 ${shown} thẻ đã xem đáp án mà chưa trả lời đúng` : ''}${skipped ? ` \u00b7 ${skipped} thẻ bỏ qua` : ''}.`
+  : `Answer checks (multiple choice and fill in the blank): ${correct} of ${cardsOf(cards)} answered correctly${firstTry !== correct ? ` (${firstTry} on the first try)` : ''}${shown ? ` \u00b7 ${shown} shown without a correct answer` : ''}${skipped ? ` \u00b7 ${skipped} skipped` : ''}.`);
+export const uiRecallLine = (remembered: number, rated: number, difficult: number, unrated: number) => (vi()
+  ? `Đã nhớ (Tốt hoặc Dễ): ${remembered}/${rated} thẻ đã đánh giá \u00b7 Cần ôn thêm (Học lại hoặc Khó): ${difficult}${unrated ? `. ${unrated} thẻ chưa đánh giá không được tính.` : '.'}`
+  : `Remembered (Good or Easy): ${remembered} of ${rated} rated \u00b7 Difficult (Again or Hard): ${difficult}${unrated ? `. ${cardsOf(unrated)} without a rating ${unrated === 1 ? 'is' : 'are'} not counted.` : '.'}`);
+export const uiMasteredCount = (mastered: number, total: number) => (vi() ? `${mastered}/${total} thẻ đã thành thạo` : `${mastered} of ${total} mastered`);
+export const uiDeckStatusLine = (due: number, weak: number, unseen: number, nextReview: string | null) => (vi()
+  ? `${due} thẻ đến hạn \u00b7 ${weak} thẻ khó \u00b7 ${unseen} thẻ chưa đánh giá${nextReview ? ` \u00b7 lần ôn tiếp theo ${nextReview}` : ''}`
+  : `${due} due now \u00b7 ${weak} difficult \u00b7 ${unseen} not rated yet${nextReview ? ` \u00b7 next review ${nextReview}` : ''}`);
+export const uiReviewDifficult = (count: number) => (vi() ? `Ôn các thẻ khó (${count})` : `Review difficult cards (${count})`);
+export const uiReviewDue = (count: number) => (vi() ? `Ôn các thẻ đến hạn (${count})` : `Review due cards (${count})`);
+/** The unstudied cards left after a capped session: never the already-studied cards again. */
+export const uiStudyRemaining = (count: number) => (vi() ? `Học các thẻ còn lại (${count})` : `Study Remaining Cards (${count})`);
+export const uiNextReviewIs = (when: string) => (vi() ? `Lần ôn tiếp theo của bạn ${uiDueFromNow(when)}.` : `Your next review is ${when}.`);
+export const uiRetryWeak = (count: number) => (vi() ? `Ôn lại khái niệm chưa vững (${count})` : `Retry weak concepts (${count})`);
+/** More unstudied cards remain than one session holds: the next session takes `limit` of them. */
+export const uiStudyNext = (limit: number, remaining: number) => (vi()
+  ? `Học ${limit} thẻ tiếp theo (còn ${remaining} thẻ)`
+  : `Study Next ${limit} Cards (${remaining} remaining)`);
+
+// Learning mode chooser and Essential Terms preview -----------------------------------------------------
+
+export const uiChapterNumber = (number: number) => (vi() ? `Chương ${number}` : `Chapter ${number}`);
+export const uiCardsInChapter = (count: number) => (vi() ? `${count} thẻ trong chương này` : `${cardsOf(count)} in this chapter`);
+export const uiActivitiesInChapter = (count: number) => (vi() ? `${count} hoạt động trong chương này` : `${count} ${count === 1 ? 'activity' : 'activities'} in this chapter`);
+export const uiShowMoreTerms = (count: number) => (vi() ? `Xem thêm ${count} thuật ngữ thiết yếu` : `Show ${count} more essential term${count === 1 ? '' : 's'}`);
+export const uiViewAllTerms = (count: number | null) => (vi() ? `Xem tất cả thuật ngữ${count === null ? '' : ` (${count})`}` : `View All Terms${count === null ? '' : ` (${count})`}`);
+
+// Continue Learning (continueLearning.describeContinueLearning) ----------------------------------------
+
+export const uiContinueToChapter = (number: number) => (vi() ? `Tiếp tục đến Chương ${number}` : `Continue to Chapter ${number}`);
+export const uiOpensInLesson = (title: string) => (vi() ? `${title} \u00b7 mở ngay trong bài học` : `${title} \u00b7 opens in the lesson`);
+export const uiTakeCheck = (number: number) => (vi() ? `Làm Kiểm tra kiến thức ${number}` : `Take Knowledge Check ${number}`);
+export const uiCheckLockedNotice = (lockedNumber: number, lockedTitle: string, checkNumber: number, preparation: boolean) => {
+  if (vi()) {
+    return preparation
+      ? `Chương ${lockedNumber} (${lockedTitle}) sẽ mở sau Kiểm tra kiến thức ${checkNumber}, bài này vừa chưa tải được. Hãy mở lại để thử lần nữa.`
+      : `Chương ${lockedNumber} (${lockedTitle}) sẽ mở sau khi bạn nộp Kiểm tra kiến thức ${checkNumber}, với bất kỳ điểm số nào. Thẻ ghi nhớ không bao giờ mở khóa chương.`;
+  }
+  return preparation
+    ? `Chapter ${lockedNumber} (${lockedTitle}) opens after Knowledge Check ${checkNumber}, which could not load just now. Open it to try again.`
+    : `Chapter ${lockedNumber} (${lockedTitle}) opens after you submit Knowledge Check ${checkNumber}, with any score. Flashcards never unlock chapters.`;
+};

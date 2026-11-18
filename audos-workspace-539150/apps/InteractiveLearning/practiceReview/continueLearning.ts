@@ -1,4 +1,5 @@
 import type { JourneyRow } from '../../IndustryKnowledge/lessonFlowCore';
+import { uiCheckLockedNotice, uiContinueToChapter, uiNextTitle, uiOpensInLesson, uiTakeCheck, uiText } from '../../IndustryKnowledge/localization/uiText';
 
 /** One lesson of the open curriculum, in curriculum order, as the reader's lesson registry lists it. */
 export interface CurriculumStop {
@@ -49,21 +50,19 @@ export function resolveContinueLearning({ rows, chapterIndex, identity, lessons 
 export function describeContinueLearning(target: ContinueLearningTarget): { label: string; detail?: string; notice?: string } {
   switch (target.kind) {
     case 'chapter':
-      return { label: `Continue to Chapter ${target.number}`, detail: `${target.title} · opens in the lesson` };
+      return { label: uiContinueToChapter(target.number), detail: uiOpensInLesson(target.title) };
     case 'check':
       return {
-        label: `Take Knowledge Check ${target.checkNumber}`,
-        detail: 'Opens the check in this lesson',
-        notice: target.preparation
-          ? `Chapter ${target.lockedNumber} (${target.lockedTitle}) opens after Knowledge Check ${target.checkNumber}, which could not load just now. Open it to try again.`
-          : `Chapter ${target.lockedNumber} (${target.lockedTitle}) opens after you submit Knowledge Check ${target.checkNumber}, with any score. Flashcards never unlock chapters.`,
+        label: uiTakeCheck(target.checkNumber),
+        detail: uiText('Opens the check in this lesson'),
+        notice: uiCheckLockedNotice(target.lockedNumber, target.lockedTitle, target.checkNumber, target.preparation),
       };
     case 'lesson':
-      return { label: 'Continue to Next Lesson', detail: `Next: ${target.title}${target.newModule ? ` · ${target.moduleTitle}` : ''}` };
+      return { label: uiText('Continue to Next Lesson'), detail: `${uiNextTitle(target.title)}${target.newModule ? ` · ${target.moduleTitle}` : ''}` };
     default:
       return {
-        label: 'Back to Your Learning Path',
-        detail: target.reason === 'end-of-curriculum' ? 'You have reached the last lesson of this curriculum.' : 'Pick your next lesson from the module overview.',
+        label: uiText('Back to Your Learning Path'),
+        detail: uiText(target.reason === 'end-of-curriculum' ? 'You have reached the last lesson of this curriculum.' : 'Pick your next lesson from the module overview.'),
       };
   }
 }

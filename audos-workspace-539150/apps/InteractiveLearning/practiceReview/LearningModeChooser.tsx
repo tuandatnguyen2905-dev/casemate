@@ -6,6 +6,7 @@ import { LEARNING_MODE_IDS, chapterLearningModes } from './learningModes';
 import type { ChapterModeState, LearningModeId } from './learningModes';
 import { usePracticeLesson } from './practiceLessonStore';
 import { requestPracticeResume } from './practiceResume';
+import { uiActivitiesInChapter, uiCardsInChapter, uiChapterNumber, uiText, useUiLanguage } from '../../IndustryKnowledge/localization/uiText';
 
 const MODE_COPY: Record<LearningModeId, { title: string; description: string; icon: typeof BookOpen }> = {
   reader: {
@@ -31,9 +32,9 @@ const focusRing = 'focus-visible:outline-none focus-visible:ring-2 focus-visible
 const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 const countLabel = (mode: ChapterModeState) => {
-  if (mode.id === 'reader') return 'Read the chapter';
-  if (mode.id === 'flashcards') return `${mode.count} ${mode.count === 1 ? 'card' : 'cards'} in this chapter`;
-  return `${mode.count} ${mode.count === 1 ? 'activity' : 'activities'} in this chapter`;
+  if (mode.id === 'reader') return uiText('Read the chapter');
+  if (mode.id === 'flashcards') return uiCardsInChapter(mode.count);
+  return uiActivitiesInChapter(mode.count);
 };
 
 export interface LearningModeChooserProps {
@@ -54,6 +55,7 @@ export interface LearningModeChooserProps {
  * between the mode cards. Unavailable modes stay visible and focusable but cannot be chosen.
  */
 export function LearningModeChooser({ chapterNumber, chapterTitle, modes, current, onChoose, onClose, returnFocus }: LearningModeChooserProps) {
+  useUiLanguage();
   const titleId = useId();
   const descriptionId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -129,20 +131,20 @@ export function LearningModeChooser({ chapterNumber, chapterTitle, modes, curren
           type="button"
           onClick={onClose}
           className={`absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 ${focusRing}`}
-          aria-label="Close learning mode chooser"
+          aria-label={uiText('Close learning mode chooser')}
           data-testid="learning-mode-close"
         >
           <X className="h-4 w-4" aria-hidden="true" />
         </button>
-        <p className="pr-10 text-[10px] font-bold uppercase tracking-[0.16em] text-red-600">Chapter {chapterNumber}</p>
+        <p className="pr-10 text-[10px] font-bold uppercase tracking-[0.16em] text-red-600">{uiChapterNumber(chapterNumber)}</p>
         <h2 id={titleId} className="mt-1 pr-10 text-xl font-black tracking-tight text-slate-900 sm:text-2xl" data-testid="learning-mode-chapter">{chapterTitle}</h2>
         <div className="mt-4 flex items-start gap-3 rounded-xl bg-red-50/60 p-3 ring-1 ring-red-100">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-600 text-white" aria-hidden="true">
             <Sparkles className="h-4 w-4" />
           </span>
-          <p id={descriptionId} className="text-sm font-semibold leading-6 text-slate-800">Hey, I’m Mate. How would you like to learn this chapter?</p>
+          <p id={descriptionId} className="text-sm font-semibold leading-6 text-slate-800">{uiText('Hey, I\u2019m Mate. How would you like to learn this chapter?')}</p>
         </div>
-        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3" role="group" aria-label="Learning modes">
+        <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3" role="group" aria-label={uiText('Learning modes')}>
           {LEARNING_MODE_IDS.map((id, index) => {
             const mode = modes[id];
             const copy = MODE_COPY[id];
@@ -168,18 +170,18 @@ export function LearningModeChooser({ chapterNumber, chapterTitle, modes, curren
                   <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${mode.available ? 'bg-red-50 text-red-600 ring-1 ring-red-100' : 'bg-slate-100 text-slate-400'}`} aria-hidden="true">
                     <Icon className="h-4 w-4" />
                   </span>
-                  {isCurrent ? <span className="rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white">Current</span> : null}
+                  {isCurrent ? <span className="rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white">{uiText('Current')}</span> : null}
                 </span>
-                <span className={`mt-3 text-base font-black tracking-tight ${mode.available ? 'text-slate-900' : 'text-slate-500'}`}>{copy.title}</span>
-                <span className={`mt-1 text-sm leading-6 ${mode.available ? 'text-slate-600' : 'text-slate-400'}`}>{copy.description}</span>
+                <span className={`mt-3 text-base font-black tracking-tight ${mode.available ? 'text-slate-900' : 'text-slate-500'}`}>{uiText(copy.title)}</span>
+                <span className={`mt-1 text-sm leading-6 ${mode.available ? 'text-slate-600' : 'text-slate-400'}`}>{uiText(copy.description)}</span>
                 <span id={statusId} className={`mt-auto inline-flex items-center gap-1.5 pt-3 text-xs font-bold ${mode.available ? 'text-red-600' : 'text-slate-500'}`}>
-                  {mode.available ? <>{countLabel(mode)} <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" /></> : UNAVAILABLE_MODE_TEXT}
+                  {mode.available ? <>{countLabel(mode)} <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" /></> : uiText(UNAVAILABLE_MODE_TEXT)}
                 </span>
               </button>
             );
           })}
         </div>
-        <p className="mt-4 text-xs leading-5 text-slate-500">Your reading progress, notes, Knowledge Checks and practice history are kept whichever way you learn.</p>
+        <p className="mt-4 text-xs leading-5 text-slate-500">{uiText('Your reading progress, notes, Knowledge Checks and practice history are kept whichever way you learn.')}</p>
       </div>
     </div>
   );
@@ -195,9 +197,10 @@ export function ChangeLearningModeButton({ onClick, buttonRef, className = '', t
   className?: string;
   testId?: string;
 }) {
+  useUiLanguage();
   return (
     <button ref={buttonRef} type="button" onClick={onClick} aria-haspopup="dialog" className={`${switchButton} ${className}`} data-testid={testId}>
-      <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" /> Change learning mode
+      <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" /> {uiText('Change learning mode')}
     </button>
   );
 }

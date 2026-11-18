@@ -121,7 +121,7 @@ export async function computeLocalizationCoverage(inputs: CoverageInputs): Promi
   ];
 
   return {
-    interface: { labels: uiVocabularySize(), note: 'Reader, Knowledge Check, chapter-check result and takeaways labels; Practice & Review chrome stays English.' },
+    interface: { labels: uiVocabularySize(), note: 'Reader, Knowledge Check, chapter-check result, takeaways, Practice & Review (including Session Complete, Continue Learning and the learning mode chooser) and Essential Terms preview labels.' },
     generalInfo: { ...ratio(viChapters, chapters), staleOrPartial },
     flashcards: { classic: inputs.flashcards.classic, interactive: inputs.flashcards.interactive, stale: inputs.flashcards.stale },
     matchSort: { ...inputs.matchSort.ratio, stale: inputs.matchSort.stale },

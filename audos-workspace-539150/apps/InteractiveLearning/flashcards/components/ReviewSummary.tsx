@@ -7,6 +7,7 @@ import type { SessionSummary } from '../sessionSummary';
 import { summaryFromTally } from '../sessionSummary';
 import { MasteryMeter } from './FlashcardProgress';
 import { RATING_LABEL } from './RecallRating';
+import { uiAnswerChecks, uiDeckStatusLine, uiDueFromNow, uiMasteredCount, uiRecallLine, uiReviewDifficult, uiSessionRated, uiText, useUiLanguage } from '../../../IndustryKnowledge/localization/uiText';
 
 /** The host's next step in the curriculum, already resolved against its chapter-access rules. */
 export interface ContinueLearningAction {
@@ -39,17 +40,17 @@ export interface ReviewSummaryProps {
   onStudyAgain?: () => void;
   /** An extra session, e.g. due cards or the next batch of cards not studied yet. */
   onRestart?: () => void;
+  /** Already localized by the host (it knows the counts the label names). */
   restartLabel?: string;
   onExit: () => void;
   exitLabel?: string;
   lessonActions?: SummaryLessonActions;
 }
 
-const plural = (count: number, one: string, many = `${one}s`) => `${count} ${count === 1 ? one : many}`;
-
 export default function ReviewSummary({
   deck, tally, total, summary, stats, now, onRetryWeak, onStudyAgain, onRestart, restartLabel, onExit, exitLabel = 'All decks', lessonActions,
 }: ReviewSummaryProps) {
+  useUiLanguage();
   const titleId = useId();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const session = summary ?? summaryFromTally(tally, total);
@@ -68,55 +69,50 @@ export default function ReviewSummary({
 
   return (
     <section className="cmfc-panel" aria-labelledby={titleId} data-testid="review-summary">
-      <h2 id={titleId} ref={headingRef} tabIndex={-1} className="cmfc-panel-title">Session complete</h2>
+      <h2 id={titleId} ref={headingRef} tabIndex={-1} className="cmfc-panel-title">{uiText('Session complete')}</h2>
       <p className="cmfc-panel-text">
-        You rated {session.rated} of {plural(session.cards, 'card')} in {deck.title}.
+        {uiSessionRated(session.rated, session.cards, deck.title)}
       </p>
       <dl className="cmfc-session-counts" data-testid="session-counts">
         {counts.map((item) => (
           <div key={item.label}>
-            <dt>{item.label}</dt>
+            <dt>{uiText(item.label)}</dt>
             <dd data-testid={item.testId}>{item.value}</dd>
           </div>
         ))}
       </dl>
       {checks ? (
         <p className="cmfc-panel-text cmfc-small" data-testid="summary-answer-checks">
-          Answer checks (multiple choice and fill in the blank): {checks.correct} of {plural(checks.cards, 'card')} answered correctly
-          {checks.firstTry !== checks.correct ? ` (${checks.firstTry} on the first try)` : ''}
-          {checks.shown ? ` · ${checks.shown} shown without a correct answer` : ''}
-          {checks.skipped ? ` · ${checks.skipped} skipped` : ''}.
-          {' '}Answer checks are practice only: they are not recall ratings and do not count towards mastery.
+          {uiAnswerChecks(checks.correct, checks.cards, checks.firstTry, checks.shown, checks.skipped)}
+          {' '}{uiText('Answer checks are practice only: they are not recall ratings and do not count towards mastery.')}
         </p>
       ) : null}
       {session.rated > 0 ? (
         <>
-          <h3 className="cmfc-summary-heading">Recall this session</h3>
-          <ul className="cmfc-tally" aria-label="Latest rating per card this session" data-testid="summary-recall">
+          <h3 className="cmfc-summary-heading">{uiText('Recall this session')}</h3>
+          <ul className="cmfc-tally" aria-label={uiText('Latest rating per card this session')} data-testid="summary-recall">
             {RECALL_RATINGS.map((rating) => (
               <li key={rating}>
                 <span className="cmfc-tally-value">{session.byRating[rating]}</span>
-                <span className="cmfc-tally-label">{RATING_LABEL[rating]}</span>
+                <span className="cmfc-tally-label">{uiText(RATING_LABEL[rating])}</span>
               </li>
             ))}
           </ul>
           <p className="cmfc-panel-text cmfc-small" data-testid="summary-recall-line">
-            Remembered (Good or Easy): {session.remembered} of {session.rated} rated · Difficult (Again or Hard): {session.difficult}
-            {session.unrated ? `. ${plural(session.unrated, 'card')} without a rating ${session.unrated === 1 ? 'is' : 'are'} not counted.` : '.'}
+            {uiRecallLine(session.remembered, session.rated, session.difficult, session.unrated)}
           </p>
         </>
       ) : (
         <p className="cmfc-panel-text cmfc-small" data-testid="summary-no-ratings">
-          You did not rate any card, which is fine: rating is optional. Cards without a rating are not counted as remembered and are not scheduled for review.
+          {uiText('You did not rate any card, which is fine: rating is optional. Cards without a rating are not counted as remembered and are not scheduled for review.')}
         </p>
       )}
-      <MasteryMeter percent={stats.masteryPercent} label="Deck mastery" detail={`${stats.mastered} of ${stats.total} mastered`} />
+      <MasteryMeter percent={stats.masteryPercent} label={uiText('Deck mastery')} detail={uiMasteredCount(stats.mastered, stats.total)} />
       <p className="cmfc-panel-text cmfc-small">
-        {stats.due} due now · {stats.weak} difficult · {stats.unseen} not rated yet
-        {stats.nextDueAt ? ` · next review ${formatDueFromNow(stats.nextDueAt, now)}` : ''}
+        {uiDeckStatusLine(stats.due, stats.weak, stats.unseen, stats.nextDueAt ? uiDueFromNow(formatDueFromNow(stats.nextDueAt, now)) : null)}
       </p>
       <p className="cmfc-panel-text cmfc-small cmfc-text-muted">
-        Mastery comes only from your ratings: a card is mastered when its next review is at least three weeks away. Forgetting it later moves it back to learning.
+        {uiText('Mastery comes only from your ratings: a card is mastered when its next review is at least three weeks away. Forgetting it later moves it back to learning.')}
       </p>
       {continueLearning ? (
         <div className="cmfc-continue" data-testid="continue-learning-panel">
@@ -129,18 +125,18 @@ export default function ReviewSummary({
       ) : null}
       <div className="cmfc-panel-actions">
         {onStudyAgain ? (
-          <button type="button" className={continueLearning ? 'cmfc-btn' : 'cmfc-btn cmfc-btn-primary'} onClick={onStudyAgain} data-testid="study-again">Study again</button>
+          <button type="button" className={continueLearning ? 'cmfc-btn' : 'cmfc-btn cmfc-btn-primary'} onClick={onStudyAgain} data-testid="study-again">{uiText('Study again')}</button>
         ) : null}
         {onRetryWeak && stats.weak > 0 && (
           <button type="button" className="cmfc-btn" onClick={onRetryWeak} data-testid="review-difficult">
-            Review difficult cards ({stats.weak})
+            {uiReviewDifficult(stats.weak)}
           </button>
         )}
-        {onRestart && restartLabel ? <button type="button" className="cmfc-btn" onClick={onRestart}>{restartLabel}</button> : null}
+        {onRestart && restartLabel ? <button type="button" className="cmfc-btn" onClick={onRestart} data-testid="session-restart">{restartLabel}</button> : null}
         {lessonActions?.returnToLesson ? (
-          <button type="button" className="cmfc-btn cmfc-btn-ghost" onClick={lessonActions.returnToLesson} data-testid="summary-return-to-lesson">Return to Lesson</button>
+          <button type="button" className="cmfc-btn cmfc-btn-ghost" onClick={lessonActions.returnToLesson} data-testid="summary-return-to-lesson">{uiText('Return to Lesson')}</button>
         ) : null}
-        <button type="button" className="cmfc-btn cmfc-btn-ghost" onClick={onExit}>{exitLabel}</button>
+        <button type="button" className="cmfc-btn cmfc-btn-ghost" onClick={onExit}>{uiText(exitLabel)}</button>
       </div>
     </section>
   );

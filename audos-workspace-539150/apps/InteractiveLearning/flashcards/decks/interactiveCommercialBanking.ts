@@ -129,11 +129,11 @@ export const CB_INTERACTIVE_CARDS: Record<string, InteractiveCardSpec[]> = {
     },
     {
       id: 'cb21-fill-deposit-tenor',
-      basedOn: 'cb21-risk-not-end-of-chain',
-      front: 'Risk choices begin when a deposit ____ is accepted, continue through pricing and approval, and remain through monitoring and recovery.',
-      back: 'Risk choices begin when a deposit tenor is accepted, continue through pricing and approval, and remain through monitoring and recovery.',
-      explanation: 'Risk is not a final check at the end of the chain. Accepting very short-term deposits to fund long loans is a risk decision made at the very start.',
-      interaction: { type: 'fill_blank', answer: 'tenor', acceptedAnswers: ['term', 'maturity'] },
+      basedOn: 'cb21-who-creates-value',
+      front: 'Bank value is a ____ outcome that joins customer demand, balance-sheet capacity, execution and control.',
+      back: 'Bank value is a cross-functional outcome that joins customer demand, balance-sheet capacity, execution and control.',
+      explanation: 'Customer demand, balance-sheet capacity, execution and control all have to line up before value appears, so neither sales nor risk can claim the whole result on its own.',
+      interaction: { type: 'fill_blank', answer: 'cross-functional', acceptedAnswers: ['cross functional', 'crossfunctional'] },
     },
     {
       id: 'cb21-mcq-funds-transfer-pricing',

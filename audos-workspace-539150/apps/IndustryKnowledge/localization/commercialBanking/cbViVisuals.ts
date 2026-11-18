@@ -1,10 +1,11 @@
 import type { ViVisualSpec } from '../visualLocalization';
+import { CB_VI_VISUALS_M02 } from './cbViVisualsM02';
 
 // Vietnamese Learning Visual text for Commercial Banking, keyed by visualKind (commercialBankingM0xVisualSpecs.ts).
 // Text only: layout, kinds, tones and numbers come from the English spec (see visualLocalization.ts). Terminology
 // follows viTerminology.ts. A kind without an entry here keeps its English diagram.
 
-export const CB_VI_VISUALS: Record<string, ViVisualSpec> = {
+const CB_VI_VISUALS_M01: Record<string, ViVisualSpec> = {
   'cb-m1-11-01-core': {
     enTitle: 'What Is Commercial Banking?',
     spec: {
@@ -86,3 +87,5 @@ export const CB_VI_VISUALS: Record<string, ViVisualSpec> = {
     },
   },
 };
+
+export const CB_VI_VISUALS: Record<string, ViVisualSpec> = { ...CB_VI_VISUALS_M01, ...CB_VI_VISUALS_M02 };
