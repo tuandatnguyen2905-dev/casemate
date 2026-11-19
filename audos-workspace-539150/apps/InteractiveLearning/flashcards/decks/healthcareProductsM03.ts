@@ -259,12 +259,12 @@ const HP_M03_L3_DECK: FlashcardDeckContent = defineLessonDeck({
       id: 'hp33-need-defines-target-population',
       ch: 2,
       front: 'What does a need define, and for whom is evidence valid?',
-      back: 'A target population; evidence is valid only for the population it was gathered on.',
+      back: 'A target population; evidence gathered on one population does not automatically apply to another.',
       explanation: 'Meeting different needs means matching formulation, claims and channel to each population.',
       example: 'Evidence gathered for adults does not substantiate use for a child.',
       terms: ['Target population', 'Life stage'],
       refs: [
-        [2, 'A need defines a target population, and evidence is valid only for the population it was gathered on.'],
+        [2, 'A need defines a target population, and evidence gathered on one population does not automatically apply to another.'],
       ],
     },
     {

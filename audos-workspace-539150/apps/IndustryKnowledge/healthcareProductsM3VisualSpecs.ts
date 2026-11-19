@@ -120,7 +120,7 @@ export const HEALTHCARE_PRODUCTS_M3_VISUALS: Record<string, HealthcareProductsCh
     },
   },
   'healthcare-products-m3-8': {
-    heading: 'Each kind of need defines a target population, and evidence is valid only for that population',
+    heading: 'Each kind of need defines a target population, and evidence does not automatically carry over to another population',
     intro: 'Consumers buy for their own goals, families buy for others, life stages change nutritional circumstances, and specialized needs arise from defined dietary or medical requirements.',
     spec: {
       layout: 'table', title: '08 How Do Consumer, Family, Life-Stage and Specialized Needs Differ?', kicker: '',

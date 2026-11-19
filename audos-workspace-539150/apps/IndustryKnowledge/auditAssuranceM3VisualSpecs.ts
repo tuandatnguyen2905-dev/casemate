@@ -75,13 +75,13 @@ export const AUDIT_ASSURANCE_M3_VISUALS: Record<string, AuditAssuranceChapterVis
   },
   'professional-audit-m3-5': {
     heading: 'Only a review gives assurance; agreed-upon procedures and advisory work do not',
-    intro: 'A review gives limited assurance. Agreed-upon procedures report factual findings for specified users, and advisory work gives recommendations. Neither of the last two provides assurance.',
+    intro: 'A review gives limited assurance. Agreed-upon procedures report factual findings to the engaging party and other intended users, and advisory work gives recommendations. Neither of the last two provides assurance.',
     spec: {
       layout: 'table', title: '05 How Do Review, Agreed-Upon Procedures and Advisory Differ?', kicker: '',
       headers: ['Service', 'Assurance and output', 'Who relies or decides'],
       rows: [
         { label: 'Review', a: 'Limited assurance; a conclusion', b: 'Intended users rely on the conclusion' },
-        { label: 'Agreed-upon procedures', a: 'No assurance; procedures and factual findings', b: 'Specified users draw their own conclusions' },
+        { label: 'Agreed-upon procedures', a: 'No assurance; procedures and factual findings', b: 'The engaging party and other intended users draw their own conclusions' },
         { label: 'Advisory service', a: 'No assurance; recommendations', b: 'The client decides; independence limits apply for audit clients' },
       ],
       note: 'Agreed-upon procedures are not a lighter audit, and advisory work is not assurance.',
