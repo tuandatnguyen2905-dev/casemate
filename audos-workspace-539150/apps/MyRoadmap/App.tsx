@@ -91,6 +91,8 @@ import OverallProgress from './OverallProgress';
 import type { OverallProgressStatus } from './OverallProgress';
 import RecommendedForTarget from './RecommendedForTarget';
 import { ROADMAP_CSS } from './roadmapStyles';
+import TodaysFocus, { FOCUS_CSS } from './TodaysFocus';
+import { useSkillFocus } from './skillFocusData';
 import StudyPaceSelector from './StudyPaceSelector';
 import { PACE_CSS } from './paceStyles';
 
@@ -679,6 +681,8 @@ export default function MyRoadmapApp() {
   // function re-checks the verified session email on every write.
   const isReviewAdmin = isFounderEmail(userEmail) || userRole === 'founder';
   const userId = useMemo(() => resolveRoadmapIdentity(sessionId, userEmail).userKey, [sessionId, userEmail]);
+  // Today's Focus: read-only skill scores from graded Case Drill / Aptitude Test results.
+  const skillFocus = useSkillFocus(sessionId, userEmail, userId);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [roadmap, setRoadmap] = useState<SavedRoadmap | null>(null);
   const [sessions, setSessions] = useState<PracticeSession[]>([]);
@@ -1068,12 +1072,13 @@ export default function MyRoadmapApp() {
       userKey={userId}
       isAdmin={isReviewAdmin}
       fitRecommendations={roadmap?.preparation_recommendations || []}
+      skillFocus={skillFocus.focus}
     />
   );
 
   return (
     <div className="mr-root" onPointerEnter={refreshIfStale}>
-      <style>{ROADMAP_CSS + PACE_CSS}</style>
+      <style>{ROADMAP_CSS + PACE_CSS + FOCUS_CSS}</style>
       <div className="mr-wrap">
         <header className="mr-page-head">
           <h1><MapIcon size={24} /> My Roadmap</h1>
@@ -1315,6 +1320,8 @@ export default function MyRoadmapApp() {
                   })}
                 </div>
               )}
+
+              <TodaysFocus state={skillFocus} />
 
               {planState.kind === 'before' && (
                 <p className="mr-note">

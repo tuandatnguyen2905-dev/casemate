@@ -66,6 +66,9 @@ import {
 } from './recommendationData';
 import type { CaseSkillProgress, DomainCatalog, TopicProgress } from './recommendationData';
 import CandidateReviewAdmin from './CandidateReviewAdmin';
+import { FocusAnnotationLine } from './TodaysFocus';
+import { focusAnnotationFor } from '../../lib/skillFocus';
+import type { SkillFocus } from '../../lib/skillFocus';
 
 const PROGRESS_REFRESH_MIN_MS = 15000;
 const EXCERPT_PREVIEW_CHARS = 220;
@@ -180,6 +183,8 @@ interface Props {
   isAdmin: boolean;
   /** Gap-based recommendations saved with the roadmap from the Fit Assessment. */
   fitRecommendations?: PreparationRecommendation[];
+  /** Weakest measured skill per feature; annotates the matching existing card only. */
+  skillFocus?: SkillFocus | null;
 }
 
 type DeckProgressMap = Record<string, { completed?: string[] }>;
@@ -263,7 +268,7 @@ function EvidenceExcerpt({ item }: { item: EvidenceItem }) {
   );
 }
 
-export default function RecommendedForTarget({ target, sessionId, userKey, isAdmin, fitRecommendations = [] }: Props) {
+export default function RecommendedForTarget({ target, sessionId, userKey, isAdmin, fitRecommendations = [], skillFocus = null }: Props) {
   const [reviews, setReviews] = useState<CandidateReview[]>([]);
   const [reviewsState, setReviewsState] = useState<ReviewsState>('loading');
   const [programs, setPrograms] = useState<ProgramRow[]>([]);
@@ -480,8 +485,21 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
     GROUP_ORDER.forEach((group) => {
       out[group] = out[group].slice(0, limit);
     });
+
+    // The topic behind a Today's Focus weakness stays reachable in "Explore All" even when it
+    // is not one of the ranked picks (never as a top pick, never duplicated).
+    (['aptitude', 'case_drill'] as RecommendationGroup[]).forEach((group) => {
+      const tile = group === 'aptitude' ? skillFocus?.aptitude : skillFocus?.caseDrill;
+      if (!tile || tile.status !== 'ready') return;
+      if (out[group].some((item) => item.topic?.contentId === tile.skill.skillId)) return;
+      const topic = topicByTag(`${group === 'aptitude' ? 'apt' : 'cd'}:${tile.skill.skillId}`);
+      if (!topic) return;
+      out[group].push(fromTopic(topic, group === 'aptitude'
+        ? 'Your lowest measured Aptitude Test category right now.'
+        : 'Your lowest measured Case Drill skill right now.'));
+    });
     return out;
-  }, [result, target, domainCatalog, lessonCount]);
+  }, [result, target, domainCatalog, lessonCount, skillFocus]);
 
   const progressFor = (item: RecItem): { progress: TopicProgress | null; loading: boolean } => {
     if (item.area) return { progress: knowledgeAreaProgress(item.area, deckProgress), loading: false };
@@ -638,6 +656,7 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
                       {primary.caseTypes.length > 0 && <> Covers: {primary.caseTypes.join(', ')}.</>}
                     </p>
                     <ProgressBlock progress={progress} loading={loading} unit={GROUP_UNIT[group]} />
+                    <FocusAnnotationLine annotation={focusAnnotationFor(skillFocus, primary.group, primary.topic?.contentId || '')} />
                     <div className="mr-rec-actions">
                       <button
                         type="button"
@@ -689,6 +708,7 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
                           {item.why}
                           {item.caseTypes.length > 0 ? ` Covers: ${item.caseTypes.join(', ')}.` : ''}
                         </span>
+                        <FocusAnnotationLine annotation={focusAnnotationFor(skillFocus, item.group, item.topic?.contentId || '')} />
                         <span className="mr-rec-mini-foot">
                           {pct !== null && progress ? (
                             <>
