@@ -1,19 +1,17 @@
 // Casemate — "My Roadmap": the persistent personalized prep plan.
 //
-// One page, six sections in a fixed order (founder-approved prototype):
-//   1. Your Target Program — program, company, position, match %, Fit
-//      Assessment link and roadmap regeneration.
-//   2. Choose Your Study Pace (./StudyPaceSelector.tsx) — Take It Slow /
-//      Balanced / Hardcore. Choosing previews only; "Apply Study Pace" saves.
-//   3. Overall Learning Progress (./OverallProgress.tsx) — completion across the
-//      whole saved plan: donut + three category bars. Read-only, no buttons.
-//   4. Your Progress This Week — current week, phase, weekly completion,
-//      remaining activities and one compact card per tracked practice app.
+// One lean page, five sections in a fixed order (founder-approved Lean MVP):
+//   1. Your Target Program — program, company, role, fit score, roadmap overview
+//      and pace; Fit Assessment link and roadmap regeneration.
+//   2. Study Pace (./StudyPaceSelector.tsx) — compact Take It Slow / Balanced /
+//      Hardcore control. Choosing previews only; Apply saves.
+//   3. Your Learning Snapshot (./LearningSnapshot.tsx) — whole-plan completion
+//      beside this week's targets, plus the compact Today's Focus strip.
 //      Read-only: no practice buttons.
-//   5. Recommended for Your Target Program (./RecommendedForTarget.tsx) — the
-//      only place with learn/practice CTAs.
-//   6. Preparation Timeline — the saved 24-week plan in four phases with This
-//      Week / Monthly / Full Plan views. Planning only: no practice buttons.
+//   4. Recommended for you (./RecommendedForTarget.tsx) — the only place with
+//      learn/practice CTAs.
+//   5. Preparation Timeline (./PreparationTimeline.tsx) — the saved 24-week plan
+//      in four phases with This Week / Monthly / Full Plan views. Planning only.
 // Weeks and phases come from the saved plan (lib/prepRoadmap.ts, prep_roadmaps
 // table) and every weekly target from its saved study pace (lib/studyPace.ts),
 // so all sections read one schedule; progress is counted live from completed Case Pool,
@@ -25,40 +23,29 @@ import {
   Briefcase,
   Building2,
   CalendarDays,
-  CheckCircle2,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  Circle,
   Compass,
-  Flag,
-  Hexagon,
+  Gauge,
   Loader2,
   Map as MapIcon,
   RefreshCw,
   RotateCcw,
   Sparkles,
-  Target,
-  Zap,
 } from 'lucide-react';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import {
   generateAndSaveRoadmap,
-  groupWeeksIntoMonths,
   loadLatestRoadmap,
   restartRoadmapJourney,
   ROADMAP_UPDATED_EVENT,
   resolveRoadmapIdentity,
-  shortDateLabel,
 } from '../../lib/prepRoadmap';
-import type { RoadmapWeek, SavedRoadmap, WeekProgress } from '../../lib/prepRoadmap';
+import type { SavedRoadmap } from '../../lib/prepRoadmap';
 import {
   bucketPracticeSessions,
   buildWeekSchedule,
   defaultWeekOneStart,
   firstVisitIso,
   fullDateLabel,
-  goalProgress,
   groupWeeksIntoPhases,
   isStartDateAllowed,
   loadFirstProfileSaveDate,
@@ -69,10 +56,9 @@ import {
   saveWeekOneStart,
   startDateBounds,
   todayIso,
-  weekState,
   writeCachedStartChoice,
 } from '../../lib/roadmapProgress';
-import type { PlanStatus, PracticeSession, RoadmapPhase, WeekStartBasis, WeekState } from '../../lib/roadmapProgress';
+import type { PracticeSession, WeekStartBasis } from '../../lib/roadmapProgress';
 import { READINESS_UPDATED_EVENT } from '../../lib/readinessScore';
 import {
   DEFAULT_STUDY_PACE,
@@ -87,66 +73,16 @@ import {
 import type { CachedStudyPace, StudyPace } from '../../lib/studyPace';
 import { trackAppSwitch, trackStepError } from '../../lib/engagementTracking';
 import { isFounderEmail } from '../../lib/founderAccess';
-import OverallProgress from './OverallProgress';
 import type { OverallProgressStatus } from './OverallProgress';
+import LearningSnapshot from './LearningSnapshot';
+import PreparationTimeline from './PreparationTimeline';
+import type { TimelineView } from './PreparationTimeline';
 import RecommendedForTarget from './RecommendedForTarget';
 import { ROADMAP_CSS } from './roadmapStyles';
-import TodaysFocus, { FOCUS_CSS } from './TodaysFocus';
+import { FOCUS_CSS } from './TodaysFocus';
 import { useSkillFocus } from './skillFocusData';
 import StudyPaceSelector from './StudyPaceSelector';
 import { PACE_CSS } from './paceStyles';
-
-interface TrackMeta {
-  key: 'case_pool' | 'case_drill' | 'aptitude';
-  label: string;
-  icon: typeof Target;
-  targetOf: (week: RoadmapWeek) => number;
-  doneOf: (progress: WeekProgress | undefined) => number;
-  unit: string;
-  unitOne: string;
-  short: string;
-}
-
-const TRACKS: TrackMeta[] = [
-  {
-    key: 'case_pool',
-    label: 'Case Pool',
-    icon: Target,
-    targetOf: (week) => week.case_pool_target,
-    doneOf: (progress) => progress?.case_pool_done || 0,
-    unit: 'full cases',
-    unitOne: 'full case',
-    short: 'CP',
-  },
-  {
-    key: 'case_drill',
-    label: 'Case Drill',
-    icon: Zap,
-    targetOf: (week) => week.case_drill_target,
-    doneOf: (progress) => progress?.case_drill_done || 0,
-    unit: 'drills',
-    unitOne: 'drill',
-    short: 'CD',
-  },
-  {
-    key: 'aptitude',
-    label: 'Aptitude Test',
-    icon: Hexagon,
-    targetOf: (week) => week.aptitude_target,
-    doneOf: (progress) => progress?.aptitude_done || 0,
-    unit: 'tests',
-    unitOne: 'test',
-    short: 'AT',
-  },
-];
-
-type TimelineView = 'week' | 'month' | 'full';
-
-const TIMELINE_VIEWS: Array<{ id: TimelineView; label: string }> = [
-  { id: 'week', label: 'This Week' },
-  { id: 'month', label: 'Monthly' },
-  { id: 'full', label: 'Full Plan' },
-];
 
 const START_BASIS_LABEL: Record<WeekStartBasis, string> = {
   roadmap_created: 'the day your roadmap was created',
@@ -248,431 +184,6 @@ function pickTargetProgram(resultJson: unknown): AssessmentTarget | null {
     company: target.company ? String(target.company) : null,
     matchPercent: Number.isFinite(Number(target.match_percent)) ? Math.round(Number(target.match_percent)) : null,
   };
-}
-
-function Bar({ done, target, size }: { done: number; target: number; size?: 'thin' | 'thick' }) {
-  const { pct, complete } = goalProgress(done, target);
-  return (
-    <div
-      className={`mr-bar${size ? ` mr-bar--${size}` : ''}${complete ? ' is-done' : ''}`}
-      role="progressbar"
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={pct}
-    >
-      <span style={{ width: `${Math.max(pct > 0 ? 3 : 0, pct)}%` }} />
-    </div>
-  );
-}
-
-function Extra({ extra }: { extra: number }) {
-  if (extra <= 0) return null;
-  return <span className="mr-extra">+{extra} extra</span>;
-}
-
-function weekTotals(week: RoadmapWeek, progress: WeekProgress | undefined) {
-  let counted = 0;
-  let target = 0;
-  let extra = 0;
-  TRACKS.forEach((track) => {
-    const goal = goalProgress(track.doneOf(progress), track.targetOf(week));
-    counted += goal.counted;
-    extra += goal.extra;
-    target += track.targetOf(week);
-  });
-  return { counted, target, extra, remaining: Math.max(0, target - counted) };
-}
-
-function rangeTotals(weeks: RoadmapWeek[], progress: Record<number, WeekProgress>) {
-  return weeks.reduce(
-    (sum, week) => {
-      const totals = weekTotals(week, progress[week.week]);
-      return { counted: sum.counted + totals.counted, target: sum.target + totals.target, extra: sum.extra + totals.extra };
-    },
-    { counted: 0, target: 0, extra: 0 },
-  );
-}
-
-function combinedState(states: WeekState[]): WeekState {
-  if (states.includes('current')) return 'current';
-  return states.length > 0 && states.every((state) => state === 'past') ? 'past' : 'upcoming';
-}
-
-function phaseState(phase: RoadmapPhase, status: PlanStatus): WeekState {
-  return combinedState(phase.weeks.map((week) => weekState(week.week, status)));
-}
-
-const STATE_LABEL: Record<WeekState, string> = { current: 'Current', past: 'Completed', upcoming: 'Upcoming' };
-
-function StateChip({ state, label }: { state: WeekState; label?: string }) {
-  return (
-    <span className={`mr-chip is-${state}`}>
-      {state === 'past' ? <CheckCircle2 /> : state === 'upcoming' ? <Circle /> : null}
-      {label || STATE_LABEL[state]}
-    </span>
-  );
-}
-
-function weekChipLabel(state: WeekState): string {
-  return state === 'current' ? 'This week' : state === 'past' ? 'Past' : 'Upcoming';
-}
-
-function WeekDetail({
-  week,
-  phase,
-  progress,
-  state,
-}: {
-  week: RoadmapWeek;
-  phase: RoadmapPhase | undefined;
-  progress: WeekProgress | undefined;
-  state: WeekState;
-}) {
-  const totals = weekTotals(week, progress);
-  return (
-    <div className={`mr-week${state === 'current' ? ' is-current' : ''}`} data-testid={`roadmap-week-${week.week}`}>
-      <div className="mr-week-head">
-        <b>Week {week.week}</b>
-        <span className="mr-week-dates">{shortDateLabel(week.start_date)} – {shortDateLabel(week.end_date)}</span>
-        <span className="mr-week-theme">{phase ? `Phase ${phase.index} · ${phase.name}` : week.theme}</span>
-        <StateChip state={state} label={weekChipLabel(state)} />
-      </div>
-      <div className="mr-week-targets">
-        {TRACKS.map((track) => {
-          const target = track.targetOf(week);
-          const goal = goalProgress(track.doneOf(progress), target);
-          const Icon = track.icon;
-          return (
-            <div key={track.key} className="mr-target-item">
-              <div className="mr-target-item-row">
-                <Icon />
-                <b>{track.label}</b>
-                <Extra extra={goal.extra} />
-                <span className={`mr-num${goal.complete ? ' is-done' : ''}`}>{goal.counted}/{target}</span>
-              </div>
-              <Bar done={goal.counted} target={target} size="thin" />
-              <p className="mr-target-item-goal">Target: {target} {target === 1 ? track.unitOne : track.unit}</p>
-            </div>
-          );
-        })}
-      </div>
-      <div className="mr-week-foot">
-        <span><b className="mr-num">{totals.counted}/{totals.target}</b> activities</span>
-        <span>{totals.remaining === 0 ? 'Weekly target reached' : `${totals.remaining} remaining`}</span>
-        <Extra extra={totals.extra} />
-      </div>
-    </div>
-  );
-}
-
-function PhaseCards({
-  phases,
-  status,
-  progress,
-  onSelect,
-}: {
-  phases: RoadmapPhase[];
-  status: PlanStatus;
-  progress: Record<number, WeekProgress>;
-  onSelect: (phase: RoadmapPhase) => void;
-}) {
-  return (
-    <div className="mr-phases" data-testid="roadmap-phases">
-      {phases.map((phase) => {
-        const state = phaseState(phase, status);
-        const totals = rangeTotals(phase.weeks, progress);
-        const first = phase.weeks[0];
-        const last = phase.weeks[phase.weeks.length - 1];
-        return (
-          <button
-            key={phase.index}
-            type="button"
-            className={`mr-phase is-${state}`}
-            onClick={() => onSelect(phase)}
-            aria-label={`Phase ${phase.index}: ${phase.name}, weeks ${first.week} to ${last.week}, ${STATE_LABEL[state]}. Show this phase's weeks.`}
-            data-testid={`roadmap-phase-${phase.index}`}
-            data-state={state}
-          >
-            <span className="mr-phase-top">
-              <span className="mr-phase-idx">Phase {phase.index}</span>
-              <StateChip state={state} />
-            </span>
-            <span className="mr-phase-name">{phase.name}</span>
-            <span className="mr-phase-range">
-              Weeks {first.week}–{last.week} · {shortDateLabel(phase.startIso)} – {shortDateLabel(phase.endIso)}
-            </span>
-            <span className="mr-phase-prog">
-              <span className="mr-num">{totals.counted}/{totals.target} activities</span>
-              <Extra extra={totals.extra} />
-            </span>
-            <Bar done={totals.counted} target={totals.target} size="thin" />
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function PreparationTimeline({
-  schedule,
-  phases,
-  status,
-  progress,
-  view,
-  onViewChange,
-  focusWeek,
-}: {
-  schedule: RoadmapWeek[];
-  phases: RoadmapPhase[];
-  status: PlanStatus;
-  progress: Record<number, WeekProgress>;
-  view: TimelineView;
-  onViewChange: (view: TimelineView) => void;
-  focusWeek: number;
-}) {
-  const months = useMemo(() => groupWeeksIntoMonths(schedule), [schedule]);
-  const [selectedWeek, setSelectedWeek] = useState<number>(focusWeek);
-  const [expandedMonths, setExpandedMonths] = useState<Record<number, boolean>>({});
-  const [openFullWeek, setOpenFullWeek] = useState<number | null>(null);
-
-  useEffect(() => {
-    setSelectedWeek(focusWeek);
-    setOpenFullWeek(null);
-    const month = months.find((item) => item.weeks.some((week) => week.week === focusWeek)) || months[0];
-    setExpandedMonths(month ? { [month.month]: true } : {});
-  }, [focusWeek, months]);
-
-  const phaseOf = (weekNumber: number) => phases.find((phase) => phase.weeks.some((week) => week.week === weekNumber));
-  const selected = schedule.find((week) => week.week === selectedWeek) || schedule[0];
-  const selectedPhase = selected ? phaseOf(selected.week) : undefined;
-  const selectedIndex = selected ? schedule.indexOf(selected) : 0;
-
-  const selectPhase = (phase: RoadmapPhase) => {
-    const current = phase.weeks.find((week) => weekState(week.week, status) === 'current') || phase.weeks[0];
-    setSelectedWeek(current.week);
-    onViewChange('week');
-  };
-
-  return (
-    <section className="mr-card" data-testid="roadmap-timeline" aria-labelledby="mr-timeline-title">
-      <div className="mr-sec-head">
-        <div>
-          <span className="mr-eyebrow">Your plan</span>
-          <h2 className="mr-h2" id="mr-timeline-title">Preparation Timeline</h2>
-          <p className="mr-sub">
-            {schedule.length} weeks in {phases.length} phases · {fullDateLabel(schedule[0].start_date)} – {fullDateLabel(schedule[schedule.length - 1].end_date)}
-          </p>
-        </div>
-        <div className="mr-tabs" role="tablist" aria-label="Timeline view" data-testid="roadmap-view-switcher">
-          {TIMELINE_VIEWS.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              role="tab"
-              id={`mr-tab-${option.id}`}
-              aria-selected={view === option.id}
-              aria-controls="mr-timeline-panel"
-              className="mr-tab"
-              onClick={() => onViewChange(option.id)}
-              data-testid={`roadmap-view-${option.id}`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <PhaseCards phases={phases} status={status} progress={progress} onSelect={selectPhase} />
-
-      <div className="mr-view" id="mr-timeline-panel" role="tabpanel" aria-labelledby={`mr-tab-${view}`} data-testid={`roadmap-view-panel-${view}`}>
-        {view === 'week' && selected && (
-          <div>
-            <div className="mr-weeknav">
-              <button
-                type="button"
-                className="mr-icon-btn"
-                onClick={() => setSelectedWeek(schedule[Math.max(0, selectedIndex - 1)].week)}
-                disabled={selectedIndex === 0}
-                aria-label="Previous week"
-                data-testid="roadmap-week-prev"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <div className="mr-weeknav-title" aria-live="polite">
-                <b>Week {selected.week} of {schedule.length}</b>
-                <span>{shortDateLabel(selected.start_date)} – {shortDateLabel(selected.end_date)}{selectedPhase ? ` · ${selectedPhase.name}` : ''}</span>
-              </div>
-              <button
-                type="button"
-                className="mr-icon-btn"
-                onClick={() => setSelectedWeek(schedule[Math.min(schedule.length - 1, selectedIndex + 1)].week)}
-                disabled={selectedIndex >= schedule.length - 1}
-                aria-label="Next week"
-                data-testid="roadmap-week-next"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-            <div className="mr-weekchips" role="group" aria-label="Choose a week">
-              {schedule.map((week) => {
-                const state = weekState(week.week, status);
-                const totals = weekTotals(week, progress[week.week]);
-                const met = totals.target > 0 && totals.counted >= totals.target;
-                return (
-                  <button
-                    key={week.week}
-                    type="button"
-                    className={`mr-weekchip is-${state}${met ? ' is-met' : ''}`}
-                    aria-pressed={week.week === selected.week}
-                    aria-label={`Week ${week.week}, ${weekChipLabel(state)}, ${totals.counted} of ${totals.target} activities`}
-                    onClick={() => setSelectedWeek(week.week)}
-                    data-testid={`roadmap-week-chip-${week.week}`}
-                  >
-                    W{week.week}
-                  </button>
-                );
-              })}
-            </div>
-            <WeekDetail week={selected} phase={selectedPhase} progress={progress[selected.week]} state={weekState(selected.week, status)} />
-          </div>
-        )}
-
-        {view === 'month' && (
-          <div className="mr-months" data-testid="roadmap-months">
-            {months.map((month) => {
-              const expanded = !!expandedMonths[month.month];
-              const first = month.weeks[0];
-              const last = month.weeks[month.weeks.length - 1];
-              const state = combinedState(month.weeks.map((week) => weekState(week.week, status)));
-              const totals = rangeTotals(month.weeks, progress);
-              const perTrack = TRACKS.map((track) => {
-                let target = 0;
-                let done = 0;
-                month.weeks.forEach((week) => {
-                  target += track.targetOf(week);
-                  done += goalProgress(track.doneOf(progress[week.week]), track.targetOf(week)).counted;
-                });
-                return { track, target, done };
-              });
-              return (
-                <div key={month.month} className={`mr-month${state === 'current' ? ' is-current' : ''}`} data-testid={`roadmap-month-${month.month}`}>
-                  <button
-                    type="button"
-                    className="mr-month-btn"
-                    aria-expanded={expanded}
-                    aria-controls={`mr-month-body-${month.month}`}
-                    onClick={() => setExpandedMonths((prev) => ({ ...prev, [month.month]: !prev[month.month] }))}
-                  >
-                    <span className="mr-month-main">
-                      <span className="mr-month-title">
-                        {month.label}
-                        <span className="mr-month-range">
-                          W{first.week}–W{last.week} · {shortDateLabel(first.start_date)} – {shortDateLabel(last.end_date)}
-                        </span>
-                        <StateChip state={state} />
-                      </span>
-                      <span className="mr-month-tracks">
-                        {perTrack.map(({ track, target, done }) => (
-                          <span key={track.key} className="mr-num"><b>{track.label}</b> {done}/{target}</span>
-                        ))}
-                      </span>
-                    </span>
-                    <span className="mr-month-side">
-                      <span className="mr-num">{totals.counted}/{totals.target} activities</span>
-                      <Bar done={totals.counted} target={totals.target} size="thin" />
-                    </span>
-                    <ChevronDown className="mr-month-chevron" />
-                  </button>
-                  {expanded && (
-                    <div className="mr-month-body" id={`mr-month-body-${month.month}`}>
-                      {month.weeks.map((week) => (
-                        <WeekDetail
-                          key={week.week}
-                          week={week}
-                          phase={phaseOf(week.week)}
-                          progress={progress[week.week]}
-                          state={weekState(week.week, status)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {view === 'full' && (
-          <div className="mr-full" data-testid="roadmap-full-plan">
-            {phases.map((phase) => (
-              <div key={phase.index}>
-                <p className="mr-full-phase-title">Phase {phase.index} · {phase.name}</p>
-                <div className="mr-full-list">
-                  {phase.weeks.map((week) => {
-                    const state = weekState(week.week, status);
-                    const open = openFullWeek === week.week;
-                    return (
-                      <div key={week.week} className="mr-full-item">
-                        <button
-                          type="button"
-                          className={`mr-full-row is-${state}`}
-                          aria-expanded={open}
-                          aria-controls={`mr-full-detail-${week.week}`}
-                          onClick={() => setOpenFullWeek(open ? null : week.week)}
-                          data-testid={`roadmap-full-week-${week.week}`}
-                          data-state={state}
-                        >
-                          <span className="mr-full-week">
-                            <b>Week {week.week}</b>
-                            <span>{shortDateLabel(week.start_date)} – {shortDateLabel(week.end_date)}</span>
-                          </span>
-                          <span className="mr-full-tracks">
-                            {TRACKS.map((track) => {
-                              const target = track.targetOf(week);
-                              const goal = goalProgress(track.doneOf(progress[week.week]), target);
-                              return (
-                                <span key={track.key} className="mr-full-track">
-                                  <div>
-                                    <span title={track.label}>{track.short}</span>
-                                    <span className={`mr-num${goal.complete ? ' is-done' : ''}`}>
-                                      {goal.counted}/{target}{goal.extra > 0 ? ` +${goal.extra}` : ''}
-                                    </span>
-                                  </div>
-                                  <Bar done={goal.counted} target={target} size="thin" />
-                                </span>
-                              );
-                            })}
-                          </span>
-                          <StateChip state={state} label={weekChipLabel(state)} />
-                          <ChevronDown className="mr-month-chevron" />
-                        </button>
-                        {open && (
-                          <div className="mr-full-detail" id={`mr-full-detail-${week.week}`}>
-                            <WeekDetail week={week} phase={phase} progress={progress[week.week]} state={state} />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-            <p className="mr-legend">CP = Case Pool · CD = Case Drill · AT = Aptitude Test · select a week to see its targets</p>
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
-function Stat({ label, value, sub, testId, text }: { label: string; value: string; sub?: string; testId: string; text?: boolean }) {
-  return (
-    <div className="mr-stat" data-testid={testId}>
-      <div className="mr-stat-label">{label}</div>
-      <div className={`mr-stat-value mr-num${text ? ' mr-stat-value--text' : ''}`}>{value}</div>
-      {sub && <div className="mr-stat-sub">{sub}</div>}
-    </div>
-  );
 }
 
 export default function MyRoadmapApp() {
@@ -970,17 +481,15 @@ export default function MyRoadmapApp() {
     : planState.kind === 'before'
       ? schedule[0] || null
       : null;
-  const goalTotals = goalWeek ? weekTotals(goalWeek, progress[goalWeek.week]) : null;
   const currentPhase = goalWeek
     ? phases.find((phase) => phase.weeks.some((week) => week.week === goalWeek.week)) || null
     : phases[phases.length - 1] || null;
-  const planTotals = useMemo(() => rangeTotals(schedule, progress), [schedule, progress]);
-  const hasAnyPractice = planTotals.counted + planTotals.extra > 0;
   const effectiveView: TimelineView = timelineView || (planState.kind === 'complete' ? 'full' : 'week');
   const focusWeekNumber = goalWeek?.week ?? schedule[schedule.length - 1]?.week ?? 1;
   const bounds = startDateBounds(now);
   // A new pace re-paces the current week and every later one; ended weeks keep theirs.
   const paceEffectiveWeek = planState.kind === 'active' ? planState.week : planState.kind === 'before' ? 1 : null;
+  const paceLabel = STUDY_PACE_META[paceConfig?.pace || DEFAULT_STUDY_PACE].label;
 
   const recommendationTarget = useMemo(() => {
     if (roadmap) {
@@ -1037,7 +546,7 @@ export default function MyRoadmapApp() {
       const saved = await saveStudyPace(roadmap.id, pace, paceEffectiveWeek, sessionId);
       writeCachedStudyPace(userId, roadmap.id, { config: saved, synced: true });
       setRoadmap((current) => (current && current.id === roadmap.id ? { ...current, study_pace_json: saved } : current));
-      setPaceNotice(`${label} applied${scope}. Your weekly goals, progress and timeline are updated.`);
+      setPaceNotice(`${label} applied${scope}. Your weekly targets, progress and timeline are updated.`);
     } catch (e: any) {
       if (e?.code === 'device_only' || e?.code === 'verified_email_required') {
         const local: CachedStudyPace = { config: withPaceChange(paceConfig, pace, paceEffectiveWeek, new Date().toISOString()), synced: false };
@@ -1076,13 +585,103 @@ export default function MyRoadmapApp() {
     />
   );
 
+  const overview = planState.kind === 'active'
+    ? `Week ${planState.week} of ${schedule.length}${currentPhase ? ` · Phase ${currentPhase.index}: ${currentPhase.name}` : ''}`
+    : planState.kind === 'before'
+      ? `Starts ${fullDateLabel(planState.startsOn)}`
+      : `Plan ended ${fullDateLabel(planState.endedOn)}`;
+
+  const startDateControl = (
+    <div className="mr-timeline-foot" data-testid="roadmap-start-date">
+      <div className="mr-start">
+        <CalendarDays />
+        <span>
+          Week 1 {planState.kind === 'before' ? 'starts' : 'started'}{' '}
+          <b data-testid="roadmap-week1-date">{fullDateLabel(weekOneIso)}</b>
+          {usingCustomStart ? ' · your chosen date' : defaultStart ? ` · ${START_BASIS_LABEL[defaultStart.basis]}` : ''}
+        </span>
+        {!startEditorOpen && (
+          <button
+            type="button"
+            className="mr-link"
+            onClick={() => {
+              setStartDraft(isStartDateAllowed(weekOneIso, now) ? weekOneIso : todayIso(now));
+              setStartError(null);
+              setStartEditorOpen(true);
+            }}
+            data-testid="button-change-start-date"
+          >
+            Change start date
+          </button>
+        )}
+      </div>
+      {startNotice && !startEditorOpen && <p className="mr-sub">{startNotice}</p>}
+      {startEditorOpen && (
+        <div className="mr-start-editor" data-testid="roadmap-start-date-editor">
+          <label htmlFor="roadmap-week1-input">When should Week 1 start?</label>
+          <p>
+            Pick any date from {fullDateLabel(bounds.min)} to {fullDateLabel(bounds.max)}. Your practice history stays the same; it is just grouped into weeks from the new date.
+          </p>
+          <div className="mr-start-row">
+            <input
+              id="roadmap-week1-input"
+              type="date"
+              min={bounds.min}
+              max={bounds.max}
+              value={startDraft}
+              onChange={(event) => setStartDraft(event.target.value)}
+              data-testid="input-start-date"
+            />
+            <button
+              type="button"
+              className="mr-btn mr-btn--primary mr-btn--sm"
+              onClick={() => void applyStartChoice(startDraft === defaultStart?.iso ? null : startDraft)}
+              disabled={!draftValid || savingStart}
+              data-testid="button-save-start-date"
+            >
+              {savingStart && <Loader2 className="mr-spin" />}
+              Save
+            </button>
+            <button
+              type="button"
+              className="mr-btn mr-btn--ghost mr-btn--sm"
+              onClick={() => {
+                setStartEditorOpen(false);
+                setStartError(null);
+              }}
+              disabled={savingStart}
+            >
+              Cancel
+            </button>
+          </div>
+          {!draftValid && startDraft && (
+            <p className="mr-error">Choose a date between {fullDateLabel(bounds.min)} and {fullDateLabel(bounds.max)}.</p>
+          )}
+          {startError && <p className="mr-error" role="alert">{startError}</p>}
+          {usingCustomStart && defaultStart && (
+            <button
+              type="button"
+              className="mr-link"
+              onClick={() => void applyStartChoice(null)}
+              disabled={savingStart}
+              data-testid="button-reset-start-date"
+            >
+              <RotateCcw size={14} />
+              Reset to default ({fullDateLabel(defaultStart.iso)})
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="mr-root" onPointerEnter={refreshIfStale}>
       <style>{ROADMAP_CSS + PACE_CSS + FOCUS_CSS}</style>
       <div className="mr-wrap">
         <header className="mr-page-head">
           <h1><MapIcon size={24} /> My Roadmap</h1>
-          <p>Where you stand, what to practise next, and your week-by-week plan.</p>
+          <p>Where you’re aiming, how you’re doing, and what to do next.</p>
         </header>
 
         {status === 'loading' ? (
@@ -1118,7 +717,7 @@ export default function MyRoadmapApp() {
                 <span className="mr-eyebrow">Your Target Program</span>
                 <div className="mr-target-title">
                   <h2 id="mr-target-title">{assessmentTarget.program}</h2>
-                  {assessmentTarget.matchPercent != null && <span className="mr-pill mr-pill--red">{assessmentTarget.matchPercent}% match</span>}
+                  {assessmentTarget.matchPercent != null && <span className="mr-pill mr-pill--red">{assessmentTarget.matchPercent}% fit</span>}
                 </div>
                 <ul className="mr-target-meta">
                   {assessmentTarget.company && <li><Building2 /> {assessmentTarget.company}</li>}
@@ -1153,19 +752,19 @@ export default function MyRoadmapApp() {
                 <div className="mr-target-title">
                   <h2 id="mr-target-title">{roadmap.target_program}</h2>
                   {roadmap.match_percent != null && (
-                    <span className="mr-pill mr-pill--red" data-testid="roadmap-match">{roadmap.match_percent}% match</span>
+                    <span className="mr-pill mr-pill--red" data-testid="roadmap-match" title="Fit score from your Fit Assessment">
+                      {roadmap.match_percent}% fit
+                    </span>
                   )}
                 </div>
                 <ul className="mr-target-meta">
                   {roadmap.target_company && <li><Building2 /> {roadmap.target_company}</li>}
                   {roadmap.target_function && <li><Briefcase /> {roadmap.target_function}</li>}
-                  <li>
+                  <li data-testid="roadmap-overview">
                     <CalendarDays />
-                    <span>
-                      <b>{schedule.length}-week plan</b>
-                      {` · ${STUDY_PACE_META[paceConfig?.pace || DEFAULT_STUDY_PACE].label} pace`}
-                    </span>
+                    <span><b>{schedule.length}-week plan</b> · {overview}</span>
                   </li>
+                  <li data-testid="roadmap-pace-meta"><Gauge /> <span><b>{paceLabel}</b> pace</span></li>
                 </ul>
                 <p className="mr-target-note">
                   Application status: this program may be open — confirm dates on the company’s careers page before you apply.
@@ -1209,7 +808,7 @@ export default function MyRoadmapApp() {
               </div>
             </section>
 
-            {/* 2. Choose Your Study Pace — preview first, saved only on Apply */}
+            {/* 2. Study Pace — preview first, saved only on Apply */}
             {schedule.length > 0 && (
               <StudyPaceSelector
                 baseSchedule={baseSchedule}
@@ -1223,204 +822,22 @@ export default function MyRoadmapApp() {
               />
             )}
 
-            {/* 3. Overall Learning Progress — whole-plan completion, read-only */}
-            <OverallProgress schedule={schedule} progress={progress} status={sessionsState} />
+            {/* 3. Your Learning Snapshot — read-only, no practice CTAs */}
+            {schedule.length > 0 && (
+              <LearningSnapshot
+                schedule={schedule}
+                progress={progress}
+                status={sessionsState}
+                planState={planState}
+                goalWeek={goalWeek}
+                focus={skillFocus}
+              />
+            )}
 
-            {/* 4. Your Progress This Week — read-only, no practice CTAs */}
-            <section className="mr-card" data-testid="roadmap-progress-summary" data-plan-state={planState.kind} aria-labelledby="mr-progress-title">
-              <div className="mr-sec-head">
-                <div>
-                  <span className="mr-eyebrow">Where you stand</span>
-                  <h2 className="mr-h2" id="mr-progress-title">Your Progress This Week</h2>
-                  <p className="mr-sub">
-                    {goalWeek
-                      ? <>Week {goalWeek.week} · {shortDateLabel(goalWeek.start_date)} – {shortDateLabel(goalWeek.end_date)}{currentPhase ? <> · <strong>{currentPhase.name}</strong></> : null}</>
-                      : <>Your {schedule.length}-week plan ended on {fullDateLabel(schedule[schedule.length - 1].end_date)}.</>}
-                  </p>
-                </div>
-                {planState.kind === 'active' && <span className="mr-pill mr-pill--red">Week {planState.week} of {schedule.length}</span>}
-                {planState.kind === 'before' && (
-                  <span className="mr-pill mr-pill--soft" data-testid="roadmap-starts-on">Starts {fullDateLabel(planState.startsOn)}</span>
-                )}
-                {planState.kind === 'complete' && (
-                  <span className="mr-pill mr-pill--green" data-testid="roadmap-plan-complete"><Flag size={13} /> Plan complete</span>
-                )}
-              </div>
-
-              <div className="mr-stats">
-                <Stat
-                  testId="roadmap-summary-week"
-                  label="Current week"
-                  value={planState.kind === 'active' ? `${planState.week}/${schedule.length}` : planState.kind === 'before' ? `0/${schedule.length}` : `${schedule.length}/${schedule.length}`}
-                  sub={goalWeek && planState.kind === 'active'
-                    ? `${shortDateLabel(goalWeek.start_date)} – ${shortDateLabel(goalWeek.end_date)}`
-                    : planState.kind === 'before'
-                      ? `Starts ${fullDateLabel(planState.startsOn)}`
-                      : `Ended ${fullDateLabel(schedule[schedule.length - 1].end_date)}`}
-                />
-                <Stat
-                  testId="roadmap-summary-phase"
-                  label="Current phase"
-                  value={currentPhase?.name || '—'}
-                  sub={currentPhase ? `Phase ${currentPhase.index} of ${phases.length}` : undefined}
-                  text
-                />
-                {goalTotals ? (
-                  <>
-                    <Stat
-                      testId="roadmap-summary-weekly"
-                      label={planState.kind === 'before' ? 'Week 1 completion' : 'Weekly completion'}
-                      value={`${goalTotals.counted}/${goalTotals.target}`}
-                      sub={goalTotals.extra > 0 ? `activities · +${goalTotals.extra} extra` : 'activities completed'}
-                    />
-                    <Stat
-                      testId="roadmap-summary-remaining"
-                      label="Remaining"
-                      value={String(goalTotals.remaining)}
-                      sub={goalTotals.remaining === 0
-                        ? 'Weekly target reached'
-                        : `activit${goalTotals.remaining === 1 ? 'y' : 'ies'} ${planState.kind === 'before' ? 'in Week 1' : 'left this week'}`}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Stat testId="roadmap-summary-weekly" label="Whole plan" value={`${planTotals.counted}/${planTotals.target}`} sub="activities completed" />
-                    <Stat testId="roadmap-summary-remaining" label="Extra practice" value={String(planTotals.extra)} sub="beyond weekly targets" />
-                  </>
-                )}
-              </div>
-
-              {goalWeek && (
-                <div className="mr-grid-3" data-testid="roadmap-weekly-goals">
-                  {TRACKS.map((track) => {
-                    const target = track.targetOf(goalWeek);
-                    const goal = goalProgress(track.doneOf(progress[goalWeek.week]), target);
-                    const Icon = track.icon;
-                    return (
-                      <div key={track.key} className="mr-track" data-testid={`roadmap-goal-${track.key}`}>
-                        <div className="mr-track-head">
-                          <span className="mr-track-icon"><Icon /></span>
-                          <div>
-                            <div className="mr-track-name">{track.label}</div>
-                            <div className="mr-track-goal">Target: {target} {target === 1 ? track.unitOne : track.unit}</div>
-                          </div>
-                          <span className={`mr-track-count mr-num${goal.complete ? ' is-done' : ''}`} data-testid={`roadmap-goal-${track.key}-count`}>
-                            {goal.counted}/{target}
-                          </span>
-                        </div>
-                        <div style={{ marginTop: 12 }}><Bar done={goal.counted} target={target} /></div>
-                        <div className="mr-track-foot">
-                          {goal.complete
-                            ? <span className="is-done"><CheckCircle2 size={14} /> Target reached</span>
-                            : <span>{target - goal.counted} to go{planState.kind === 'before' ? ' in Week 1' : ' this week'}</span>}
-                          <Extra extra={goal.extra} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              <TodaysFocus state={skillFocus} />
-
-              {planState.kind === 'before' && (
-                <p className="mr-note">
-                  Your plan starts on <strong>{fullDateLabel(planState.startsOn)}</strong>. Sessions you complete from that day count toward Week 1.
-                </p>
-              )}
-              {!hasAnyPractice && planState.kind === 'active' && (
-                <p className="mr-note" data-testid="roadmap-empty-state">
-                  <strong>No activity yet.</strong> These bars fill automatically as you finish cases, drills and tests — pick a starting point in the recommendations below.
-                </p>
-              )}
-
-              <div data-testid="roadmap-start-date">
-                <div className="mr-start">
-                  <CalendarDays />
-                  <span>
-                    Week 1 {planState.kind === 'before' ? 'starts' : 'started'}{' '}
-                    <b data-testid="roadmap-week1-date">{fullDateLabel(weekOneIso)}</b>
-                    {usingCustomStart ? ' · your chosen date' : defaultStart ? ` · ${START_BASIS_LABEL[defaultStart.basis]}` : ''}
-                  </span>
-                  {!startEditorOpen && (
-                    <button
-                      type="button"
-                      className="mr-link"
-                      onClick={() => {
-                        setStartDraft(isStartDateAllowed(weekOneIso, now) ? weekOneIso : todayIso(now));
-                        setStartError(null);
-                        setStartEditorOpen(true);
-                      }}
-                      data-testid="button-change-start-date"
-                    >
-                      Change start date
-                    </button>
-                  )}
-                </div>
-                {startNotice && !startEditorOpen && <p className="mr-sub">{startNotice}</p>}
-                {startEditorOpen && (
-                  <div className="mr-start-editor" data-testid="roadmap-start-date-editor">
-                    <label htmlFor="roadmap-week1-input">When should Week 1 start?</label>
-                    <p>
-                      Pick any date from {fullDateLabel(bounds.min)} to {fullDateLabel(bounds.max)}. Your practice history stays the same; it is just grouped into weeks from the new date.
-                    </p>
-                    <div className="mr-start-row">
-                      <input
-                        id="roadmap-week1-input"
-                        type="date"
-                        min={bounds.min}
-                        max={bounds.max}
-                        value={startDraft}
-                        onChange={(event) => setStartDraft(event.target.value)}
-                        data-testid="input-start-date"
-                      />
-                      <button
-                        type="button"
-                        className="mr-btn mr-btn--primary mr-btn--sm"
-                        onClick={() => void applyStartChoice(startDraft === defaultStart?.iso ? null : startDraft)}
-                        disabled={!draftValid || savingStart}
-                        data-testid="button-save-start-date"
-                      >
-                        {savingStart && <Loader2 className="mr-spin" />}
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        className="mr-btn mr-btn--ghost mr-btn--sm"
-                        onClick={() => {
-                          setStartEditorOpen(false);
-                          setStartError(null);
-                        }}
-                        disabled={savingStart}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                    {!draftValid && startDraft && (
-                      <p className="mr-error">Choose a date between {fullDateLabel(bounds.min)} and {fullDateLabel(bounds.max)}.</p>
-                    )}
-                    {startError && <p className="mr-error" role="alert">{startError}</p>}
-                    {usingCustomStart && defaultStart && (
-                      <button
-                        type="button"
-                        className="mr-link"
-                        onClick={() => void applyStartChoice(null)}
-                        disabled={savingStart}
-                        data-testid="button-reset-start-date"
-                      >
-                        <RotateCcw size={14} />
-                        Reset to default ({fullDateLabel(defaultStart.iso)})
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* 5. Recommended for Your Target Program — the only practice CTAs */}
+            {/* 4. Recommended for you — the only practice CTAs */}
             {recommendations}
 
-            {/* 6. Preparation Timeline — planning only */}
+            {/* 5. Preparation Timeline — planning only */}
             {schedule.length > 0 && (
               <PreparationTimeline
                 schedule={schedule}
@@ -1430,16 +847,16 @@ export default function MyRoadmapApp() {
                 view={effectiveView}
                 onViewChange={setTimelineView}
                 focusWeek={focusWeekNumber}
+                footer={startDateControl}
               />
             )}
 
             <p className="mr-footnote">
-              Weekly targets follow your {STUDY_PACE_META[paceConfig?.pace || DEFAULT_STUDY_PACE].label} study pace, paced toward the program’s
+              Weekly targets follow your {paceLabel} study pace, paced toward the program’s
               {roadmap.window_kind === 'verified' ? ' verified' : ' estimated'} application window — always confirm exact dates on the
-              company’s careers page. Progress counts your completed Case Pool, Case Drill and Aptitude Test sessions automatically: a
-              session counts in the week you finish it, each case, drill or test counts once (retakes don’t add to the total), weekly
-              targets cap at 100%, and anything beyond a target shows as extra. Changing your pace re-paces this week and every later
-              week; weeks that have ended keep their targets.
+              company’s careers page. A completed Case Pool, Case Drill or Aptitude Test session counts once, in the week you finish it
+              (retakes don’t add to the total); weekly targets cap at 100% and anything beyond shows as extra. Domain Knowledge has no
+              weekly targets yet. Changing your pace re-paces this week and later weeks; weeks that have ended keep their targets.
             </p>
           </>
         ) : null}

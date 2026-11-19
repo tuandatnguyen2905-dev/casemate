@@ -1,14 +1,18 @@
-// My Roadmap — "Recommended for Your Target Program": the only section of the
-// page with learn/practice CTAs.
+// My Roadmap — section 4, "Recommended for you": the page's single action hub and
+// the only section with learn/practice CTAs.
 //
-// Three equal columns (Domain Knowledge, Aptitude Test, Case Drill). Each
-// column leads with one primary recommendation (one CTA); "Explore All
-// Recommendations" reveals further topics inside the same columns. Topics come
-// from lib/candidateReviews.ts (founder-entered candidate reviews, falling back
-// to program-based general preparation), plus the program's Domain Knowledge
-// study areas and industry case types. A card only shows Source Evidence when a
-// matching candidate review exists; otherwise it is labelled a general
-// preparation suggestion. Progress bars reuse each practice app's own data.
+// Exactly three primary cards (Domain Knowledge, Aptitude Test, Case Drill), one
+// CTA each, routed to the module with the topic prefiltered. "Explore more topics"
+// expands the remaining topics in place. Topics come from lib/candidateReviews.ts
+// (founder-entered candidate reviews, falling back to program-based general
+// preparation), plus the program's Domain Knowledge study areas and industry case
+// types. A card only cites candidate reviews when a matching review exists;
+// otherwise it is labelled a general preparation suggestion.
+//
+// Two orderings of the same topics:
+//   Smart Picks  — the Today's Focus weak skill first (Aptitude Test, Case Drill),
+//                  then the first program-ranked topic the learner has not finished
+//   Program Fit  — ranked only by the target program and its candidate reviews
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -66,14 +70,22 @@ import {
 } from './recommendationData';
 import type { CaseSkillProgress, DomainCatalog, TopicProgress } from './recommendationData';
 import CandidateReviewAdmin from './CandidateReviewAdmin';
+import InfoPopover from './InfoPopover';
 import { FocusAnnotationLine } from './TodaysFocus';
 import { focusAnnotationFor } from '../../lib/skillFocus';
 import type { SkillFocus } from '../../lib/skillFocus';
 
 const PROGRESS_REFRESH_MIN_MS = 15000;
 const EXCERPT_PREVIEW_CHARS = 220;
-/** Topics revealed per column by "Explore All Recommendations". */
+/** Topics per group revealed by "Explore more topics". */
 const EXPLORE_PER_GROUP = 4;
+
+type RecMode = 'smart' | 'program';
+
+const REC_MODES: Array<{ id: RecMode; label: string }> = [
+  { id: 'smart', label: 'Smart Picks' },
+  { id: 'program', label: 'Program Fit' },
+];
 
 const GROUP_ICON: Record<RecommendationGroup, typeof BookOpen> = {
   domain: BookOpen,
@@ -91,6 +103,12 @@ const GROUP_CTA: Record<RecommendationGroup, string> = {
   domain: 'Start learning',
   aptitude: 'Start practice',
   case_drill: 'Start practice',
+};
+
+const GROUP_CTA_SHORT: Record<RecommendationGroup, string> = {
+  domain: 'Learn',
+  aptitude: 'Practise',
+  case_drill: 'Practise',
 };
 
 const GROUP_DESTINATION: Record<RecommendationGroup, string> = {
@@ -118,26 +136,26 @@ const MATCH_REASON_LABEL: Record<EvidenceItem['reason'], string> = {
 };
 
 const APTITUDE_DESCRIPTION: Record<string, string> = {
-  numerical: 'Read tables and charts and work out percentages, ratios and growth under time pressure.',
-  verbal: 'Read business passages and judge whether each statement is true, false or cannot say.',
-  logical: 'Find the rule behind a sequence and apply it to the next item.',
-  inductive: 'Spot the pattern across a series of figures and choose what comes next.',
-  deductive: 'Accept only the conclusions that follow strictly from the facts given.',
-  diagrammatic: 'Follow process diagrams and work out what each operator does to its inputs.',
-  error_checking: 'Compare records quickly and accurately to catch mismatches.',
-  spatial: 'Rotate and fold shapes mentally to match different views.',
-  situational: 'Pick the most and least effective responses to realistic workplace situations.',
-  critical: 'Evaluate arguments, assumptions and inferences in Watson-Glaser style questions.',
-  mechanical: 'Apply basic physics such as levers, pulleys and gears to practical problems.',
-  in_tray: 'Prioritise an inbox of emails and tasks the way a manager would.',
+  numerical: 'Percentages, ratios and growth from tables and charts, under time pressure.',
+  verbal: 'Judge statements about business passages as true, false or cannot say.',
+  logical: 'Find the rule behind a sequence and apply it.',
+  inductive: 'Spot the pattern across a series of figures.',
+  deductive: 'Accept only conclusions that follow strictly from the facts.',
+  diagrammatic: 'Work out what each operator in a process diagram does.',
+  error_checking: 'Compare records quickly and catch mismatches.',
+  spatial: 'Rotate and fold shapes mentally to match views.',
+  situational: 'Pick the most and least effective responses at work.',
+  critical: 'Evaluate arguments, assumptions and inferences.',
+  mechanical: 'Apply levers, pulleys and gears to practical problems.',
+  in_tray: 'Prioritise an inbox the way a manager would.',
 };
 
 const CASE_DESCRIPTION: Record<string, string> = {
-  structures: 'Build MECE issue trees for market-entry, profitability and operations questions.',
-  calculations: 'Work through case maths such as margins, break-even and growth, step by step.',
-  'market-sizing': 'Estimate a market from first principles with a clear, checkable decomposition.',
-  charts: 'Read exhibits quickly and pull out the insight that answers the question.',
-  creativity: 'Generate structured, prioritised ideas for growth and marketing questions.',
+  structures: 'Build MECE issue trees for entry, profitability and operations cases.',
+  calculations: 'Margins, break-even and growth maths, step by step.',
+  'market-sizing': 'Estimate a market with a clear, checkable decomposition.',
+  charts: 'Read exhibits fast and pull out the insight that answers the question.',
+  creativity: 'Generate structured, prioritised ideas for growth questions.',
 };
 
 // FMCG study areas are named by learning-deck slug, which the Domain Knowledge
@@ -183,7 +201,7 @@ interface Props {
   isAdmin: boolean;
   /** Gap-based recommendations saved with the roadmap from the Fit Assessment. */
   fitRecommendations?: PreparationRecommendation[];
-  /** Weakest measured skill per feature; annotates the matching existing card only. */
+  /** Weakest measured skill per feature (Today's Focus). */
   skillFocus?: SkillFocus | null;
 }
 
@@ -195,6 +213,18 @@ function readDeckProgress(userKey: string): DeckProgressMap {
     return cached?.progress && typeof cached.progress === 'object' ? cached.progress : {};
   } catch {
     return {};
+  }
+}
+
+function recModeKey(userKey: string): string {
+  return `casemate-roadmap-rec-mode:v1:${userKey}`;
+}
+
+function readRecMode(userKey: string): RecMode {
+  try {
+    return localStorage.getItem(recModeKey(userKey)) === 'program' ? 'program' : 'smart';
+  } catch {
+    return 'smart';
   }
 }
 
@@ -219,8 +249,12 @@ function targetLabel(target: RecommendationTarget | null): string {
 function topicDescription(topic: RecommendationTopic, lessonCount: number | null): string {
   if (topic.group === 'aptitude') return APTITUDE_DESCRIPTION[topic.contentId] || 'Practise this online test format.';
   if (topic.group === 'case_drill') return CASE_DESCRIPTION[topic.contentId] || 'Practise this case skill.';
-  const lessons = lessonCount && lessonCount > 0 ? `${lessonCount} Domain Knowledge lessons` : 'Domain Knowledge lessons';
+  const lessons = lessonCount && lessonCount > 0 ? `${lessonCount} lessons` : 'Lessons';
   return `${lessons} on how ${topic.title} businesses make money, compete and operate.`;
+}
+
+function isUnfinished(progress: TopicProgress | null): boolean {
+  return !progress || progress.total <= 0 || progress.done < progress.total;
 }
 
 function ProgressBlock({ progress, loading, unit }: { progress: TopicProgress | null; loading: boolean; unit: string }) {
@@ -230,7 +264,7 @@ function ProgressBlock({ progress, loading, unit }: { progress: TopicProgress | 
     return (
       <div data-testid="recommendation-progress">
         <div className="mr-rec-progress-row">
-          <span>Learning progress</span>
+          <span>Your progress</span>
           <span className="mr-num">{Math.min(progress.done, progress.total)}/{progress.total} {unit}</span>
         </div>
         <div className={`mr-bar mr-bar--thin${complete ? ' is-done' : ''}`} role="progressbar" aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={Math.min(progress.done, progress.total)}>
@@ -279,6 +313,7 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
   const [domainState, setDomainState] = useState<LoadState>('loading');
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(() => readCompletedLessons());
   const [deckProgress, setDeckProgress] = useState<DeckProgressMap>(() => readDeckProgress(userKey));
+  const [mode, setMode] = useState<RecMode>(() => readRecMode(userKey));
   const [exploreOpen, setExploreOpen] = useState(false);
   const [detail, setDetail] = useState<RecItem | null>(null);
   const [adminOpen, setAdminOpen] = useState(false);
@@ -286,6 +321,19 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
   const reviewRequestRef = useRef(0);
   const detailTriggerRef = useRef<HTMLElement | null>(null);
   const detailCloseRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setMode(readRecMode(userKey));
+  }, [userKey]);
+
+  const chooseMode = (next: RecMode) => {
+    setMode(next);
+    try {
+      localStorage.setItem(recModeKey(userKey), next);
+    } catch {
+      // The choice still applies for this visit.
+    }
+  };
 
   const refreshReviews = useCallback(async () => {
     const requestId = ++reviewRequestRef.current;
@@ -407,6 +455,7 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
     [domainCatalog, completedLessons],
   );
 
+  // Program Fit order: the program-ranked topics, then the remaining formats and skills.
   const columns = useMemo(() => {
     const limit = EXPLORE_PER_GROUP + 1;
     const fromTopic = (topic: RecommendationTopic, why: string, kind: MatchKind = 'fallback', evidence: EvidenceItem[] = []): RecItem => ({
@@ -486,8 +535,7 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
       out[group] = out[group].slice(0, limit);
     });
 
-    // The topic behind a Today's Focus weakness stays reachable in "Explore All" even when it
-    // is not one of the ranked picks (never as a top pick, never duplicated).
+    // The topic behind a Today's Focus weakness is always reachable (never duplicated).
     (['aptitude', 'case_drill'] as RecommendationGroup[]).forEach((group) => {
       const tile = group === 'aptitude' ? skillFocus?.aptitude : skillFocus?.caseDrill;
       if (!tile || tile.status !== 'ready') return;
@@ -501,7 +549,7 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
     return out;
   }, [result, target, domainCatalog, lessonCount, skillFocus]);
 
-  const progressFor = (item: RecItem): { progress: TopicProgress | null; loading: boolean } => {
+  const progressFor = useCallback((item: RecItem): { progress: TopicProgress | null; loading: boolean } => {
     if (item.area) return { progress: knowledgeAreaProgress(item.area, deckProgress), loading: false };
     const id = item.topic?.contentId || '';
     if (item.group === 'domain') {
@@ -509,11 +557,24 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
     }
     if (item.group === 'aptitude') return { progress: aptitude?.[id] ?? null, loading: practiceState === 'loading' };
     return { progress: caseDrill?.[id] ?? null, loading: practiceState === 'loading' };
-  };
+  }, [deckProgress, domainCatalog, completedLessons, domainState, aptitude, caseDrill, practiceState]);
 
-  const openContent = (item: RecItem, placement: 'primary' | 'details') => {
+  const ordered = useMemo(() => {
+    if (mode === 'program') return columns;
+    const out = {} as Record<RecommendationGroup, RecItem[]>;
+    GROUP_ORDER.forEach((group) => {
+      const items = columns[group];
+      const tile = group === 'aptitude' ? skillFocus?.aptitude : group === 'case_drill' ? skillFocus?.caseDrill : null;
+      let index = tile && tile.status === 'ready' ? items.findIndex((item) => item.topic?.contentId === tile.skill.skillId) : -1;
+      if (index < 0) index = items.findIndex((item) => isUnfinished(progressFor(item).progress));
+      out[group] = index > 0 ? [items[index], ...items.slice(0, index), ...items.slice(index + 1)] : items;
+    });
+    return out;
+  }, [mode, columns, skillFocus, progressFor]);
+
+  const openContent = (item: RecItem, placement: 'primary' | 'explore' | 'details') => {
     trackStepView('my-roadmap', 'recommendation_open', {
-      properties: { group: item.group, topic: item.key, kind: item.kind, placement },
+      properties: { group: item.group, topic: item.key, kind: item.kind, placement, mode },
     });
     setDetail(null);
     if (item.area) {
@@ -545,7 +606,12 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
     return () => window.removeEventListener('keydown', onKey);
   }, [detail, closeDetail]);
 
-  const extraCount = GROUP_ORDER.reduce((sum, group) => sum + Math.max(0, columns[group].length - 1), 0);
+  const fitGapsFor = (group: RecommendationGroup) => fitRecommendations
+    .filter((rec) => rec && rec.casemateFunction === FIT_FUNCTION[group] && (rec.gap || rec.reason))
+    .sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
+    .slice(0, 2);
+
+  const extraCount = GROUP_ORDER.reduce((sum, group) => sum + Math.max(0, ordered[group].length - 1), 0);
   const allGeneral = GROUP_ORDER.every((group) => columns[group].every((item) => item.kind === 'fallback'));
   const matched = result.matchedReviewCount;
   const label = targetLabel(target);
@@ -557,37 +623,47 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
         ? `Based on ${matched.exact} candidate review${matched.exact === 1 ? '' : 's'} for this program${matched.related > 0 ? ` and ${matched.related} related` : ''}, plus general preparation.`
         : matched.related > 0
           ? `No reviews for this exact program yet — using ${matched.related} related review${matched.related === 1 ? '' : 's'} plus general preparation.`
-          : 'No candidate reviews for this program yet, so these are general preparation suggestions based on its industry and test formats.';
+          : 'No candidate reviews for this program yet, so these are general preparation suggestions.';
+  const modeHint = mode === 'smart'
+    ? 'Smart Picks: your weakest measured skill first, then unfinished topics for your target.'
+    : `Program Fit: ranked only by what ${target?.program || 'MT programs'} tests${matched.exact + matched.related > 0 ? ' and its candidate reviews' : ''}.`;
 
   const detailProgress = detail ? progressFor(detail) : null;
-  const detailIsPrimary = detail ? columns[detail.group][0]?.key === detail.key : false;
-  const detailFitGaps = detail && detailIsPrimary
-    ? fitRecommendations
-      .filter((rec) => rec && rec.casemateFunction === FIT_FUNCTION[detail.group] && (rec.gap || rec.reason))
-      .sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
-      .slice(0, 2)
-    : [];
+  const detailIsPrimary = detail ? ordered[detail.group][0]?.key === detail.key : false;
+  const detailFitGaps = detail && detailIsPrimary ? fitGapsFor(detail.group) : [];
 
   return (
     <>
-    <section className="mr-card" data-testid="roadmap-recommendations" aria-labelledby="mr-rec-title">
+    <section className="mr-card mr-rec" data-testid="roadmap-recommendations" data-mode={mode} aria-labelledby="mr-rec-title">
       <div className="mr-sec-head">
         <div>
-          <span className="mr-eyebrow">What to do next</span>
-          <h2 className="mr-h2" id="mr-rec-title">Recommended for Your Target Program</h2>
-          {target ? (
-            <p className="mr-sub">What to learn and practise next for <strong>{label}</strong>.</p>
-          ) : (
-            <p className="mr-sub">General preparation for MT and consulting programs.</p>
-          )}
-          <p className="mr-sub" data-testid="recommendation-summary">{summary}</p>
+          <span className="mr-eyebrow"><Sparkles size={12} /> What to do next</span>
+          <h2 className="mr-h2" id="mr-rec-title">Recommended for you</h2>
+          <p className="mr-sub">
+            {target ? <>Your next steps for <strong>{label}</strong>.</> : 'General preparation for MT and consulting programs.'}{' '}
+            <span data-testid="recommendation-summary">{summary}</span>
+          </p>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+        <div className="mr-rec-tools">
           {allGeneral && (
             <span className="mr-badge mr-badge--general" data-testid="recommendation-general-badge" title="Gợi ý chuẩn bị chung">
               <Info size={12} /> General preparation suggestions
             </span>
           )}
+          <div className="mr-seg mr-seg--sm" role="group" aria-label="Recommendation order" data-testid="recommendation-mode">
+            {REC_MODES.map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                className={`mr-seg-btn${mode === option.id ? ' is-selected' : ''}`}
+                aria-pressed={mode === option.id}
+                onClick={() => chooseMode(option.id)}
+                data-testid={`recommendation-mode-${option.id}`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           {isAdmin && (
             <button
               type="button"
@@ -603,6 +679,7 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
           )}
         </div>
       </div>
+      <p className="mr-rec-mode-hint" data-testid="recommendation-mode-hint">{modeHint}</p>
 
       {isAdmin && adminOpen && (
         <div style={{ marginBottom: 16 }}>
@@ -620,114 +697,77 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
       <div className="mr-rec-grid">
         {GROUP_ORDER.map((group) => {
           const Icon = GROUP_ICON[group];
-          const items = columns[group];
-          const primary = items[0];
-          const extras = items.slice(1);
-          return (
-            <div key={group} className="mr-rec-col" data-testid={`recommendation-group-${group}`}>
-              <div className="mr-rec-col-head">
-                <Icon />
-                <span>{GROUP_LABEL[group]}</span>
-                {exploreOpen && extras.length > 0 && <span className="mr-rec-col-count">{items.length} topics</span>}
-              </div>
-              {primary ? (() => {
-                const { progress, loading } = progressFor(primary);
-                const badge = KIND_BADGE[primary.kind];
-                return (
-                  <article className="mr-rec-card" data-testid={`recommendation-card-${primary.key}`} data-kind={primary.kind}>
-                    <div className="mr-rec-card-top">
-                      <span className="mr-rec-kicker">Top pick</span>
-                      <span className={badge.className} data-testid="recommendation-label">{badge.label}</span>
-                    </div>
-                    <button
-                      type="button"
-                      className="mr-rec-title"
-                      onClick={(event) => showDetail(primary, event.currentTarget)}
-                      aria-haspopup="dialog"
-                      data-testid="recommendation-title"
-                    >
-                      {primary.title}
-                      {primary.subtitle && <small>{primary.subtitle}</small>}
-                    </button>
-                    <p className="mr-rec-desc">{primary.description}</p>
-                    <p className="mr-rec-why">
-                      <b>Why recommended</b>
-                      {primary.why}
-                      {primary.caseTypes.length > 0 && <> Covers: {primary.caseTypes.join(', ')}.</>}
-                    </p>
-                    <ProgressBlock progress={progress} loading={loading} unit={GROUP_UNIT[group]} />
-                    <FocusAnnotationLine annotation={focusAnnotationFor(skillFocus, primary.group, primary.topic?.contentId || '')} />
-                    <div className="mr-rec-actions">
-                      <button
-                        type="button"
-                        className="mr-btn mr-btn--primary mr-btn--block"
-                        onClick={() => openContent(primary, 'primary')}
-                        data-testid="recommendation-cta"
-                      >
-                        {GROUP_CTA[group]} <ChevronRight />
-                      </button>
-                      <button
-                        type="button"
-                        className="mr-link"
-                        onClick={(event) => showDetail(primary, event.currentTarget)}
-                        aria-haspopup="dialog"
-                        data-testid="recommendation-details"
-                      >
-                        View details
-                      </button>
-                    </div>
-                  </article>
-                );
-              })() : (
+          const primary = ordered[group][0];
+          if (!primary) {
+            return (
+              <div key={group} className="mr-rec-card is-empty" data-testid={`recommendation-group-${group}`}>
+                <span className="mr-rec-kicker"><Icon /> {GROUP_LABEL[group]}</span>
                 <p className="mr-rec-empty">No recommendation available right now.</p>
-              )}
-              {exploreOpen && extras.length > 0 && (
-                <div className="mr-rec-more" id={`mr-rec-more-${group}`} data-testid={`recommendation-more-${group}`}>
-                  {extras.map((item) => {
-                    const { progress } = progressFor(item);
-                    const badge = KIND_BADGE[item.kind];
-                    const pct = progress && progress.total > 0 ? Math.min(100, Math.round((progress.done / progress.total) * 100)) : null;
-                    return (
-                      <button
-                        key={item.key}
-                        type="button"
-                        className="mr-rec-mini"
-                        onClick={(event) => showDetail(item, event.currentTarget)}
-                        aria-haspopup="dialog"
-                        data-testid={`recommendation-card-${item.key}`}
-                        data-kind={item.kind}
-                      >
-                        <span className="mr-rec-mini-top">
-                          <span className="mr-rec-mini-title">
-                            {item.title}
-                            {item.subtitle && <small>{item.subtitle}</small>}
-                          </span>
-                          {item.kind !== 'fallback' && <span className={badge.className}>{badge.label}</span>}
-                        </span>
-                        <span className="mr-rec-mini-why">
-                          {item.why}
-                          {item.caseTypes.length > 0 ? ` Covers: ${item.caseTypes.join(', ')}.` : ''}
-                        </span>
-                        <FocusAnnotationLine annotation={focusAnnotationFor(skillFocus, item.group, item.topic?.contentId || '')} />
-                        <span className="mr-rec-mini-foot">
-                          {pct !== null && progress ? (
-                            <>
-                              <span className={`mr-bar mr-bar--thin${pct >= 100 ? ' is-done' : ''}`} aria-hidden="true">
-                                <span style={{ width: `${Math.max(pct > 0 ? 3 : 0, pct)}%` }} />
-                              </span>
-                              <span className="mr-num">{Math.min(progress.done, progress.total)}/{progress.total}</span>
-                            </>
-                          ) : (
-                            <span style={{ flex: 1 }}>View details</span>
-                          )}
-                          <ChevronRight />
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+              </div>
+            );
+          }
+          const { progress, loading } = progressFor(primary);
+          const badge = KIND_BADGE[primary.kind];
+          const annotation = focusAnnotationFor(skillFocus, primary.group, primary.topic?.contentId || '');
+          const gaps = fitGapsFor(group);
+          return (
+            <article
+              key={group}
+              className={`mr-rec-card${annotation ? ' is-focus' : ''}`}
+              data-testid={`recommendation-group-${group}`}
+              data-topic={primary.key}
+              data-kind={primary.kind}
+            >
+              <div className="mr-rec-card-top">
+                <span className="mr-rec-kicker"><Icon /> {GROUP_LABEL[group]}</span>
+                <InfoPopover label={`Why ${primary.title} is recommended`} testId={`recommendation-why-${group}`}>
+                  <b>Why recommended</b>
+                  <span>
+                    {primary.why}
+                    {primary.caseTypes.length > 0 ? ` Covers: ${primary.caseTypes.join(', ')}.` : ''}
+                  </span>
+                  {annotation && (
+                    <span>
+                      Today’s Focus: this is your lowest measured {group === 'aptitude' ? 'Aptitude Test category' : 'Case Drill skill'} ({annotation.score}%).
+                    </span>
+                  )}
+                  {gaps.length > 0 && (
+                    <>
+                      <b>From your Fit Assessment</b>
+                      {gaps.map((gap) => <span key={gap.id}>{gap.gap || gap.reason}</span>)}
+                    </>
+                  )}
+                  <b>Evidence</b>
+                  <span>
+                    {primary.kind === 'fallback'
+                      ? 'No candidate reviews mention this for your target yet, so it is a general preparation suggestion.'
+                      : `${primary.evidence.length} candidate review${primary.evidence.length === 1 ? '' : 's'} (${badge.label.toLowerCase()}). Open the topic name for the excerpts.`}
+                  </span>
+                </InfoPopover>
+              </div>
+              <button
+                type="button"
+                className="mr-rec-title"
+                onClick={(event) => showDetail(primary, event.currentTarget)}
+                aria-haspopup="dialog"
+                data-testid="recommendation-title"
+              >
+                {primary.title}
+              </button>
+              <p className="mr-rec-desc">{primary.description}</p>
+              <span className={badge.className} data-testid="recommendation-label">{badge.label}</span>
+              <FocusAnnotationLine annotation={annotation} />
+              <ProgressBlock progress={progress} loading={loading} unit={GROUP_UNIT[group]} />
+              <button
+                type="button"
+                className="mr-btn mr-btn--primary mr-btn--block mr-rec-cta"
+                onClick={() => openContent(primary, 'primary')}
+                data-testid="recommendation-cta"
+                data-cta-target={GROUP_DESTINATION[group]}
+              >
+                {GROUP_CTA[group]} <ChevronRight />
+              </button>
+            </article>
           );
         })}
       </div>
@@ -736,15 +776,73 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
         <div className="mr-explore">
           <button
             type="button"
-            className="mr-btn mr-btn--ghost"
+            className="mr-explore-btn"
             aria-expanded={exploreOpen}
-            aria-controls={GROUP_ORDER.map((group) => `mr-rec-more-${group}`).join(' ')}
+            aria-controls="mr-rec-more"
             onClick={() => setExploreOpen((value) => !value)}
             data-testid="button-explore-recommendations"
           >
-            {exploreOpen ? 'Show fewer recommendations' : `Explore All Recommendations (${extraCount} more)`}
+            {exploreOpen ? 'Hide extra topics' : `Explore more topics (${extraCount})`}
             <ChevronDown />
           </button>
+        </div>
+      )}
+      {exploreOpen && extraCount > 0 && (
+        <div className="mr-rec-more" id="mr-rec-more" data-testid="recommendation-more">
+          {GROUP_ORDER.map((group) => {
+            const Icon = GROUP_ICON[group];
+            const extras = ordered[group].slice(1);
+            if (extras.length === 0) return null;
+            return (
+              <div key={group} className="mr-rec-more-col" data-testid={`recommendation-more-${group}`}>
+                <p className="mr-rec-more-head"><Icon /> {GROUP_LABEL[group]}</p>
+                <ul>
+                  {extras.map((item) => {
+                    const { progress } = progressFor(item);
+                    const pct = progress && progress.total > 0 ? Math.min(100, Math.round((progress.done / progress.total) * 100)) : null;
+                    return (
+                      <li key={item.key} className="mr-rec-row" data-testid={`recommendation-card-${item.key}`} data-kind={item.kind}>
+                        <button
+                          type="button"
+                          className="mr-rec-row-main"
+                          onClick={(event) => showDetail(item, event.currentTarget)}
+                          aria-haspopup="dialog"
+                        >
+                          <span className="mr-rec-row-title">
+                            {item.title}
+                            {item.kind !== 'fallback' && <span className={KIND_BADGE[item.kind].className}>{KIND_BADGE[item.kind].label}</span>}
+                          </span>
+                          <span className="mr-rec-row-why">
+                            {item.why}
+                            {item.caseTypes.length > 0 ? ` Covers: ${item.caseTypes.join(', ')}.` : ''}
+                          </span>
+                          {pct !== null && progress && (
+                            <span className="mr-rec-row-prog">
+                              <span className={`mr-bar mr-bar--thin${pct >= 100 ? ' is-done' : ''}`} aria-hidden="true">
+                                <span style={{ width: `${Math.max(pct > 0 ? 3 : 0, pct)}%` }} />
+                              </span>
+                              <span className="mr-num">{Math.min(progress.done, progress.total)}/{progress.total}</span>
+                            </span>
+                          )}
+                        </button>
+                        <FocusAnnotationLine annotation={focusAnnotationFor(skillFocus, item.group, item.topic?.contentId || '')} />
+                        <button
+                          type="button"
+                          className="mr-btn mr-btn--ghost mr-btn--sm mr-rec-row-cta"
+                          onClick={() => openContent(item, 'explore')}
+                          aria-label={`${GROUP_CTA[group]}: ${item.title}`}
+                          data-testid="recommendation-explore-cta"
+                          data-cta-target={GROUP_DESTINATION[group]}
+                        >
+                          {GROUP_CTA_SHORT[group]} <ChevronRight />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
         </div>
       )}
     </section>
