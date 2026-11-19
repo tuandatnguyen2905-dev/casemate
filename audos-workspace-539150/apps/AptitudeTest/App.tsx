@@ -2273,6 +2273,7 @@ function AptitudeTestInner() {
           group: level || source,
           source,
           tag: level && level !== DIFFICULTY_LABEL.assessmentday ? level : undefined,
+          difficulty: typeof (test as { difficulty?: unknown }).difficulty === 'string' ? (test as { difficulty: string }).difficulty : null,
           detail: [
             `${test.questions.length} questions`,
             test.timeLimitSeconds > 0 ? `${Math.round(test.timeLimitSeconds / 60)} min` : 'Untimed',

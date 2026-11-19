@@ -22,6 +22,8 @@ export interface LibraryEntry {
   source: string;
   /** Optional small badge, such as the diagrammatic difficulty. */
   tag?: string;
+  /** Difficulty as stored on the test, in whatever casing it was authored; absent when the test carries none. */
+  difficulty?: string | null;
   detail: string[];
   best: string | null;
   payload: unknown;
@@ -39,6 +41,23 @@ interface Props {
 
 const PAGE_SIZE = 24;
 const PILL = 'inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold';
+
+type DifficultyLevel = 'easy' | 'medium' | 'hard';
+type DifficultyFilter = 'all' | DifficultyLevel;
+
+const DIFFICULTY_FILTERS: Array<{ id: DifficultyFilter; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'easy', label: 'Easy' },
+  { id: 'medium', label: 'Medium' },
+  { id: 'hard', label: 'Hard' },
+];
+
+/** Casing and whitespace are normalised for matching only; the stored value is never rewritten. */
+function normalizeDifficulty(value: unknown): DifficultyLevel | null {
+  if (typeof value !== 'string') return null;
+  const key = value.trim().toLowerCase();
+  return key === 'easy' || key === 'medium' || key === 'hard' ? key : null;
+}
 
 const STATUS_LABEL: Record<ProgressStatus, string> = {
   not_started: 'Not Started',
@@ -127,6 +146,7 @@ function ProgressDashboard({ progress, loading }: { progress: AptitudeProgress; 
 export default function AptitudeLibrary({ families, entries, family, onFamilyChange, onOpen, progress, progressLoading = false }: Props) {
   const [query, setQuery] = useState('');
   const [group, setGroup] = useState('all');
+  const [difficulty, setDifficulty] = useState<DifficultyFilter>('all');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const familyName = useMemo(() => new Map(families.map((item) => [item.id, item.name])), [families]);
@@ -152,10 +172,11 @@ export default function AptitudeLibrary({ families, entries, family, onFamilyCha
     const needle = query.trim().toLowerCase();
     return inFamily.filter((entry) => {
       if (activeGroup !== 'all' && (family === 'all' ? entry.source : entry.group) !== activeGroup) return false;
+      if (difficulty !== 'all' && normalizeDifficulty(entry.difficulty) !== difficulty) return false;
       if (!needle) return true;
       return `${entry.title} ${familyName.get(entry.family) || ''} ${entry.tag || ''}`.toLowerCase().includes(needle);
     });
-  }, [inFamily, activeGroup, query, family, familyName]);
+  }, [inFamily, activeGroup, difficulty, query, family, familyName]);
 
   const selectFamily = (id: string) => {
     setGroup('all');
@@ -267,7 +288,27 @@ export default function AptitudeLibrary({ families, entries, family, onFamilyCha
               ))}
             </div>
           ) : null}
-          <p className="mt-3 text-xs font-medium text-[var(--space-text-muted)]">Tests matching your filters: {matches.length}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-label="Difficulty filter" data-testid="difficulty-filter">
+            {DIFFICULTY_FILTERS.map(({ id, label }) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={difficulty === id}
+                onClick={() => {
+                  setDifficulty(id);
+                  setVisibleCount(PAGE_SIZE);
+                }}
+                className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${difficulty === id ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]' : 'border border-[var(--space-border-default)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]'}`}
+                data-testid={`filter-difficulty-${id}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="mt-3 text-xs font-medium text-[var(--space-text-muted)]">
+            Tests matching your filters: {matches.length}
+            {difficulty !== 'all' ? ' · Tests without a difficulty rating only appear under All.' : ''}
+          </p>
         </section>
 
         {matches.length === 0 ? (
@@ -278,6 +319,9 @@ export default function AptitudeLibrary({ families, entries, family, onFamilyCha
               onClick={() => {
                 setQuery('');
                 setGroup('all');
+                setDifficulty('all');
+                setVisibleCount(PAGE_SIZE);
+                if (family !== 'all') onFamilyChange('all');
               }}
               className={`mt-3 inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-bold ${tw.button.primary}`}
             >
