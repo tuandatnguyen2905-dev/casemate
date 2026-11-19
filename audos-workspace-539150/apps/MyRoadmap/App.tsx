@@ -1,19 +1,22 @@
 // Casemate — "My Roadmap": the persistent personalized prep plan.
 //
-// One page, five sections in a fixed order (founder-approved prototype):
+// One page, six sections in a fixed order (founder-approved prototype):
 //   1. Your Target Program — program, company, position, match %, Fit
 //      Assessment link and roadmap regeneration.
-//   2. Overall Learning Progress (./OverallProgress.tsx) — completion across the
+//   2. Choose Your Study Pace (./StudyPaceSelector.tsx) — Take It Slow /
+//      Balanced / Hardcore. Choosing previews only; "Apply Study Pace" saves.
+//   3. Overall Learning Progress (./OverallProgress.tsx) — completion across the
 //      whole saved plan: donut + three category bars. Read-only, no buttons.
-//   3. Your Progress This Week — current week, phase, weekly completion,
+//   4. Your Progress This Week — current week, phase, weekly completion,
 //      remaining activities and one compact card per tracked practice app.
 //      Read-only: no practice buttons.
-//   4. Recommended for Your Target Program (./RecommendedForTarget.tsx) — the
+//   5. Recommended for Your Target Program (./RecommendedForTarget.tsx) — the
 //      only place with learn/practice CTAs.
-//   5. Preparation Timeline — the saved 24-week plan in four phases with This
+//   6. Preparation Timeline — the saved 24-week plan in four phases with This
 //      Week / Monthly / Full Plan views. Planning only: no practice buttons.
-// Targets and phases come from the saved plan (lib/prepRoadmap.ts,
-// prep_roadmaps table); progress is counted live from completed Case Pool,
+// Weeks and phases come from the saved plan (lib/prepRoadmap.ts, prep_roadmaps
+// table) and every weekly target from its saved study pace (lib/studyPace.ts),
+// so all sections read one schedule; progress is counted live from completed Case Pool,
 // Case Drill and Aptitude Test sessions by lib/roadmapProgress.ts and
 // re-bucketed whenever the Week 1 start date changes.
 
@@ -71,12 +74,25 @@ import {
 } from '../../lib/roadmapProgress';
 import type { PlanStatus, PracticeSession, RoadmapPhase, WeekStartBasis, WeekState } from '../../lib/roadmapProgress';
 import { READINESS_UPDATED_EVENT } from '../../lib/readinessScore';
+import {
+  DEFAULT_STUDY_PACE,
+  STUDY_PACE_META,
+  applyStudyPace,
+  readCachedStudyPace,
+  resolveStudyPace,
+  saveStudyPace,
+  withPaceChange,
+  writeCachedStudyPace,
+} from '../../lib/studyPace';
+import type { CachedStudyPace, StudyPace } from '../../lib/studyPace';
 import { trackAppSwitch, trackStepError } from '../../lib/engagementTracking';
 import { isFounderEmail } from '../../lib/founderAccess';
 import OverallProgress from './OverallProgress';
 import type { OverallProgressStatus } from './OverallProgress';
 import RecommendedForTarget from './RecommendedForTarget';
 import { ROADMAP_CSS } from './roadmapStyles';
+import StudyPaceSelector from './StudyPaceSelector';
+import { PACE_CSS } from './paceStyles';
 
 interface TrackMeta {
   key: 'case_pool' | 'case_drill' | 'aptitude';
@@ -688,6 +704,10 @@ export default function MyRoadmapApp() {
   const [startDraft, setStartDraft] = useState('');
   const [savingStart, setSavingStart] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
+  const [localPace, setLocalPace] = useState<CachedStudyPace | null>(null);
+  const [savingPace, setSavingPace] = useState(false);
+  const [paceError, setPaceError] = useState<string | null>(null);
+  const [paceNotice, setPaceNotice] = useState<string | null>(null);
 
   // Roadmaps are stored under 'email:<sign-in email>'. Without that email the
   // identity falls back to the device key and a returning account looks empty.
@@ -827,6 +847,23 @@ export default function MyRoadmapApp() {
     setStartNotice(cached && !cached.synced && !roadmap.week1_start_date && cached.value ? 'Saved on this device only.' : null);
   }, [roadmap, userId]);
 
+  // Same rule for the study pace: the saved row wins over an unsynced local pace.
+  useEffect(() => {
+    if (!roadmap) {
+      setLocalPace(null);
+      return;
+    }
+    if (roadmap.study_pace_json) {
+      writeCachedStudyPace(userId, roadmap.id, { config: roadmap.study_pace_json, synced: true });
+      setLocalPace(null);
+    } else {
+      const cached = readCachedStudyPace(userId, roadmap.id);
+      setLocalPace(cached && !cached.synced ? cached : null);
+    }
+  }, [roadmap, userId]);
+
+  const paceConfig = useMemo(() => resolveStudyPace(roadmap?.study_pace_json || null, localPace), [roadmap, localPace]);
+
   useEffect(() => {
     if (!roadmap || roadmap.created_at || !userEmail) return;
     let cancelled = false;
@@ -856,12 +893,15 @@ export default function MyRoadmapApp() {
           preparationRecommendations: existing?.preparation_recommendations,
           roadmapTaskStatus: existing?.roadmap_task_status,
           matchPercent: target.matchPercent,
+          studyPace: paceConfig ? paceConfig.pace : undefined,
           sessionId,
           accountEmail: userEmail,
         });
         roadmapOwnerRef.current = userId;
         setRoadmap(saved);
         setConfirmRegenerate(false);
+        setPaceNotice(null);
+        setPaceError(null);
         setTimelineView(null);
         setStartEditorOpen(false);
         await refreshSessions();
@@ -872,7 +912,7 @@ export default function MyRoadmapApp() {
         setGenerating(false);
       }
     },
-    [sessionId, userEmail, userId, roadmap, refreshSessions],
+    [sessionId, userEmail, userId, roadmap, refreshSessions, paceConfig],
   );
 
   useEffect(() => {
@@ -915,7 +955,9 @@ export default function MyRoadmapApp() {
     : null), [roadmap, profileSavedAt, userId]);
   const weekOneIso = startChoice || defaultStart?.iso || todayIso();
   const usingCustomStart = !!startChoice && startChoice !== defaultStart?.iso;
-  const schedule = useMemo(() => (roadmap ? buildWeekSchedule(roadmap.plan_json, weekOneIso) : []), [roadmap, weekOneIso]);
+  const baseSchedule = useMemo(() => (roadmap ? buildWeekSchedule(roadmap.plan_json, weekOneIso) : []), [roadmap, weekOneIso]);
+  // Every section below reads this one pace-resolved schedule.
+  const schedule = useMemo(() => applyStudyPace(baseSchedule, paceConfig), [baseSchedule, paceConfig]);
   const phases = useMemo(() => groupWeeksIntoPhases(schedule), [schedule]);
   const progress = useMemo(() => bucketPracticeSessions(sessions, schedule), [sessions, schedule]);
   const planState = useMemo(() => planStatus(schedule, now), [schedule, now]);
@@ -933,6 +975,8 @@ export default function MyRoadmapApp() {
   const effectiveView: TimelineView = timelineView || (planState.kind === 'complete' ? 'full' : 'week');
   const focusWeekNumber = goalWeek?.week ?? schedule[schedule.length - 1]?.week ?? 1;
   const bounds = startDateBounds(now);
+  // A new pace re-paces the current week and every later one; ended weeks keep theirs.
+  const paceEffectiveWeek = planState.kind === 'active' ? planState.week : planState.kind === 'before' ? 1 : null;
 
   const recommendationTarget = useMemo(() => {
     if (roadmap) {
@@ -977,6 +1021,36 @@ export default function MyRoadmapApp() {
     }
   }, [roadmap, startChoice, userId, userEmail, sessionId]);
 
+  const applyStudyPaceChoice = useCallback(async (pace: StudyPace) => {
+    if (!roadmap || paceEffectiveWeek == null || savingPace) return;
+    const label = STUDY_PACE_META[pace].label;
+    const scope = paceEffectiveWeek > 1 ? ` from Week ${paceEffectiveWeek}` : '';
+    setSavingPace(true);
+    setPaceError(null);
+    setPaceNotice(null);
+    try {
+      if (!roadmap.id || !userEmail) throw Object.assign(new Error('device_only'), { code: 'device_only' });
+      const saved = await saveStudyPace(roadmap.id, pace, paceEffectiveWeek, sessionId);
+      writeCachedStudyPace(userId, roadmap.id, { config: saved, synced: true });
+      setRoadmap((current) => (current && current.id === roadmap.id ? { ...current, study_pace_json: saved } : current));
+      setPaceNotice(`${label} applied${scope}. Your weekly goals, progress and timeline are updated.`);
+    } catch (e: any) {
+      if (e?.code === 'device_only' || e?.code === 'verified_email_required') {
+        const local: CachedStudyPace = { config: withPaceChange(paceConfig, pace, paceEffectiveWeek, new Date().toISOString()), synced: false };
+        writeCachedStudyPace(userId, roadmap.id, local);
+        setLocalPace(local);
+        setPaceNotice(`${label} applied${scope} on this device only.`);
+      } else {
+        trackStepError('my-roadmap', 'access', e, { properties: { operation: 'save_study_pace' } });
+        setPaceError(e?.code === 'week_ended'
+          ? 'This week has already ended. Reopen My Roadmap and try again.'
+          : 'We couldn’t save your study pace. Please try again.');
+      }
+    } finally {
+      setSavingPace(false);
+    }
+  }, [roadmap, paceEffectiveWeek, savingPace, userEmail, sessionId, userId, paceConfig]);
+
   const regenerateTarget: AssessmentTarget | null = roadmap
     ? {
         program: roadmap.target_program,
@@ -999,7 +1073,7 @@ export default function MyRoadmapApp() {
 
   return (
     <div className="mr-root" onPointerEnter={refreshIfStale}>
-      <style>{ROADMAP_CSS}</style>
+      <style>{ROADMAP_CSS + PACE_CSS}</style>
       <div className="mr-wrap">
         <header className="mr-page-head">
           <h1><MapIcon size={24} /> My Roadmap</h1>
@@ -1084,7 +1158,7 @@ export default function MyRoadmapApp() {
                     <CalendarDays />
                     <span>
                       <b>{schedule.length}-week plan</b>
-                      {roadmap.baseline_json ? ` · paced from your ${roadmap.baseline_json.level} baseline` : ''}
+                      {` · ${STUDY_PACE_META[paceConfig?.pace || DEFAULT_STUDY_PACE].label} pace`}
                     </span>
                   </li>
                 </ul>
@@ -1130,10 +1204,24 @@ export default function MyRoadmapApp() {
               </div>
             </section>
 
-            {/* 2. Overall Learning Progress — whole-plan completion, read-only */}
+            {/* 2. Choose Your Study Pace — preview first, saved only on Apply */}
+            {schedule.length > 0 && (
+              <StudyPaceSelector
+                baseSchedule={baseSchedule}
+                config={paceConfig}
+                effectiveWeek={paceEffectiveWeek}
+                focusWeek={focusWeekNumber}
+                saving={savingPace}
+                error={paceError}
+                notice={paceNotice || (localPace && !roadmap.study_pace_json ? 'Saved on this device only.' : null)}
+                onApply={(pace) => void applyStudyPaceChoice(pace)}
+              />
+            )}
+
+            {/* 3. Overall Learning Progress — whole-plan completion, read-only */}
             <OverallProgress schedule={schedule} progress={progress} status={sessionsState} />
 
-            {/* 3. Your Progress This Week — read-only, no practice CTAs */}
+            {/* 4. Your Progress This Week — read-only, no practice CTAs */}
             <section className="mr-card" data-testid="roadmap-progress-summary" data-plan-state={planState.kind} aria-labelledby="mr-progress-title">
               <div className="mr-sec-head">
                 <div>
@@ -1322,10 +1410,10 @@ export default function MyRoadmapApp() {
               </div>
             </section>
 
-            {/* 4. Recommended for Your Target Program — the only practice CTAs */}
+            {/* 5. Recommended for Your Target Program — the only practice CTAs */}
             {recommendations}
 
-            {/* 5. Preparation Timeline — planning only */}
+            {/* 6. Preparation Timeline — planning only */}
             {schedule.length > 0 && (
               <PreparationTimeline
                 schedule={schedule}
@@ -1339,11 +1427,12 @@ export default function MyRoadmapApp() {
             )}
 
             <p className="mr-footnote">
-              Weekly targets are Mate’s pacing recommendation from your baseline and the program’s
+              Weekly targets follow your {STUDY_PACE_META[paceConfig?.pace || DEFAULT_STUDY_PACE].label} study pace, paced toward the program’s
               {roadmap.window_kind === 'verified' ? ' verified' : ' estimated'} application window — always confirm exact dates on the
               company’s careers page. Progress counts your completed Case Pool, Case Drill and Aptitude Test sessions automatically: a
               session counts in the week you finish it, each case, drill or test counts once (retakes don’t add to the total), weekly
-              targets cap at 100%, and anything beyond a target shows as extra.
+              targets cap at 100%, and anything beyond a target shows as extra. Changing your pace re-paces this week and every later
+              week; weeks that have ended keep their targets.
             </p>
           </>
         ) : null}

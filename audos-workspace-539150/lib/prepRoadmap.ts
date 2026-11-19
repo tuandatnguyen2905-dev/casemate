@@ -24,6 +24,8 @@
 
 import { findProgramTimeline, deadlineStatus, formatDateVN } from './programTimelines';
 import { resolveRankingUserId } from './performanceRankings';
+import { DEFAULT_STUDY_PACE, isStudyPace, parseStudyPaceConfig, planWithPaceTargets } from './studyPace';
+import type { StudyPace, StudyPaceConfig } from './studyPace';
 
 const WORKSPACE_ID = 'workspace-539150';
 const ROADMAP_SAVE_HOOK = '/api/hooks/execute/workspace-539150/casemate-roadmap-save-v1';
@@ -112,6 +114,8 @@ export interface SavedRoadmap {
   start_date: string;
   /** Learner-chosen Week 1 start ('YYYY-MM-DD'); null/absent = the roadmap's creation date. */
   week1_start_date?: string | null;
+  /** Learner-chosen study pace (lib/studyPace.ts); null/absent = never chosen (Balanced). */
+  study_pace_json?: StudyPaceConfig | null;
   total_weeks: number;
   baseline_json: RoadmapBaseline | null;
   plan_json: RoadmapWeek[];
@@ -493,6 +497,7 @@ function normalizeRow(row: any): SavedRoadmap | null {
     anchor_date: row.anchor_date ? String(row.anchor_date).slice(0, 10) : null,
     start_date: String(row.start_date || '').slice(0, 10),
     week1_start_date: typeof row.week1_start_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.week1_start_date) ? row.week1_start_date : null,
+    study_pace_json: parseStudyPaceConfig(row.study_pace_json),
     total_weeks: Number(row.total_weeks) || plan.length,
     baseline_json: parseBaselineJson(row.baseline_json),
     plan_json: plan,
@@ -580,6 +585,8 @@ export interface GenerateRoadmapInput {
   preparationRecommendations?: PreparationRecommendation[];
   roadmapTaskStatus?: Record<string, string>;
   matchPercent?: number | null;
+  /** Pace to carry onto the new roadmap; omitted = keep the account's latest saved pace. */
+  studyPace?: StudyPace | null;
   sessionId?: string | null;
   /** Stable account identity supplied by SpaceRuntime; avoids a transient device-key fallback. */
   accountEmail?: string | null;
@@ -594,13 +601,18 @@ export async function generateAndSaveRoadmap(input: GenerateRoadmapInput): Promi
   const { userKey, email } = resolveRoadmapIdentity(input.sessionId, input.accountEmail);
   const now = new Date();
 
-  const [baseline, windowInfo] = await Promise.all([
+  const [baseline, windowInfo, carriedPace] = await Promise.all([
     loadRoadmapBaseline(input.sessionId, input.accountEmail),
     Promise.resolve(resolveRoadmapWindow(input.targetCompany || input.targetProgram, input.targetProgram, now)),
+    input.studyPace !== undefined
+      ? Promise.resolve(input.studyPace)
+      : loadLatestRoadmap(input.sessionId, input.accountEmail).then((latest) => latest?.study_pace_json?.pace || null).catch(() => null),
   ]);
+  const studyPace: StudyPace | null = isStudyPace(carriedPace) ? carriedPace : null;
 
   const startMonday = mondayOf(now);
-  const plan = buildWeeklyPlan(windowInfo.planWeeks, baseline.level, startMonday);
+  // Weekly targets come from the study pace; the baseline is still recorded.
+  const plan = planWithPaceTargets(buildWeeklyPlan(windowInfo.planWeeks, baseline.level, startMonday), studyPace || DEFAULT_STUDY_PACE);
 
   const record = {
     user_key: userKey,
@@ -623,6 +635,7 @@ export async function generateAndSaveRoadmap(input: GenerateRoadmapInput): Promi
     total_weeks: plan.length,
     baseline_json: baseline,
     plan_json: plan,
+    study_pace_json: studyPace ? { pace: studyPace } : null,
   };
 
   const response = await fetch(ROADMAP_SAVE_HOOK, {
