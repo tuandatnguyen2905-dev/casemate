@@ -77,19 +77,18 @@ const PROFILES: DrillProfile[] = [
 ];
 
 const STANDARD_RUBRIC: ExpertRubricItem[] = [
-  { criterion: 'Key insight and prioritization', points: 30, description: 'Identifies the decisive conclusion and underlying driver.' },
-  { criterion: 'Use of evidence across exhibits', points: 25, description: 'Uses accurate, connected evidence from both exhibits.' },
-  { criterion: 'Business implication', points: 20, description: 'Explains the consequence for value, risk, or the client decision.' },
-  { criterion: 'Recommendation or next step', points: 15, description: 'Proposes a practical evidence-linked action and decision gate.' },
-  { criterion: 'Communication quality and structure', points: 10, description: 'Communicates concisely in Insight → Evidence → Implication → Action order.' },
+  { criterion: 'Key insight and prioritization', points: 35, description: 'Identifies the decisive conclusion and underlying driver.' },
+  { criterion: 'Use of evidence across exhibits', points: 30, description: 'Uses accurate, connected evidence from both exhibits.' },
+  { criterion: 'Business implication', points: 25, description: 'Explains what the findings mean for the client objective or decision: value, risk or priority. No action plan or next step is required.' },
+  { criterion: 'Communication quality and structure', points: 10, description: 'Communicates concisely in Insight → Evidence → Implication order.' },
 ];
 
 const CALCULATION_RUBRIC: ExpertRubricItem[] = [
   { criterion: 'Calculation accuracy', points: 30, description: 'Calculates the requested result correctly with consistent units.' },
   { criterion: 'Calculation logic', points: 15, description: 'Shows formulas, assumptions, and a transparent reconciliation.' },
   { criterion: 'Interpretation of the result', points: 20, description: 'Identifies the decisive driver rather than stopping at the number.' },
-  { criterion: 'Business implication', points: 20, description: 'Links the calculation to value, risk, and the client objective.' },
-  { criterion: 'Recommendation and communication', points: 15, description: 'Makes a practical recommendation supported by the calculation.' },
+  { criterion: 'Business implication', points: 25, description: 'Links the calculation to value, risk, and the client objective. No action plan or next step is required.' },
+  { criterion: 'Communication quality and structure', points: 10, description: 'Communicates the result and its implication clearly.' },
 ];
 
 function exhibit(value: LibraryExhibit): LibraryExhibit {
@@ -161,9 +160,8 @@ function makeQuestion(profile: DrillProfile, profileIndex: number, caseIndex: nu
     keyInsight: `${company} should not act on the headline alone: ${profile.driver} explain why the apparent opportunity has uneven value and risk.`,
     supportingEvidence: derived.evidence,
     businessImplication: `A broad commitment would allocate resources to weak or saturated pockets and could worsen the client's ${profile.problem}; the decision should be narrowed to the segments or scenarios that clear both value and feasibility hurdles.`,
-    recommendedAction: `Management should ${profile.action}, using a short pilot and explicit economic, customer, and execution thresholds before scaling.`,
   };
-  const correctAnswer = `${calculationRequired ? `Calculation: ${model.calculation}\n` : ''}Key Insight: ${model.keyInsight}\nSupporting Evidence: ${model.supportingEvidence}\nBusiness Implication: ${model.businessImplication}\nRecommended Action: ${model.recommendedAction}`;
+  const correctAnswer = `${calculationRequired ? `Calculation: ${model.calculation}\n` : ''}Key Insight: ${model.keyInsight}\nSupporting Evidence: ${model.supportingEvidence}\nBusiness Implication: ${model.businessImplication}`;
   return {
     id: `${profile.skill}-expert-${numericId}`,
     skill: profile.skill,
@@ -174,9 +172,9 @@ function makeQuestion(profile: DrillProfile, profileIndex: number, caseIndex: nu
     businessProblem: profile.problem,
     primarySkill: `${profile.type}: synthesising complementary evidence into a management decision`,
     businessContext: `${company} is a ${profile.industry} business serving the ${REGIONS[caseIndex].toLowerCase()} market. ${SITUATIONS[caseIndex]} Leadership is preparing a decision memo for the next investment committee.${EXPERT_LABEL_NOTES[caseIndex](company, metric.toLowerCase())}`,
-    clientObjective: `Determine ${profile.decision}, quantify the evidence that matters, and define the next management action.`,
-    instruction: 'Synthesize both exhibits. Distinguish observation from insight, explain the business implication, and recommend an action with a measurable decision gate.',
-    question: `What is the most important conclusion for ${company}, what evidence across both exhibits supports it, what does it imply for the client objective, and what should management do next?`,
+    clientObjective: `Determine ${profile.decision} and quantify the evidence that matters.`,
+    instruction: 'Synthesize both exhibits. Distinguish observation from insight and explain the business implication for the client objective.',
+    question: `What is the most important conclusion for ${company}, what evidence across both exhibits supports it, and what does it imply for the client objective?`,
     exhibits,
     answerMode: 'text',
     answerFormat: 'structured-expert',
@@ -190,11 +188,11 @@ function makeQuestion(profile: DrillProfile, profileIndex: number, caseIndex: nu
     modelAnswerSections: model,
     explanation: `A high-scoring response links the ${exhibits[0].kind} evidence to the distinct ${exhibits[1].kind} evidence, prioritises the decisive driver, and converts it into a practical client decision.`,
     scoringRubric: calculationRequired ? CALCULATION_RUBRIC : STANDARD_RUBRIC,
-    personalizedFeedbackTemplate: 'Score each rubric criterion, identify the strongest section, name the most important missing or misread exhibit evidence, assess implication quality, and give one specific recommendation improvement.',
-    alternativeConclusions: [`A different conclusion is acceptable if it uses both exhibits accurately, quantifies the trade-off, and defines a decision gate aligned with ${profile.decision}.`],
+    personalizedFeedbackTemplate: 'Score each rubric criterion, identify the strongest section, name the most important missing or misread exhibit evidence, assess implication quality, and give one specific improvement.',
+    alternativeConclusions: [`A different conclusion is acceptable if it uses both exhibits accurately, quantifies the trade-off, and explains what it means for ${profile.decision}.`],
     commonMistake: `Repeating the largest value from Exhibit 1 without reconciling it with Exhibit 2 or linking it to ${profile.problem}.`,
-    commonMistakes: ['Using only one exhibit.', 'Treating correlation as causation.', 'Giving a generic recommendation without a measurable gate.'],
-    learningObjective: `Apply ${profile.type.toLowerCase()} to move from evidence to insight, implication, and action.`,
+    commonMistakes: ['Using only one exhibit.', 'Treating correlation as causation.', 'Stating an implication that is not tied to the client objective.'],
+    learningObjective: `Apply ${profile.type.toLowerCase()} to move from evidence to insight and business implication.`,
     numericalValidation: derived.validation,
     recommendedNextDrillId: nextId,
     scoringHints: { calculationTerms: derived.terms, insightTerms: [profile.driver, profile.problem, 'value', 'risk'], evidenceTerms: derived.terms, implicationTerms: [profile.problem, 'resources', 'risk', 'value', 'decision'], actionTerms: profile.action.toLowerCase().split(/\s+/).filter((word) => word.length > 4).slice(0, 8) },
@@ -240,7 +238,7 @@ export function upgradeHardQuestions(questions: LibraryQuestion[]): LibraryQuest
       current.push(genericChart(kind, question, index + 1));
       kinds.add(normalized);
     }
-    const synthesisInstruction = 'Use both exhibits: answer the original question, then explain how the complementary exhibit changes the confidence, implication, or management action.';
+    const synthesisInstruction = 'Use both exhibits: answer the original question, then explain how the complementary exhibit changes the confidence or the implication.';
     return { ...question, exhibits: current.slice(0, Math.max(2, current.length)), instruction: question.instruction?.includes('Use both exhibits') ? question.instruction : [question.instruction, synthesisInstruction].filter(Boolean).join(' ') };
   });
 }

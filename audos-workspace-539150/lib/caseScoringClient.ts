@@ -52,7 +52,7 @@ export async function gradeCaseExercise({
         : normalizedType.includes('market') && normalizedType.includes('siz')
           ? 'Grade only the labelled Components, bottom-up model logic, and calculated result with units. Never grade or request the separate issue tree, written calculation steps, judgment notes, or a reasonableness check. Explicitly flag stock-to-flow errors, double counting, and missing material components.'
       : normalizedType.includes('chart') || normalizedType.includes('data')
-        ? 'Separately assess OBSERVED IN THE DATA and INFERENCE. If the answer merely restates values without a decision implication, call that out plainly and score it low.'
+        ? 'Separately assess OBSERVED IN THE DATA and INFERENCE. If the answer merely restates values without a decision implication, call that out plainly and score it low. The answer form ends with the business implication: never require, request or deduct for a recommended action, next step, action plan or decision gate, and do not suggest adding one as an improvement.'
         : normalizedType.includes('creativ')
           ? 'Judge the response against the exact case objective and constraints, not novelty alone. Use the five exact criterion labels. Credit alternative valid mechanisms. Never claim evidence was overlooked unless that fact appears in the brief. Order guidance around the first decisive gap, then one or two prioritized revisions and the next exercise.'
           : 'Tie every improvement to something the candidate actually wrote or missed.';

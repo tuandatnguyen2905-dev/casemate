@@ -41,6 +41,8 @@ import {
 import { tw } from '../lib/colors';
 import { trackStepError, trackStepView, useActiveTimeThreshold } from '../lib/engagementTracking';
 import { CaseExhibitList } from './CaseExhibits';
+import { BackToQuestionButton, CaseQuestionFirst, CaseReadingProvider } from './CaseReadingGuide';
+import { ANSWER_ANCHOR_ID, BackToExhibitsButton, GoToAnswerBar } from './CompareExhibits';
 import ExhibitRenderer from './ExhibitRenderer';
 import PercentileRankingWidget from './PercentileRankingWidget';
 import StructuresWorkspace from '../apps/CaseDrill/StructuresWorkspace';
@@ -244,6 +246,35 @@ const MARKET_SIZING_ANSWER_UNITS = new Map(MARKET_SIZING_CYCLE_3_QUESTIONS.map((
 
 function marketSizingAnswerUnit(item: Pick<FullCase, 'source_case_id'>): string {
   return MARKET_SIZING_ANSWER_UNITS.get(item.source_case_id ?? '') || 'VND per year';
+}
+
+/** A Case Pool data exhibit in the Case Drill exhibit shape the issue-tree workspace renders. */
+function poolExhibitAsLibraryExhibit(exhibit: FullCase['data_exhibits'][number], id: string): LibraryExhibit {
+  if (exhibit.type === 'table') return {
+    id,
+    kind: 'table',
+    title: exhibit.title,
+    unit: 'As shown',
+    columns: exhibit.columns,
+    rows: exhibit.rows.map((row) => row.map(String)),
+    footnote: exhibit.note,
+  };
+  if (exhibit.type === 'chart_data') return {
+    id,
+    kind: exhibit.chart_type,
+    title: exhibit.title,
+    unit: exhibit.unit || '',
+    labels: exhibit.labels,
+    values: exhibit.values,
+  };
+  return {
+    id,
+    kind: 'table',
+    title: exhibit.label,
+    unit: 'As shown',
+    columns: ['Metric', 'Value'],
+    rows: [[exhibit.context, exhibit.value]],
+  };
 }
 
 function historyKey(sessionId: string): string {
@@ -494,33 +525,7 @@ export default function CasePoolLibrary({
     const linked = QUESTION_LIBRARY.structures.find((question) => linkedIds.includes(question.id));
     // The linked Case Drill item may be multiple choice. Case Pool shows its own open task and never the drill's options.
     if (linked) return linked.options?.length ? { ...linked, options: undefined, question: structuresEasySuggestedTree(linked.id)?.root.text || active.key_question } : linked;
-    const adaptedExhibits: LibraryExhibit[] = (active.data_exhibits || []).map((exhibit, index): LibraryExhibit => {
-      if (exhibit.type === 'table') return {
-        id: `${active.id}-structure-exhibit-${index + 1}`,
-        kind: 'table',
-        title: exhibit.title,
-        unit: 'As shown',
-        columns: exhibit.columns,
-        rows: exhibit.rows.map((row) => row.map(String)),
-        footnote: exhibit.note,
-      };
-      if (exhibit.type === 'chart_data') return {
-        id: `${active.id}-structure-exhibit-${index + 1}`,
-        kind: exhibit.chart_type,
-        title: exhibit.title,
-        unit: exhibit.unit || '',
-        labels: exhibit.labels,
-        values: exhibit.values,
-      };
-      return {
-        id: `${active.id}-structure-exhibit-${index + 1}`,
-        kind: 'table',
-        title: exhibit.label,
-        unit: 'As shown',
-        columns: ['Metric', 'Value'],
-        rows: [[exhibit.context, exhibit.value]],
-      };
-    });
+    const adaptedExhibits: LibraryExhibit[] = (active.data_exhibits || []).map((exhibit, index) => poolExhibitAsLibraryExhibit(exhibit, `${active.id}-structure-exhibit-${index + 1}`));
     return {
       id: `pool-structure-${active.id}`,
       skill: 'structures',
@@ -737,10 +742,51 @@ export default function CasePoolLibrary({
       const key = exhibitContentKey(exhibit);
       return workspaceExhibitTitles.has(normalizeForCompare(String(source?.title || source?.label || ''))) || (key !== '' && workspaceExhibitKeys.has(key));
     };
+    // A structure case shows its exhibits once, inside the workspace, and none below it. The workspace keeps its own set
+    // only when that set already holds every case exhibit; otherwise it is handed the case's complete set in place of
+    // its own (never added to it), so a copy the matcher misses still cannot appear twice.
     const exhibitsShownInWorkspace = Boolean(structureQuestion) && ((journeyExhibits?.length ? journeyExhibits : dataExhibits) as unknown[]).every((exhibit) => inWorkspace(exhibit));
-    const dataExhibitsBelowWorkspace = structureQuestion ? dataExhibits.filter((exhibit) => !inWorkspace(exhibit)) : dataExhibits;
-    // A journey case's linked drill holds only some of the journey exhibits, so the workspace is given the full set instead.
-    const workspaceHostExhibits = structureQuestion && !exhibitsShownInWorkspace && journeyExhibits?.length ? journeyExhibits : undefined;
+    const workspaceHostExhibits: LibraryExhibit[] | undefined = !structureQuestion || exhibitsShownInWorkspace
+      ? undefined
+      : journeyExhibits?.length
+        ? journeyExhibits
+        : dataExhibits.map((exhibit, index) => poolExhibitAsLibraryExhibit(exhibit, `${active.id}-structure-exhibit-${index + 1}`));
+    const structureBriefGuidance = [
+      ...presentedPool.guidance,
+      ...(presentedPool.objective ? [`Objective: ${presentedPool.objective}`] : []),
+      ...presentedPool.constraints.map((constraint) => `Constraint: ${constraint}`),
+    ];
+    const poolTasks = active.journey_stages?.length
+      ? active.journey_stages.map((stage) => ({ id: stage.drillId, label: stage.role, prompt: stage.prompt }))
+      : undefined;
+    const questionNoteLines = [...presentedPool.guidance, ...presentedPool.answerFormat.map((line) => `Answer format: ${line}`)];
+    // Medium and Hard cases use the compare layout, keep the objective beside the question and put reading notes behind a toggle.
+    const denseLayout = active.difficulty !== 'easy';
+    // A multi-task case shows its objective above the task list, so the context block does not repeat it.
+    const showContextObjective = Boolean(presentedPool.objective) && !poolTasks && !denseLayout;
+    const contextExtraNode = presentedPool.keyTerms.length || showContextObjective || presentedPool.constraints.length ? (
+      <>
+        {presentedPool.keyTerms.length ? <p className="max-w-[80ch] text-xs leading-5 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {nf(presentedPool.keyTerms.join(' '))}</p> : null}
+        {showContextObjective || presentedPool.constraints.length ? (
+          <div className={`${presentedPool.keyTerms.length ? 'mt-3 ' : ''}grid gap-3 ${showContextObjective && presentedPool.constraints.length ? 'lg:grid-cols-2' : ''}`}>
+            {showContextObjective ? (
+              <section className="rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Objective</p>
+                <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{nf(presentedPool.objective)}</p>
+              </section>
+            ) : null}
+            {presentedPool.constraints.length ? (
+              <section className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3.5">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Constraints</p>
+                <ul className="mt-1.5 space-y-1">
+                  {presentedPool.constraints.map((constraint) => <li key={constraint} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {nf(constraint)}</li>)}
+                </ul>
+              </section>
+            ) : null}
+          </div>
+        ) : null}
+      </>
+    ) : undefined;
     const exhibitGuideNode = presentedPool.exhibitGuide.length ? (
       <div className="mt-4 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-4 py-3" data-testid="pool-exhibit-reading-guide">
         <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">{pageExhibitTitles.length > 1 ? 'Reading the exhibits' : 'Reading the exhibit'}</p>
@@ -771,6 +817,7 @@ export default function CasePoolLibrary({
       'next-question': nextCase ? { kind: 'next-question', label: 'Next recommended case', detail: `Practise on “${nextCase.title}”.`, onSelect: () => openCase(nextCase) } : null,
     });
     return (
+      <CaseReadingProvider itemId={active.id}>
       <div data-testid="pool-library-case" data-retry-anchor onInput={() => { if (!rawShownResult) trackSolving(active, 'answer_typed', null); }}>
         <button type="button" onClick={leaveCase} className={`mb-3 inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold ${tw.button.secondary}`} data-testid="button-back-to-pool-library-top">
           <ArrowLeft className="h-4 w-4" /> Back to Case Pool Library
@@ -802,61 +849,40 @@ export default function CasePoolLibrary({
               initialCaseId={structureQuestion.id}
               caseOverride={structureQuestion}
               suggestedTreeOverride={structureTreeOverride}
-              briefOverride={{ context: presentedPool.situation, keyTerms: presentedPool.keyTerms, exhibitGuide: presentedPool.exhibitGuide, guidance: presentedPool.guidance, task: presentedPool.keyQuestion, exhibits: workspaceHostExhibits }}
+              briefOverride={{ context: presentedPool.situation, keyTerms: presentedPool.keyTerms, exhibitGuide: presentedPool.exhibitGuide, guidance: structureBriefGuidance, task: presentedPool.keyQuestion, exhibits: workspaceHostExhibits }}
               onBackToLibrary={leaveCase}
             />
           </section>
-        ) : null}
-
-        {/* The page is full-bleed, so every block of running prose carries its
-            own reading measure - a case narrative stretched across a 1920px
-            monitor is unreadable, while the exhibits below still use the full
-            width they need. */}
-        {structureQuestion ? null : (
-          <div className="mt-3 rounded-xl bg-[var(--space-surface-muted)] p-4" data-testid="pool-case-situation">
-            <p className="max-w-[80ch] whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-primary)]">
-              {nf(presentedPool.situation)}
-            </p>
-            {presentedPool.keyTerms.length ? <p className="mt-2 max-w-[80ch] text-xs leading-5 text-[var(--space-text-secondary)]"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {nf(presentedPool.keyTerms.join(' '))}</p> : null}
-          </div>
-        )}
-
-        {presentedPool.objective || presentedPool.constraints.length ? (
-          <div className={`mt-3 grid gap-3 ${presentedPool.objective && presentedPool.constraints.length ? 'lg:grid-cols-2' : ''}`}>
-            {presentedPool.objective ? (
-              <section className="rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Objective</p>
-                <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{nf(presentedPool.objective)}</p>
-              </section>
-            ) : null}
-            {presentedPool.constraints.length ? (
-              <section className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3.5">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Constraints</p>
-                <ul className="mt-1.5 space-y-1">
-                  {presentedPool.constraints.map((constraint) => <li key={constraint} className="text-xs leading-5 text-[var(--space-text-secondary)]">• {nf(constraint)}</li>)}
-                </ul>
-              </section>
-            ) : null}
-          </div>
-        ) : null}
-
-        {exhibitsShownInWorkspace || workspaceHostExhibits ? null : journeyExhibits?.length ? (
-          <div className="mt-4"><ExhibitRenderer exhibits={journeyExhibits} displayMode="advanced" guide={structureQuestion ? [] : presentedPool.exhibitGuide.map(nf)} /></div>
         ) : (
           <>
-            {structureQuestion ? null : exhibitGuideNode}
-            <CaseExhibitList exhibits={dataExhibitsBelowWorkspace} className="mt-4" />
+            <CaseQuestionFirst
+              itemId={active.id}
+              question={nf(presentedPool.keyQuestion)}
+              questionNote={questionNoteLines.length ? questionNoteLines.map((line) => <p key={line} className="mt-1 max-w-[90ch] text-xs leading-5 text-[var(--space-text-secondary)]">{nf(line)}</p>) : undefined}
+              context={nf(presentedPool.situation)}
+              contextExtra={contextExtraNode}
+              clientObjective={denseLayout && !poolTasks && presentedPool.objective ? nf(presentedPool.objective) : undefined}
+              layout={denseLayout ? 'split' : 'stacked'}
+              tasks={poolTasks}
+              objective={presentedPool.objective || undefined}
+              className="mt-3"
+            />
+            {journeyExhibits?.length ? (
+              <div className="mt-4"><ExhibitRenderer exhibits={journeyExhibits} displayMode="advanced" layout={denseLayout ? 'compare' : 'grid'} guide={presentedPool.exhibitGuide.map(nf)} /></div>
+            ) : (
+              <>
+                {denseLayout && dataExhibits.length >= 2 ? null : exhibitGuideNode}
+                <CaseExhibitList
+                  exhibits={dataExhibits}
+                  className="mt-4"
+                  layout={denseLayout ? 'compare' : 'grid'}
+                  readingNotes={denseLayout && presentedPool.exhibitGuide.length ? <ul className="space-y-1" data-testid="pool-exhibit-reading-guide">{presentedPool.exhibitGuide.map((line) => <li key={line} className="text-xs leading-5 text-[var(--space-text-secondary)]">{nf(line)}</li>)}</ul> : undefined}
+                />
+              </>
+            )}
+            {denseLayout && onGrade && !shownResult && (journeyExhibits?.length || dataExhibits.length) ? <GoToAnswerBar /> : null}
+            <BackToQuestionButton />
           </>
-        )}
-
-        {structureQuestion ? null : (
-          <div className="mt-4 rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-3.5" data-testid="pool-case-task">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Case task</p>
-            <p className="mt-1 max-w-[90ch] whitespace-pre-wrap text-sm font-semibold leading-6 text-[var(--space-text-primary)]">
-              {nf(presentedPool.keyQuestion)}
-            </p>
-            {[...presentedPool.guidance, ...presentedPool.answerFormat.map((line) => `Answer format: ${line}`)].map((line) => <p key={line} className="mt-1.5 max-w-[90ch] text-xs leading-5 text-[var(--space-text-secondary)]">{nf(line)}</p>)}
-          </div>
         )}
 
         {active.framework_hints.length ? (
@@ -904,7 +930,8 @@ export default function CasePoolLibrary({
 
         {onGrade ? (
           <section
-            className={shownResult ? 'mt-4' : 'mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4'}
+            id={structureQuestion ? undefined : ANSWER_ANCHOR_ID}
+            className={shownResult ? 'mt-4 scroll-mt-3' : 'mt-4 scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4'}
             data-testid="pool-library-attempt"
           >
             {shownResult ? (
@@ -952,10 +979,13 @@ export default function CasePoolLibrary({
               </div>
             ) : (
               <div>
-                <p className="flex items-center gap-1.5 text-sm font-bold text-[var(--space-text-primary)]">
-                  <PenLine className="h-4 w-4 shrink-0 text-[var(--space-text-brand)]" />
-                  Solve it here
-                </p>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="flex items-center gap-1.5 text-sm font-bold text-[var(--space-text-primary)]">
+                    <PenLine className="h-4 w-4 shrink-0 text-[var(--space-text-brand)]" />
+                    Your answer · Solve it here
+                  </p>
+                  {denseLayout ? <BackToExhibitsButton /> : null}
+                </div>
                 <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">
                   {active.source_case_id?.startsWith('CM-CALC-')
                     ? 'Enter every requested final number, then show the arithmetic in formula rows. Mate grades the same case ID and saves the score to your dashboard.'
@@ -1062,6 +1092,7 @@ export default function CasePoolLibrary({
               </button>
         </div>
       </div>
+      </CaseReadingProvider>
     );
   }
 

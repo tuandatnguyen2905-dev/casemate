@@ -19,6 +19,7 @@ import { tw } from '../lib/colors';
 import ExhibitRenderer from './ExhibitRenderer';
 import ExpertDrillExperience from './ExpertDrillExperience';
 import { BackToQuestionButton, CaseQuestionFirst, CaseReadingProvider } from './CaseReadingGuide';
+import { ANSWER_ANCHOR_ID, BackToExhibitsButton, GoToAnswerBar } from './CompareExhibits';
 import { CASE_JOURNEYS } from '../lib/caseJourneys';
 import {
   ALL_LIBRARY_QUESTIONS,
@@ -962,10 +963,12 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
   };
 
   const compactSingleChart = Boolean(active && isCompactSingleChart(active));
+  // Medium and Hard solve screens also hide the app's intro line on laptops so the question and exhibits fit one screen.
+  const compactHeader = compactSingleChart || Boolean(active && displayDifficultyOf(active) !== 'easy');
   useEffect(() => {
-    onCompactLayoutChange?.(compactSingleChart);
+    onCompactLayoutChange?.(compactHeader);
     return () => onCompactLayoutChange?.(false);
-  }, [compactSingleChart, onCompactLayoutChange]);
+  }, [compactHeader, onCompactLayoutChange]);
 
   if (active?.sourceCaseId?.startsWith('CM-CRE-')) {
     return (
@@ -1131,12 +1134,15 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
         {presented.skillLabels.length ? <p className="mt-1 text-[11px] font-medium text-[var(--space-text-muted)]" data-testid="question-library-skill-label">Skill focus: {presented.skillLabels.join('; ')}</p> : null}
       </>
     ) : null;
+    // Medium and Hard items use the compare layout and the question/context split; Easy keeps its layout.
+    const denseLayout = displayDifficultyOf(active) !== 'easy' && !compactSingleChart;
     const questionFirstSection = (
       <section className={`rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] shadow-sm ${compactSingleChart ? 'p-3' : 'mt-3 p-4 sm:p-5'}`} data-testid="question-library-question-first">
         <h2 className={compactSingleChart ? 'break-words text-lg font-bold leading-6 text-[var(--space-text-primary)]' : 'break-words text-xl font-bold leading-7 text-[var(--space-text-primary)] sm:text-2xl'}>{capitaliseLineStarts(active.title)}</h2>
         <CaseQuestionFirst
           itemId={active.id}
           compact={compactSingleChart}
+          layout={denseLayout ? 'split' : 'stacked'}
           bare
           className={compactSingleChart ? 'mt-1.5' : 'mt-2'}
           question={<span data-testid="question-library-task">{capitaliseLineStarts(presented.task)}</span>}
@@ -1146,7 +1152,7 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
         />
       </section>
     );
-    const exhibitNode = activeExhibits.length ? <div className={compactSingleChart ? undefined : 'mt-4'}><ExhibitRenderer exhibits={activeExhibits} compact={compactSingleChart} guide={presented.exhibitGuide.map(capitaliseLineStarts)} /></div> : null;
+    const exhibitNode = activeExhibits.length ? <div className={compactSingleChart ? undefined : 'mt-4'}><ExhibitRenderer exhibits={activeExhibits} compact={compactSingleChart} layout={denseLayout ? 'compare' : 'grid'} guide={presented.exhibitGuide.map(capitaliseLineStarts)} />{denseLayout && !submitted ? <GoToAnswerBar /> : null}</div> : null;
     const answerInColumn = compactSingleChart && !submitted && isChoiceQuestion && !isMarketSizing && active.skill !== 'calculations';
 
     return (
@@ -1184,8 +1190,11 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
         )}
 
         {!submitted ? (
-          <section className={`rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${answerInColumn ? 'min-w-0 p-3 shadow-sm lg:col-start-2 lg:row-start-2' : `${compactSingleChart ? 'min-w-0 lg:col-span-2' : 'mt-4'} ${isCaseCoachLayout ? 'p-5 shadow-sm sm:p-7' : 'p-4 sm:p-5'}`}`} data-testid="question-library-answer-area">
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">Your Answer</p>
+          <section id={ANSWER_ANCHOR_ID} className={`scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${answerInColumn ? 'min-w-0 p-3 shadow-sm lg:col-start-2 lg:row-start-2' : `${compactSingleChart ? 'min-w-0 lg:col-span-2' : 'mt-4'} ${isCaseCoachLayout ? 'p-5 shadow-sm sm:p-7' : 'p-4 sm:p-5'}`}`} data-testid="question-library-answer-area">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">Your Answer</p>
+              {denseLayout ? <BackToExhibitsButton /> : null}
+            </div>
 
             {isMarketSizing ? (
               <div className="mt-4">

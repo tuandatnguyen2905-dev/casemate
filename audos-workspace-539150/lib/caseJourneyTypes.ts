@@ -25,11 +25,10 @@ export type JourneyDrillInput = Omit<
 > & { modelAnswerSections: NonNullable<LibraryQuestion['modelAnswerSections']> };
 
 export const HARD_JOURNEY_RUBRIC: ExpertRubricItem[] = [
-  { criterion: 'Key observation and data reading', points: 20, description: 'Reads the decisive exhibit values accurately, with correct units, and separates fact from interpretation.' },
-  { criterion: 'Key insight identification', points: 30, description: 'Names what the evidence means for this decision and prioritises the driver that matters most.' },
-  { criterion: 'Business implication', points: 25, description: 'Explains the consequence for the client objective, the economics, or the risk being carried.' },
-  { criterion: 'Recommended next step', points: 15, description: 'Proposes a practical next action or analysis that follows directly from the insight.' },
-  { criterion: 'Communication clarity', points: 10, description: 'Communicates concisely in Observation → Insight → Implication → Action order.' },
+  { criterion: 'Key observation and data reading', points: 25, description: 'Reads the decisive exhibit values accurately, with correct units, and separates fact from interpretation.' },
+  { criterion: 'Key insight identification', points: 35, description: 'Names what the evidence means for this decision and prioritises the driver that matters most.' },
+  { criterion: 'Business implication', points: 30, description: 'Explains what the findings mean for the client objective, the economics, or the risk being carried. No action plan or next step is required.' },
+  { criterion: 'Communication clarity', points: 10, description: 'Communicates concisely in Observation → Insight → Implication order.' },
 ];
 
 export const EXPERT_JOURNEY_RUBRIC: ExpertRubricItem[] = [
@@ -48,7 +47,7 @@ export const EXPERT_JOURNEY_CALCULATION_RUBRIC: ExpertRubricItem[] = [
   { criterion: 'Recommendation and communication', points: 15, description: 'Makes a practical, evidence-linked recommendation and states it clearly.' },
 ];
 
-const HARD_FEEDBACK = 'Score each Hard rubric criterion, name the strongest section, identify the most important missed or misread exhibit value, and give one specific improvement to the recommended next step.';
+const HARD_FEEDBACK = 'Score each Hard rubric criterion, name the strongest section, identify the most important missed or misread exhibit value, and give one specific improvement to the business implication.';
 const EXPERT_FEEDBACK = 'Score every rubric criterion, name the strongest section, identify the most important missing or misread evidence across exhibits, assess implication quality, and give one specific improvement to the recommendation.';
 
 const SOURCE_NOTE: Record<JourneyProvenance, string> = {

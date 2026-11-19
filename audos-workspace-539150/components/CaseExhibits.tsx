@@ -30,6 +30,8 @@ import { BarChart3, Gauge, Maximize2, Table2, TrendingUp, X } from 'lucide-react
 import type { CaseExhibit, ExhibitChart, ExhibitMetric, ExhibitTable } from '../lib/caseLibraryShared';
 import { dedupeColumnUnits } from '../lib/exhibitTableUnits';
 import { clarifyUnitLabel, clarifyUnitText, clarifyUnitsDeep } from '../lib/unitLabels';
+import { TermHint } from './CaseReadingGuide';
+import { CompareExhibits, CopyTableButton, EVIDENCE_ANCHOR_ID, useHeaderHeightReporter } from './CompareExhibits';
 
 const SLICE_COLORS = [
   'var(--space-brand-primary-600)',
@@ -47,6 +49,15 @@ const CHAR = 8.2;
 const ROTATION = (35 * Math.PI) / 180;
 const PLOT_HEIGHT = 360;
 const PIE_HEIGHT = 420;
+/** Shorter plots for cards shown side by side in the compare layout; Expand opens the full-size view. */
+const COMPARE_PLOT_HEIGHT = 280;
+const COMPARE_PIE_HEIGHT = 300;
+
+interface CompareCardProps {
+  compare?: boolean;
+  headerMinHeight?: number;
+  onHeaderHeight?: (height: number) => void;
+}
 
 /** Display-only numeric formatting; stored chart values are never changed. */
 function fmt(value: number): string {
@@ -105,6 +116,8 @@ function ExhibitFrame({
   children,
   note,
   onExpand,
+  headerMinHeight,
+  onHeaderHeight,
 }: {
   index?: number;
   title: string;
@@ -112,13 +125,17 @@ function ExhibitFrame({
   children: React.ReactNode;
   note?: string;
   onExpand?: () => void;
+  headerMinHeight?: number;
+  onHeaderHeight?: (height: number) => void;
 }) {
   const Icon = icon === 'table' ? Table2 : icon === 'line' ? TrendingUp : icon === 'metric' ? Gauge : BarChart3;
+  const headerRef = useHeaderHeightReporter<HTMLDivElement>(onHeaderHeight);
   return (
     <div
       className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3"
       data-testid={`case-exhibit-${icon}`}
     >
+      <div style={headerMinHeight ? { minHeight: headerMinHeight } : undefined}><div ref={headerRef}>
       <div className="flex items-start justify-between gap-2">
         <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-brand)]">
           {typeof index === 'number' ? `Exhibit ${index + 1}` : 'Exhibit'}
@@ -131,7 +148,8 @@ function ExhibitFrame({
           <Icon className="h-3.5 w-3.5 shrink-0 text-[var(--space-text-muted)]" aria-hidden="true" />
         )}
       </div>
-      <h4 className="mt-1 break-words text-sm font-semibold leading-5 text-[var(--space-text-primary)]">{title}</h4>
+      <h4 className="mt-1 break-words text-sm font-semibold leading-5 text-[var(--space-text-primary)]">{title}<TermHint label={String(title)} /></h4>
+      </div></div>
       <div className="mt-2.5">{children}</div>
       {note ? <p className="mt-2 text-[11px] leading-4 text-[var(--space-text-muted)]">{note}</p> : null}
     </div>
@@ -142,7 +160,7 @@ function ExhibitFrame({
  * Data table (compact)
  * ----------------------------------------------------------------------- */
 
-function TableExhibit({ exhibit: sourceExhibit, index }: { exhibit: ExhibitTable; index?: number }) {
+function TableExhibit({ exhibit: sourceExhibit, index, headerMinHeight, onHeaderHeight }: { exhibit: ExhibitTable; index?: number } & CompareCardProps) {
   // A unit that every cell in a column repeats is stated once, in the header.
   const exhibit: ExhibitTable = { ...sourceExhibit, ...dedupeColumnUnits(sourceExhibit.columns, sourceExhibit.rows) };
   // Columns that are all numbers get right-aligned headers and cells - easier to scan down.
@@ -155,11 +173,12 @@ function TableExhibit({ exhibit: sourceExhibit, index }: { exhibit: ExhibitTable
   const stackable = exhibit.columns.length > 1;
 
   return (
-    <ExhibitFrame index={index} title={exhibit.title} icon="table" note={exhibit.note}>
+    <ExhibitFrame index={index} title={exhibit.title} icon="table" note={exhibit.note} headerMinHeight={headerMinHeight} onHeaderHeight={onHeaderHeight}>
       {stackable ? (
         <div className="space-y-1.5 sm:hidden" data-testid="case-exhibit-table-stacked">
           <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
             {exhibit.columns[0]}
+            <TermHint label={String(exhibit.columns[0])} />
           </p>
           {exhibit.rows.map((row, rowIndex) => (
             <div
@@ -176,6 +195,7 @@ function TableExhibit({ exhibit: sourceExhibit, index }: { exhibit: ExhibitTable
                     <div key={cellIndex} className="flex items-baseline justify-between gap-3">
                       <dt className="min-w-0 text-[10px] uppercase leading-4 tracking-wider text-[var(--space-text-muted)]">
                         {column}
+                        <TermHint label={String(column)} />
                       </dt>
                       <dd
                         className={`shrink-0 text-[11px] font-semibold leading-4 text-[var(--space-text-primary)] ${
@@ -206,6 +226,7 @@ function TableExhibit({ exhibit: sourceExhibit, index }: { exhibit: ExhibitTable
                   }`}
                 >
                   {column}
+                  <TermHint label={String(column)} />
                 </th>
               ))}
             </tr>
@@ -235,6 +256,7 @@ function TableExhibit({ exhibit: sourceExhibit, index }: { exhibit: ExhibitTable
           </tbody>
         </table>
       </div>
+      <div className="mt-1 flex justify-end"><CopyTableButton columns={exhibit.columns} rows={exhibit.rows.map((row) => row.map((cell) => cellText(cell)))} /></div>
     </ExhibitFrame>
   );
 }
@@ -264,8 +286,11 @@ function inferChartType(exhibit: ExhibitChart, values: number[]): CaseChartKind 
   const rankingLike = /rank|ranking|top\s|bottom\s|highest|lowest|leader|xếp hạng|cao nhất|thấp nhất/.test(title);
   if (rankingLike) return 'bar';
 
-  // Generic numeric comparisons default to columns, per the exhibit brief.
-  return 'column';
+  // Generic numeric comparisons default to columns, per the exhibit brief. Names too long to sit under a
+  // column without being shortened (e.g. "Management & coordination") are drawn as horizontal bars, where
+  // every name wraps in full beside its value.
+  const longestLabel = Math.max(0, ...(exhibit.labels || []).map((label) => String(label).length));
+  return longestLabel > 12 ? 'bar' : 'column';
 }
 
 function CategoryText({ labels, width, slot, rotate, baseY }: { labels: string[]; width: number; slot: number; rotate: boolean; baseY: number }) {
@@ -300,8 +325,7 @@ function CategoryText({ labels, width, slot, rotate, baseY }: { labels: string[]
   );
 }
 
-function ColumnChartExhibit({ labels, values, unit, width }: { labels: string[]; values: number[]; unit?: string; width: number }) {
-  const height = PLOT_HEIGHT;
+function ColumnChartExhibit({ labels, values, unit, width, height = PLOT_HEIGHT }: { labels: string[]; values: number[]; unit?: string; width: number; height?: number }) {
   const padX = 10;
   const padTop = 34;
   const slot = (width - padX * 2) / Math.max(values.length, 1);
@@ -397,8 +421,7 @@ function BarChartExhibit({ labels, values, unit }: { labels: string[]; values: n
   );
 }
 
-function LineChartExhibit({ labels, values, unit, width }: { labels: string[]; values: number[]; unit?: string; width: number }) {
-  const height = PLOT_HEIGHT;
+function LineChartExhibit({ labels, values, unit, width, height = PLOT_HEIGHT }: { labels: string[]; values: number[]; unit?: string; width: number; height?: number }) {
   const padX = 10;
   const padTop = 40;
   const slot = (width - padX * 2) / Math.max(values.length, 1);
@@ -460,12 +483,12 @@ function LineChartExhibit({ labels, values, unit, width }: { labels: string[]; v
   );
 }
 
-function PieChartExhibit({ labels, values, unit, width }: { labels: string[]; values: number[]; unit?: string; width: number }) {
+function PieChartExhibit({ labels, values, unit, width, pieHeight = PIE_HEIGHT }: { labels: string[]; values: number[]; unit?: string; width: number; pieHeight?: number }) {
   const total = values.reduce((sum, value) => sum + Math.max(0, value), 0);
   if (total <= 0) return <BarChartExhibit labels={labels} values={values} unit={unit} />;
   const sideBySide = width >= 560;
   const legendHeight = labels.length * 26 + 4;
-  const available = sideBySide ? Math.min(PIE_HEIGHT - 12, width * 0.46) : Math.min(width - 16, PIE_HEIGHT - legendHeight - 12);
+  const available = sideBySide ? Math.min(pieHeight - 12, width * 0.46) : Math.min(width - 16, pieHeight - legendHeight - 12);
   const size = Math.round(Math.max(1, Math.min(available, 400)));
   const centre = size / 2;
   const radius = size / 2 - 3;
@@ -489,7 +512,7 @@ function PieChartExhibit({ labels, values, unit, width }: { labels: string[]; va
   return (
     <div
       className={`flex w-full items-center justify-center gap-4 overflow-hidden ${sideBySide ? 'flex-row px-2' : 'flex-col'}`}
-      style={{ minHeight: PIE_HEIGHT }}
+      style={{ minHeight: pieHeight }}
       data-testid="case-exhibit-pie"
     >
       <svg
@@ -548,12 +571,17 @@ export function CaseChartVisual({
   labels: sourceLabels,
   values,
   unit: sourceUnit,
+  compact = false,
 }: {
   kind: CaseChartKind;
   labels: string[];
   values: number[];
   unit?: string;
+  /** Shorter plot for the side-by-side compare layout. */
+  compact?: boolean;
 }) {
+  const plotHeight = compact ? COMPARE_PLOT_HEIGHT : PLOT_HEIGHT;
+  const pieHeight = compact ? COMPARE_PIE_HEIGHT : PIE_HEIGHT;
   const labels = useMemo(() => clarifyUnitsDeep(sourceLabels), [sourceLabels]);
   const unit = clarifyUnitLabel(sourceUnit) || undefined;
   const { ref, width } = useBoxWidth();
@@ -565,20 +593,20 @@ export function CaseChartVisual({
         {kind === 'bar' ? (
           <BarChartExhibit labels={labels} values={values} unit={unit} />
         ) : !ready ? (
-          <div style={{ height: kind === 'pie' ? PIE_HEIGHT : PLOT_HEIGHT }} />
+          <div style={{ height: kind === 'pie' ? pieHeight : plotHeight }} />
         ) : kind === 'line' ? (
-          <LineChartExhibit labels={labels} values={values} unit={unit} width={width} />
+          <LineChartExhibit labels={labels} values={values} unit={unit} width={width} height={plotHeight} />
         ) : kind === 'pie' ? (
-          <PieChartExhibit labels={labels} values={values} unit={unit} width={width} />
+          <PieChartExhibit labels={labels} values={values} unit={unit} width={width} pieHeight={pieHeight} />
         ) : (
-          <ColumnChartExhibit labels={labels} values={values} unit={unit} width={width} />
+          <ColumnChartExhibit labels={labels} values={values} unit={unit} width={width} height={plotHeight} />
         )}
       </div>
     </div>
   );
 }
 
-function ChartExhibit({ exhibit, index }: { exhibit: ExhibitChart; index?: number }) {
+function ChartExhibit({ exhibit, index, compare = false, headerMinHeight, onHeaderHeight }: { exhibit: ExhibitChart; index?: number } & CompareCardProps) {
   const [expanded, setExpanded] = useState(false);
   const labels = exhibit.labels || [];
   const values = (exhibit.values || []).map((value) => Number(value));
@@ -587,6 +615,8 @@ function ChartExhibit({ exhibit, index }: { exhibit: ExhibitChart; index?: numbe
     return (
       <TableExhibit
         index={index}
+        headerMinHeight={headerMinHeight}
+        onHeaderHeight={onHeaderHeight}
         exhibit={{
           type: 'table',
           title: exhibit.title,
@@ -599,22 +629,35 @@ function ChartExhibit({ exhibit, index }: { exhibit: ExhibitChart; index?: numbe
   const chartType = inferChartType(exhibit, values);
   const icon = chartType === 'line' ? 'line' : chartType === 'pie' ? 'pie' : 'bar';
   const note = exhibit.unit && chartType !== 'bar' ? `Unit: ${exhibit.unit}` : undefined;
-  const chartBody = <CaseChartVisual kind={chartType} labels={labels} values={values} unit={exhibit.unit} />;
+  const chartBody = <CaseChartVisual kind={chartType} labels={labels} values={values} unit={exhibit.unit} compact={compare} />;
+  const fullChartBody = <CaseChartVisual kind={chartType} labels={labels} values={values} unit={exhibit.unit} />;
   // Always shown: every plotted category and value as selectable text, so no number depends on reading the chart.
+  const valueText = (valueIndex: number) => clarifyUnitText(`${fmt(values[valueIndex])}${exhibit.unit ? (exhibit.unit.trim() === '%' ? '%' : ` ${exhibit.unit}`) : ''}`);
+  const valueItems = (
+    <ul className="mt-2 grid select-text gap-1 sm:grid-cols-2">
+      {labels.map((label, valueIndex) => <li key={`${label}-${valueIndex}`} className="flex items-start justify-between gap-3 text-xs leading-5"><span className="min-w-0 break-words text-[var(--space-text-secondary)]">{label}</span><span className="shrink-0 font-bold tabular-nums text-[var(--space-text-primary)]">{valueText(valueIndex)}</span></li>)}
+    </ul>
+  );
+  const copyButton = <CopyTableButton columns={['Item', exhibit.unit ? `Value (${exhibit.unit})` : 'Value']} rows={labels.map((label, valueIndex) => [label, fmt(values[valueIndex])])} />;
   const valueList = (
     <div className="mt-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-2.5" data-testid="case-exhibit-values">
-      <p className="text-xs font-bold text-[var(--space-text-primary)]">Every category and value</p>
-      <ul className="mt-2 grid gap-1 sm:grid-cols-2">
-        {labels.map((label, valueIndex) => <li key={`${label}-${valueIndex}`} className="flex items-start justify-between gap-3 text-xs leading-5"><span className="min-w-0 break-words text-[var(--space-text-secondary)]">{label}</span><span className="shrink-0 font-bold tabular-nums text-[var(--space-text-primary)]">{clarifyUnitText(`${fmt(values[valueIndex])}${exhibit.unit ? (exhibit.unit.trim() === '%' ? '%' : ` ${exhibit.unit}`) : ''}`)}</span></li>)}
-      </ul>
+      <div className="flex items-center justify-between gap-2"><p className="text-xs font-bold text-[var(--space-text-primary)]">Every category and value</p>{copyButton}</div>
+      {valueItems}
     </div>
+  );
+  const compareValueList = (
+    <details className="mt-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-2.5" data-testid="case-exhibit-values">
+      <summary className="cursor-pointer text-xs font-bold text-[var(--space-text-primary)]">View data table</summary>
+      <div className="mt-1 flex justify-end">{copyButton}</div>
+      {valueItems}
+    </details>
   );
 
   return (
     <>
-      <ExhibitFrame index={index} title={exhibit.title} icon={icon} note={note} onExpand={() => setExpanded(true)}>
+      <ExhibitFrame index={index} title={exhibit.title} icon={icon} note={note} onExpand={() => setExpanded(true)} headerMinHeight={headerMinHeight} onHeaderHeight={onHeaderHeight}>
         {chartBody}
-        {valueList}
+        {compare ? compareValueList : valueList}
       </ExhibitFrame>
       {expanded ? (
         <div className="fixed inset-0 z-[100] overflow-y-auto bg-[color-mix(in_srgb,var(--space-neutral-950)_72%,transparent)] p-3 sm:p-8" role="dialog" aria-modal="true" aria-label={`Expanded ${exhibit.title}`}>
@@ -623,7 +666,7 @@ function ChartExhibit({ exhibit, index }: { exhibit: ExhibitChart; index?: numbe
               <button type="button" onClick={() => setExpanded(false)} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[var(--space-surface-card)] px-4 text-sm font-bold text-[var(--space-text-primary)]"><X className="h-4 w-4" /> Close</button>
             </div>
             <ExhibitFrame index={index} title={exhibit.title} icon={icon} note={note}>
-              <div className="w-full">{chartBody}{valueList}</div>
+              <div className="w-full">{fullChartBody}{valueList}</div>
             </ExhibitFrame>
           </div>
         </div>
@@ -648,7 +691,7 @@ function MetricExhibit({ exhibit, index }: { exhibit: ExhibitMetric; index?: num
         </p>
         <Gauge className="h-3.5 w-3.5 shrink-0 text-[var(--space-text-brand)]" aria-hidden="true" />
       </div>
-      <p className="mt-1 text-xs font-medium text-[var(--space-text-secondary)]">{exhibit.label}</p>
+      <p className="mt-1 text-xs font-medium text-[var(--space-text-secondary)]">{exhibit.label}<TermHint label={String(exhibit.label)} /></p>
       <p className="mt-1 text-xl font-extrabold leading-tight tracking-tight text-[var(--space-text-primary)]">
         {exhibit.value}
       </p>
@@ -661,11 +704,11 @@ function MetricExhibit({ exhibit, index }: { exhibit: ExhibitMetric; index?: num
  * Public API
  * ----------------------------------------------------------------------- */
 
-export function CaseExhibitCard({ exhibit: sourceExhibit, index }: { exhibit: CaseExhibit; index?: number }) {
+export function CaseExhibitCard({ exhibit: sourceExhibit, index, compare, headerMinHeight, onHeaderHeight }: { exhibit: CaseExhibit; index?: number } & CompareCardProps) {
   const exhibit = useMemo(() => clarifyUnitsDeep(sourceExhibit), [sourceExhibit]);
   if (!exhibit) return null;
-  if (exhibit.type === 'table') return <TableExhibit exhibit={exhibit} index={index} />;
-  if (exhibit.type === 'chart_data') return <ChartExhibit exhibit={exhibit} index={index} />;
+  if (exhibit.type === 'table') return <TableExhibit exhibit={exhibit} index={index} headerMinHeight={headerMinHeight} onHeaderHeight={onHeaderHeight} />;
+  if (exhibit.type === 'chart_data') return <ChartExhibit exhibit={exhibit} index={index} compare={compare} headerMinHeight={headerMinHeight} onHeaderHeight={onHeaderHeight} />;
   if (exhibit.type === 'metric') return <MetricExhibit exhibit={exhibit} index={index} />;
   return null;
 }
@@ -680,15 +723,32 @@ export function CaseExhibitList({
   exhibits,
   heading = 'Case data',
   className = '',
+  layout = 'compare',
+  readingNotes,
 }: {
   exhibits: CaseExhibit[];
   heading?: string | null;
   className?: string;
+  /** Exhibit reading notes, shown under "Reading notes" in the compare layout. */
+  readingNotes?: React.ReactNode;
+  /** 'compare' (default) lays out two or more exhibits for comparison; 'grid' keeps the plain card grid. */
+  layout?: 'compare' | 'grid';
 }) {
   const list = (exhibits || []).filter(Boolean);
   if (list.length === 0) return null;
+  if (layout === 'compare' && list.length >= 2) {
+    return (
+      <div className={className} data-testid="case-exhibit-list">
+        <CompareExhibits
+          readingNotes={readingNotes}
+          items={list.map((exhibit, index) => ({ key: `${index}-${exhibit.type === 'metric' ? exhibit.label : exhibit.title}`, number: index + 1, title: String((exhibit.type === 'metric' ? exhibit.label : exhibit.title) || `Exhibit ${index + 1}`) }))}
+          renderItem={(index, slot) => <CaseExhibitCard exhibit={list[index]} index={index} compare={slot.sideBySide} headerMinHeight={slot.headerMinHeight} onHeaderHeight={slot.onHeaderHeight} />}
+        />
+      </div>
+    );
+  }
   return (
-    <div className={className} data-testid="case-exhibit-list">
+    <div id={layout === 'compare' ? EVIDENCE_ANCHOR_ID : undefined} className={`scroll-mt-3 ${className}`} data-testid="case-exhibit-list">
       {heading ? (
         <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">{heading}</p>
       ) : null}

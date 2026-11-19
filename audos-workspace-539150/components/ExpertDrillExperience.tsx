@@ -14,6 +14,10 @@ import { buildFeedbackPriorities } from '../lib/feedbackPresentation';
 import { clarifyUnitText, clarifyUnitsDeep } from '../lib/unitLabels';
 import { openCasePoolCase, sourceFullCase } from './SolveFullCaseCta';
 import { presentLibraryQuestion } from '../lib/learnerContentPresentation';
+import CaseIdentityChips from './CaseIdentityChips';
+import { drillIdentity } from '../lib/caseIdentity';
+import { BackToQuestionButton, CaseQuestionFirst, useCaseReadingItemId } from './CaseReadingGuide';
+import { ANSWER_ANCHOR_ID, BackToExhibitsButton, GoToAnswerBar } from './CompareExhibits';
 import {
   buildReasoningFeedback,
   chooseNextAction,
@@ -89,6 +93,7 @@ function Field({ id, label, help, value, rows = 3, onChange }: { id: string; lab
 
 export default function ExpertDrillExperience({ question, onBack, onSubmitted, hideEvidenceColumn = false, onAnswerInput, onGraded, onGradeError }: Props) {
   const { sessionId } = useSpaceRuntime();
+  const readingId = useCaseReadingItemId() || question.id;
   const { data: attemptRows, loading: attemptsLoading, refresh: refreshAttempts } = window.useWorkspaceDB<SavedExpertAttempt>('drill_library_attempts', {
     filters: [
       { column: 'session_id', operator: 'eq', value: sessionId || '__no_session__' },
@@ -127,7 +132,7 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
   const exhibits = question.exhibits || [];
   const shown = useMemo(() => clarifyUnitsDeep(question), [question]);
   const shownExhibits = shown.exhibits || [];
-  // The four answer fields below already ask for observation, insight, implication and next step, so the generic answer-format prompt is not repeated.
+  // The answer fields below already ask for observation or evidence, insight and business implication, so the generic answer-format prompt is not repeated.
   const presented = useMemo(() => presentLibraryQuestion({ businessContext: shown.businessContext, instruction: shown.instruction, question: shown.question }, { hasExhibits: shownExhibits.length > 0 }), [shown, shownExhibits.length]);
   const objective = presented.context && shown.clientObjective && presented.context.includes(String(shown.clientObjective).trim()) ? '' : shown.clientObjective;
   const isHard = question.difficulty === 'hard';
@@ -175,7 +180,6 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
       response.supportingEvidence.trim() ? `Observed evidence:\n${response.supportingEvidence.trim()}` : '',
       response.keyInsight.trim() ? `Insight:\n${response.keyInsight.trim()}` : '',
       response.businessImplication.trim() ? `Business implication:\n${response.businessImplication.trim()}` : '',
-      response.recommendedAction.trim() ? `Recommended action:\n${response.recommendedAction.trim()}` : '',
     ].filter(Boolean).join('\n\n');
     setError('');
     setGrading(true);
@@ -278,58 +282,61 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
   };
 
   return (
-    <div className="mt-5" data-testid={`expert-drill-${question.id}`}>
-      <button type="button" onClick={leaveQuestion} className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold ${tw.button.secondary}`}>
-        <ArrowLeft className="h-4 w-4" /> Back to Question Library
-      </button>
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <span className={`rounded-full px-3 py-1 text-xs font-bold ${levelBadgeClass}`}>{levelLabel}</span>
-        <span className={`${tw.badge.default} ${tw.badge.primary}`}>{question.drillType}</span>
-        <span className="text-xs font-semibold text-[var(--space-text-muted)]">{isHard ? '2 connected exhibits' : '2–3 connected exhibits'}</span>
+    <div className="mt-3" data-testid={`expert-drill-${question.id}`}>
+      <div className="flex flex-wrap items-center gap-2">
+        <button type="button" onClick={leaveQuestion} className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold ${tw.button.secondary}`}>
+          <ArrowLeft className="h-4 w-4" /> Back to Question Library
+        </button>
+        <CaseIdentityChips identity={drillIdentity(question)} testId="expert-identity" />
+        <span className="text-xs font-semibold text-[var(--space-text-muted)]">{shownExhibits.length >= 3 ? `${shownExhibits.length} connected exhibits` : isHard ? '2 connected exhibits' : '2–3 connected exhibits'}</span>
         <span className="text-xs font-semibold text-[var(--space-text-muted)]">Insight and implication required</span>
         <span className="text-xs font-semibold text-[var(--space-text-muted)]">{question.estimatedMinutes} min</span>
       </div>
 
-      {journey ? (
-        <section className="mt-4 rounded-2xl border border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-4 sm:p-5" data-testid="journey-framing">
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">
-            Case Journey · {question.journeyStageRole}
-          </p>
-          <h2 className="mt-1 text-base font-bold text-[var(--space-text-primary)]">{clarifyUnitText(journey.name)}</h2>
-          <dl className="mt-3 grid gap-2 sm:grid-cols-3">
-            <div><dt className="text-[11px] font-bold uppercase tracking-wide text-[var(--space-text-muted)]">Your role</dt><dd className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(journey.role)}</dd></div>
-            <div><dt className="text-[11px] font-bold uppercase tracking-wide text-[var(--space-text-muted)]">The decision</dt><dd className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(journey.decision)}</dd></div>
-            <div><dt className="text-[11px] font-bold uppercase tracking-wide text-[var(--space-text-muted)]">Timeframe</dt><dd className="mt-0.5 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(journey.timeframe)}</dd></div>
-          </dl>
+      <div className="mt-3">
+        <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3">
+          <CaseQuestionFirst
+            bare
+            layout="split"
+            heading={(
+              <h1 className="break-words text-lg font-extrabold leading-7 text-[var(--space-text-primary)]">
+                {shown.businessProblem ? <span className="mr-2 align-middle text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]" data-testid="expert-business-problem">{shown.businessProblem}</span> : null}
+                {shown.title}
+              </h1>
+            )}
+            itemId={readingId}
+            question={<span data-testid="expert-task">{presented.task}</span>}
+            questionNote={presented.instruction || presented.guidance.length ? (
+              <>
+                {presented.instruction ? <p className="text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{presented.instruction}</p> : null}
+                {presented.guidance.map((line) => <p key={line} className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">{line}</p>)}
+              </>
+            ) : null}
+            clientObjective={objective || undefined}
+            context={presented.context}
+            contextExtra={journey || presented.keyTerms.length || shown.primarySkill || presented.skillLabels.length ? (
+              <>
+                {journey ? (
+                  <div className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-accent-soft)] p-2.5" data-testid="journey-framing">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-brand)]">Case Journey · {question.journeyStageRole} · {clarifyUnitText(journey.name)}</p>
+                    <dl className="mt-1.5 space-y-1">
+                      <div className="text-xs leading-5"><dt className="inline font-bold text-[var(--space-text-primary)]">Your role: </dt><dd className="inline text-[var(--space-text-secondary)]">{clarifyUnitText(journey.role)}</dd></div>
+                      <div className="text-xs leading-5"><dt className="inline font-bold text-[var(--space-text-primary)]">The decision: </dt><dd className="inline text-[var(--space-text-secondary)]">{clarifyUnitText(journey.decision)}</dd></div>
+                      <div className="text-xs leading-5"><dt className="inline font-bold text-[var(--space-text-primary)]">Timeframe: </dt><dd className="inline text-[var(--space-text-secondary)]">{clarifyUnitText(journey.timeframe)}</dd></div>
+                    </dl>
+                  </div>
+                ) : null}
+                {presented.keyTerms.length ? <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="expert-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {presented.keyTerms.join(' ')}</p> : null}
+                {shown.primarySkill || presented.skillLabels.length ? <p className="mt-2 text-[11px] font-medium text-[var(--space-text-muted)]" data-testid="expert-skill-label">Skill focus: {[shown.primarySkill, ...presented.skillLabels].filter(Boolean).join('; ')}</p> : null}
+              </>
+            ) : null}
+          />
         </section>
-      ) : null}
 
-      <div className="mt-4">
-        <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">{shown.industry} · {shown.businessProblem}</p>
-          <h1 className="mt-2 break-words text-xl font-extrabold leading-7 text-[var(--space-text-primary)] sm:text-2xl">{shown.title}</h1>
-          {presented.context ? <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]" data-testid="expert-case-context">{presented.context}</p> : null}
-          {presented.keyTerms.length ? <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="expert-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {presented.keyTerms.join(' ')}</p> : null}
-          {objective ? (
-            <div className="mt-4 rounded-xl border-l-4 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)] p-4">
-              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-brand)]">Client objective</p>
-              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{objective}</p>
-            </div>
-          ) : null}
-          {shown.primarySkill || presented.skillLabels.length ? <p className="mt-3 text-[11px] font-medium text-[var(--space-text-muted)]" data-testid="expert-skill-label">Skill focus: {[shown.primarySkill, ...presented.skillLabels].filter(Boolean).join('; ')}</p> : null}
-        </section>
-
-        <div className="mt-4">
+        <div className="mt-3">
           <ExhibitRenderer exhibits={shownExhibits} displayMode="advanced" guide={presented.exhibitGuide} />
+          {!submitted ? <GoToAnswerBar hint="Write your conclusion, the evidence and what it means for the client." /> : null}
         </div>
-
-        <section className="mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 sm:p-7">
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Question</p>
-          {presented.instruction ? <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{presented.instruction}</p> : null}
-          <p className="mt-2 whitespace-pre-wrap text-base font-bold leading-7 text-[var(--space-text-primary)]" data-testid="expert-task">{presented.task}</p>
-          {presented.guidance.map((line) => <p key={line} className="mt-2 text-xs leading-5 text-[var(--space-text-muted)]">{line}</p>)}
-        </section>
 
         <div className="mt-4 space-y-4">
           {!submitted && attemptsLoading && !retrying ? (
@@ -337,16 +344,18 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
               <p className="text-sm font-bold text-[var(--space-text-primary)]">Checking for your saved result…</p>
             </section>
           ) : !submitted ? (
-            <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 shadow-sm sm:p-6" data-testid="expert-answer-area">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Structured {levelLabel} Answer</p>
+            <section id={ANSWER_ANCHOR_ID} className="scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 shadow-sm sm:p-6" data-testid="expert-answer-area">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Your answer · Structured {levelLabel} Answer</p>
+                <BackToExhibitsButton />
+              </div>
               <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">{isHard ? 'Use specific exhibit values, then explain what they mean. Keep the path direct and decision-focused.' : 'Reference at least Exhibit 1 and Exhibit 2 with specific numbers. A correct number without interpretation cannot receive a high score.'}</p>
               <div className="mt-5 space-y-5">
                 {question.calculationRequired ? <Field id="expert-calculation" label="Calculation" help="Show formulas, units, assumptions, and the reconciled result before interpreting it. Example: Revenue = 120 × 40 = 4,800 million VND." value={response.calculation} onChange={(value) => update('calculation', value)} rows={4} /> : null}
                 {isHard ? <Field id="hard-observation" label="1. Key Observation" help="Report only what the exhibits show. Example: Volume rose 8%, but revenue fell 3% as price declined 10%." value={response.supportingEvidence} onChange={(value) => update('supportingEvidence', value)} rows={3} /> : null}
                 <Field id="expert-insight" label={`${isHard ? '2' : '1'}. Key Insight`} help="Explain the conclusion behind the observation. Example: Discounting is eroding growth because the price decline outweighs the volume gain." value={response.keyInsight} onChange={(value) => update('keyInsight', value)} />
                 {!isHard ? <Field id="expert-evidence" label="2. Supporting Evidence" help="Cite at least two exhibits with specific, reconciled numbers; do not repeat your conclusion." value={response.supportingEvidence} onChange={(value) => update('supportingEvidence', value)} rows={3} /> : null}
-                <Field id="expert-implication" label="3. Business Implication" help="Explain why the insight matters to the client objective, economics, or risk." value={response.businessImplication} onChange={(value) => update('businessImplication', value)} />
-                <Field id="expert-action" label={`4. ${isHard ? 'Recommended Next Step' : 'Recommended Action'}`} help="Recommend what management should do or investigate next, with a practical decision gate." value={response.recommendedAction} onChange={(value) => update('recommendedAction', value)} rows={3} />
+                <Field id="expert-implication" label="3. Business Implication" help="Explain what your findings mean for the client's objective or business decision. A next step or action plan is not required." value={response.businessImplication} onChange={(value) => update('businessImplication', value)} />
               </div>
               {error ? <p className="mt-4 text-sm font-semibold text-[var(--space-semantic-danger)]">{error}</p> : null}
               <button type="button" onClick={() => void submit()} disabled={grading} className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-bold ${tw.button.primary} ${grading ? tw.button.disabled : ''}`} data-testid="button-submit-expert-answer"><Check className="h-4 w-4" /> {grading ? 'Mate is grading…' : `Submit For ${levelLabel} Feedback`}</button>
@@ -375,7 +384,8 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
         </div>
       </div>
 
-      {!submitted ? <div className="mt-4 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-xs leading-5 text-[var(--space-text-muted)]"><Target className="mr-1 inline h-3.5 w-3.5" /> Scoring guardrail: correct numbers alone cannot earn a high score without interpretation, business implication, and an evidence-linked recommendation{isHard ? '.' : ' supported by multiple exhibits.'}</div> : null}
+      {!submitted ? <div className="mt-4 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-xs leading-5 text-[var(--space-text-muted)]"><Target className="mr-1 inline h-3.5 w-3.5" /> Scoring guardrail: correct numbers alone cannot earn a high score without interpretation and a business implication{isHard ? '.' : ' supported by multiple exhibits.'} A next step or action plan is not required and never costs marks.</div> : null}
+      <BackToQuestionButton />
     </div>
   );
 }

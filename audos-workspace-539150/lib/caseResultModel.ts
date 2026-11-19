@@ -235,6 +235,11 @@ function isOpenEndedQuestion(question: Pick<LibraryQuestion, 'skill' | 'answerMo
   return question.answerMode === 'text';
 }
 
+/** Structured answer forms end at Business Implication, so the model answer and grader reference do too. */
+function withoutRetiredNextStep(text: string): string {
+  return text.split('\n').filter((line) => !/^\s*recommended (?:next step|action)\s*:/i.test(line)).join('\n').trim();
+}
+
 /** Worked answer for a Question Library item (Charts, Calculations, Market Sizing, Expert drills, Structures fallback). */
 export function libraryQuestionWorkedAnswer(
   question: LibraryQuestion,
@@ -262,7 +267,7 @@ export function libraryQuestionWorkedAnswer(
     model.conclusionDetail = steps.length ? explanation : '';
   } else {
     model.approach = steps;
-    model.conclusion = cleanText(question.correctAnswer);
+    model.conclusion = question.structuredAnswer ? withoutRetiredNextStep(cleanText(question.correctAnswer)) : cleanText(question.correctAnswer);
     model.conclusionDetail = explanation;
   }
   if (question.keyInsight) model.checks.push(`Business meaning: ${cleanText(question.keyInsight)}`);

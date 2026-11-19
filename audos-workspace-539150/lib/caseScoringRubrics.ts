@@ -138,7 +138,7 @@ export const CASE_SCORING_RUBRICS: Record<ExerciseType, ExerciseRubric> = {
       criterion('reading_accuracy', 'Accuracy of exhibit reading', 30, 'Uses the correct values, units, periods, and comparisons from the exhibits.'),
       criterion('insight', 'Insight beyond restating values', 25, 'Identifies the pattern, driver, outlier, or relationship that matters.'),
       criterion('observation_vs_inference', 'Observation versus inference', 20, 'Separates what the data directly shows from hypotheses that require testing.'),
-      criterion('decision_implication', 'Implication for the decision', 25, 'Connects the evidence to the case objective or next decision.'),
+      criterion('decision_implication', 'Implication for the decision', 25, 'Explains what the evidence means for the client objective or business decision. A next step, action plan or decision gate is not required and is never marked down.'),
     ],
   },
   full_case: {

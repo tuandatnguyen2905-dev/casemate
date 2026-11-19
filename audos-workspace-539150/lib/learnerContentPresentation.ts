@@ -84,8 +84,8 @@ const TASK_VERB = /\b(?:state|recommend|answer|explain|identify|write|calculate|
 const IMPERATIVE_START = /^(?:estimate|calculate|compute|build|use|show|state|explain|identify|recommend|compare|write|develop|give|allocate|define|assume|list|propose|prioriti[sz]e|decide|determine|work out|outline|design|draft|choose|rank|separate|structure|break|size|reconcile|assess|evaluate|analy[sz]e|answer|name|describe|set out|take|cite|cover|keep|start|check|find|apply|treat|create|generate|suggest|plan|map|test)\b/i;
 const QUESTION_WORD = /^(?:what|which|how|why|where|when|who|whom|whose|should|would|could|can|is|are|does|do|did|will|has|have)\b/i;
 const META_ROOT = /^(?:which|what)\s+(?:[\w-]+\s+){0,2}(?:issue[- ]tree|structure|decomposition|framework|tree|breakdown)\b|^how would you (?:structure|break down|decompose)\b|\bstrongest starting point\b|\bmost (?:complete|decision-useful)\b/i;
-/** The generic four-part answer prompt appended to restored questions; the answer area already asks for these parts. */
-const ANSWER_FORMAT_PROMPT = /^what is the key observation, what insight does it reveal, why does it matter, and what should management do next\?$/i;
+/** The generic answer prompt appended to restored questions (current three-part and earlier four-part wording); the answer area already asks for these parts. */
+const ANSWER_FORMAT_PROMPT = /^what is the key observation, what insight does it reveal,(?: and)? why does it matter(?:, and what should management do next)?\?$/i;
 
 export function normalizeForCompare(text: string): string {
   return String(text || '')

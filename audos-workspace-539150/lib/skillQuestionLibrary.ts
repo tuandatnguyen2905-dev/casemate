@@ -388,12 +388,13 @@ function buildCalculations(): LibraryQuestion[] {
       exhibit: {
         kind: 'table',
         title: `${company} - Growth Plan Inputs`,
-        unit: 'VND billion',
+        unit: 'Unit stated in each row',
+        footnote: 'Forecast growth is the expected percentage rise in revenue on last year. The planning benchmark applies a 10% rise to the same last-year revenue.',
         columns: ['Planning input', 'Value'],
         rows: [
-          ['Last-year revenue', String(revenue)],
-          ['Forecast growth', `${growth}%`],
-          ['Planning benchmark', '10% growth'],
+          ['Last-year revenue', `VND ${revenue} billion`],
+          ['Forecast growth', `${growth}% on last year`],
+          ['Planning benchmark', '10% growth on last year'],
         ],
       },
       question: `${company}, a ${industry}, generated VND ${revenue} billion of revenue last year. Management expects revenue to grow by ${growth}%. What revenue should it plan for next year, and how does that compare with a 10% growth plan?`,
@@ -447,12 +448,13 @@ function buildCalculations(): LibraryQuestion[] {
       exhibit: {
         kind: 'table',
         title: `${company} - Profit Inputs`,
-        unit: 'VND billion unless noted',
+        unit: 'Unit stated in each row',
+        footnote: 'Gross margin is gross profit as a percentage of revenue. Operating expenses are the running costs deducted after gross profit.',
         columns: ['Metric', 'Value'],
         rows: [
-          ['Revenue', String(revenue)],
-          ['Gross margin', `${margin}%`],
-          ['Operating expenses', String(opex)],
+          ['Revenue', `VND ${revenue} billion`],
+          ['Gross margin', `${margin}% of revenue`],
+          ['Operating expenses', `VND ${opex} billion`],
         ],
       },
       question: `${company} has revenue of VND ${revenue} billion, a gross margin of ${margin}%, and operating expenses of VND ${opex} billion. What are operating profit and operating margin?`,
@@ -507,7 +509,8 @@ function buildCalculations(): LibraryQuestion[] {
       exhibit: {
         kind: 'table',
         title: `${company} - Breakeven Inputs`,
-        unit: 'As labelled',
+        unit: 'Unit stated in each row',
+        footnote: 'Contribution per sale is the price of one sale minus the variable cost of that sale. Available capacity is the most sales the operation can serve.',
         columns: ['Input', 'Value'],
         rows: [
           ['Fixed costs', `VND ${fixedCost} million`],
@@ -1261,7 +1264,7 @@ export function validateExpertQuestion(question: LibraryQuestion): string[] {
   if (exhibits.length < 2 || exhibits.length > 3) errors.push(`${question.id} Must Have 2–3 Connected Exhibits.`);
   if (new Set(exhibits.map((exhibit) => exhibit.kind)).size < 2) errors.push(`${question.id} Must Use At Least Two Different Exhibit Types.`);
   if (!question.businessContext || !question.clientObjective || !question.drillType || !question.industry || !question.businessProblem || !question.primarySkill) errors.push(`${question.id} Is Missing Expert Context Metadata.`);
-  if (!question.modelAnswerSections?.keyInsight || !question.modelAnswerSections?.supportingEvidence || !question.modelAnswerSections?.businessImplication || !question.modelAnswerSections?.recommendedAction) errors.push(`${question.id} Is Missing A Complete Structured Model Answer.`);
+  if (!question.modelAnswerSections?.keyInsight || !question.modelAnswerSections?.supportingEvidence || !question.modelAnswerSections?.businessImplication) errors.push(`${question.id} Is Missing A Complete Structured Model Answer.`);
   if (!question.scoringRubric?.length || question.scoringRubric.reduce((sum, item) => sum + item.points, 0) !== 100) errors.push(`${question.id} Rubric Must Total 100 Points.`);
   if (!question.alternativeConclusions?.length || !question.commonMistake || !question.numericalValidation?.length || !question.recommendedNextDrillId || !question.personalizedFeedbackTemplate) errors.push(`${question.id} Is Missing Review Or Feedback Content.`);
   if (question.reviewStatus !== 'Draft' || question.status !== 'draft-pending-review') errors.push(`${question.id} Must Remain Draft - Pending Review.`);
@@ -1287,9 +1290,9 @@ export function validateHardStructuredQuestion(question: LibraryQuestion): strin
   if (exhibits.length < 2) errors.push(`${question.id} Hard Case Must Have At Least Two Exhibits.`);
   if (new Set(exhibits.map((exhibit) => exhibit.kind === 'bar' ? 'vertical-bar' : exhibit.kind)).size < 2) errors.push(`${question.id} Hard Case Must Use At Least Two Different Exhibit Types.`);
   if (!question.businessContext || !question.clientObjective || !question.drillType || !question.industry || !question.businessProblem) errors.push(`${question.id} Is Missing Hard Context Metadata.`);
-  if (!question.modelAnswerSections?.keyObservation || !question.modelAnswerSections.keyInsight || !question.modelAnswerSections.businessImplication || !question.modelAnswerSections.recommendedAction) errors.push(`${question.id} Is Missing A Complete Hard Structured Model Answer.`);
+  if (!question.modelAnswerSections?.keyObservation || !question.modelAnswerSections.keyInsight || !question.modelAnswerSections.businessImplication) errors.push(`${question.id} Is Missing A Complete Hard Structured Model Answer.`);
   const rubricPoints = question.scoringRubric?.map((item) => item.points) || [];
-  if (rubricPoints.join(',') !== '20,30,25,15,10') errors.push(`${question.id} Must Use The 20/30/25/15/10 Hard Rubric.`);
+  if (rubricPoints.join(',') !== '25,35,30,10') errors.push(`${question.id} Must Use The 25/35/30/10 Hard Rubric.`);
   if (question.reviewStatus !== 'Draft' || question.status !== 'draft-pending-review') errors.push(`${question.id} Must Remain Draft - Pending Review.`);
   if (!question.personalizedFeedbackTemplate || !question.recommendedNextDrillId) errors.push(`${question.id} Is Missing Personalized Feedback Or A Recommended Next Drill.`);
   if (!question.estimatedMinutes || question.estimatedMinutes < 5 || question.estimatedMinutes > 8) errors.push(`${question.id} Must Take Approximately 5–8 Minutes.`);

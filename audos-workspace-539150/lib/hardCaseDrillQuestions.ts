@@ -3,11 +3,10 @@ import type { ExpertRubricItem, LibraryExhibit, LibraryQuestion } from './skillQ
 const SOURCE = 'Casemate original practice data; illustrative figures prepared for Draft Review.';
 
 const HARD_RUBRIC: ExpertRubricItem[] = [
-  { criterion: 'Key observation and data reading', points: 20, description: 'Reads the decisive exhibit values accurately and distinguishes facts from interpretation.' },
-  { criterion: 'Key insight identification', points: 30, description: 'Identifies what the evidence means and prioritises the main driver.' },
-  { criterion: 'Business implication', points: 25, description: 'Explains why the insight matters to the client objective, economics, or risk.' },
-  { criterion: 'Recommended action', points: 15, description: 'Proposes a practical next step linked directly to the insight.' },
-  { criterion: 'Communication clarity', points: 10, description: 'Communicates concisely in Observation → Insight → Implication → Action order.' },
+  { criterion: 'Key observation and data reading', points: 25, description: 'Reads the decisive exhibit values accurately and distinguishes facts from interpretation.' },
+  { criterion: 'Key insight identification', points: 35, description: 'Identifies what the evidence means and prioritises the main driver.' },
+  { criterion: 'Business implication', points: 30, description: 'Explains what the findings mean for the client objective, economics, or risk. No action plan or next step is required.' },
+  { criterion: 'Communication clarity', points: 10, description: 'Communicates concisely in Observation → Insight → Implication order.' },
 ];
 
 function exhibit(value: LibraryExhibit): LibraryExhibit {
@@ -36,7 +35,7 @@ export const HARD_CASE_DRILL_QUESTIONS: LibraryQuestion[] = [
     id: 'charts-legacy-novabrew-401', skill: 'charts', title: 'NovaBrew - Growth Quality and Margin Risk', drillType: 'Growth vs Profitability', industry: 'Beverages', businessProblem: 'Profit decline', primarySkill: 'Turning a profit bridge into a business-decision implication', estimatedMinutes: 7,
     businessContext: 'NovaBrew sold more canned coffee in FY2026, but operating profit declined. Management is deciding whether to sign a larger distributor agreement.',
     clientObjective: 'Identify the decisive insight, support it with evidence, and explain what it implies for the distribution decision.',
-    instruction: 'Do not merely describe values. State the insight, cite the supporting evidence, explain the decision implication, and recommend the next action.',
+    instruction: 'Do not merely describe values. State the insight, cite the supporting evidence, and explain the decision implication.',
     question: 'What is the most important insight from the exhibits, what evidence supports it, and what does it imply for NovaBrew’s distributor decision?',
     exhibits: [
       exhibit({ id: 'novabrew-income-table', datasetId: 'novabrew-fy25-26', kind: 'financial-table', title: 'Operating Profit Summary', unit: 'billion VND', timePeriod: 'FY2025–FY2026', columns: ['Metric', 'FY2025', 'FY2026'], rows: [['Revenue', '200', '230'], ['Variable costs', '(130)', '(166)'], ['Fixed costs', '(40)', '(46)'], ['Operating profit', '30', '18']], analyticalPurpose: 'Reconcile the reported operating-profit decline.', metrics: ['Revenue', 'Variable cost', 'Fixed cost', 'Operating profit'], periods: ['FY2025', 'FY2026'] }),
@@ -53,8 +52,8 @@ export const HARD_CASE_DRILL_QUESTIONS: LibraryQuestion[] = [
     id: 'charts-hard-insight-401', skill: 'charts', title: 'Lantern Retail - Online Growth Quality', drillType: 'Growth vs Profitability', industry: 'Omnichannel retail', businessProblem: 'Unprofitable growth', primarySkill: 'Turning a visible channel trend into a management insight', estimatedMinutes: 6,
     businessContext: 'Lantern Retail is a Vietnamese home-goods chain. Online revenue has grown quickly, and management is considering shifting another 20 billion VND of marketing spend to the channel.',
     clientObjective: 'Decide whether the current online growth model is strong enough to justify the additional marketing investment.',
-    instruction: 'Use the two connected exhibits to separate the visible growth observation from the economic insight. Follow the direct Observation → Insight → Implication → Action path.',
-    question: 'What is the most important insight about Lantern Retail’s online growth, why does it matter for the investment decision, and what should management do next?',
+    instruction: 'Use the two connected exhibits to separate the visible growth observation from the economic insight. Follow the direct Observation → Insight → Implication path.',
+    question: 'What is the most important insight about Lantern Retail’s online growth, and why does it matter for the investment decision?',
     exhibits: [
       exhibit({ id: 'lantern-channel-revenue', datasetId: 'lantern-fy25-26', kind: 'grouped-bar', title: 'Revenue by Channel', unit: 'billion VND', timePeriod: 'FY2025–FY2026', categories: ['Stores', 'Online', 'B2B'], series: [{ name: 'FY2025', values: [520, 180, 100] }, { name: 'FY2026', values: [500, 300, 90] }], axisConfig: { xLabel: 'Channel', yLabel: 'Revenue (billion VND)' }, analyticalPurpose: 'Identify which channel created the headline growth.', metrics: ['Revenue'], periods: ['FY2025', 'FY2026'] }),
       exhibit({ id: 'lantern-online-margin', datasetId: 'lantern-online-quarterly', kind: 'line', title: 'Online Contribution Margin', unit: 'Percent', timePeriod: 'FY2026 quarters', categories: ['Q1', 'Q2', 'Q3', 'Q4'], series: [{ name: 'Contribution margin', values: [8, 7, 5, 2] }], axisConfig: { xLabel: 'Quarter', yLabel: 'Contribution margin (%)' }, analyticalPurpose: 'Test whether online growth is becoming more or less economically attractive.', metrics: ['Contribution margin'], periods: ['Q1', 'Q2', 'Q3', 'Q4'] }),
@@ -182,7 +181,7 @@ function normalisedExhibitKind(exhibit: LibraryExhibit): string {
 /**
  * Restores a pre-migration Hard question without changing its stable ID or
  * candidate completion key. The archived MCQ/numeric prompt becomes context
- * for the structured Observation → Insight → Implication → Action response.
+ * for the structured Observation → Insight → Implication response.
  */
 export function restoreArchivedHardQuestion(question: LibraryQuestion): LibraryQuestion {
   if (question.retiredVersion || question.difficulty !== 'hard' || question.reviewStatus !== 'Archived') return question;
@@ -202,7 +201,7 @@ export function restoreArchivedHardQuestion(question: LibraryQuestion): LibraryQ
   const insight = question.keyInsight || question.explanation;
   const implication = `The client should not act on the headline alone; the evidence changes the value, risk, or priority of the ${meta.problem.toLowerCase()} decision.`;
   const evidenceTerms = Array.from(`${question.correctAnswer} ${question.explanation}`.matchAll(/\b\d+(?:[.,]\d+)?%?\b/g), (match) => match[0]).slice(0, 8);
-  const correctAnswer = `Key Observation: ${observation}\nKey Insight: ${insight}\nBusiness Implication: ${implication}\nRecommended Next Step: ${meta.action}`;
+  const correctAnswer = `Key Observation: ${observation}\nKey Insight: ${insight}\nBusiness Implication: ${implication}`;
 
   return {
     ...question,
@@ -222,9 +221,9 @@ export function restoreArchivedHardQuestion(question: LibraryQuestion): LibraryQ
     businessProblem: question.businessProblem || meta.problem,
     primarySkill: question.primarySkill || meta.primarySkill,
     businessContext: question.businessContext || `${question.title} is a Hard case that requires the candidate to connect quantitative evidence with a management decision.`,
-    clientObjective: question.clientObjective || 'Identify the decisive observation, explain the business insight and implication, and recommend the next management action.',
-    instruction: 'Use both exhibits. Follow Observation → Insight → Implication → Action, cite the decisive values, and keep the recommendation linked to the evidence.',
-    question: `${question.question}\n\nWhat is the key observation, what insight does it reveal, why does it matter, and what should management do next?`,
+    clientObjective: question.clientObjective || 'Identify the decisive observation and explain the business insight and implication.',
+    instruction: 'Use both exhibits. Follow Observation → Insight → Implication, cite the decisive values, and keep the implication linked to the evidence.',
+    question: `${question.question}\n\nWhat is the key observation, what insight does it reveal, and why does it matter?`,
     correctAnswer,
     modelAnswerSections: {
       keyInsight: insight,
@@ -232,12 +231,12 @@ export function restoreArchivedHardQuestion(question: LibraryQuestion): LibraryQ
       businessImplication: implication,
       recommendedAction: meta.action,
     },
-    explanation: `${question.explanation} A complete Hard answer must now connect that result to the distinct second exhibit, state the business implication, and define a practical next step.`,
+    explanation: `${question.explanation} A complete Hard answer must now connect that result to the distinct second exhibit and state the business implication.`,
     scoringRubric: HARD_RUBRIC,
     personalizedFeedbackTemplate: 'Return the overall score, strongest answer section, most important missing insight, evidence used correctly, evidence overlooked, the model answer, and the recommended next drill.',
-    alternativeConclusions: question.alternativeConclusions || ['A different conclusion is acceptable when it uses both exhibits accurately and defines an evidence-linked decision gate.'],
+    alternativeConclusions: question.alternativeConclusions || ['A different conclusion is acceptable when it uses both exhibits accurately and explains what the evidence means for the decision.'],
     commonMistake: question.commonMistake || 'Stopping at the original answer without interpreting the complementary exhibit or stating a management implication.',
-    commonMistakes: question.commonMistakes || ['Using only one exhibit.', 'Repeating a calculation without interpreting it.', 'Giving a generic action without a measurable gate.'],
+    commonMistakes: question.commonMistakes || ['Using only one exhibit.', 'Repeating a calculation without interpreting it.', 'Stating an implication that is not tied to the decision.'],
     learningObjective: question.learningObjective || meta.primarySkill,
     numericalValidation: question.numericalValidation || ['The original answer and explanation remain unchanged as the numerical reference.', 'The second exhibit is analytically distinct from the first.'],
     scoringHints: {

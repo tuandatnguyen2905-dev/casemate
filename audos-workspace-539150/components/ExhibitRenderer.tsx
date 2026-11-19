@@ -5,6 +5,8 @@ import type { ExhibitKind, ExhibitSeries, LibraryExhibit } from '../lib/skillQue
 import { dedupeColumnUnits, headerWithUnit } from '../lib/exhibitTableUnits';
 import { clarifyUnitText, clarifyUnitsDeep } from '../lib/unitLabels';
 import { exhibitNumberList, shareRepeatedExhibitNotes } from '../lib/learnerContentPresentation';
+import { TermHint } from './CaseReadingGuide';
+import { CompareExhibits, CopyTableButton, EVIDENCE_ANCHOR_ID, useHeaderHeightReporter } from './CompareExhibits';
 
 const DEFAULT_PALETTE = [
   'var(--space-brand-primary-700)',
@@ -66,7 +68,12 @@ interface ExhibitRendererProps {
   displayMode?: ExhibitDisplayMode;
   /** Single-chart question layouts: shorter plot area and tighter card chrome. Expand still opens the full-size view. */
   compact?: boolean;
+  /** 'compare' (default) lays out two or more exhibits for comparison; 'grid' keeps the plain card grid. */
+  layout?: 'compare' | 'grid';
 }
+
+/** Plot height for cards shown in the compare layout; Expand opens the full-size view. */
+const COMPARE_CHART_PIXELS = 250;
 
 const SpaciousChartLayoutContext = createContext(false);
 
@@ -111,7 +118,7 @@ function buildDims(width: number, height: number, kind: string, count: number, l
   const dual = kind === 'combo' || kind === 'dual-axis' || kind === 'pareto';
   const point = kind === 'scatter' || kind === 'bubble';
   const left = point ? 56 : Math.max(W < 400 ? 62 : 72, Math.ceil(tickChars * CHAR + 34));
-  const right = dual ? (W < 400 ? 52 : 60) : point ? 26 : 18;
+  const right = dual ? (W < 400 ? 52 : 60) : point ? 26 : W < 700 ? 26 : 18;
   const yTitleLines = point && labels.yLabel ? axisTitleLines(labels.yLabel, W).length : 0;
   const xTitleLines = point && labels.xLabel ? axisTitleLines(labels.xLabel, W).length : 0;
   const top = point ? 20 + yTitleLines * 16 : 30;
@@ -158,6 +165,28 @@ function canonicalise(exhibit: LibraryExhibit): CanonicalExhibit {
  * side. Source values are never changed - only the chart form.
  */
 function resolveChartForm(exhibit: CanonicalExhibit): CanonicalExhibit {
+  const startEnd = (exhibit.kind === 'slope' || exhibit.kind === 'line' || exhibit.kind === 'multi-line')
+    && exhibit.categories.length === 2
+    && exhibit.series.length >= 3
+    && exhibit.series.every((series) => series.values.length === 2 && (series.unit || '') === (exhibit.series[0].unit || ''));
+  if (startEnd) {
+    // Three or more lines that each join the same two points cross and share start values, so the start-versus-end
+    // comparison is drawn as one pair of columns per item on one common axis. Values are not altered.
+    const [from, to] = exhibit.categories;
+    const percent = /percent|%/i.test(exhibit.series[0].unit || exhibit.unit);
+    return {
+      ...exhibit,
+      kind: 'grouped-bar',
+      categories: exhibit.series.map((series) => series.name),
+      series: exhibit.categories.map((name, index) => ({
+        name,
+        unit: exhibit.series[0].unit,
+        values: exhibit.series.map((series) => series.values[index]),
+        displayValues: exhibit.series.every((series) => series.displayValues?.[index]) ? exhibit.series.map((series) => series.displayValues![index]) : undefined,
+      })),
+      footnote: exhibit.footnote || (percent ? `Change is measured in percentage points (pp): ${to} value minus ${from} value.` : exhibit.footnote),
+    };
+  }
   if (!STACKED_KINDS.has(exhibit.kind)) return exhibit;
   if (exhibit.categories.length === 1 && exhibit.series.length > 1) {
     const sharedUnit = exhibit.series.every((series) => (series.unit || '') === (exhibit.series[0].unit || '')) ? exhibit.series[0].unit : undefined;
@@ -536,7 +565,7 @@ function CompactTable({ columns: rawColumns, rows: rawRows, minWidth = 0, captio
               <dl className="mt-1 space-y-0.5">
                 {columns.slice(1).map((column, offset) => (
                   <div key={`${column}-${offset}`} className="flex items-baseline justify-between gap-3">
-                    <dt className="min-w-0 text-[10px] uppercase leading-4 tracking-wide text-[var(--space-text-muted)]">{column}</dt>
+                    <dt className="min-w-0 text-[10px] uppercase leading-4 tracking-wide text-[var(--space-text-muted)]">{column}<TermHint label={String(column)} /></dt>
                     <dd className="shrink-0 text-[11px] font-semibold tabular-nums leading-4 text-[var(--space-text-primary)]">{row[offset + 1]}</dd>
                   </div>
                 ))}
@@ -550,7 +579,7 @@ function CompactTable({ columns: rawColumns, rows: rawRows, minWidth = 0, captio
         <thead>
           <tr className="border-b-2 border-[var(--space-border-strong)]">
             {columns.map((column, columnIndex) => (
-              <th key={`${column}-${columnIndex}`} className={`px-1.5 py-1 text-[10px] font-bold uppercase leading-3 tracking-wide text-[var(--space-text-muted)] ${numeric[columnIndex] ? 'text-right' : 'text-left'}`}>{column}</th>
+              <th key={`${column}-${columnIndex}`} className={`px-1.5 py-1 text-[10px] font-bold uppercase leading-3 tracking-wide text-[var(--space-text-muted)] ${numeric[columnIndex] ? 'text-right' : 'text-left'}`}>{column}<TermHint label={String(column)} /></th>
             ))}
           </tr>
         </thead>
@@ -664,19 +693,26 @@ function AxisLabels({ exhibit }: { exhibit: CanonicalExhibit }) {
   const maxChars = Math.max(6, Math.floor(PH / 8));
   return <g>
     <text x={M.left + PW / 2} y={H - 8} textAnchor="middle" fontSize={FS} fontWeight="600" fill="var(--space-text-muted)">{fitAxisTitle(exhibit.axisConfig?.xLabel || '', Math.floor(PW / 7.5))}</text>
-    <text transform={`translate(15 ${M.top + PH / 2}) rotate(-90)`} textAnchor="middle" fontSize={FS} fontWeight="600" fill="var(--space-text-muted)">{fitAxisTitle(yLabel, maxChars)}</text>
-    {exhibit.axisConfig?.rightYLabel ? <text transform={`translate(${W - 14} ${M.top + PH / 2}) rotate(90)`} textAnchor="middle" fontSize={FS} fontWeight="600" fill="var(--space-text-muted)">{fitAxisTitle(exhibit.axisConfig.rightYLabel, maxChars)}</text> : null}
+    {yLabel.length > maxChars
+      // Too long for the rotated slot beside a short plot: print it in full above the axis instead of cutting it.
+      ? <text x={8} y={13} textAnchor="start" fontSize={12} fontWeight="600" fill="var(--space-text-muted)" stroke="var(--space-surface-card)" strokeWidth="3" paintOrder="stroke">{fitAxisTitle(yLabel, Math.floor(((exhibit.axisConfig?.rightYLabel ? W / 2 : W) - 16) / 6.6))}</text>
+      : <text transform={`translate(15 ${M.top + PH / 2}) rotate(-90)`} textAnchor="middle" fontSize={FS} fontWeight="600" fill="var(--space-text-muted)">{yLabel}</text>}
+    {exhibit.axisConfig?.rightYLabel ? (exhibit.axisConfig.rightYLabel.length > maxChars
+      ? <text x={W - 8} y={13} textAnchor="end" fontSize={12} fontWeight="600" fill="var(--space-text-muted)" stroke="var(--space-surface-card)" strokeWidth="3" paintOrder="stroke">{fitAxisTitle(exhibit.axisConfig.rightYLabel, Math.floor((W / 2 - 12) / 6.6))}</text>
+      : <text transform={`translate(${W - 14} ${M.top + PH / 2}) rotate(90)`} textAnchor="middle" fontSize={FS} fontWeight="600" fill="var(--space-text-muted)">{exhibit.axisConfig.rightYLabel}</text>) : null}
   </g>;
 }
 
 function wrapLabel(value: string, max = 18): string[] {
-  const words = value.split(/\s+/).filter(Boolean);
+  // Long hyphenated words (e.g. "Cost-to-serve") may break after a hyphen rather than being cut short.
+  const words = value.split(/\s+/).filter(Boolean).flatMap((word) => (word.length > max && /[-/]/.test(word) ? word.split(/(?<=[-/])/) : [word]));
   if (words.length <= 1 || value.length <= max) return [value];
   const lines: string[] = [];
   words.forEach((word) => {
     const current = lines[lines.length - 1];
-    if (!current || `${current} ${word}`.length > max) lines.push(word);
-    else lines[lines.length - 1] = `${current} ${word}`;
+    const joined = current && /[-/]$/.test(current) ? `${current}${word}` : `${current} ${word}`;
+    if (!current || joined.length > max) lines.push(word);
+    else lines[lines.length - 1] = joined;
   });
   return lines;
 }
@@ -693,7 +729,7 @@ function CategoryLabels({ categories, shift = 0 }: { categories: string[]; shift
     }
     const maxChars = Math.max(3, Math.floor((slot - 6) / CHAR));
     const wrapped = wrapLabel(category, maxChars);
-    const lines = (wrapped.length > 3 ? [wrapped[0], wrapped[1], `${wrapped[2]}…`] : wrapped).map((line) => label(line, maxChars));
+    const lines = (wrapped.length > 4 ? [wrapped[0], wrapped[1], wrapped[2], `${wrapped[3]}…`] : wrapped).map((line) => label(line, maxChars));
     return <text key={`${category}-${index}`} x={x} y={baseY} textAnchor="middle" fontSize={FS} fill="var(--space-text-muted)"><title>{category}</title>{lines.map((line, lineIndex) => <tspan key={`${line}-${lineIndex}`} x={x} dy={lineIndex === 0 ? 0 : 15}>{line}</tspan>)}</text>;
   })}</g>;
 }
@@ -1410,13 +1446,15 @@ function axisTickChars(exhibit: CanonicalExhibit): number {
   return Math.max(...[0, 1, 2, 3, 4].map((index) => formatAxisTick(high - index * (high - bottom) / 4).length)) + 1;
 }
 
-function ExhibitCard({ source, index, onLogEvent, onExpand, displayMode = 'standard', compact = false }: { source: LibraryExhibit; index: number; onLogEvent?: ExhibitRendererProps['onLogEvent']; onExpand?: () => void; displayMode?: ExhibitDisplayMode; compact?: boolean }) {
+function ExhibitCard({ source, index, onLogEvent, onExpand, displayMode = 'standard', compact = false, variant = 'default', headerMinHeight, onHeaderHeight }: { source: LibraryExhibit; index: number; onLogEvent?: ExhibitRendererProps['onLogEvent']; onExpand?: () => void; displayMode?: ExhibitDisplayMode; compact?: boolean; variant?: 'default' | 'compare'; headerMinHeight?: number; onHeaderHeight?: (height: number) => void }) {
   const exhibit = useMemo(() => resolveChartForm(canonicalise(source)), [source]);
   const errors = useMemo(() => validationErrors(exhibit), [exhibit]);
   const { ref, size } = useMeasuredSize();
   useEffect(() => { if (errors.length > 0) reportFailure(exhibit, errors.join(' '), onLogEvent); }, [errors.join('|')]);
   const isTable = TABLE_KINDS.has(exhibit.kind);
-  const spacious = displayMode === 'advanced';
+  const comparing = variant === 'compare';
+  const headerRef = useHeaderHeightReporter<HTMLDivElement>(comparing ? onHeaderHeight : undefined);
+  const spacious = displayMode === 'advanced' && !comparing;
   const pieLike = (exhibit.kind === 'pie' || exhibit.kind === 'donut') && exhibit.categories.length <= 6;
   // Pies and treemaps size themselves from the card width and grow with their key, so no key row is ever cut off.
   const autoHeight = pieLike || exhibit.kind === 'treemap';
@@ -1430,11 +1468,15 @@ function ExhibitCard({ source, index, onLogEvent, onExpand, displayMode = 'stand
     [size.width, size.height, exhibit.kind, chartCategoryCount, longestCategory, exhibit.axisConfig?.xLabel, exhibit.axisConfig?.yLabel, exhibit.unit, tickChars],
   );
   const tight = compact && !spacious && !isTable;
-  const chartHeight = spacious ? ADVANCED_CHART_HEIGHT : tight ? 'h-[280px]' : STANDARD_CHART_HEIGHT;
+  const chartHeight = spacious ? ADVANCED_CHART_HEIGHT : tight ? 'h-[230px]' : STANDARD_CHART_HEIGHT;
   const chartHeightPixels = tight
     ? exhibit.kind === 'horizontal-bar'
-      ? Math.min(320, Math.max(240, exhibit.categories.length * 38 + 60))
-      : 280
+      ? Math.min(300, Math.max(220, exhibit.categories.length * 34 + 50))
+      : 230
+    : comparing
+      ? exhibit.kind === 'horizontal-bar'
+        ? Math.min(380, Math.max(260, exhibit.categories.length * 34 + 50))
+        : COMPARE_CHART_PIXELS
     : exhibit.kind === 'horizontal-bar'
       ? Math.max(spacious ? 500 : 420, exhibit.categories.length * 48 + 70)
       : spacious ? 500 : 420;
@@ -1459,17 +1501,18 @@ function ExhibitCard({ source, index, onLogEvent, onExpand, displayMode = 'stand
     : stackPlan ? chartCategoryCount * perCategory + dims.M.left + dims.M.right
     : denseAxisChart && perCategory ? chartCategoryCount * perCategory + (legacySlots ? 130 : 90) : 0;
   return <SpaciousChartLayoutContext.Provider value={spacious}><ChartDimsContext.Provider value={dims}><section className="h-full overflow-hidden rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] shadow-sm" data-testid={`question-library-exhibit-${index + 1}`}>
-    <div className={`border-b border-[var(--space-border-default)] bg-[var(--space-surface-muted)] ${tight ? 'px-3 py-1.5' : 'px-3.5 py-2.5 sm:px-4'}`}><div className="flex items-center justify-between gap-3"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Exhibit {index + 1}</p>{onExpand ? <button type="button" onClick={onExpand} className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-2.5 text-[11px] font-bold text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]" aria-label={`Expand Exhibit ${index + 1}`}><Maximize2 className="h-3.5 w-3.5" /> Expand</button> : null}</div><div className={`flex flex-wrap items-end justify-between gap-2 ${tight ? '' : 'mt-1'}`}><div className="min-w-0"><h2 className="break-words text-base font-bold leading-6 text-[var(--space-text-primary)]">{exhibit.title}</h2>{exhibit.subtitle ? <p className="mt-0.5 break-words text-xs leading-5 text-[var(--space-text-secondary)]">{exhibit.subtitle}</p> : null}</div><span className="break-words text-xs font-medium text-[var(--space-text-muted)]">{[exhibit.unit, exhibit.timePeriod].filter(Boolean).join(' · ')}</span></div></div>
-    <div className={tight ? 'p-2' : 'p-3'}><Legend exhibit={exhibit} />{isTable ? <div ref={ref} className="min-h-[100px]">{errors.length > 0 ? <DataFallback exhibit={exhibit} reason={errors.join(' ')} /> : <ChartErrorBoundary exhibit={exhibit} onLogEvent={onLogEvent}><ChartBody exhibit={exhibit} /></ChartErrorBoundary>}</div> : <div className="overflow-x-auto" aria-label={minChartWidth ? 'Scrollable chart area' : undefined}><div ref={ref} className={autoHeight ? 'min-h-[200px]' : `${chartHeight} overflow-visible`} style={{ minWidth: minChartWidth || undefined, height: autoHeight ? undefined : chartHeightPixels }}>{errors.length > 0 ? <DataFallback exhibit={exhibit} reason={errors.join(' ')} /> : !measurable ? <div className="flex h-full items-center justify-center rounded-xl bg-[var(--space-surface-muted)] text-sm text-[var(--space-text-muted)]">Preparing exhibit…</div> : <ChartErrorBoundary exhibit={exhibit} onLogEvent={onLogEvent}><ChartBody exhibit={exhibit} /></ChartErrorBoundary>}</div></div>}{exhibit.structureRole ? <p className="mt-3 rounded-lg border-l-4 border-[var(--space-brand-primary)] bg-[var(--space-surface-accent-soft)] px-3 py-2 text-xs leading-5 text-[var(--space-text-primary)]" data-testid="exhibit-structure-role"><span className="font-bold">Use in your issue tree:</span> {exhibit.structureRole}</p> : null}{!isTable && errors.length === 0 && exhibit.kind === 'bubble' ? <BubblePointLegend exhibit={exhibit} /> : null}{!isTable && errors.length === 0 && hasSizeDefinition(exhibit) ? <BubbleSizeNote exhibit={exhibit} /> : null}{!isTable && errors.length === 0 ? <details open className="mt-3 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-2.5"><summary className="cursor-pointer text-xs font-bold text-[var(--space-text-primary)]">Every category and value</summary><p className="mt-1 text-[11px] leading-4 text-[var(--space-text-muted)]">This full data view keeps labels and values readable when the chart is narrow or a segment is too small to label directly.</p><div className="mt-2"><DataTable exhibit={exhibit} stackOnMobile /></div></details> : null}{exhibit.analyticalPurpose ? <p className="mt-3 text-xs leading-5 text-[var(--space-text-secondary)]"><span className="font-bold">Analytical purpose:</span> {exhibit.analyticalPurpose}</p> : null}{exhibit.footnote ? <p className="mt-2 text-[11px] leading-5 text-[var(--space-text-muted)]">Note: {exhibit.footnote}</p> : null}{exhibit.sourceNote ? <p className="text-[11px] leading-5 text-[var(--space-text-muted)]">Source: {exhibit.sourceNote}</p> : null}</div>
+    {comparing ? <div className="border-b border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-3 py-1.5" style={headerMinHeight ? { minHeight: headerMinHeight } : undefined}><div ref={headerRef} className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Exhibit {index + 1}</p><h2 className="break-words text-sm font-bold leading-5 text-[var(--space-text-primary)]">{exhibit.title}<TermHint label={String(exhibit.title)} /></h2>{exhibit.subtitle ? <p className="break-words text-xs leading-4 text-[var(--space-text-secondary)]">{exhibit.subtitle}</p> : null}<p className="break-words text-[11px] font-medium leading-4 text-[var(--space-text-muted)]">{[exhibit.unit, exhibit.timePeriod].filter(Boolean).join(' · ')}</p></div>{onExpand ? <button type="button" onClick={onExpand} className="inline-flex min-h-8 shrink-0 items-center gap-1.5 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-2.5 text-[11px] font-bold text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]" aria-label={`Expand Exhibit ${index + 1}`} data-testid="exhibit-expand"><Maximize2 className="h-3.5 w-3.5" /> Expand</button> : null}</div></div> : <div className={`border-b border-[var(--space-border-default)] bg-[var(--space-surface-muted)] ${tight ? 'px-3 py-1.5' : 'px-3.5 py-2.5 sm:px-4'}`}><div className="flex items-center justify-between gap-3"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Exhibit {index + 1}</p>{onExpand ? <button type="button" onClick={onExpand} className={`inline-flex ${tight ? 'min-h-7' : 'min-h-9'} shrink-0 items-center gap-1.5 rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-2.5 text-[11px] font-bold text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]`} aria-label={`Expand Exhibit ${index + 1}`}><Maximize2 className="h-3.5 w-3.5" /> Expand</button> : null}</div><div className={`flex flex-wrap items-end justify-between gap-2 ${tight ? '' : 'mt-1'}`}><div className="min-w-0"><h2 className="break-words text-base font-bold leading-6 text-[var(--space-text-primary)]">{exhibit.title}<TermHint label={String(exhibit.title)} /></h2>{exhibit.subtitle ? <p className="mt-0.5 break-words text-xs leading-5 text-[var(--space-text-secondary)]">{exhibit.subtitle}</p> : null}</div><span className="break-words text-xs font-medium text-[var(--space-text-muted)]">{[exhibit.unit, exhibit.timePeriod].filter(Boolean).join(' · ')}</span></div></div>}
+    <div className={tight || comparing ? 'p-2' : 'p-3'}><Legend exhibit={exhibit} />{isTable ? <div ref={ref} className="min-h-[100px]">{errors.length > 0 ? <DataFallback exhibit={exhibit} reason={errors.join(' ')} /> : <ChartErrorBoundary exhibit={exhibit} onLogEvent={onLogEvent}><ChartBody exhibit={exhibit} /></ChartErrorBoundary>}</div> : <div className="overflow-x-auto" aria-label={minChartWidth ? 'Scrollable chart area' : undefined}><div ref={ref} className={autoHeight ? 'min-h-[200px]' : `${chartHeight} overflow-visible`} style={{ minWidth: minChartWidth || undefined, height: autoHeight ? undefined : chartHeightPixels }}>{errors.length > 0 ? <DataFallback exhibit={exhibit} reason={errors.join(' ')} /> : !measurable ? <div className="flex h-full items-center justify-center rounded-xl bg-[var(--space-surface-muted)] text-sm text-[var(--space-text-muted)]">Preparing exhibit…</div> : <ChartErrorBoundary exhibit={exhibit} onLogEvent={onLogEvent}><ChartBody exhibit={exhibit} /></ChartErrorBoundary>}</div></div>}{exhibit.structureRole ? <p className="mt-3 rounded-lg border-l-4 border-[var(--space-brand-primary)] bg-[var(--space-surface-accent-soft)] px-3 py-2 text-xs leading-5 text-[var(--space-text-primary)]" data-testid="exhibit-structure-role"><span className="font-bold">Use in your issue tree:</span> {exhibit.structureRole}</p> : null}{!isTable && errors.length === 0 && exhibit.kind === 'bubble' ? <BubblePointLegend exhibit={exhibit} /> : null}{!isTable && errors.length === 0 && hasSizeDefinition(exhibit) ? <BubbleSizeNote exhibit={exhibit} /> : null}{!isTable && errors.length === 0 ? <details open={!tight && !comparing} className={`${comparing ? 'mt-2' : 'mt-3'} rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-2.5`} data-testid="exhibit-data-table"><summary className="cursor-pointer text-xs font-bold text-[var(--space-text-primary)]">{comparing ? 'View data table' : 'Every category and value'}</summary><div className="mt-1 flex flex-wrap items-center justify-between gap-2"><p className="text-[11px] leading-4 text-[var(--space-text-muted)]">This full data view keeps labels and values readable when the chart is narrow or a segment is too small to label directly.</p><CopyTableButton columns={buildTableData(exhibit).columns} rows={buildTableData(exhibit).rows} /></div><div className="mt-2 select-text"><DataTable exhibit={exhibit} stackOnMobile /></div></details> : null}{exhibit.analyticalPurpose ? <p className="mt-3 text-xs leading-5 text-[var(--space-text-secondary)]"><span className="font-bold">Analytical purpose:</span> {exhibit.analyticalPurpose}</p> : null}{exhibit.footnote ? <p className="mt-2 text-[11px] leading-5 text-[var(--space-text-muted)]">Note: {exhibit.footnote}</p> : null}{exhibit.sourceNote ? <p className="text-[11px] leading-5 text-[var(--space-text-muted)]">Source: {exhibit.sourceNote}</p> : null}</div>
   </section></ChartDimsContext.Provider></SpaciousChartLayoutContext.Provider>;
 }
 
 /** `guide` holds case sentences about reading these exhibits (what they show, units, caveats); it is shown beside them, not in the case context. */
-export default function ExhibitRenderer({ exhibits: sourceExhibits, onLogEvent, displayMode = 'standard', compact = false, guide = [] }: ExhibitRendererProps & { guide?: string[] }) {
+export default function ExhibitRenderer({ exhibits: sourceExhibits, onLogEvent, displayMode = 'standard', compact = false, guide = [], layout = 'compare' }: ExhibitRendererProps & { guide?: string[] }) {
   const exhibits = useMemo(() => sourceExhibits.map((exhibit) => clarifyUnitsDeep(exhibit)), [sourceExhibits]);
   const warnings = useMemo(() => detectDuplicateExhibits(exhibits), [exhibits]);
   const { exhibits: cardExhibits, shared: sharedNotes } = useMemo(() => shareRepeatedExhibitNotes(exhibits), [exhibits]);
   const guideLines = useMemo(() => guide.map((line) => clarifyUnitText(String(line || '').trim())).filter(Boolean), [guide]);
+  const tightGuide = compact && displayMode !== 'advanced' && exhibits.length === 1 && !TABLE_KINDS.has(exhibits[0].kind);
   useEffect(() => {
     if (warnings.length) console.warn('[Exhibits] possible duplicate exhibits (content audit, not shown to learners):', warnings);
   }, [warnings]);
@@ -1483,8 +1526,22 @@ export default function ExhibitRenderer({ exhibits: sourceExhibits, onLogEvent, 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [expandedIndex]);
-  return <div className="space-y-4" data-testid="shared-exhibit-renderer">
-    {guideLines.length ? <div className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] px-4 py-3" data-testid="exhibit-reading-guide"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">{exhibits.length > 1 ? 'Reading the exhibits' : 'Reading the exhibit'}</p><ul className="mt-1 space-y-1">{guideLines.map((line) => <li key={line} className="text-xs leading-5 text-[var(--space-text-secondary)]">{line}</li>)}</ul></div> : null}
+  const compareLayout = layout === 'compare' && cardExhibits.length >= 2;
+  const expandedView = expanded ? <div className="fixed inset-0 z-[100] overflow-y-auto bg-[color-mix(in_srgb,var(--space-neutral-950)_72%,transparent)] p-3 sm:p-8" role="dialog" aria-modal="true" aria-label={`Expanded ${expanded.title}`}><div className="w-full"><div className="mb-3 flex justify-end"><button type="button" onClick={() => setExpandedIndex(null)} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[var(--space-surface-card)] px-4 text-sm font-bold text-[var(--space-text-primary)]"><X className="h-4 w-4" /> Close</button></div><ExhibitCard source={expanded} index={expandedIndex || 0} onLogEvent={onLogEvent} displayMode="advanced" /></div></div> : null;
+  const sharedNotesNode = sharedNotes.length ? <div className="space-y-1" data-testid="exhibit-shared-notes">{sharedNotes.map((note) => <p key={`${note.label}-${note.text}`} className="text-[11px] leading-5 text-[var(--space-text-muted)]">{note.label} ({exhibitNumberList(note.exhibitNumbers)}): {note.text}</p>)}</div> : null;
+  if (compareLayout) {
+    return <div data-testid="shared-exhibit-renderer">
+      <CompareExhibits
+        items={cardExhibits.map((exhibit, index) => ({ key: exhibit.id || `${exhibit.title}-${index}`, number: index + 1, title: String(exhibit.title || `Exhibit ${index + 1}`) }))}
+        readingNotes={guideLines.length ? <ul className="space-y-1" data-testid="exhibit-reading-guide">{guideLines.map((line) => <li key={line} className="text-xs leading-5 text-[var(--space-text-secondary)]">{line}</li>)}</ul> : null}
+        footer={sharedNotesNode}
+        renderItem={(index, slot) => <ExhibitCard source={cardExhibits[index]} index={index} onLogEvent={onLogEvent} onExpand={() => setExpandedIndex(index)} displayMode={displayMode} variant="compare" headerMinHeight={slot.headerMinHeight} onHeaderHeight={slot.onHeaderHeight} />}
+      />
+      {expandedView}
+    </div>;
+  }
+  return <div id={layout === 'compare' ? EVIDENCE_ANCHOR_ID : undefined} className={`scroll-mt-3 ${tightGuide ? 'space-y-2' : 'space-y-4'}`} data-testid="shared-exhibit-renderer">
+    {guideLines.length ? <div className={`rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] ${tightGuide ? 'px-3 py-2' : 'px-4 py-3'}`} data-testid="exhibit-reading-guide"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--space-text-muted)]">{exhibits.length > 1 ? 'Reading the exhibits' : 'Reading the exhibit'}</p><ul className="mt-1 space-y-1">{guideLines.map((line) => <li key={line} className="text-xs leading-5 text-[var(--space-text-secondary)]">{line}</li>)}</ul></div> : null}
     <div
       className={`grid w-full gap-4 ${
         exhibits.length === 1
@@ -1501,7 +1558,7 @@ export default function ExhibitRenderer({ exhibits: sourceExhibits, onLogEvent, 
         </div>
       ))}
     </div>
-    {sharedNotes.length ? <div className="space-y-1" data-testid="exhibit-shared-notes">{sharedNotes.map((note) => <p key={`${note.label}-${note.text}`} className="text-[11px] leading-5 text-[var(--space-text-muted)]">{note.label} ({exhibitNumberList(note.exhibitNumbers)}): {note.text}</p>)}</div> : null}
-    {expanded ? <div className="fixed inset-0 z-[100] overflow-y-auto bg-[color-mix(in_srgb,var(--space-neutral-950)_72%,transparent)] p-3 sm:p-8" role="dialog" aria-modal="true" aria-label={`Expanded ${expanded.title}`}><div className="w-full"><div className="mb-3 flex justify-end"><button type="button" onClick={() => setExpandedIndex(null)} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[var(--space-surface-card)] px-4 text-sm font-bold text-[var(--space-text-primary)]"><X className="h-4 w-4" /> Close</button></div><ExhibitCard source={expanded} index={expandedIndex || 0} onLogEvent={onLogEvent} displayMode="advanced" /></div></div> : null}
+    {sharedNotesNode}
+    {expandedView}
   </div>;
 }

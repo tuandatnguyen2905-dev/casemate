@@ -23,6 +23,8 @@ import {
 } from 'lucide-react';
 import { useSpaceRuntime } from '../../SpaceRuntimeContext';
 import ExhibitRenderer from '../../components/ExhibitRenderer';
+import { BackToQuestionButton, CaseQuestionFirst, CaseReadingProvider, useCaseReadingItemId } from '../../components/CaseReadingGuide';
+import { ANSWER_ANCHOR_ID, BackToExhibitsButton, GoToAnswerBar } from '../../components/CompareExhibits';
 import { clarifyUnitText, clarifyUnitsDeep } from '../../lib/unitLabels';
 import {
   StructureTreeCanvas,
@@ -37,6 +39,8 @@ import { QUESTION_LIBRARY, type LibraryExhibit, type LibraryQuestion } from '../
 import { restoreArchivedHardQuestion } from '../../lib/hardCaseDrillQuestions';
 import { DIFFICULTY_LABELS } from '../../lib/caseLibraryShared';
 import { displayDifficultyOf } from '../../lib/difficultyTiers';
+import CaseIdentityChips from '../../components/CaseIdentityChips';
+import { drillIdentity } from '../../lib/caseIdentity';
 import {
   suggestedStructureFor,
   type CoverageStatus,
@@ -621,6 +625,7 @@ function VersionCard({ submission, label }: { submission: Submission; label: str
 
 export default function StructuresWorkspace({ initialCaseId, caseOverride, suggestedTreeOverride = null, briefOverride = null, onSubmitted, onBackToLibrary, hideEvidenceColumn = false, onCaseSelected, onGraded, onGradeError }: { initialCaseId?: string; caseOverride?: LibraryQuestion; suggestedTreeOverride?: SuggestedStructureTree | null; /** Host-case brief shown instead of the drill's own, so an embedded workspace is the only place the case and task appear. */ briefOverride?: Pick<PresentedQuestion, 'context' | 'keyTerms' | 'exhibitGuide' | 'guidance' | 'task'> & { instruction?: string; exhibits?: LibraryExhibit[] } | null; onSubmitted?: () => void; onBackToLibrary?: () => void; hideEvidenceColumn?: boolean; onCaseSelected?: (item: LibraryQuestion) => void; onGraded?: (caseId: string, scoring?: HonestScoreResult) => void; onGradeError?: (error: unknown) => void }) {
   const { sessionId } = useSpaceRuntime();
+  const hostReadingId = useCaseReadingItemId();
   const availableCases = useMemo(() => caseOverride
     ? [caseOverride, ...BASE_STRUCTURE_QUESTIONS.filter((item) => item.id !== caseOverride.id)]
     : BASE_STRUCTURE_QUESTIONS, [caseOverride]);
@@ -662,6 +667,9 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
   const embedded = Boolean(caseOverride && activeCase?.id === caseOverride.id);
   const presentedCase = useMemo(() => presentStructureQuestion(activeCase), [activeCase]);
   const brief = embedded && briefOverride ? { ...presentedCase, instruction: '', ...briefOverride } : presentedCase;
+  // Inside Case Pool the host case id scopes the Vietnamese reading aids; after 'Choose case' the drill's own id does.
+  const readingId = embedded && briefOverride ? (hostReadingId || activeCase.id) : activeCase.id;
+  const questionNoteLines = [brief.instruction, ...brief.guidance].filter(Boolean);
   // Trees saved before concise roots started from the whole prompt; they display the concise root and keep their stored text.
   const formatRootText = (text: string) => (text === activeCase.question ? clarifyUnitText(presentedCase.rootQuestion || text) : text);
   // Only authored content may be shown as the strong example tree: the host case's published
@@ -958,7 +966,7 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
             <li key={item.id}>
               <button type="button" onClick={() => { setSelectedId(item.id); setShowLibrary(false); onCaseSelected?.(item); }} className="flex h-full w-full items-start gap-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-left hover:border-[var(--space-brand-primary)]">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]"><Network className="h-4 w-4" /></span>
-                <span className="min-w-0"><span className="block text-sm font-bold text-[var(--space-text-primary)]">{clarifyUnitText(item.title)}</span><span className="mt-1 block line-clamp-2 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(item.question)}</span></span>
+                <span className="min-w-0"><span className="block text-sm font-bold text-[var(--space-text-primary)]">{clarifyUnitText(item.title)}</span><span className="mt-1 block line-clamp-2 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(item.question)}</span><CaseIdentityChips identity={drillIdentity(item)} className="mt-2" testId={`structures-library-identity-${item.id}`} /></span>
               </button>
             </li>
           ))}
@@ -968,15 +976,14 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
   }
 
   return (
+    <CaseReadingProvider itemId={readingId}>
     <div className="mt-5" data-testid="structures-workspace" data-retry-anchor>
       <header className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-[var(--space-surface-accent-soft)] px-2.5 py-1 text-[10px] font-bold text-[var(--space-text-brand)]">Structures v2</span>
-              <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{activeCase.industry || 'Cross-industry'}</span>
-              <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{activeCase.drillType || 'Issue Tree'}</span>
-              <span className="text-[10px] font-semibold text-[var(--space-text-muted)]">{DIFFICULTY_LABELS[displayDifficultyOf(activeCase)]}</span>
+              {embedded ? null : <CaseIdentityChips identity={drillIdentity(activeCase)} testId="structures-identity" />}
             </div>
             {embedded ? null : <h2 className="mt-2 text-lg font-bold leading-7 text-[var(--space-text-primary)]">{clarifyUnitText(activeCase.title)}</h2>}
             <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">Read → Build → Submit → Feedback → Revise → Compare versions</p>
@@ -998,32 +1005,39 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
 
       <section className="mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)]">
         <button type="button" onClick={() => setBriefOpen((open) => !open)} className="flex w-full items-center justify-between gap-3 p-4 text-left">
-          <span><span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">1 · Read the case</span><span className="mt-1 block text-sm font-bold text-[var(--space-text-primary)]">Brief & central question</span></span>
+          <span><span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">1 · Read the case</span><span className="mt-1 block text-sm font-bold text-[var(--space-text-primary)]">The question & context</span></span>
           {briefOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
         {briefOpen ? (
-          <div className="border-t border-[var(--space-border-default)] p-4 pt-3">
-            <p className="whitespace-pre-wrap text-sm leading-6 text-[var(--space-text-secondary)]" data-testid="structures-case-context">{clarifyUnitText(brief.context || 'Use the case prompt and any supplied exhibits to build a clear, testable issue tree.')}</p>
-            {brief.keyTerms.length ? <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="structures-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {clarifyUnitText(brief.keyTerms.join(' '))}</p> : null}
-            <div className="mt-3 rounded-xl border-l-4 border-[var(--space-brand-primary)] bg-[var(--space-surface-accent-soft)] p-3">
-              <p className="text-[9px] font-bold uppercase tracking-wider text-[var(--space-text-brand)]">Central question</p>
-              <p className="mt-1 whitespace-pre-wrap text-sm font-semibold leading-6 text-[var(--space-text-primary)]" data-testid="structures-central-question">{clarifyUnitText(brief.task || activeCase.question)}</p>
-              {[brief.instruction, ...brief.guidance].filter(Boolean).map((line) => <p key={line} className="mt-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(String(line))}</p>)}
-            </div>
+          <div className="border-t border-[var(--space-border-default)] p-4 pt-3" data-testid="structures-case-context">
+            <CaseQuestionFirst
+              bare
+              layout={displayDifficultyOf(activeCase) === 'easy' ? 'stacked' : 'split'}
+              itemId={readingId}
+              question={<span className="whitespace-pre-wrap" data-testid="structures-central-question">{clarifyUnitText(brief.task || activeCase.question)}</span>}
+              questionNote={questionNoteLines.length ? <>{questionNoteLines.map((line) => <p key={line} className="mt-1.5 text-xs leading-5 text-[var(--space-text-secondary)]">{clarifyUnitText(String(line))}</p>)}</> : undefined}
+              context={clarifyUnitText(brief.context || 'Use the case prompt and any supplied exhibits to build a clear, testable issue tree.')}
+              contextExtra={brief.keyTerms.length ? <p className="text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="structures-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {clarifyUnitText(brief.keyTerms.join(' '))}</p> : undefined}
+            />
           </div>
         ) : null}
       </section>
 
       {shownExhibits.length ? (
         <div className="mt-3" data-testid="structures-exhibits">
-          <ExhibitRenderer exhibits={submissions.length ? shownExhibits : exhibitsBeforeSubmission} guide={brief.exhibitGuide} />
+          <ExhibitRenderer exhibits={submissions.length ? shownExhibits : exhibitsBeforeSubmission} guide={brief.exhibitGuide} layout={displayDifficultyOf(activeCase) === 'easy' ? 'grid' : 'compare'} />
+          {displayDifficultyOf(activeCase) !== 'easy' ? <GoToAnswerBar hint="Build your issue tree once you have compared the evidence." /> : null}
         </div>
-      ) : (
-        <p className="mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-3 text-xs leading-5 text-[var(--space-text-muted)]">This drill has no exhibit. Build the tree from the case prompt.</p>
-      )}
+      ) : null}
 
       <div className="mt-3">
-        <main className="min-w-0 space-y-3">
+        <main id={ANSWER_ANCHOR_ID} className="min-w-0 scroll-mt-3 space-y-3">
+          {shownExhibits.length && displayDifficultyOf(activeCase) !== 'easy' ? (
+            <div className="flex flex-wrap items-center justify-between gap-2" data-testid="structures-answer-heading">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Your answer · 2 · Build your issue tree</p>
+              <BackToExhibitsButton />
+            </div>
+          ) : null}
           <StructureTreeCanvas draft={draft} editor={treeEditor} highlightIds={highlightIds} formatDisplay={formatRootText} />
 
           {draft.crossLinks.length ? (
@@ -1123,6 +1137,8 @@ export default function StructuresWorkspace({ initialCaseId, caseOverride, sugge
           ) : null}
         </main>
       </div>
+      <BackToQuestionButton />
     </div>
+    </CaseReadingProvider>
   );
 }
