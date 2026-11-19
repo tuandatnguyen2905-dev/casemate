@@ -531,7 +531,7 @@ function PhaseStrip({
   progress: Record<number, WeekProgress>;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2 lg:grid-cols-4" data-testid="roadmap-phases">
+    <div className="grid grid-cols-1 gap-2 min-[480px]:grid-cols-2 xl:grid-cols-4" data-testid="roadmap-phases">
       {phases.map((phase) => {
         const state = phaseState(phase, status);
         const totals = rangeTotals(phase.weeks, progress);
@@ -1127,7 +1127,7 @@ export default function MyRoadmapApp() {
       className="flex min-h-full w-full flex-col bg-[var(--space-surface-page)] [&_button]:min-h-11 [&_button]:min-w-11"
       onPointerEnter={refreshIfStale}
     >
-      <div className="w-full space-y-4 p-3 sm:space-y-5 sm:p-6 lg:p-7">
+      <div className="mx-auto w-full min-w-0 max-w-7xl space-y-4 px-4 py-5 sm:space-y-5 sm:px-7 sm:py-7 lg:px-10">
         <div>
           <h1 className="flex items-center gap-2 text-lg font-bold text-[var(--space-text-primary)]">
             <MapIcon className="h-5 w-5 text-[var(--space-text-brand)]" />
@@ -1568,7 +1568,7 @@ export default function MyRoadmapApp() {
                 <p className="text-sm font-bold text-[var(--space-text-primary)]">Knowledge Areas to Master for {roadmap.target_program}</p>
                 <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">A static, program-specific study path from Domain Knowledge. Progress updates as you complete cards.</p>
               </div>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {knowledgeAreas.map((area) => {
                   const Icon = KNOWLEDGE_ICONS[area.icon] || BookOpen;
                   const pct = knowledgeAreaProgress(area, domainProgress);
