@@ -133,6 +133,21 @@ import {
 import type { FreeAnswerQuestion, NumericalQuestion, NumericalTest } from '../../lib/numericalReasoning';
 import { NumericalTable } from '../../components/NumericalTable';
 import { NumericalSourceContext } from '../../components/NumericalSourceContext';
+import {
+  OA_LEAVE_MESSAGE,
+  OnlineAssessmentResultsSummary,
+  OnlineAssessmentSession,
+  OnlineAssessmentSetup,
+} from '../../components/OnlineAssessment';
+import {
+  OA_ROUTE_HASH,
+  OA_TEST_TYPE,
+  buildOaPools,
+  oaSessionId,
+  oaSessionName,
+  summarizeOnlineAssessment,
+} from '../../lib/onlineAssessmentSession';
+import type { OaBlock, OaDifficulty, OaSession } from '../../lib/onlineAssessmentSession';
 
 declare global {
   interface Window {
@@ -189,6 +204,8 @@ interface MixedTest {
   timeLimitSeconds: number;
   questions: MixedQuestion[];
   isMixed: true;
+  /** Present only on an Online Assessment Simulation session. */
+  oa?: { difficulty: OaDifficulty; questionCount: number; blocks: OaBlock[] };
 }
 
 interface TestFamily {
@@ -1735,7 +1752,7 @@ function SituationalRatingReview({
  * App
  * ========================================================================== */
 
-type View = 'home' | 'family' | 'tray' | 'test' | 'results';
+type View = 'home' | 'family' | 'tray' | 'test' | 'results' | 'oa';
 type AnyTest = ExpandedTest | InductiveTest | DeductiveTest | ErrorCheckingTest | SpatialTest | NumericalTest | VerbalTest | SituationalTest | LogicalTest | MixedTest;
 type SourceTest = Exclude<AnyTest, MixedTest>;
 
@@ -1777,6 +1794,10 @@ function aptitudeCategoryFromHash(): Category | null {
 
 function isAptitudeListHash(): boolean {
   return typeof window !== 'undefined' && window.location.hash.toLowerCase() === '#aptitude-test';
+}
+
+function isOnlineAssessmentHash(): boolean {
+  return typeof window !== 'undefined' && window.location.hash.toLowerCase() === OA_ROUTE_HASH;
 }
 
 interface TypeBreakdown {
@@ -1831,7 +1852,7 @@ function AptitudeTestInner() {
   const trayExercises = useMemo(() => loadInTrayExercises(), []);
 
   const initialCategory = useMemo(() => aptitudeCategoryFromHash(), []);
-  const [view, setView] = useState<View>('home');
+  const [view, setView] = useState<View>(() => (isOnlineAssessmentHash() ? 'oa' : 'home'));
   const [category, setCategory] = useState<TestMode>(initialCategory || 'diagrammatic');
   const [libraryFamily, setLibraryFamily] = useState<Category | 'all'>(initialCategory || 'all');
   const [trayId, setTrayId] = useState('');
@@ -1852,6 +1873,9 @@ function AptitudeTestInner() {
   const lastOpenedTestIdRef = useRef<string | null>(null);
   const solvingTrackedRef = useRef<Set<string>>(new Set());
   const activeSecondsRef = useRef(0);
+  const [oaRun, setOaRun] = useState<{ session: OaSession<AnyQuestion>; test: MixedTest; startedAt: number } | null>(null);
+  const oaActiveRef = useRef(false);
+  oaActiveRef.current = Boolean(oaRun);
 
   const trackTestOpened = (testId: string, testType: string, retake = false) => {
     const previousTestId = lastOpenedTestIdRef.current;
@@ -1896,6 +1920,20 @@ function AptitudeTestInner() {
 
   useEffect(() => {
     const syncHashRoute = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (oaActiveRef.current && (hash === '#aptitude-test' || hash.startsWith('#aptitude-test/'))) {
+        if (isOnlineAssessmentHash()) return;
+        if (!window.confirm(OA_LEAVE_MESSAGE)) {
+          window.history.pushState({ app: 'aptitude-test', view: 'oa' }, '', OA_ROUTE_HASH);
+          return;
+        }
+        oaActiveRef.current = false;
+        setOaRun(null);
+      }
+      if (isOnlineAssessmentHash()) {
+        setView('oa');
+        return;
+      }
       const nextCategory = aptitudeCategoryFromHash();
       if (nextCategory) {
         setLibraryFamily(nextCategory);
@@ -2069,7 +2107,8 @@ function AptitudeTestInner() {
 
       try {
         const completedAt = new Date().toISOString();
-        const testType = categoryRef.current;
+        const oaMeta = isMixedTest(test) ? test.oa : undefined;
+        const testType = oaMeta ? OA_TEST_TYPE : categoryRef.current;
         const insertResponse = await window.__workspaceDb.from('aptitude_attempts').insert({
           user_key: userKey,
           email: email || null,
@@ -2088,6 +2127,13 @@ function AptitudeTestInner() {
             return {
               question_id: question.id,
               source_category: isMixedTest(test) ? questionCategory(question) : undefined,
+              ...(oaMeta
+                ? {
+                    source_test_id: (question as MixedQuestion).sourceTestId,
+                    answered: isQuestionAnswered(question, picked[i]),
+                    difficulty: (question as { difficulty?: unknown }).difficulty ?? null,
+                  }
+                : {}),
               chosen: picked[i],
               correct: question.correctAnswer,
               is_correct: questionCredit(question, picked[i]) === 1,
@@ -2143,7 +2189,7 @@ function AptitudeTestInner() {
     return () => window.clearInterval(timer);
   }, [view, deadline, activeTest, startedAt, finishTest]);
 
-  const runningTestId = view === 'test' && activeTest ? activeTest.id : view === 'tray' && trayId ? trayId : null;
+  const runningTestId = view === 'test' && activeTest ? activeTest.id : view === 'tray' && trayId ? trayId : view === 'oa' && oaRun ? oaRun.test.id : null;
 
   useEffect(() => {
     activeSecondsRef.current = 0;
@@ -2315,6 +2361,177 @@ function AptitudeTestInner() {
   );
   const progressLoading = history.loading && !Array.isArray(history.data);
 
+  /* ------------------------------------------- online assessment simulation */
+
+  // In-Tray / E-Tray exercises are standalone assessments, not question banks, so they never enter a pool.
+  const oaPools = useMemo(
+    () =>
+      buildOaPools<AnyQuestion>([
+        ['diagrammatic', tests],
+        ['inductive', inductiveTests],
+        ['deductive', deductiveTests],
+        ['error_checking', errorCheckingTests],
+        ['spatial', spatialTests],
+        ['numerical', numericalTests],
+        ['verbal', verbalTests],
+        ['situational', situationalTests],
+        ['logical', logicalTests],
+        ['critical', criticalTests],
+        ['mechanical', mechanicalTests],
+      ] as unknown as Array<readonly [string, ReadonlyArray<{ id: string; questions: readonly AnyQuestion[] }>]>),
+    [tests, inductiveTests, deductiveTests, errorCheckingTests, spatialTests, numericalTests, verbalTests, situationalTests, logicalTests, criticalTests, mechanicalTests],
+  );
+  const oaHistory = useMemo(() => attempts.filter((row) => row.test_type === OA_TEST_TYPE), [attempts]);
+  const oaEntryNote = oaHistory.length
+    ? `${oaHistory.length} ${oaHistory.length === 1 ? 'simulation' : 'simulations'} completed · best ${Math.max(
+        ...oaHistory.map((row) => row.percent ?? Math.round((row.score / Math.max(1, row.total)) * 100)),
+      )}%`
+    : null;
+  const oaCategoryLabel = (id: string) => CATEGORY_LABEL[id as Category] || id;
+
+  const openOnlineAssessment = () => {
+    setView('oa');
+    if (window.location.hash.toLowerCase() !== OA_ROUTE_HASH) {
+      window.history.pushState({ app: 'aptitude-test', view: 'oa' }, '', OA_ROUTE_HASH);
+    }
+  };
+
+  const startOnlineAssessment = (session: OaSession<AnyQuestion>) => {
+    const now = Date.now();
+    const id = oaSessionId(session.difficulty, session.questionCount, now);
+    const test: MixedTest = {
+      id,
+      name: oaSessionName(session.difficulty, session.questionCount),
+      subtitle: `${session.blocks.length} test-type blocks`,
+      description: session.blocks.map((block) => `${oaCategoryLabel(block.category)} (${block.size})`).join(' → '),
+      difficulty: 'mixed',
+      timeLimitSeconds: session.timeLimitSeconds,
+      questions: session.items.map((item) => ({
+        ...item.question,
+        sourceCategory: item.category as Category,
+        sourceTestId: item.testId,
+      })) as MixedQuestion[],
+      isMixed: true,
+      oa: { difficulty: session.difficulty, questionCount: session.questionCount, blocks: session.blocks },
+    };
+    trackTestOpened(id, OA_TEST_TYPE);
+    submittingRef.current = false;
+    setFinished(null);
+    setSaveError('');
+    setStartedAt(now);
+    setOaRun({ session: { ...session, id }, test, startedAt: now });
+  };
+
+  // Same stimulus and answer widgets as a normal test, without the hint / answer reveal.
+  const renderOaQuestion = (question: AnyQuestion, answer: string | null, onAnswer: (value: string) => void): ReactNode => {
+    const kind = question.kind;
+    return (
+      <div className="space-y-3 sm:space-y-4">
+        {kind === 'situational' ? (
+          <div className="space-y-3 rounded-xl bg-[var(--space-surface-muted)] p-4 sm:p-5">
+            {(question as SituationalQuestion).sectionTitle ? (
+              <p className="text-[11px] font-bold uppercase tracking-wide text-[var(--space-text-muted)]">
+                {(question as SituationalQuestion).sectionTitle}
+              </p>
+            ) : null}
+            {(question as SituationalQuestion).scenario ? (
+              <div className="max-h-48 overflow-y-auto rounded-lg border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 pr-2">
+                <p className="mb-1 text-[11px] font-bold uppercase tracking-wide text-[var(--space-text-muted)]">Your role and the company</p>
+                <p className="whitespace-pre-line text-xs leading-6 text-[var(--space-text-secondary)] sm:text-sm">
+                  {(question as SituationalQuestion).scenario}
+                </p>
+              </div>
+            ) : null}
+            <span className="inline-flex rounded-full bg-[var(--space-surface-accent-soft)] px-2 py-1 text-[11px] font-semibold text-[var(--space-text-brand)]">
+              {(question as SituationalQuestion).competency}
+            </span>
+            <p className="whitespace-pre-line text-sm leading-7 text-[var(--space-text-primary)] sm:text-base">{question.prompt}</p>
+            {(question as SituationalQuestion).instruction ? (
+              <p className="text-xs font-semibold leading-5 text-[var(--space-text-brand)]">{(question as SituationalQuestion).instruction}</p>
+            ) : null}
+          </div>
+        ) : kind === 'error_checking' ? (
+          <>
+            <p className="text-sm font-semibold text-[var(--space-text-primary)]">{question.prompt}</p>
+            <ErrorCheckingTables question={question as ErrorCheckingExpandedQuestion} />
+          </>
+        ) : kind === 'deductive' ? (
+          <>
+            <DeductivePremises premises={(question as DeductiveExpandedQuestion).premises} />
+            <p className="text-sm font-semibold text-[var(--space-text-primary)]">{question.prompt}</p>
+          </>
+        ) : kind === 'logical' ? (
+          <>
+            <p className="text-sm font-semibold text-[var(--space-text-primary)]">{question.prompt}</p>
+            <LogicalStimulus question={question as LogicalQuestion} />
+            <p className="text-center text-[11px] text-[var(--space-text-muted)]">
+              The answer cells are lettered {(question as LogicalQuestion).optionLabels[0]}–{(question as LogicalQuestion).optionLabels[(question as LogicalQuestion).optionLabels.length - 1]} from left to right, row by row.
+            </p>
+          </>
+        ) : kind === 'numerical' ? (
+          <>
+            <NumericalSourceContext question={question as NumericalQuestion} />
+            {(question as NumericalQuestion).figure ? <SpatialPdfFigure key={`${question.id}-figure`} source={(question as NumericalQuestion).figure!} rotatable={isMechanicalQuestion(question)} /> : null}
+            {(question as NumericalQuestion).figures?.length ? <NumericalReadingFigures figures={(question as NumericalQuestion).figures!} /> : null}
+            {(question as NumericalQuestion).table ? <NumericalTable table={(question as NumericalQuestion).table!} /> : null}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-[var(--space-text-muted)]">Question</p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{question.prompt}</p>
+            </div>
+          </>
+        ) : kind === 'verbal' ? (
+          <>
+            <div className="rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-muted)] p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wide text-[var(--space-text-muted)]">{(question as VerbalQuestion).passageLabel || 'Passage'}</p>
+              <p className={`mt-2 whitespace-pre-line text-sm leading-7 text-[var(--space-text-primary)] ${(question as VerbalQuestion).passage.length > 2500 ? 'max-h-80 overflow-y-auto pr-2' : ''}`}>{(question as VerbalQuestion).passage}</p>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-[var(--space-text-muted)]">{(question as VerbalQuestion).promptLabel || ((question as VerbalQuestion).optionTexts ? 'Question' : 'Statement')}</p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-[var(--space-text-primary)]">{question.prompt}</p>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="text-sm font-semibold text-[var(--space-text-primary)]">{question.prompt}</p>
+            <div className="flex w-full min-w-0 justify-start overflow-x-auto sm:justify-center">
+              {kind === 'spatial' ? (
+                <SpatialStimulus question={question as SpatialExpandedQuestion} />
+              ) : kind === 'inductive' ? (
+                <InductiveSequence sequence={(question as InductiveExpandedQuestion).sequence} />
+              ) : (
+                <QuestionFigure question={question as ExpandedQuestion} />
+              )}
+            </div>
+          </>
+        )}
+        <div className="border-t border-[var(--space-border-default)] pt-4">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--space-text-muted)]">
+            {kind === 'situational' ? situationalHeading(question as SituationalQuestion) : numericalAnswerHeading(question)}
+          </p>
+          {kind === 'situational' ? (
+            <SituationalRatingGrid question={question as SituationalQuestion} value={answer} onChange={onAnswer} />
+          ) : kind === 'error_checking' ? (
+            <ErrorCheckingOptionGrid question={question as ErrorCheckingExpandedQuestion} selected={answer} onSelect={onAnswer} />
+          ) : kind === 'deductive' ? (
+            <DeductiveOptionGrid question={question as DeductiveExpandedQuestion} selected={answer} onSelect={onAnswer} />
+          ) : kind === 'logical' ? (
+            <LogicalOptionGrid question={question as LogicalQuestion} selected={answer} onSelect={onAnswer} />
+          ) : kind === 'numerical' ? (
+            <NumericalOptionGrid question={question as NumericalQuestion} selected={answer} onSelect={onAnswer} />
+          ) : kind === 'verbal' ? (
+            <VerbalOptionGrid question={question as VerbalQuestion} selected={answer} onSelect={onAnswer} />
+          ) : kind === 'spatial' ? (
+            <SpatialOptionGrid question={question as SpatialExpandedQuestion} selected={answer} onSelect={onAnswer} />
+          ) : kind === 'inductive' ? (
+            <InductiveOptionGrid question={question as InductiveExpandedQuestion} selected={answer} onSelect={onAnswer} />
+          ) : (
+            <OptionGrid question={question as ExpandedQuestion} selected={answer} onSelect={onAnswer} />
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const openLibraryEntry = (entry: LibraryEntry) => {
     if (entry.family === 'in_tray') {
       trackTestOpened((entry.payload as TrayExercise).id, 'in_tray');
@@ -2337,7 +2554,43 @@ function AptitudeTestInner() {
         onOpen={openLibraryEntry}
         progress={progress}
         progressLoading={progressLoading}
+        onOpenSimulation={openOnlineAssessment}
+        simulationNote={oaEntryNote}
       />
+    );
+  }
+
+  if (view === 'oa') {
+    return (
+      <>
+        <DiagramPatternDefs />
+        <InductivePatternDefs />
+        {oaRun ? (
+          <OnlineAssessmentSession
+            key={oaRun.test.id}
+            session={oaRun.session}
+            startedAt={oaRun.startedAt}
+            categoryLabel={oaCategoryLabel}
+            renderQuestion={renderOaQuestion}
+            isAnswered={isQuestionAnswered}
+            onAnswer={() => trackSolving(oaRun.test.id, 'answer_selected', Math.round(activeSecondsRef.current))}
+            onSubmit={(picked, timedOut) => {
+              const run = oaRun;
+              setOaRun(null);
+              void finishTest(run.test, picked, timedOut, run.startedAt);
+            }}
+            onExit={() => setOaRun(null)}
+          />
+        ) : (
+          <OnlineAssessmentSetup
+            pools={oaPools}
+            categoryLabel={oaCategoryLabel}
+            history={oaHistory}
+            onStart={startOnlineAssessment}
+            onBack={openCategoryList}
+          />
+        )}
+      </>
     );
   }
 
@@ -3873,6 +4126,7 @@ function AptitudeTestInner() {
   if (view === 'results' && finished) {
     const { test, score, exactScore, total, percent, durationSeconds, timedOut, breakdown } = finished;
     const isMixedResult = isMixedTest(test);
+    const oaMeta = isMixedTest(test) ? test.oa : undefined;
     const isSituationalResult = !isMixedResult && category === 'situational';
     const performanceLabel = percent >= 85
       ? 'Excellent workplace judgement'
@@ -3883,7 +4137,7 @@ function AptitudeTestInner() {
           : 'More practice recommended';
 
     const categoryLabel = isMixedResult
-      ? 'Mixed Aptitude Test'
+      ? oaMeta ? 'Online Assessment Simulation' : 'Mixed Aptitude Test'
       : category === 'inductive'
         ? 'Inductive Reasoning'
         : category === 'deductive'
@@ -3929,7 +4183,7 @@ function AptitudeTestInner() {
               {isSituationalResult ? 'Completed in' : 'Time taken:'} {formatClock(durationSeconds)}
               {timedOut ? ' · auto-submitted when the time ran out' : ''}
             </p>
-            {isMixedResult ? (
+            {isMixedResult && !oaMeta ? (
               <div className="mt-4 grid grid-cols-1 gap-2 text-left sm:grid-cols-2 lg:grid-cols-4">
                 {breakdown.filter((item) => item.total > 0).map((item) => (
                   <div
@@ -3958,11 +4212,11 @@ function AptitudeTestInner() {
             ) : null}
             <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
               <button
-                onClick={() => startTest(test, undefined, true)}
+                onClick={() => (oaMeta ? openOnlineAssessment() : startTest(test, undefined, true))}
                 className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-semibold ${tw.button.primary}`}
               >
                 <Play className="h-4 w-4" />
-                Retake this test
+                {oaMeta ? 'New simulation' : 'Retake this test'}
               </button>
               <button
                 onClick={() => {
@@ -3979,6 +4233,18 @@ function AptitudeTestInner() {
               </button>
             </div>
           </div>
+
+          {oaMeta ? (
+            <OnlineAssessmentResultsSummary
+              summary={summarizeOnlineAssessment(test.questions as AnyQuestion[], finished.answers, oaMeta.blocks, questionCredit, isQuestionAnswered)}
+              difficulty={oaMeta.difficulty}
+              durationSeconds={durationSeconds}
+              timeLimitSeconds={test.timeLimitSeconds}
+              timedOut={timedOut}
+              categoryLabel={(id) => CATEGORY_LABEL[id as Category] || id}
+              partialCreditCategories={['situational']}
+            />
+          ) : null}
 
           {/* Percentile ranking vs every other user's aptitude attempt — the
               submissionKey is unique per attempt (startedAt), so re-renders of

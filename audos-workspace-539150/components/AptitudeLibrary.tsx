@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { ComponentType, ReactNode } from 'react';
-import { Brain, ChevronRight, Search, Shuffle } from 'lucide-react';
+import { Brain, ChevronRight, Play, Search, Shuffle, Timer } from 'lucide-react';
 import { tw } from '../lib/colors';
 import { progressPercent } from '../lib/aptitudeProgress';
 import type { AptitudeProgress, ProgressStatus } from '../lib/aptitudeProgress';
@@ -37,6 +37,9 @@ interface Props {
   onOpen: (entry: LibraryEntry) => void;
   progress?: AptitudeProgress;
   progressLoading?: boolean;
+  /** Opens the mixed-category Online Assessment Simulation; the entry card is hidden without it. */
+  onOpenSimulation?: () => void;
+  simulationNote?: string | null;
 }
 
 const PAGE_SIZE = 24;
@@ -143,7 +146,17 @@ function ProgressDashboard({ progress, loading }: { progress: AptitudeProgress; 
   );
 }
 
-export default function AptitudeLibrary({ families, entries, family, onFamilyChange, onOpen, progress, progressLoading = false }: Props) {
+export default function AptitudeLibrary({
+  families,
+  entries,
+  family,
+  onFamilyChange,
+  onOpen,
+  progress,
+  progressLoading = false,
+  onOpenSimulation,
+  simulationNote = null,
+}: Props) {
   const [query, setQuery] = useState('');
   const [group, setGroup] = useState('all');
   const [difficulty, setDifficulty] = useState<DifficultyFilter>('all');
@@ -237,6 +250,38 @@ export default function AptitudeLibrary({ families, entries, family, onFamilyCha
         </header>
 
         {progress ? <ProgressDashboard progress={progress} loading={progressLoading} /> : null}
+
+        {onOpenSimulation ? (
+          <section
+            className="flex flex-col gap-3 rounded-2xl border-2 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-card)] p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4"
+            aria-label="Online Assessment Simulation"
+            data-testid="oa-entry"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]">
+              <Timer className="h-5 w-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-bold text-[var(--space-text-primary)] sm:text-base">Online Assessment Simulation</span>
+                <span className={`${PILL} bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]`}>3+ test types · one timer</span>
+              </span>
+              <span className="mt-1 block text-xs leading-5 text-[var(--space-text-secondary)]">
+                Got an online assessment email? Sit one uninterrupted, timed session that mixes several test types in blocks, like the real
+                thing: 20, 30 or 50 questions at 1.5 minutes each.
+              </span>
+              {simulationNote ? <span className="mt-1 block text-[11px] font-semibold text-[var(--space-text-brand)]">{simulationNote}</span> : null}
+            </span>
+            <button
+              type="button"
+              onClick={onOpenSimulation}
+              className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold ${tw.button.primary}`}
+              data-testid="button-online-assessment"
+            >
+              <Play className="h-4 w-4" />
+              Start simulation
+            </button>
+          </section>
+        ) : null}
 
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7" role="tablist" aria-label="Test types">
           {tile('all', 'All tests', entries.length, Brain)}
