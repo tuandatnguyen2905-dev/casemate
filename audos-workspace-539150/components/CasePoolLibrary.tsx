@@ -104,6 +104,8 @@ import { clarifyUnitLabel, clarifyUnitText, clarifyUnitsDeep } from '../lib/unit
 import { formatCanonicalNumber, numericUnitSpec } from '../lib/numericUnits';
 import { CASE_POOL_REQUEST_KEY, casePoolCaseIdFromHash } from './SolveFullCaseCta';
 import CasePoolFilters from './CasePoolFilters';
+import CaseIdentityChips from './CaseIdentityChips';
+import { auditPoolIdentity, poolCaseIdentity } from '../lib/caseIdentity';
 import { normalizeForCompare, presentPoolCase } from '../lib/learnerContentPresentation';
 import {
   DEFAULT_POOL_FILTERS,
@@ -132,6 +134,13 @@ function openFrameworkInDomainKnowledge(frameworkLabels: string[]) {
 const PAGE_SIZE = 24;
 
 const BUSINESS_PROBLEM_CHIPS = businessProblemsPresent(SELECTABLE_CASE_POOL_LIBRARY);
+
+/** Industry filter options are the same labels the cards and opening screens show. */
+const POOL_INDUSTRY_FILTER_LABELS = Array.from(new Set(SELECTABLE_CASE_POOL_LIBRARY.map((item) => poolCaseIdentity(item).industry).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+
+function poolBusinessProblem(id: string): string {
+  return businessProblemLabel(businessProblemForCase(id));
+}
 
 export interface LibraryGradeDimension {
   key: string;
@@ -311,6 +320,11 @@ export default function CasePoolLibrary({
   useEffect(() => {
     setHistory(readHistory(sessionId));
   }, [sessionId]);
+
+  useEffect(() => {
+    const findings = auditPoolIdentity(SELECTABLE_CASE_POOL_LIBRARY);
+    if (findings.length > 0) console.warn('[Case Pool] items with an omitted industry, exercise type or difficulty label (not shown to learners):', findings);
+  }, []);
 
   const combinedHistory = useMemo(() => history.concat(extraHistory || []), [history, extraHistory]);
   const practicedIds = useMemo(
@@ -602,10 +616,16 @@ export default function CasePoolLibrary({
   const recommendations = useMemo(() => recommendPoolCases(combinedHistory, 3), [combinedHistory]);
 
   const completedIds = useMemo(() => new Set(Object.keys(results).filter((id) => Boolean(results[id]))), [results]);
-  const matches = useMemo(
-    () => filterPoolCases(SELECTABLE_CASE_POOL_LIBRARY, filters, { completedIds, openedIds: practicedIds }),
-    [filters, completedIds, practicedIds],
-  );
+  const matches = useMemo(() => {
+    const base = filterPoolCases(SELECTABLE_CASE_POOL_LIBRARY, { ...filters, industry: 'all' }, { completedIds, openedIds: practicedIds });
+    return base.filter((item) => {
+      const identity = poolCaseIdentity(item);
+      if (filters.industry !== 'all' && identity.industry !== filters.industry) return false;
+      // A difficulty filter only matches items that actually show that difficulty.
+      if (filters.difficulty !== 'all' && identity.difficulty !== filters.difficulty) return false;
+      return true;
+    });
+  }, [filters, completedIds, practicedIds]);
   const filtersActive = !isDefaultPoolFilters(filters);
   const resetFilters = useCallback(() => setFilters(DEFAULT_POOL_FILTERS), []);
 
@@ -699,7 +719,26 @@ export default function CasePoolLibrary({
     // An embedded issue-tree workspace already shows the case, its exhibits and the task; the page below repeats none of them.
     const workspaceExhibitTitles = new Set((structureQuestion?.exhibits?.length ? structureQuestion.exhibits : structureQuestion?.exhibit ? [structureQuestion.exhibit] : []).map((exhibit) => normalizeForCompare(exhibit.title)));
     const pageExhibitTitles = (journeyExhibits?.length ? journeyExhibits.map((exhibit) => exhibit.title) : dataExhibits.map((exhibit) => String((exhibit as { title?: string; label?: string }).title || (exhibit as { label?: string }).label || '')));
-    const exhibitsShownInWorkspace = Boolean(structureQuestion) && pageExhibitTitles.every((title) => workspaceExhibitTitles.has(normalizeForCompare(title)));
+    // Exhibits are matched by their content (labels, periods, units, values), not only by title, so a renamed copy is still recognised as the same exhibit.
+    const exhibitLeaves = (value: unknown): string[] => (Array.isArray(value)
+      ? value.flatMap(exhibitLeaves)
+      : value && typeof value === 'object'
+        ? Object.values(value as Record<string, unknown>).flatMap(exhibitLeaves)
+        : value == null ? [] : [normalizeForCompare(String(value)).replace(/(\d),(?=\d{3}\b)/g, '$1')]);
+    const exhibitContentKey = (exhibit: unknown): string => {
+      const source = (exhibit || {}) as Record<string, unknown>;
+      const leaves = exhibitLeaves([source.columns, source.rows, source.labels, source.categories, source.values, ((source.series as Array<Record<string, unknown>> | undefined) || []).map((series) => [series.name, series.values, series.xValues, series.unit])]);
+      return leaves.length >= 4 ? leaves.join('|') : '';
+    };
+    const workspaceExhibitList = (structureQuestion?.exhibits?.length ? structureQuestion.exhibits : structureQuestion?.exhibit ? [structureQuestion.exhibit] : []) as unknown[];
+    const workspaceExhibitKeys = new Set(workspaceExhibitList.map(exhibitContentKey).filter(Boolean));
+    const inWorkspace = (exhibit: unknown): boolean => {
+      const source = exhibit as { title?: string; label?: string };
+      const key = exhibitContentKey(exhibit);
+      return workspaceExhibitTitles.has(normalizeForCompare(String(source?.title || source?.label || ''))) || (key !== '' && workspaceExhibitKeys.has(key));
+    };
+    const exhibitsShownInWorkspace = Boolean(structureQuestion) && ((journeyExhibits?.length ? journeyExhibits : dataExhibits) as unknown[]).every((exhibit) => inWorkspace(exhibit));
+    const dataExhibitsBelowWorkspace = structureQuestion ? dataExhibits.filter((exhibit) => !inWorkspace(exhibit)) : dataExhibits;
     // A journey case's linked drill holds only some of the journey exhibits, so the workspace is given the full set instead.
     const workspaceHostExhibits = structureQuestion && !exhibitsShownInWorkspace && journeyExhibits?.length ? journeyExhibits : undefined;
     const exhibitGuideNode = presentedPool.exhibitGuide.length ? (
@@ -737,30 +776,12 @@ export default function CasePoolLibrary({
           <ArrowLeft className="h-4 w-4" /> Back to Case Pool Library
         </button>
         <div className="flex flex-wrap items-center gap-2">
-          {businessProblemForCase(active.id) ? (
-            <span className={`${tw.badge.default} ${tw.badge.primary}`} data-testid="pool-case-business-problem">
-              {businessProblemLabel(businessProblemForCase(active.id))}
+          <CaseIdentityChips identity={poolCaseIdentity(active)} problem={poolBusinessProblem(active.id)} testId="pool-case-identity" />
+          {active.market_sizing_bank?.geography ? (
+            <span className="inline-flex min-w-0 max-w-full rounded-full border border-dashed border-[var(--space-border-default)] px-2.5 py-0.5 text-[11px] font-semibold leading-4 text-[var(--space-text-muted)]" title={`Geography: ${active.market_sizing_bank.geography}`} data-testid="market-sizing-bank-geography">
+              <span className="min-w-0 break-words"><span className="sr-only">Geography: </span>{active.market_sizing_bank.geography}</span>
             </span>
           ) : null}
-          <span className={`${tw.badge.default} ${tw.badge.accent}`}>
-            {POOL_INDUSTRY_LABELS[active.industry] || active.industry}
-          </span>
-          {active.creativity_category ? (
-            <span className={`${tw.badge.default} ${tw.badge.accent}`}>{CREATIVITY_CATEGORY_LABELS[active.creativity_category]}</span>
-          ) : (
-            <>
-              <span className={`${tw.badge.default} ${difficultyBadge(active.difficulty)}`} title={active.market_sizing_bank ? `Counts as ${DIFFICULTY_LABELS[active.difficulty]} in the difficulty filters` : undefined}>
-                {active.market_sizing_bank?.sourceLabel || DIFFICULTY_LABELS[active.difficulty]}
-              </span>
-              {active.market_sizing_format ? <span className={`${tw.badge.default} ${tw.badge.accent}`}>{MARKET_SIZING_FORMAT_LABELS[active.market_sizing_format]}</span> : null}
-              {active.market_sizing_bank ? (
-                <>
-                  <span className={`${tw.badge.default} ${tw.badge.accent}`} data-testid="market-sizing-bank-industry">{active.market_sizing_bank.industry}</span>
-                  <span className={`${tw.badge.default} ${tw.badge.accent}`} data-testid="market-sizing-bank-geography">{active.market_sizing_bank.geography}</span>
-                </>
-              ) : null}
-            </>
-          )}
           {savedResult ? (
             <span
               className={`${tw.badge.default} ${scoreBadge(savedResult.score, resultScale(savedResult))} flex items-center gap-1`}
@@ -824,7 +845,7 @@ export default function CasePoolLibrary({
         ) : (
           <>
             {structureQuestion ? null : exhibitGuideNode}
-            <CaseExhibitList exhibits={dataExhibits} className="mt-4" />
+            <CaseExhibitList exhibits={dataExhibitsBelowWorkspace} className="mt-4" />
           </>
         )}
 
@@ -1070,18 +1091,7 @@ export default function CasePoolLibrary({
               data-testid={`pool-recommended-${item.id}`}
             >
               <div className="flex flex-wrap items-center gap-1.5">
-                {businessProblemForCase(item.id) ? (
-                  <span className={`${tw.badge.default} ${tw.badge.primary}`}>
-                    {businessProblemLabel(businessProblemForCase(item.id))}
-                  </span>
-                ) : null}
-                {item.creativity_category ? (
-                  <span className={`${tw.badge.default} ${tw.badge.accent}`}>{CREATIVITY_CATEGORY_LABELS[item.creativity_category]}</span>
-                ) : (
-                  <span className={`${tw.badge.default} ${difficultyBadge(item.difficulty)}`}>
-                    {item.market_sizing_bank?.sourceLabel || DIFFICULTY_LABELS[item.difficulty]}
-                  </span>
-                )}
+                <CaseIdentityChips identity={poolCaseIdentity(item)} problem={poolBusinessProblem(item.id)} inline />
                 {results[item.id] ? (
                   <span className={`${tw.badge.default} ${scoreBadge(results[item.id].score, resultScale(results[item.id]))} flex items-center gap-1`}>
                     <CheckCircle2 className="h-3 w-3" />
@@ -1120,8 +1130,7 @@ export default function CasePoolLibrary({
         <CasePoolFilters
           filters={filters}
           onChange={setFilters}
-          industries={POOL_INDUSTRIES}
-          industryLabels={POOL_INDUSTRY_LABELS}
+          industries={POOL_INDUSTRY_FILTER_LABELS}
           problems={BUSINESS_PROBLEM_CHIPS}
         />
         <button
@@ -1189,9 +1198,9 @@ export default function CasePoolLibrary({
                     <span className="block text-xs font-semibold leading-4 text-[var(--space-text-primary)]">
                       {item.title}
                     </span>
-                    <span className="mt-1 block text-[10px] text-[var(--space-text-muted)]">
-                      {POOL_INDUSTRY_LABELS[item.industry] || item.industry} ·{' '}
-                      {businessProblemForCase(item.id) ? `${businessProblemLabel(businessProblemForCase(item.id))} · ` : ''}{item.creativity_category ? CREATIVITY_CATEGORY_LABELS[item.creativity_category] : item.market_sizing_format ? `${MARKET_SIZING_FORMAT_LABELS[item.market_sizing_format]} · ${item.market_sizing_bank?.sourceLabel || DIFFICULTY_LABELS[item.difficulty]}` : DIFFICULTY_LABELS[item.difficulty]} · {item.estimated_minutes || 25} min
+                    <CaseIdentityChips identity={poolCaseIdentity(item)} problem={poolBusinessProblem(item.id)} className="mt-1.5" testId={`pool-case-identity-${item.id}`} />
+                    <span className="mt-1.5 block text-[10px] text-[var(--space-text-muted)]">
+                      {item.estimated_minutes || 25} min
                       {results[item.id] ? ' · completed' : practicedIds.has(item.id) ? ' · opened' : ' · not started'}
                     </span>
                     <span className="mt-1.5 block line-clamp-2 text-[11px] leading-4 text-[var(--space-text-secondary)]">{item.market_sizing_format ? formatNumbersInText(item.objective || item.key_question) : item.objective || item.key_question}</span>
