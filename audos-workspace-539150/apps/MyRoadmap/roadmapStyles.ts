@@ -162,6 +162,45 @@ export const ROADMAP_CSS = `
 .mr-start-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; align-items: center; }
 .mr-start-row input { min-height: 44px; border: 1px solid var(--mr-line); border-radius: 10px; padding: 0 12px; font: inherit; color: var(--mr-ink); background: var(--mr-surface); max-width: 100%; }
 
+/* Overall Learning Progress (informational, no buttons) */
+.mr-op { display: grid; grid-template-columns: minmax(250px, 340px) minmax(0, 1fr); gap: 20px; align-items: stretch; }
+.mr-op-summary { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 20px; border: 1px solid var(--mr-line); border-radius: var(--mr-radius-sm); background: var(--mr-red-soft); min-width: 0; }
+.mr-op-donut { position: relative; width: 168px; height: 168px; flex-shrink: 0; }
+.mr-op-donut svg { display: block; width: 100%; height: 100%; }
+.mr-op-donut circle { fill: none; stroke-width: 14; }
+.mr-op-donut-track { stroke: var(--mr-red-tint); }
+.mr-op-donut-fill { stroke: var(--mr-red); stroke-linecap: butt; transition: stroke-dasharray 0.5s ease; }
+.mr-op-donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.mr-op-donut-center b { font-size: 30px; font-weight: 800; line-height: 1.1; color: var(--mr-ink); }
+.mr-op-donut-center span { font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mr-muted); }
+.mr-op-metrics { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; }
+.mr-op-total b { display: block; font-size: 24px; font-weight: 800; line-height: 1.2; color: var(--mr-ink); }
+.mr-op-total span { font-size: 12.5px; color: var(--mr-ink-2); }
+.mr-op-remaining { font-size: 13px; color: var(--mr-ink-2); }
+.mr-op-remaining b { font-weight: 800; color: var(--mr-red); }
+.mr-op-extra-total { font-size: 12px; color: var(--mr-ink-2); }
+.mr-op-cats { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mr-op-cat { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 14px 16px; border: 1px solid var(--mr-line); border-radius: var(--mr-radius-sm); background: var(--mr-surface); min-width: 0; }
+.mr-op-cat-head { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.mr-op-cat-head b { font-weight: 800; }
+.mr-op-cat-icon { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px; background: var(--mr-red-soft); color: var(--mr-red); flex-shrink: 0; }
+.mr-op-cat-icon svg { width: 16px; height: 16px; }
+.mr-op-cat-count { margin-left: auto; font-size: 18px; font-weight: 800; }
+.mr-op-cat-count.is-done { color: var(--mr-green); }
+.mr-op-cat-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; font-size: 12px; color: var(--mr-ink-2); }
+.mr-op-cat-foot b { font-weight: 800; color: var(--mr-ink); }
+.mr-op-cat-extra { font-size: 11.5px; color: var(--mr-muted); }
+.mr-op-cat-extra .mr-extra { margin-right: 4px; }
+@container (max-width: 760px) {
+  .mr-op { grid-template-columns: minmax(0, 1fr); }
+}
+@container (max-width: 520px) {
+  .mr-op-summary { padding: 16px 12px; }
+  .mr-op-donut { width: 150px; height: 150px; }
+  .mr-op-donut-center b { font-size: 26px; }
+  .mr-op-cat { padding: 12px; }
+}
+
 /* 3. Recommendations */
 .mr-rec-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .mr-rec-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }

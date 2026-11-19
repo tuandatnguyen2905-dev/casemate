@@ -1,14 +1,16 @@
 // Casemate — "My Roadmap": the persistent personalized prep plan.
 //
-// One page, four sections in a fixed order (founder-approved prototype):
+// One page, five sections in a fixed order (founder-approved prototype):
 //   1. Your Target Program — program, company, position, match %, Fit
 //      Assessment link and roadmap regeneration.
-//   2. Your Progress This Week — current week, phase, weekly completion,
-//      remaining activities, one compact card per tracked practice app and the
-//      overall plan progress. Read-only: no practice buttons.
-//   3. Recommended for Your Target Program (./RecommendedForTarget.tsx) — the
+//   2. Overall Learning Progress (./OverallProgress.tsx) — completion across the
+//      whole saved plan: donut + three category bars. Read-only, no buttons.
+//   3. Your Progress This Week — current week, phase, weekly completion,
+//      remaining activities and one compact card per tracked practice app.
+//      Read-only: no practice buttons.
+//   4. Recommended for Your Target Program (./RecommendedForTarget.tsx) — the
 //      only place with learn/practice CTAs.
-//   4. Preparation Timeline — the saved 24-week plan in four phases with This
+//   5. Preparation Timeline — the saved 24-week plan in four phases with This
 //      Week / Monthly / Full Plan views. Planning only: no practice buttons.
 // Targets and phases come from the saved plan (lib/prepRoadmap.ts,
 // prep_roadmaps table); progress is counted live from completed Case Pool,
@@ -71,6 +73,8 @@ import type { PlanStatus, PracticeSession, RoadmapPhase, WeekStartBasis, WeekSta
 import { READINESS_UPDATED_EVENT } from '../../lib/readinessScore';
 import { trackAppSwitch, trackStepError } from '../../lib/engagementTracking';
 import { isFounderEmail } from '../../lib/founderAccess';
+import OverallProgress from './OverallProgress';
+import type { OverallProgressStatus } from './OverallProgress';
 import RecommendedForTarget from './RecommendedForTarget';
 import { ROADMAP_CSS } from './roadmapStyles';
 
@@ -662,6 +666,7 @@ export default function MyRoadmapApp() {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [roadmap, setRoadmap] = useState<SavedRoadmap | null>(null);
   const [sessions, setSessions] = useState<PracticeSession[]>([]);
+  const [sessionsState, setSessionsState] = useState<OverallProgressStatus>('loading');
   const [assessmentTarget, setAssessmentTarget] = useState<AssessmentTarget | null>(null);
   const [hasPendingSelection, setHasPendingSelection] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -695,7 +700,12 @@ export default function MyRoadmapApp() {
   const refreshSessions = useCallback(async () => {
     sessionsFetchedAtRef.current = Date.now();
     const loaded = await loadPracticeSessions(sessionId, userEmail).catch(() => null);
-    if (loaded) setSessions(loaded);
+    if (loaded) {
+      setSessions(loaded);
+      setSessionsState('ready');
+    } else {
+      setSessionsState((previous) => (previous === 'ready' ? 'ready' : 'unavailable'));
+    }
   }, [sessionId, userEmail]);
 
   const load = useCallback(async () => {
@@ -720,7 +730,12 @@ export default function MyRoadmapApp() {
         sessionsFetchedAtRef.current = Date.now();
         const loaded = await loadPracticeSessions(sessionId, userEmail).catch(() => null);
         if (isStale()) return;
-        if (loaded) setSessions(loaded);
+        if (loaded) {
+          setSessions(loaded);
+          setSessionsState('ready');
+        } else {
+          setSessionsState((previous) => (previous === 'ready' ? 'ready' : 'unavailable'));
+        }
         if (selectedTarget && selectedTarget.program !== saved.target_program) {
           setAssessmentTarget(selectedTarget);
           setHasPendingSelection(true);
@@ -914,7 +929,6 @@ export default function MyRoadmapApp() {
     ? phases.find((phase) => phase.weeks.some((week) => week.week === goalWeek.week)) || null
     : phases[phases.length - 1] || null;
   const planTotals = useMemo(() => rangeTotals(schedule, progress), [schedule, progress]);
-  const planPct = goalProgress(planTotals.counted, planTotals.target).pct;
   const hasAnyPractice = planTotals.counted + planTotals.extra > 0;
   const effectiveView: TimelineView = timelineView || (planState.kind === 'complete' ? 'full' : 'week');
   const focusWeekNumber = goalWeek?.week ?? schedule[schedule.length - 1]?.week ?? 1;
@@ -1116,7 +1130,10 @@ export default function MyRoadmapApp() {
               </div>
             </section>
 
-            {/* 2. Your Progress This Week — read-only, no practice CTAs */}
+            {/* 2. Overall Learning Progress — whole-plan completion, read-only */}
+            <OverallProgress schedule={schedule} progress={progress} status={sessionsState} />
+
+            {/* 3. Your Progress This Week — read-only, no practice CTAs */}
             <section className="mr-card" data-testid="roadmap-progress-summary" data-plan-state={planState.kind} aria-labelledby="mr-progress-title">
               <div className="mr-sec-head">
                 <div>
@@ -1210,16 +1227,6 @@ export default function MyRoadmapApp() {
                   })}
                 </div>
               )}
-
-              <div className="mr-overall" data-testid="roadmap-overall-progress">
-                <div className="mr-overall-row">
-                  <b>Overall preparation progress</b>
-                  <span className="mr-num">
-                    {planTotals.counted}/{planTotals.target} activities · {planPct}%{planTotals.extra > 0 ? ` · +${planTotals.extra} extra` : ''}
-                  </span>
-                </div>
-                <Bar done={planTotals.counted} target={planTotals.target} size="thick" />
-              </div>
 
               {planState.kind === 'before' && (
                 <p className="mr-note">
@@ -1315,10 +1322,10 @@ export default function MyRoadmapApp() {
               </div>
             </section>
 
-            {/* 3. Recommended for Your Target Program — the only practice CTAs */}
+            {/* 4. Recommended for Your Target Program — the only practice CTAs */}
             {recommendations}
 
-            {/* 4. Preparation Timeline — planning only */}
+            {/* 5. Preparation Timeline — planning only */}
             {schedule.length > 0 && (
               <PreparationTimeline
                 schedule={schedule}
