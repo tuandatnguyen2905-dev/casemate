@@ -672,6 +672,8 @@ export interface BuildRecommendationsInput {
   programs: ProgramRow[];
   /** When known, Domain Knowledge topics outside this set are not recommended. */
   availableSectorIds?: string[] | null;
+  /** Cards per group; defaults to MAX_CARDS_PER_GROUP. */
+  maxPerGroup?: number;
 }
 
 function plural(count: number, one: string, many = `${one}s`): string {
@@ -698,6 +700,7 @@ export function buildRecommendations(input: BuildRecommendationsInput): Recommen
   const { target, reviews, programs } = input;
   const available = input.availableSectorIds ? new Set(input.availableSectorIds) : null;
   const isOffered = (topic: RecommendationTopic) => topic.group !== 'domain' || !available || available.has(topic.contentId);
+  const cap = Math.max(1, Math.floor(input.maxPerGroup ?? MAX_CARDS_PER_GROUP));
   const programRow = findProgramRow(programs, target);
   const industry = targetIndustry(target, programRow, programs);
 
@@ -760,9 +763,9 @@ export function buildRecommendations(input: BuildRecommendationsInput): Recommen
         return fallbackRank(a.topic.contentId) - fallbackRank(b.topic.contentId);
       });
 
-    const cards = evidenceCards.slice(0, MAX_CARDS_PER_GROUP);
+    const cards = evidenceCards.slice(0, cap);
     for (const pick of fallback) {
-      if (cards.length >= MAX_CARDS_PER_GROUP) break;
+      if (cards.length >= cap) break;
       const topic = topicsForGroup(group).find((item) => item.contentId === pick.contentId);
       if (!topic || !isOffered(topic) || cards.some((card) => card.topic.tag === topic.tag)) continue;
       cards.push({ topic, kind: 'fallback', label: LABEL_FALLBACK, why: pick.why, exactCount: 0, relatedCount: 0, evidence: [] });

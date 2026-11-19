@@ -26,6 +26,7 @@ import {
 } from '../../lib/candidateReviews';
 import type { CandidateReview, ProgramRow, RecommendationTopic, ReviewDraft } from '../../lib/candidateReviews';
 import { LESSON_PROGRESS_KEY } from '../IndustryKnowledge/lessonFlowCore';
+import type { KnowledgeRecommendation } from '../IndustryKnowledge/industrySubcategories';
 
 export interface TopicProgress {
   done: number;
@@ -398,12 +399,37 @@ export function openRecommendedTopic(topic: RecommendationTopic, options: { next
     return;
   }
   trackAppSwitch('my-roadmap', 'case-drill', { trigger: 'roadmap_recommendation' });
-  if (options.nextQuestionId) {
-    try {
-      sessionStorage.setItem('casemate-open-case-drill', options.nextQuestionId);
-    } catch {
-      // Case Drill still opens on its Question Library.
+  // Case Drill has no skill-filter route: it opens a requested question on that
+  // question's skill tab, so hand it the next unfinished question for the skill.
+  const openWith = (questionId: string | null | undefined) => {
+    if (questionId) {
+      try {
+        sessionStorage.setItem('casemate-open-case-drill', questionId);
+      } catch {
+        // Case Drill still opens on its Question Library.
+      }
     }
+    openDockApp('case-drill');
+  };
+  if (options.nextQuestionId) {
+    openWith(options.nextQuestionId);
+    return;
   }
-  openDockApp('case-drill');
+  loadCaseLibrary()
+    .then((library) => {
+      const questions = ((library.QUESTION_LIBRARY as Record<string, Array<{ id: string; difficulty?: string; reviewStatus?: string }>>)[topic.contentId] || [])
+        .filter((question) => question.reviewStatus !== 'Archived');
+      const first = questions
+        .map((question, index) => ({ question, index }))
+        .sort((a, b) => ((DIFFICULTY_ORDER[a.question.difficulty || ''] ?? 9) - (DIFFICULTY_ORDER[b.question.difficulty || ''] ?? 9)) || a.index - b.index)[0];
+      openWith(first?.question.id);
+    })
+    .catch(() => openWith(null));
+}
+
+/** Opens a Domain Knowledge study area named by learning-deck slug (plus optional subcategory or pillar). */
+export function openKnowledgeAreaRoute(area: KnowledgeRecommendation) {
+  trackAppSwitch('my-roadmap', 'industry-knowledge', { trigger: 'roadmap_knowledge_area' });
+  writeDomainPendingRoute({ industrySlug: area.industrySlug, subcategoryId: area.subcategoryId, pillar: area.pillar || null });
+  openDockApp('industry-knowledge');
 }
