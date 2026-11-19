@@ -17,6 +17,7 @@ import { computeAptitudeProgress } from '../../lib/aptitudeProgress';
 import type { ProgressCatalogEntry } from '../../lib/aptitudeProgress';
 import { writeDomainPendingRoute } from '../../lib/domainKnowledgeRoute';
 import { trackAppSwitch } from '../../lib/engagementTracking';
+import { isLibrarySkill, openCaseDrillSkill } from '../../lib/caseDrillSkillLink';
 import {
   CANDIDATE_REVIEWS_HOOK,
   CANDIDATE_REVIEWS_STORAGE_READY,
@@ -399,8 +400,12 @@ export function openRecommendedTopic(topic: RecommendationTopic, options: { next
     return;
   }
   trackAppSwitch('my-roadmap', 'case-drill', { trigger: 'roadmap_recommendation' });
-  // Case Drill has no skill-filter route: it opens a requested question on that
-  // question's skill tab, so hand it the next unfinished question for the skill.
+  // Primary path: open Case Drill's Question Library list on the skill's tab.
+  if (isLibrarySkill(topic.contentId)) {
+    openCaseDrillSkill(topic.contentId);
+    return;
+  }
+  // Fallback for an unknown skill id: open the next unfinished question.
   const openWith = (questionId: string | null | undefined) => {
     if (questionId) {
       try {

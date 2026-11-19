@@ -18,6 +18,7 @@ import { useSpaceRuntime } from '../SpaceRuntimeContext';
 import { tw } from '../lib/colors';
 import ExhibitRenderer from './ExhibitRenderer';
 import ExpertDrillExperience from './ExpertDrillExperience';
+import { BackToQuestionButton, CaseQuestionFirst, CaseReadingProvider } from './CaseReadingGuide';
 import { CASE_JOURNEYS } from '../lib/caseJourneys';
 import {
   ALL_LIBRARY_QUESTIONS,
@@ -32,7 +33,10 @@ import type {
   LibrarySkill,
 } from '../lib/skillQuestionLibrary';
 import { restoreArchivedHardQuestion } from '../lib/hardCaseDrillQuestions';
+import { CASE_DRILL_SKILL_KEY, isLibrarySkill } from '../lib/caseDrillSkillLink';
 import { difficultyFilterLevelsFor, displayDifficultyOf } from '../lib/difficultyTiers';
+import CaseIdentityChips from './CaseIdentityChips';
+import { auditDrillIdentity, drillIdentity } from '../lib/caseIdentity';
 import StructuresWorkspace from '../apps/CaseDrill/StructuresWorkspace';
 import CaseResultView from './CaseResultView';
 import { MARKET_SIZING_REVEAL_NOTICE, getMarketSizingBankCase } from '../lib/marketSizingBank';
@@ -517,6 +521,11 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attemptsError]);
 
+  useEffect(() => {
+    const findings = auditDrillIdentity(ALL_LIBRARY_QUESTIONS);
+    if (findings.length > 0) console.warn('[Case Drill] items with an omitted industry, exercise type or difficulty label (not shown to learners):', findings);
+  }, []);
+
   const libraryErrors = useMemo(() => validateQuestionLibrary(), []);
   useEffect(() => {
     if (libraryErrors.length > 0) console.warn('[Question Library] content audit findings (not shown to learners):', libraryErrors);
@@ -540,14 +549,14 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     () => visibleQuestions.filter((question) => {
       if (skill === 'creativity') return creativityCategory === 'all' || question.creativityCategory === creativityCategory;
       if (skill === 'market-sizing' && marketSizingFormat !== 'all' && question.marketSizingFormat !== marketSizingFormat) return false;
-      return difficulty === 'all' || displayDifficultyOf(question) === difficulty;
+      return difficulty === 'all' || drillIdentity(question).difficulty === difficulty;
     }),
     [visibleQuestions, skill, difficulty, creativityCategory, marketSizingFormat],
   );
   const filterOptions = useMemo(() => ({
     journeyIds: [...new Set(difficultyQuestions.map((question) => question.journeyId).filter(Boolean))] as string[],
-    drillTypes: [...new Set(difficultyQuestions.map((question) => question.drillType).filter(Boolean))] as string[],
-    industries: [...new Set(difficultyQuestions.map((question) => question.industry).filter(Boolean))] as string[],
+    drillTypes: [...new Set(difficultyQuestions.map((question) => drillIdentity(question).exerciseType).filter(Boolean))] as string[],
+    industries: [...new Set(difficultyQuestions.map((question) => drillIdentity(question).industry).filter(Boolean))] as string[],
     businessProblems: [...new Set(difficultyQuestions.map((question) => question.businessProblem).filter(Boolean))] as string[],
   }), [difficultyQuestions]);
   const recommendedIds = useMemo(() => {
@@ -576,14 +585,14 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
       if (skill === 'creativity') {
         if (creativityCategory !== 'all' && question.creativityCategory !== creativityCategory) return false;
       } else {
-        if (difficulty !== 'all' && displayDifficultyOf(question) !== difficulty) return false;
+        if (difficulty !== 'all' && drillIdentity(question).difficulty !== difficulty) return false;
         if (skill === 'market-sizing' && marketSizingFormat !== 'all' && question.marketSizingFormat !== marketSizingFormat) return false;
       }
       if (journey === 'journeys-only' && !question.journeyId) return false;
       if (journey === 'standalone' && question.journeyId) return false;
       if (journey !== 'all' && journey !== 'journeys-only' && journey !== 'standalone' && question.journeyId !== journey) return false;
-      if (drillType !== 'all' && question.drillType !== drillType) return false;
-      if (industry !== 'all' && question.industry !== industry) return false;
+      if (drillType !== 'all' && drillIdentity(question).exerciseType !== drillType) return false;
+      if (industry !== 'all' && drillIdentity(question).industry !== industry) return false;
       if (businessProblem !== 'all' && question.businessProblem !== businessProblem) return false;
       if (estimatedTime === 'under-10' && (!question.estimatedMinutes || question.estimatedMinutes >= 10)) return false;
       if (estimatedTime === '10-plus' && (!question.estimatedMinutes || question.estimatedMinutes < 10)) return false;
@@ -712,12 +721,18 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
       if (attemptsLoading) return;
       try {
         const id = sessionStorage.getItem('casemate-open-case-drill');
-        if (!id) return;
-        const requested = ALL_LIBRARY_QUESTIONS.find((question) => question.id === id);
-        if (!requested) return;
-        sessionStorage.removeItem('casemate-open-case-drill');
-        setSkill(requested.skill);
-        openQuestion(requested);
+        const requested = id ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === id) : null;
+        if (requested) {
+          sessionStorage.removeItem('casemate-open-case-drill');
+          sessionStorage.removeItem(CASE_DRILL_SKILL_KEY);
+          setSkill(requested.skill);
+          openQuestion(requested);
+          return;
+        }
+        const requestedSkill = sessionStorage.getItem(CASE_DRILL_SKILL_KEY);
+        if (!requestedSkill) return;
+        sessionStorage.removeItem(CASE_DRILL_SKILL_KEY);
+        if (isLibrarySkill(requestedSkill)) switchSkill(requestedSkill);
       } catch {
         /* sessionStorage can be unavailable in strict browser modes */
       }
@@ -954,6 +969,7 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
 
   if (active?.sourceCaseId?.startsWith('CM-CRE-')) {
     return (
+      <CaseReadingProvider itemId={active.id}>
       <CreativityCaseExperience
         question={active}
         onBack={backToLibrary}
@@ -963,11 +979,13 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
         onGraded={(scoring) => trackAnswer(active.id, scoring)}
         onGradeError={(error) => trackLibraryError('answer', error, active.id)}
       />
+      </CaseReadingProvider>
     );
   }
 
   if (active?.sourceCaseId?.startsWith('CM-CALC-')) {
     return (
+      <CaseReadingProvider itemId={active.id}>
       <CalculationCaseExperience
         question={active}
         onBack={backToLibrary}
@@ -980,11 +998,13 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
           trackAnswer(active.id);
         }}
       />
+      </CaseReadingProvider>
     );
   }
 
   if (active?.skill === 'structures') {
     return (
+      <CaseReadingProvider itemId={active.id}>
       <div className="mt-5" data-testid="question-library-active-structures" onInputCapture={(event) => { if (!(event.target as HTMLElement).closest('[data-testid="structures-library"]')) trackSolving('answer_typed'); }}>
         <button type="button" onClick={backToLibrary} className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold ${tw.button.secondary}`}>
           <ArrowLeft className="h-4 w-4" />
@@ -1012,11 +1032,13 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
           }}
         />
       </div>
+      </CaseReadingProvider>
     );
   }
 
   if (active?.structuredAnswer && active.skill !== 'market-sizing') {
     return (
+      <CaseReadingProvider itemId={active.id}>
       <ExpertDrillExperience
         question={active}
         onBack={backToLibrary}
@@ -1030,6 +1052,7 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
           void emitLibraryEvent('drill_answer_submitted', 'core_action', { question_id: active.id, skill: active.skill, difficulty: active.difficulty, answer_mode: 'structured-expert' }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
         }}
       />
+      </CaseReadingProvider>
     );
   }
 
@@ -1095,69 +1118,73 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
       'next-question': relatedQuestion ? { kind: 'next-question', label: 'Next related question', detail: `Practise the same skill on “${relatedQuestion.title}”.`, onSelect: () => { if (relatedQuestion.skill !== skill) setSkill(relatedQuestion.skill); openQuestion(relatedQuestion, true); } } : null,
       'full-case': fullCase ? { kind: 'full-case', label: 'Solve the full case', detail: `Take this drill into its full case: ${fullCase.title}. Your drill result stays saved.`, onSelect: () => openCasePoolCase(fullCase.id) } : null,
     }, { objective: objectiveResult });
-    const contextSection = (
-      <section className={compactSingleChart ? 'rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 shadow-sm sm:p-4' : 'mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm sm:p-5'}>
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Case Context</p>
-        <h2 className={compactSingleChart ? 'mt-1 break-words text-lg font-bold leading-6 text-[var(--space-text-primary)]' : 'mt-1.5 break-words text-xl font-bold leading-7 text-[var(--space-text-primary)] sm:text-2xl'}>{capitaliseLineStarts(active.title)}</h2>
-        {presented.context ? <p className={`${compactSingleChart ? 'mt-1.5 p-2.5' : 'mt-2 p-3'} rounded-xl bg-[var(--space-surface-muted)] text-sm leading-6 text-[var(--space-text-secondary)]`} data-testid="question-library-case-context">{capitaliseLineStarts(presented.context)}</p> : null}
-        {presented.keyTerms.length ? <p className="mt-2 text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="question-library-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {presented.keyTerms.map(capitaliseLineStarts).join(' ')}</p> : null}
-        {presented.skillLabels.length ? <p className="mt-2 text-[11px] font-medium text-[var(--space-text-muted)]" data-testid="question-library-skill-label">Skill focus: {presented.skillLabels.join('; ')}</p> : null}
+    const questionNoteLines = [...presented.guidance, ...presented.answerFormat.map((line) => `Answer format: ${line}`)];
+    const questionNote = presented.instruction || questionNoteLines.length ? (
+      <>
+        {presented.instruction ? <p className="font-semibold text-[var(--space-text-brand)]">{capitaliseLineStarts(presented.instruction)}</p> : null}
+        {questionNoteLines.map((line) => <p key={line} className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">{capitaliseLineStarts(line)}</p>)}
+      </>
+    ) : null;
+    const contextExtra = presented.keyTerms.length || presented.skillLabels.length ? (
+      <>
+        {presented.keyTerms.length ? <p className="text-xs leading-5 text-[var(--space-text-secondary)]" data-testid="question-library-key-terms"><span className="font-bold text-[var(--space-text-primary)]">Key terms:</span> {presented.keyTerms.map(capitaliseLineStarts).join(' ')}</p> : null}
+        {presented.skillLabels.length ? <p className="mt-1 text-[11px] font-medium text-[var(--space-text-muted)]" data-testid="question-library-skill-label">Skill focus: {presented.skillLabels.join('; ')}</p> : null}
+      </>
+    ) : null;
+    const questionFirstSection = (
+      <section className={`rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] shadow-sm ${compactSingleChart ? 'p-3' : 'mt-3 p-4 sm:p-5'}`} data-testid="question-library-question-first">
+        <h2 className={compactSingleChart ? 'break-words text-lg font-bold leading-6 text-[var(--space-text-primary)]' : 'break-words text-xl font-bold leading-7 text-[var(--space-text-primary)] sm:text-2xl'}>{capitaliseLineStarts(active.title)}</h2>
+        <CaseQuestionFirst
+          itemId={active.id}
+          compact={compactSingleChart}
+          bare
+          className={compactSingleChart ? 'mt-1.5' : 'mt-2'}
+          question={<span data-testid="question-library-task">{capitaliseLineStarts(presented.task)}</span>}
+          questionNote={questionNote}
+          context={presented.context ? capitaliseLineStarts(presented.context) : ''}
+          contextExtra={contextExtra}
+        />
       </section>
     );
     const exhibitNode = activeExhibits.length ? <div className={compactSingleChart ? undefined : 'mt-4'}><ExhibitRenderer exhibits={activeExhibits} compact={compactSingleChart} guide={presented.exhibitGuide.map(capitaliseLineStarts)} /></div> : null;
-    const questionSection = (
-      <section className={compactSingleChart ? 'rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-3 shadow-sm sm:p-4' : 'mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm sm:p-5'}>
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Question</p>
-        {presented.instruction ? <p className="mt-3 text-sm font-semibold leading-6 text-[var(--space-text-brand)]">{capitaliseLineStarts(presented.instruction)}</p> : null}
-        <p className="mt-2 whitespace-pre-wrap text-base leading-7 text-[var(--space-text-secondary)]" data-testid="question-library-task">{capitaliseLineStarts(presented.task)}</p>
-        {[...presented.guidance, ...presented.answerFormat.map((line) => `Answer format: ${line}`)].map((line) => <p key={line} className="mt-2 text-xs leading-5 text-[var(--space-text-muted)]">{capitaliseLineStarts(line)}</p>)}
-      </section>
-    );
+    const answerInColumn = compactSingleChart && !submitted && isChoiceQuestion && !isMarketSizing && active.skill !== 'calculations';
 
     return (
-      <div className={compactSingleChart ? 'mt-2' : 'mt-5'} data-testid={`question-library-active-${active.skill}`}>
-        <div className={compactSingleChart ? 'flex flex-wrap items-center gap-x-3 gap-y-2' : undefined}>
-        <button type="button" onClick={backToLibrary} className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold ${tw.button.secondary}`}>
+      <CaseReadingProvider itemId={active.id}>
+      <div className={compactSingleChart ? 'mt-1' : 'mt-5'} data-testid={`question-library-active-${active.skill}`}>
+        <div className={compactSingleChart ? 'flex flex-wrap items-center gap-x-3 gap-y-1' : undefined}>
+        <button type="button" onClick={backToLibrary} className={`inline-flex items-center gap-1.5 rounded-xl text-xs font-semibold ${compactSingleChart ? 'px-2.5 py-1.5' : 'px-3 py-2'} ${tw.button.secondary}`}>
           <ArrowLeft className="h-4 w-4" />
           Back to Question Library
         </button>
 
         <div className={`${compactSingleChart ? '' : 'mt-4 '}flex flex-wrap items-center gap-2`}>
-          <span className={`${tw.badge.default} ${tw.badge.primary}`}>{capitaliseLineStarts(skillMeta.label)}</span>
-          {active.skill === 'creativity' && active.creativityCategory ? (
-            <span className={`${tw.badge.default} ${tw.badge.accent}`}>{CREATIVITY_CATEGORY_LABELS[active.creativityCategory]}</span>
-          ) : (
-            <>
-              <span className={`${tw.badge.default} ${difficultyClass(displayDifficultyOf(active))}`} title={active.marketSizingBank ? `Counts as ${DIFFICULTY_LABELS[displayDifficultyOf(active)]} in the difficulty filters` : undefined}>{active.marketSizingBank?.sourceLabel || DIFFICULTY_LABELS[displayDifficultyOf(active)]}</span>
-              {active.marketSizingFormat ? <span className={`${tw.badge.default} ${tw.badge.accent}`}>{MARKET_SIZING_FORMAT_LABELS[active.marketSizingFormat]}</span> : null}
-              {active.marketSizingBank ? (
-                <>
-                  <span className={`${tw.badge.default} ${tw.badge.accent}`} data-testid="market-sizing-bank-industry">{active.industry}</span>
-                  <span className={`${tw.badge.default} ${tw.badge.accent}`} data-testid="market-sizing-bank-geography">{active.marketSizingBank.geography}</span>
-                </>
-              ) : null}
-            </>
-          )}
+          <CaseIdentityChips identity={drillIdentity(active)} testId="question-library-identity" />
+          {active.marketSizingBank?.geography ? (
+            <span className="inline-flex min-w-0 max-w-full rounded-full border border-dashed border-[var(--space-border-default)] px-2.5 py-0.5 text-[11px] font-semibold leading-4 text-[var(--space-text-muted)]" title={`Geography: ${active.marketSizingBank.geography}`} data-testid="market-sizing-bank-geography">
+              <span className="min-w-0 break-words"><span className="sr-only">Geography: </span>{active.marketSizingBank.geography}</span>
+            </span>
+          ) : null}
           <span className="text-xs font-medium text-[var(--space-text-muted)]">{questionCountFor(active.skill)} practice questions available</span>
           {active.estimatedMinutes ? <span className="text-xs font-medium text-[var(--space-text-muted)]">· {active.estimatedMinutes} Min</span> : null}
         </div>
         </div>
 
+        <div className={compactSingleChart ? 'mt-1.5 grid gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start' : undefined} data-testid={compactSingleChart ? 'question-library-compact-layout' : undefined}>
         {compactSingleChart ? (
-          <div className="mt-2 grid gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start" data-testid="question-library-compact-layout">
-            <div className="min-w-0">{exhibitNode}</div>
-            <div className="min-w-0 space-y-3">{contextSection}{questionSection}</div>
-          </div>
+          <>
+            <div className="min-w-0 lg:col-start-2 lg:row-start-1">{questionFirstSection}</div>
+            <div className={`min-w-0 lg:col-start-1 lg:row-start-1 ${answerInColumn ? 'lg:row-span-2' : ''}`}>{exhibitNode}</div>
+          </>
         ) : (
           <>
-            {contextSection}
+            {questionFirstSection}
             {exhibitNode}
-            {questionSection}
           </>
         )}
 
         {!submitted ? (
-          <section className={`mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${isCaseCoachLayout ? 'p-5 shadow-sm sm:p-7' : 'p-4 sm:p-5'}`} data-testid="question-library-answer-area">
+          <section className={`rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${answerInColumn ? 'min-w-0 p-3 shadow-sm lg:col-start-2 lg:row-start-2' : `${compactSingleChart ? 'min-w-0 lg:col-span-2' : 'mt-4'} ${isCaseCoachLayout ? 'p-5 shadow-sm sm:p-7' : 'p-4 sm:p-5'}`}`} data-testid="question-library-answer-area">
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">Your Answer</p>
 
             {isMarketSizing ? (
@@ -1165,13 +1192,13 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
                 <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setValidationError(''); trackSolving('answer_typed'); }} answerUnit={active.answerUnit} disabled={grading} rootText={presented.rootQuestion} />
               </div>
             ) : (active.answerMode === 'choice' || active.answerMode === 'multiple-choice') && active.skill !== 'calculations' ? (
-              <div className="mt-3 grid gap-2.5">
+              <div className={answerInColumn ? 'mt-2 grid gap-2' : 'mt-3 grid gap-2.5'}>
                 {(active.options || []).map((option, index) => (
                   <button
                     key={option}
                     type="button"
                     onClick={() => { setSelectedOption(option); setValidationError(''); trackSolving('answer_typed'); }}
-                    className={`flex items-start gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors ${selectedOption === option ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] hover:border-[var(--space-border-strong)]'}`}
+                    className={`flex items-start gap-3 rounded-xl border ${answerInColumn ? 'px-3 py-2' : 'px-4 py-3.5'} text-left transition-colors ${selectedOption === option ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] hover:border-[var(--space-border-strong)]'}`}
                   >
                     <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${selectedOption === option ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]' : 'bg-[var(--space-surface-muted)] text-[var(--space-text-muted)]'}`}>
                       {String.fromCharCode(65 + index)}
@@ -1217,12 +1244,13 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
             )}
 
             {validationError ? <p className="mt-3 text-sm font-medium text-[var(--space-semantic-danger)]">{validationError}</p> : null}
-            <button type="button" onClick={() => void submit()} disabled={grading} className={`mt-4 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-bold ${tw.button.primary} ${grading ? tw.button.disabled : ''}`} data-testid="button-submit-library-answer">
+            <button type="button" onClick={() => void submit()} disabled={grading} className={`${answerInColumn ? 'mt-3 py-2.5' : 'mt-4 py-3.5'} flex w-full items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold ${tw.button.primary} ${grading ? tw.button.disabled : ''}`} data-testid="button-submit-library-answer">
               <Check className="h-4 w-4" />
               {grading ? 'Mate is grading…' : 'Submit for feedback'}
             </button>
           </section>
         ) : scoreResult ? (
+          <div className={compactSingleChart ? 'min-w-0 lg:col-span-2' : undefined}>
           <CaseResultView
             score={visibleOverallScore}
             scale={resultScale}
@@ -1249,14 +1277,18 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
             format={capitaliseLineStarts}
             testId="question-library-result"
           />
+          </div>
         ) : null}
+        </div>
 
         <div className="mt-4 flex flex-col gap-2 pb-20 sm:flex-row sm:pb-0">
           <button type="button" onClick={backToLibrary} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.secondary}`} data-testid="button-back-case-library">
             <ArrowLeft className="h-4 w-4" /> Back to case library
           </button>
         </div>
+        {!compactSingleChart ? <BackToQuestionButton /> : null}
       </div>
+      </CaseReadingProvider>
     );
   }
 
@@ -1382,7 +1414,7 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
           <button type="button" onClick={clearFilters} className="text-xs font-bold text-[var(--space-text-brand)] hover:underline">Clear Filters</button>
         </div>
         <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          <select value={drillType} onChange={(event) => setDrillType(event.target.value)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by drill type"><option value="all">All Drill Types</option>{filterOptions.drillTypes.map((value) => <option key={value} value={value}>{value}</option>)}</select>
+          <select value={drillType} onChange={(event) => setDrillType(event.target.value)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by exercise type"><option value="all">All Exercise Types</option>{filterOptions.drillTypes.map((value) => <option key={value} value={value}>{value}</option>)}</select>
           <select value={industry} onChange={(event) => setIndustry(event.target.value)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by industry"><option value="all">All Industries</option>{filterOptions.industries.map((value) => <option key={value} value={value}>{value}</option>)}</select>
           <select value={businessProblem} onChange={(event) => setBusinessProblem(event.target.value)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by business problem"><option value="all">All Business Problems</option>{filterOptions.businessProblems.map((value) => <option key={value} value={value}>{value}</option>)}</select>
           <select value={estimatedTime} onChange={(event) => setEstimatedTime(event.target.value as typeof estimatedTime)} className={`${tw.input.base} ${tw.input.default} py-2.5 text-xs`} aria-label="Filter by estimated time"><option value="all">Any Estimated Time</option><option value="under-10">Under 10 Minutes</option><option value="10-plus">10–12 Minutes</option></select>
@@ -1419,14 +1451,7 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
                     <span className="block text-sm font-bold leading-5 text-[var(--space-text-primary)]">{capitaliseLineStarts(question.title, question.skill === 'market-sizing')}</span>
                     <span className="mt-1.5 block line-clamp-2 text-xs leading-5 text-[var(--space-text-muted)]">{capitaliseLineStarts(question.question, question.skill === 'market-sizing')}</span>
                     <span className="mt-2 flex flex-wrap gap-1.5">
-                      {question.skill === 'creativity' && question.creativityCategory ? (
-                        <span className="inline-flex rounded-full bg-[var(--space-surface-accent-soft)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-brand)]">{CREATIVITY_CATEGORY_LABELS[question.creativityCategory]}</span>
-                      ) : (
-                        <>
-                          <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${difficultyClass(displayDifficultyOf(question))}`}>{question.marketSizingBank?.sourceLabel || DIFFICULTY_LABELS[displayDifficultyOf(question)]}</span>
-                          {question.marketSizingFormat ? <span className="inline-flex rounded-full bg-[var(--space-surface-accent-soft)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-brand)]">{MARKET_SIZING_FORMAT_LABELS[question.marketSizingFormat]}</span> : null}
-                        </>
-                      )}
+                      <CaseIdentityChips identity={drillIdentity(question)} inline />
                       {question.structuredAnswer ? <><span className="inline-flex rounded-full border border-[var(--space-border-default)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-secondary)]">{question.difficulty === 'hard' ? '2 connected exhibits' : '2–3 connected exhibits'}</span><span className="inline-flex rounded-full border border-[var(--space-border-default)] px-2 py-0.5 text-[10px] font-semibold text-[var(--space-text-secondary)]">Insight + implication</span></> : null}
                       {attemptByQuestion.get(question.id) ? (
                         <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${scoreBand(listScore(question), scoringScale(parseSavedObject<HonestScoreResult>(attemptByQuestion.get(question.id)?.scoring_json))).badgeClassName}`} data-testid={`library-question-completed-${question.id}`}>
