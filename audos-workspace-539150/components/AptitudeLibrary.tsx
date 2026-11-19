@@ -27,6 +27,8 @@ export interface LibraryEntry {
   detail: string[];
   best: string | null;
   payload: unknown;
+  /** Shown first, as a full-width card with a description, instructions and a start button. Filters still apply. */
+  feature?: { description: string; instructions: string[]; actionLabel: string; note?: string | null };
 }
 
 interface Props {
@@ -183,12 +185,13 @@ export default function AptitudeLibrary({
   const activeGroup = chips.some(([name]) => name === group) ? group : 'all';
   const matches = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return inFamily.filter((entry) => {
+    const filtered = inFamily.filter((entry) => {
       if (activeGroup !== 'all' && (family === 'all' ? entry.source : entry.group) !== activeGroup) return false;
       if (difficulty !== 'all' && normalizeDifficulty(entry.difficulty) !== difficulty) return false;
       if (!needle) return true;
       return `${entry.title} ${familyName.get(entry.family) || ''} ${entry.tag || ''}`.toLowerCase().includes(needle);
     });
+    return [...filtered.filter((entry) => entry.feature), ...filtered.filter((entry) => !entry.feature)];
   }, [inFamily, activeGroup, difficulty, query, family, familyName]);
 
   const selectFamily = (id: string) => {
@@ -377,6 +380,51 @@ export default function AptitudeLibrary({
           <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
             {matches.slice(0, visibleCount).map((entry) => {
               const Icon = familyIcon.get(entry.family) || Brain;
+              if (entry.feature) {
+                return (
+                  <li key={entry.key} className="sm:col-span-2 lg:col-span-3">
+                    <section
+                      className="flex flex-col gap-3 rounded-2xl border-2 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-card)] p-3.5 sm:flex-row sm:items-start sm:gap-4 sm:p-4"
+                      aria-label={entry.title}
+                      data-testid={`feature-${entry.id}`}
+                    >
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h2 className="text-sm font-bold text-[var(--space-text-primary)] sm:text-base">{entry.title}</h2>
+                          {entry.detail.map((text) => (
+                            <span key={text} className={`${PILL} bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]`}>{text}</span>
+                          ))}
+                          {entry.best ? (
+                            <span className={`${PILL} bg-[var(--space-semantic-success-100)] text-[var(--space-neutral-800)]`}>{entry.best}</span>
+                          ) : null}
+                        </div>
+                        <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">{entry.feature.description}</p>
+                        <ol className="mt-2 grid gap-1 text-xs leading-5 text-[var(--space-text-secondary)] md:grid-cols-2">
+                          {entry.feature.instructions.map((text, i) => (
+                            <li key={text} className="flex gap-1.5">
+                              <span className="font-bold text-[var(--space-text-brand)]">{i + 1}.</span>
+                              <span>{text}</span>
+                            </li>
+                          ))}
+                        </ol>
+                        {entry.feature.note ? <p className="mt-1.5 text-[11px] font-semibold text-[var(--space-text-brand)]">{entry.feature.note}</p> : null}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => onOpen(entry)}
+                        className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold ${tw.button.primary}`}
+                        data-testid={`button-start-${entry.id}`}
+                      >
+                        <Play className="h-4 w-4" />
+                        {entry.feature.actionLabel}
+                      </button>
+                    </section>
+                  </li>
+                );
+              }
               return (
                 <li key={entry.key}>
                   <button

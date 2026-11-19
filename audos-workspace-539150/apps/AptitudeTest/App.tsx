@@ -42,6 +42,7 @@ import {
   Clock,
   Compass,
   Diamond,
+  Grid3x3,
   HelpCircle,
   Hexagon,
   LayoutGrid,
@@ -148,6 +149,18 @@ import {
   summarizeOnlineAssessment,
 } from '../../lib/onlineAssessmentSession';
 import type { OaBlock, OaDifficulty, OaSession } from '../../lib/onlineAssessmentSession';
+import { GC_LEAVE_MESSAGE, GridChallengeResults, GridChallengeSession } from '../../components/GridChallenge';
+import {
+  GC_ROUNDS,
+  GC_TEST_ID,
+  GC_TEST_NAME,
+  GC_TEST_TYPE,
+  GC_TIME_LIMIT_SECONDS,
+  buildGridSession,
+  gridAttemptAnswerRows,
+  scoreGridSession,
+} from '../../lib/gridChallenge';
+import type { GcResponses, GcResult, GcSession } from '../../lib/gridChallenge';
 
 declare global {
   interface Window {
@@ -174,7 +187,7 @@ declare global {
  * The eight aptitude families an MT selection round draws from
  * ========================================================================== */
 
-type Category = 'diagrammatic' | 'inductive' | 'deductive' | 'error_checking' | 'spatial' | 'numerical' | 'verbal' | 'situational' | 'logical' | 'critical' | 'mechanical' | 'in_tray';
+type Category = 'diagrammatic' | 'inductive' | 'deductive' | 'error_checking' | 'spatial' | 'numerical' | 'verbal' | 'situational' | 'logical' | 'critical' | 'mechanical' | 'in_tray' | 'grid_challenge';
 type TestMode = Category | 'mixed';
 type SourceQuestion =
   | ExpandedQuestion
@@ -305,6 +318,13 @@ const TEST_FAMILIES: TestFamily[] = [
     icon: ClipboardList,
     ready: true,
   },
+  {
+    id: 'grid_challenge',
+    name: 'Grid Challenge',
+    blurb: 'A 9-minute, three-round game that combines short-term memory with spatial reasoning: remember dots that flash on a grid while answering Yes/No symmetry, rotation and shape-combination questions.',
+    icon: Grid3x3,
+    ready: true,
+  },
 ];
 
 const CATEGORY_LABEL: Record<Category, string> = {
@@ -320,6 +340,7 @@ const CATEGORY_LABEL: Record<Category, string> = {
   critical: 'Critical Thinking',
   mechanical: 'Mechanical Reasoning',
   in_tray: 'In-Tray & E-Tray',
+  grid_challenge: 'Grid Challenge',
 };
 
 const DIFFICULTY_LABEL: Record<string, string> = {
@@ -1752,7 +1773,7 @@ function SituationalRatingReview({
  * App
  * ========================================================================== */
 
-type View = 'home' | 'family' | 'tray' | 'test' | 'results' | 'oa';
+type View = 'home' | 'family' | 'tray' | 'test' | 'results' | 'oa' | 'grid';
 type AnyTest = ExpandedTest | InductiveTest | DeductiveTest | ErrorCheckingTest | SpatialTest | NumericalTest | VerbalTest | SituationalTest | LogicalTest | MixedTest;
 type SourceTest = Exclude<AnyTest, MixedTest>;
 
@@ -1780,6 +1801,7 @@ const CATEGORY_ROUTES: Record<Category, string> = {
   critical: 'critical-thinking',
   mechanical: 'mechanical-reasoning',
   in_tray: 'in-tray-e-tray',
+  grid_challenge: 'grid-challenge',
 };
 
 const CATEGORY_BY_ROUTE = Object.fromEntries(
@@ -1798,6 +1820,12 @@ function isAptitudeListHash(): boolean {
 
 function isOnlineAssessmentHash(): boolean {
   return typeof window !== 'undefined' && window.location.hash.toLowerCase() === OA_ROUTE_HASH;
+}
+
+const GC_ROUTE_HASH = '#aptitude-test/grid-challenge/session';
+
+function isGridChallengeHash(): boolean {
+  return typeof window !== 'undefined' && window.location.hash.toLowerCase() === GC_ROUTE_HASH;
 }
 
 interface TypeBreakdown {
@@ -1851,7 +1879,7 @@ function AptitudeTestInner() {
   const mechanicalTests = useMemo(() => enrichTests(loadMechanicalReasoningLibrary()), []);
   const trayExercises = useMemo(() => loadInTrayExercises(), []);
 
-  const initialCategory = useMemo(() => aptitudeCategoryFromHash(), []);
+  const initialCategory = useMemo<Category | null>(() => aptitudeCategoryFromHash() || (isGridChallengeHash() ? 'grid_challenge' : null), []);
   const [view, setView] = useState<View>(() => (isOnlineAssessmentHash() ? 'oa' : 'home'));
   const [category, setCategory] = useState<TestMode>(initialCategory || 'diagrammatic');
   const [libraryFamily, setLibraryFamily] = useState<Category | 'all'>(initialCategory || 'all');
@@ -1876,6 +1904,10 @@ function AptitudeTestInner() {
   const [oaRun, setOaRun] = useState<{ session: OaSession<AnyQuestion>; test: MixedTest; startedAt: number } | null>(null);
   const oaActiveRef = useRef(false);
   oaActiveRef.current = Boolean(oaRun);
+  const [gridRun, setGridRun] = useState<{ session: GcSession; startedAt: number } | null>(null);
+  const [gridFinished, setGridFinished] = useState<GcResult | null>(null);
+  const gridActiveRef = useRef(false);
+  gridActiveRef.current = Boolean(gridRun);
 
   const trackTestOpened = (testId: string, testType: string, retake = false) => {
     const previousTestId = lastOpenedTestIdRef.current;
@@ -1921,6 +1953,21 @@ function AptitudeTestInner() {
   useEffect(() => {
     const syncHashRoute = () => {
       const hash = window.location.hash.toLowerCase();
+      if (gridActiveRef.current && hash !== GC_ROUTE_HASH && (hash === '#aptitude-test' || hash.startsWith('#aptitude-test/'))) {
+        if (!window.confirm(GC_LEAVE_MESSAGE)) {
+          window.history.pushState({ app: 'aptitude-test', view: 'grid' }, '', GC_ROUTE_HASH);
+          return;
+        }
+        gridActiveRef.current = false;
+        setGridRun(null);
+      }
+      if (isGridChallengeHash()) {
+        if (!gridActiveRef.current) {
+          setLibraryFamily('grid_challenge');
+          setView('home');
+        }
+        return;
+      }
       if (oaActiveRef.current && (hash === '#aptitude-test' || hash.startsWith('#aptitude-test/'))) {
         if (isOnlineAssessmentHash()) return;
         if (!window.confirm(OA_LEAVE_MESSAGE)) {
@@ -2189,7 +2236,7 @@ function AptitudeTestInner() {
     return () => window.clearInterval(timer);
   }, [view, deadline, activeTest, startedAt, finishTest]);
 
-  const runningTestId = view === 'test' && activeTest ? activeTest.id : view === 'tray' && trayId ? trayId : view === 'oa' && oaRun ? oaRun.test.id : null;
+  const runningTestId = view === 'test' && activeTest ? activeTest.id : view === 'tray' && trayId ? trayId : view === 'oa' && oaRun ? oaRun.test.id : view === 'grid' && gridRun ? GC_TEST_ID : null;
 
   useEffect(() => {
     activeSecondsRef.current = 0;
@@ -2339,6 +2386,35 @@ function AptitudeTestInner() {
       best: bestLabel(exercise.id, 'in_tray'),
       payload: exercise,
     }));
+    const gridBest = bestFor(GC_TEST_ID);
+    const gridSessions = attempts.filter((row) => row.test_type === GC_TEST_TYPE).length;
+    const fromGrid: LibraryEntry[] = [
+      {
+        key: `grid_challenge:${GC_TEST_ID}`,
+        id: GC_TEST_ID,
+        family: 'grid_challenge',
+        title: GC_TEST_NAME,
+        group: 'Casemate original',
+        source: 'Casemate original',
+        // Deliberately unrated: the difficulty filter lists it under All only.
+        difficulty: null,
+        detail: [`${GC_ROUNDS.length} rounds · 9 tasks`, `${GC_TIME_LIMIT_SECONDS / 60} min`],
+        best: gridBest ? `Best ${gridBest.percent ?? Math.round((gridBest.score / Math.max(1, gridBest.total)) * 100)}%` : null,
+        payload: null,
+        feature: {
+          description:
+            'Short-term memory meets spatial reasoning: remember where dots flash on a grid while answering quick Yes/No visual questions in between, then tap the dots back in order. Original Casemate practice in the style of game-based online assessments.',
+          instructions: [
+            'A red dot flashes for about a second. Remember where it was.',
+            'Answer one Yes/No question: symmetry (round 1), rotation (round 2) or shape combination (round 3).',
+            'After 2–5 dots, tap every dot back in the order it appeared.',
+            'One 9-minute clock for all 9 tasks. It submits itself at 0:00, and answers are only revealed in your results.',
+          ],
+          actionLabel: 'Start Test',
+          note: gridSessions ? `${gridSessions} ${gridSessions === 1 ? 'session' : 'sessions'} completed` : null,
+        },
+      },
+    ];
     return [
       ...fromTests('diagrammatic', tests),
       ...fromTests('inductive', inductiveTests),
@@ -2352,8 +2428,9 @@ function AptitudeTestInner() {
       ...fromTests('critical', criticalTests as AnyTest[]),
       ...fromTests('mechanical', mechanicalTests as AnyTest[]),
       ...fromTray,
+      ...fromGrid,
     ];
-  }, [tests, inductiveTests, deductiveTests, errorCheckingTests, spatialTests, numericalTests, verbalTests, situationalTests, logicalTests, criticalTests, mechanicalTests, trayExercises, bestFor]);
+  }, [tests, inductiveTests, deductiveTests, errorCheckingTests, spatialTests, numericalTests, verbalTests, situationalTests, logicalTests, criticalTests, mechanicalTests, trayExercises, bestFor, attempts]);
 
   const progress = useMemo(
     () => computeAptitudeProgress(libraryEntries, attempts, [...startRows, ...localStarts]),
@@ -2388,6 +2465,86 @@ function AptitudeTestInner() {
       )}%`
     : null;
   const oaCategoryLabel = (id: string) => CATEGORY_LABEL[id as Category] || id;
+
+  /* ------------------------------------------------------- grid challenge */
+
+  // Grid Challenge has its own memory + reasoning scoring, so it is never pooled into the Online Assessment Simulation.
+  const gridHistory = useMemo(() => attempts.filter((row) => row.test_type === GC_TEST_TYPE), [attempts]);
+
+  const startGridChallenge = () => {
+    let session: GcSession;
+    try {
+      session = buildGridSession();
+    } catch {
+      // Only reachable if a dealt session ever failed its answer-key validation: deal another seed.
+      session = buildGridSession();
+    }
+    const now = Date.now();
+    trackTestOpened(GC_TEST_ID, GC_TEST_TYPE, gridFinished !== null);
+    recordTestStart(GC_TEST_ID, GC_TEST_TYPE, GC_TEST_NAME);
+    setCategory('grid_challenge');
+    setGridFinished(null);
+    setSaveError('');
+    setGridRun({ session, startedAt: now });
+    setView('grid');
+    if (window.location.hash.toLowerCase() !== GC_ROUTE_HASH) {
+      window.history.pushState({ app: 'aptitude-test', view: 'grid' }, '', GC_ROUTE_HASH);
+    }
+  };
+
+  const saveGridAttempt = useCallback(
+    async (session: GcSession, result: GcResult, responses: GcResponses) => {
+      trackStepView('aptitude-test', 'answer', {
+        dedupeKey: `${GC_TEST_ID}:${aptitudeAttemptNo}`,
+        properties: { test_id: GC_TEST_ID, score: result.score, total: result.total, percent: result.percent, timed_out: result.timedOut, attempt_no: aptitudeAttemptNo },
+      });
+      window.dispatchEvent(new CustomEvent('casemate:pwa-install-ready', {
+        detail: { source: 'aptitude_test_completed' },
+      }));
+      setSaving(true);
+      setSaveError('');
+      try {
+        const completedAt = new Date().toISOString();
+        const insertResponse = await window.__workspaceDb.from('aptitude_attempts').insert({
+          user_key: userKey,
+          email: email || null,
+          test_type: GC_TEST_TYPE,
+          test_id: GC_TEST_ID,
+          test_name: GC_TEST_NAME,
+          score: result.score,
+          total: result.total,
+          percent: result.percent,
+          duration_seconds: result.durationSeconds,
+          timed_out: result.timedOut,
+          answers_json: gridAttemptAnswerRows(session, responses),
+          completed_at: completedAt,
+        });
+        refreshHistoryRef.current();
+        if (sessionId) {
+          emitAptitudeAttempt({
+            insertResponse,
+            sessionId,
+            userKey,
+            completedAt,
+            testType: GC_TEST_TYPE,
+            testId: GC_TEST_ID,
+            testName: GC_TEST_NAME,
+            score: result.score,
+            total: result.total,
+            percent: result.percent,
+            durationSeconds: result.durationSeconds,
+            timedOut: result.timedOut,
+          });
+        }
+      } catch (error) {
+        setSaveError('Your result is shown below, but it could not be saved to your history — try another session in a few minutes.');
+        trackStepError('aptitude-test', 'answer', error, { properties: { test_id: GC_TEST_ID } });
+      } finally {
+        setSaving(false);
+      }
+    },
+    [email, sessionId, userKey],
+  );
 
   const openOnlineAssessment = () => {
     setView('oa');
@@ -2533,6 +2690,10 @@ function AptitudeTestInner() {
   };
 
   const openLibraryEntry = (entry: LibraryEntry) => {
+    if (entry.family === 'grid_challenge') {
+      startGridChallenge();
+      return;
+    }
     if (entry.family === 'in_tray') {
       trackTestOpened((entry.payload as TrayExercise).id, 'in_tray');
       recordTestStart((entry.payload as TrayExercise).id, 'in_tray', (entry.payload as TrayExercise).title);
@@ -2544,7 +2705,45 @@ function AptitudeTestInner() {
     startTest(entry.payload as AnyTest, entry.family as Category);
   };
 
-  if (view === 'home') {
+  if (view === 'grid' && gridRun) {
+    const run = gridRun;
+    return (
+      <GridChallengeSession
+        key={run.session.id}
+        session={run.session}
+        startedAt={run.startedAt}
+        onAnswer={() => trackSolving(GC_TEST_ID, 'answer_selected', Math.round(activeSecondsRef.current))}
+        onSubmit={(responses, timedOut) => {
+          const result = scoreGridSession(run.session, responses, (Date.now() - run.startedAt) / 1000, timedOut);
+          gridActiveRef.current = false;
+          setGridRun(null);
+          setGridFinished(result);
+          void saveGridAttempt(run.session, result, responses);
+        }}
+        onExit={() => {
+          gridActiveRef.current = false;
+          setGridRun(null);
+          openCategoryList();
+        }}
+      />
+    );
+  }
+
+  if (view === 'grid' && gridFinished) {
+    return (
+      <GridChallengeResults
+        result={gridFinished}
+        timeLimitSeconds={GC_TIME_LIMIT_SECONDS}
+        history={gridHistory}
+        saving={saving}
+        saveError={saveError}
+        onRetake={startGridChallenge}
+        onBack={openCategoryList}
+      />
+    );
+  }
+
+  if (view === 'home' || view === 'grid') {
     return (
       <AptitudeLibrary
         families={TEST_FAMILIES}
