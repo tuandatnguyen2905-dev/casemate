@@ -58,7 +58,7 @@ const ambiguous = (item: Omit<MarketSizingSourceCase, 'format' | 'suppliedFacts'
 
 export const MARKET_SIZING_CYCLE_3_CASES: MarketSizingSourceCase[] = [
   provided({
-    sourceCaseId: 'CM-MS-A01', code: 'A01', difficulty: 'hard', title: 'Detergent Refills', industry: 'FMCG & Consumer',
+    sourceCaseId: 'CM-MS-A01', code: 'A01', difficulty: 'medium', title: 'Detergent Refills', industry: 'FMCG & Consumer',
     brief: 'Urban: 4 million households; 20% buy refills; buyers purchase 2 packs/month at VND 70,000. Non-urban: 6 million households; 10% buy; buyers purchase 1 pack/month at VND 50,000. Groups do not overlap. Exclude businesses.',
     task: 'Estimate annual household retail spending on refill packs across both groups, and state the result with its unit.',
     modelRoute: 'Build separate urban and non-urban buyer funnels, calculate packs and annual value for each, reconcile the total, and explain the unit.',

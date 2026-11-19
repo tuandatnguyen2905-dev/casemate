@@ -1948,6 +1948,32 @@ function CaseDrillLogInner() {
     return map;
   }, [cases]);
 
+  // Personal Case Pool metrics. Only Case Pool (library) rows count: Case Drill attempts live in a separate table.
+  // Completed = a library row finished and saved by grading (status 'completed', not skipped), counted once per case id.
+  // Average = mean of the latest graded attempt per case, each converted to % of its own scale (/10 now, /5 on legacy rows).
+  const poolMetrics = useMemo(() => {
+    const completedIds = new Set<string>();
+    const latestGraded = new Map<string, { at: number; percent: number }>();
+    (cases || []).forEach((item) => {
+      const libraryId = libraryCaseIdOf(item);
+      if (!libraryId || item.status !== 'completed' || caseMeta(item).skipped) return;
+      completedIds.add(libraryId);
+      if (item.score === null || item.score === undefined) return;
+      const scale = scoreScaleOf(item);
+      const score = validScore(item.score, scale);
+      if (score === null) return;
+      const at = new Date(item.completed_on || item.created_at || 0).getTime() || 0;
+      const seen = latestGraded.get(libraryId);
+      if (!seen || at >= seen.at) latestGraded.set(libraryId, { at, percent: (score / scale) * 100 });
+    });
+    const percents = Array.from(latestGraded.values()).map((entry) => entry.percent);
+    return {
+      completed: completedIds.size,
+      gradedCount: percents.length,
+      averagePercent: percents.length ? percents.reduce((sum, value) => sum + value, 0) / percents.length : 0,
+    };
+  }, [cases]);
+
   useEffect(() => {
     if (activeCase?.answer_text && !answer) setAnswer(activeCase.answer_text);
     setMarketSizingDraft(parseMarketSizingAttempt(activeCase?.answer_text) || createInitialMarketSizingDraft());
@@ -3022,6 +3048,29 @@ function CaseDrillLogInner() {
               </>
             ) : (
               <>
+                <div className="grid gap-3 sm:grid-cols-2" data-testid="case-pool-personal-metrics">
+                  <div className={`${tw.card.default} min-w-0 rounded-xl p-4`} data-testid="metric-cases-completed">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Cases completed</p>
+                    <p className="mt-1 text-2xl font-bold text-[var(--space-text-primary)]" data-testid="metric-cases-completed-value">{poolMetrics.completed}</p>
+                    <p className="mt-1 text-xs text-[var(--space-text-secondary)]">Different Case Pool cases you have finished. Retrying a case does not add to this count.</p>
+                  </div>
+                  <div className={`${tw.card.default} min-w-0 rounded-xl p-4`} data-testid="metric-average-score">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Average score (% of max)</p>
+                    {poolMetrics.gradedCount > 0 ? (
+                      <p className="mt-1 text-2xl font-bold text-[var(--space-text-primary)]" data-testid="metric-average-score-value">
+                        {Math.round(poolMetrics.averagePercent)}<span className="text-sm font-normal text-[var(--space-text-muted)]">%</span>
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-lg font-bold text-[var(--space-text-primary)]" data-testid="metric-average-score-value">No graded cases yet</p>
+                    )}
+                    <p className="mt-1 text-xs text-[var(--space-text-secondary)]">
+                      {poolMetrics.gradedCount > 0
+                        ? `Latest graded attempt on each of ${poolMetrics.gradedCount} ${poolMetrics.gradedCount === 1 ? 'case' : 'cases'}, each shown as a percentage of its maximum score.`
+                        : 'Finish and grade a Case Pool case to see your average.'}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className={`${tw.card.default} rounded-xl p-4`}>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">Completed</p>

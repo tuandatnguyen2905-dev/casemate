@@ -23,6 +23,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
+  ArrowRight,
   BookOpen,
   CheckCircle2,
   Clock,
@@ -106,6 +107,8 @@ import { clarifyUnitLabel, clarifyUnitText, clarifyUnitsDeep } from '../lib/unit
 import { formatCanonicalNumber, numericUnitSpec } from '../lib/numericUnits';
 import { CASE_POOL_REQUEST_KEY, casePoolCaseIdFromHash } from './SolveFullCaseCta';
 import CasePoolFilters from './CasePoolFilters';
+import CasePoolActiveFilters from './CasePoolActiveFilters';
+import { CASE_POOL_BROWSE_PREFIX, readCasePoolBrowseRequest } from '../lib/casePoolLinks';
 import CaseIdentityChips from './CaseIdentityChips';
 import { auditPoolIdentity, poolCaseIdentity } from '../lib/caseIdentity';
 import { normalizeForCompare, presentPoolCase } from '../lib/learnerContentPresentation';
@@ -120,6 +123,85 @@ import {
 } from '../lib/casePoolBusinessProblems';
 
 const HISTORY_LIMIT = 200;
+
+const STEP_LABEL_MAX = 24;
+
+interface PoolStep {
+  id: string;
+  /** Authored task type, shortened for the stepper chip. */
+  label: string;
+  /** Authored task type in full - tooltip, aria-label and step heading. */
+  fullLabel: string;
+  role: string;
+  prompt: string;
+}
+
+/**
+ * The tasks of a multi-task case, exactly as authored (journey stages in their stored order).
+ * A case with fewer than two authored tasks has no steps and keeps its normal solve screen.
+ */
+function poolSteps(item: FullCase): PoolStep[] {
+  const stages = item.journey_stages || [];
+  if (stages.length < 2) return [];
+  return stages.map((stage, index) => {
+    const rawType = String(stage.drillType || '').trim();
+    const type = /^[a-z][a-z-]*$/.test(rawType) ? `${rawType.charAt(0).toUpperCase()}${rawType.slice(1).replace(/-/g, ' ')}` : rawType;
+    const role = String(stage.role || '').trim();
+    const fullLabel = type || role || `Task ${index + 1}`;
+    const label = fullLabel.length > STEP_LABEL_MAX ? `${fullLabel.slice(0, STEP_LABEL_MAX - 1).trimEnd()}…` : fullLabel;
+    return { id: `${stage.drillId || 'task'}-${index}`, label, fullLabel, role, prompt: String(stage.prompt || '') };
+  });
+}
+
+/** One submitted text, one labelled section per authored task, in authored order. Empty when nothing was written. */
+function composeStepAnswers(steps: PoolStep[], answers: string[]): string {
+  if (!steps.some((_, index) => (answers[index] || '').trim())) return '';
+  return steps
+    .map((step, index) => `TASK ${index + 1} - ${step.fullLabel}${step.role ? ` (${step.role})` : ''}:\n${(answers[index] || '').trim() || '[no answer given for this task]'}`)
+    .join('\n\n');
+}
+
+function PoolStepper({ steps, current, answers, onSelect }: { steps: PoolStep[]; current: number; answers: string[]; onSelect: (index: number) => void }) {
+  const step = steps[current];
+  if (!step) return null;
+  return (
+    <nav aria-label="Case tasks" className="mt-3 min-w-0 max-w-full rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] px-3 py-2.5" data-testid="pool-stepper">
+      <p className="text-[11px] font-semibold leading-4 text-[var(--space-text-secondary)] sm:hidden" data-testid="pool-stepper-compact">
+        Step {current + 1} of {steps.length} · {step.fullLabel}
+      </p>
+      <ol className="mt-1.5 flex min-w-0 flex-wrap items-center gap-1.5 sm:mt-0">
+        {steps.map((entry, index) => {
+          const isCurrent = index === current;
+          const answered = !isCurrent && Boolean((answers[index] || '').trim());
+          const tone = isCurrent
+            ? 'border-[var(--space-brand-primary)] bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]'
+            : answered
+              ? 'border-[var(--space-semantic-success)] bg-[var(--space-surface-card)] text-[var(--space-text-primary)]'
+              : 'border-[var(--space-border-default)] bg-[var(--space-surface-card)] text-[var(--space-text-secondary)] hover:border-[var(--space-border-strong)]';
+          return (
+            <li key={entry.id} className="flex min-w-0 max-w-full items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => onSelect(index)}
+                aria-current={isCurrent ? 'step' : undefined}
+                aria-label={`Step ${index + 1} of ${steps.length}: ${entry.fullLabel}${answered ? ' (answered)' : ''}`}
+                title={entry.fullLabel}
+                className={`inline-flex min-h-9 min-w-0 max-w-full items-center gap-1.5 rounded-full border px-2 py-1 text-xs font-semibold transition-colors sm:px-3 ${tone}`}
+                data-testid={`pool-step-${index + 1}`}
+              >
+                <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current text-[11px]">
+                  {answered ? <CheckCircle2 className="h-3.5 w-3.5" /> : index + 1}
+                </span>
+                <span className="hidden min-w-0 truncate sm:inline">{entry.label}</span>
+              </button>
+              {index < steps.length - 1 ? <ArrowRight className="hidden h-3 w-3 shrink-0 text-[var(--space-text-muted)] sm:block" aria-hidden="true" /> : null}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
 
 /** Opens Domain Knowledge on the Basic Economics card behind the first Suggested Framework chip. */
 function openFrameworkInDomainKnowledge(frameworkLabels: string[]) {
@@ -142,6 +224,10 @@ const POOL_INDUSTRY_FILTER_LABELS = Array.from(new Set(SELECTABLE_CASE_POOL_LIBR
 
 function poolBusinessProblem(id: string): string {
   return businessProblemLabel(businessProblemForCase(id));
+}
+
+function samePoolFilters(a: PoolFilters, b: PoolFilters): boolean {
+  return (Object.keys(DEFAULT_POOL_FILTERS) as Array<keyof PoolFilters>).every((key) => a[key] === b[key]);
 }
 
 export interface LibraryGradeDimension {
@@ -321,10 +407,15 @@ export default function CasePoolLibrary({
   const results = useMemo(() => remarkCalculationResults(rawResults), [rawResults]);
   const [history, setHistory] = useState<PoolHistoryRecord[]>([]);
   const [filters, setFilters] = useState<PoolFilters>(DEFAULT_POOL_FILTERS);
+  // Filters another app (My Roadmap) opened the library with; the banner shows while they are unchanged.
+  const [linkedBrowse, setLinkedBrowse] = useState<{ reason: string; filters: PoolFilters } | null>(null);
+  const listSectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState<FullCase | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [attempt, setAttempt] = useState('');
+  const [stepAnswers, setStepAnswers] = useState<string[]>([]);
+  const [stepIndex, setStepIndex] = useState(0);
   const [marketSizingDraft, setMarketSizingDraft] = useState<MarketSizingAnswerDraft>(createInitialMarketSizingDraft);
   const [calculationAnswer, setCalculationAnswer] = useState<CalculationAnswerPayload>(() => createCalculationAnswerPayload([{ id: 'final-1', label: 'Final result' }], 2));
   const [grading, setGrading] = useState(false);
@@ -395,6 +486,8 @@ export default function CasePoolLibrary({
       // the saved report. A new CM-CALC attempt starts with its structured fields.
       const savedAnswer = results[item.id]?.answer || '';
       setAttempt(savedAnswer);
+      setStepAnswers([]);
+      setStepIndex(0);
       setMarketSizingDraft(parseMarketSizingAttempt(savedAnswer) || createInitialMarketSizingDraft());
       setCalculationAnswer(createCalculationAnswerPayload(
         (item.numeric_checks || []).map((check, index) => ({ id: `final-${index + 1}`, label: check.label, unit: check.unit, tolerance: check.tolerance })),
@@ -434,6 +527,19 @@ export default function CasePoolLibrary({
     const consumeRequest = () => {
       let storedId = '';
       try { storedId = sessionStorage.getItem(CASE_POOL_REQUEST_KEY) || ''; } catch { /* URL remains available. */ }
+      if (storedId.startsWith(CASE_POOL_BROWSE_PREFIX)) {
+        try { sessionStorage.removeItem(CASE_POOL_REQUEST_KEY); } catch { /* best effort */ }
+        // An older case link still in the URL must not reopen that case over the requested list.
+        consumedHashRequestRef.current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+        const request = readCasePoolBrowseRequest(storedId);
+        if (!request) return;
+        const next = { ...DEFAULT_POOL_FILTERS, ...request.filters };
+        setActive(null);
+        setFilters(next);
+        setLinkedBrowse({ reason: request.reason || 'Opened with filters', filters: next });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
       const hashId = casePoolCaseIdFromHash(window.location.hash) || '';
       const id = storedId || hashId;
       if (!id) return;
@@ -572,7 +678,9 @@ export default function CasePoolLibrary({
       ? serializeCalculationAnswer(calculationAnswer)
       : active.market_sizing_format
         ? serializeMarketSizingAttempt(marketSizingDraft, marketSizingAnswerUnit(active))
-        : attempt.trim();
+        : poolSteps(active).length > 0
+          ? composeStepAnswers(poolSteps(active), stepAnswers)
+          : attempt.trim();
     setGrading(true);
     setGradeError('');
     try {
@@ -616,7 +724,7 @@ export default function CasePoolLibrary({
     } finally {
       setGrading(false);
     }
-  }, [active, attempt, marketSizingDraft, calculationAnswer, onGrade]);
+  }, [active, attempt, stepAnswers, marketSizingDraft, calculationAnswer, onGrade]);
 
   const recommendations = useMemo(() => recommendPoolCases(combinedHistory, 3), [combinedHistory]);
 
@@ -672,7 +780,7 @@ export default function CasePoolLibrary({
       || calculationAnswer.formulaRows.some((row) => row.numbers.some((slot) => slot.value.trim() || slot.label.trim()));
     const sizingDraft = marketSizingDraft.manualResult?.trim()
       || marketSizingDraft.components.some((component: any) => String(component?.value ?? '').trim());
-    const hasUnfinishedWork = !shownResult && !showAnswer && Boolean(attempt.trim() || calculationDraft || sizingDraft);
+    const hasUnfinishedWork = !shownResult && !showAnswer && Boolean(attempt.trim() || stepAnswers.some((value) => value.trim()) || calculationDraft || sizingDraft);
     if (hasUnfinishedWork && !window.confirm('Back to the Case Pool Library? Your unfinished answer will be discarded.')) return;
     setConfirmRedo(false);
     setActive(null);
@@ -802,6 +910,8 @@ export default function CasePoolLibrary({
       setRetrying(true);
       setJustGraded(null);
       setAttempt('');
+      setStepAnswers([]);
+      setStepIndex(0);
       setMarketSizingDraft(createInitialMarketSizingDraft());
       setCalculationAnswer(createCalculationAnswerPayload(
         (active.numeric_checks || []).map((check, index) => ({ id: `final-${index + 1}`, label: check.label, unit: check.unit, tolerance: check.tolerance })),
@@ -815,6 +925,19 @@ export default function CasePoolLibrary({
     const nextAction = chooseNextAction(outcome, {
       'domain-knowledge': frameworkCard ? { kind: 'domain-knowledge', label: `Review ${frameworkCard.label}`, detail: `See how this framework works in ${DOMAIN_KNOWLEDGE_TOOLKIT_PATH}, then come back to this case.`, onSelect: () => openFrameworkInDomainKnowledge(active.framework_hints) } : null,
       'next-question': nextCase ? { kind: 'next-question', label: 'Next recommended case', detail: `Practise on “${nextCase.title}”.`, onSelect: () => openCase(nextCase) } : null,
+    });
+    const steps = poolSteps(active);
+    const stepNow = Math.min(stepIndex, Math.max(0, steps.length - 1));
+    const lastStep = steps.length >= 2 && stepNow >= steps.length - 1;
+    const goToStep = (index: number) => {
+      setStepIndex(Math.max(0, Math.min(steps.length - 1, index)));
+      setGradeError('');
+      if (typeof window !== 'undefined') window.setTimeout(() => document.getElementById('pool-step-answer')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+    };
+    const setStepAnswer = (value: string) => setStepAnswers((current) => {
+      const next = steps.map((_, index) => current[index] || '');
+      next[stepNow] = value;
+      return next;
     });
     return (
       <CaseReadingProvider itemId={active.id}>
@@ -842,6 +965,8 @@ export default function CasePoolLibrary({
         </div>
 
         <h2 className="mt-2 text-xl font-bold leading-7 text-[var(--space-text-primary)]">{nf(active.title)}</h2>
+
+        {steps.length >= 2 && onGrade && !shownResult ? <PoolStepper steps={steps} current={stepNow} answers={stepAnswers} onSelect={goToStep} /> : null}
 
         {structureQuestion ? (
           <section className="mt-4" data-testid="pool-structures-workspace">
@@ -1014,6 +1139,41 @@ export default function CasePoolLibrary({
                   <div className="mt-3">
                     <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setGradeError(''); }} answerUnit={marketSizingAnswerUnit(active)} disabled={grading} rootText={presentedPool.rootQuestion} />
                   </div>
+                ) : steps.length >= 2 ? (
+                  <div id="pool-step-answer" className="scroll-mt-3" data-testid="pool-step-panel">
+                    <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-[var(--space-text-muted)]">
+                      Step {stepNow + 1} of {steps.length}{steps[stepNow].role ? ` · ${steps[stepNow].role}` : ''}
+                    </p>
+                    <h3 className="mt-0.5 text-sm font-bold leading-5 text-[var(--space-text-primary)]">{steps[stepNow].fullLabel}</h3>
+                    {steps[stepNow].prompt ? <p className="mt-1 max-w-[90ch] text-xs leading-5 text-[var(--space-text-secondary)]">{nf(steps[stepNow].prompt)}</p> : null}
+                    <textarea
+                      value={stepAnswers[stepNow] || ''}
+                      onChange={(event) => setStepAnswer(event.target.value)}
+                      rows={5}
+                      disabled={grading}
+                      placeholder={`Your answer to task ${stepNow + 1}: ${steps[stepNow].fullLabel}…`}
+                      aria-label={`Your answer to task ${stepNow + 1} of ${steps.length}: ${steps[stepNow].fullLabel}`}
+                      className={`${tw.input.base} ${tw.input.default} mt-2.5 text-sm leading-6`}
+                      data-testid="input-library-step-answer"
+                    />
+                    <p className="mt-1.5 text-[10px] text-[var(--space-text-muted)]">
+                      {(stepAnswers[stepNow] || '').trim().length} characters · Your answers to every task are kept while you move between steps
+                    </p>
+                    <div className="mt-2.5 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      {stepNow > 0 ? (
+                        <button type="button" onClick={() => goToStep(stepNow - 1)} disabled={grading} className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold ${tw.button.secondary}`} data-testid="button-step-back">
+                          <ArrowLeft className="h-4 w-4" />
+                          Back: {steps[stepNow - 1].fullLabel}
+                        </button>
+                      ) : <span />}
+                      {!lastStep ? (
+                        <button type="button" onClick={() => goToStep(stepNow + 1)} disabled={grading} className={`inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold ${tw.button.primary}`} data-testid="button-step-next">
+                          Next: {steps[stepNow + 1].fullLabel}
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
                 ) : (
                   <>
                     <textarea
@@ -1042,7 +1202,7 @@ export default function CasePoolLibrary({
                   type="button"
                   onClick={submitAttempt}
                   disabled={grading}
-                  className={`mt-2.5 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.primary} ${
+                  className={`mt-2.5 ${steps.length >= 2 && !lastStep ? 'hidden' : 'flex'} w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.primary} ${
                     grading ? tw.button.disabled : ''
                   }`}
                   data-testid="button-submit-library-answer"
@@ -1099,6 +1259,19 @@ export default function CasePoolLibrary({
   /* ---------------------------------------------------------- library home */
   return (
     <div data-testid="pool-library-home">
+      {linkedBrowse && samePoolFilters(filters, linkedBrowse.filters) ? (
+        <div className="mb-4">
+          <CasePoolActiveFilters
+            filters={filters}
+            onChange={setFilters}
+            onClear={resetFilters}
+            count={matches.length}
+            reason={linkedBrowse.reason}
+            onJumpToList={() => listSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            testId="pool-linked-filters"
+          />
+        </div>
+      ) : null}
       {/* Recommended for you */}
       <section>
         <div className="flex flex-wrap items-center gap-2">
@@ -1194,10 +1367,15 @@ export default function CasePoolLibrary({
       </section>
 
       {/* Case list */}
-      <section className="mt-5">
+      <section className="mt-5 scroll-mt-3" ref={listSectionRef} data-testid="pool-case-list">
         <h3 className="text-sm font-semibold text-[var(--space-text-primary)]">
           {filtersActive ? 'Filtered results' : 'The whole library'}
         </h3>
+        {filtersActive ? (
+          <div className="mt-2">
+            <CasePoolActiveFilters filters={filters} onChange={setFilters} onClear={resetFilters} count={matches.length} />
+          </div>
+        ) : null}
         {matches.length === 0 ? (
           <div
             className="mt-2 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-6 text-center text-xs text-[var(--space-text-secondary)]"
