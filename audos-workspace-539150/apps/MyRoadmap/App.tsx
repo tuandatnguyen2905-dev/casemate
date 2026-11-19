@@ -582,6 +582,7 @@ export default function MyRoadmapApp() {
       isAdmin={isReviewAdmin}
       fitRecommendations={roadmap?.preparation_recommendations || []}
       skillFocus={skillFocus.focus}
+      practiceSessions={sessions}
     />
   );
 

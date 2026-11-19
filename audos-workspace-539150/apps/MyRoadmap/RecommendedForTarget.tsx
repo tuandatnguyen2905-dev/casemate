@@ -52,6 +52,7 @@ import { caseRecommendationsForProgram } from '../../lib/caseTypeRecommendations
 import type { CaseTypeRecommendation } from '../../lib/caseTypeRecommendations';
 import { resolveSectorRoute } from '../../lib/domainKnowledgeRoute';
 import type { PreparationRecommendation } from '../../lib/prepRoadmap';
+import type { PracticeSession } from '../../lib/roadmapProgress';
 import { trackStepView } from '../../lib/engagementTracking';
 import { deckFor } from '../IndustryKnowledge/learningDecks';
 import { knowledgeRecommendationsForProgram, studyCardsForSubcategory } from '../IndustryKnowledge/industrySubcategories';
@@ -71,6 +72,7 @@ import {
 import type { CaseSkillProgress, DomainCatalog, TopicProgress } from './recommendationData';
 import CandidateReviewAdmin from './CandidateReviewAdmin';
 import InfoPopover from './InfoPopover';
+import CasePoolRecommendations from './CasePoolRecommendations';
 import { FocusAnnotationLine } from './TodaysFocus';
 import { focusAnnotationFor } from '../../lib/skillFocus';
 import type { SkillFocus } from '../../lib/skillFocus';
@@ -203,6 +205,8 @@ interface Props {
   fitRecommendations?: PreparationRecommendation[];
   /** Weakest measured skill per feature (Today's Focus). */
   skillFocus?: SkillFocus | null;
+  /** Completed practice sessions; lets the Case Pool block offer "Continue with the full case". */
+  practiceSessions?: PracticeSession[];
 }
 
 type DeckProgressMap = Record<string, { completed?: string[] }>;
@@ -302,7 +306,7 @@ function EvidenceExcerpt({ item }: { item: EvidenceItem }) {
   );
 }
 
-export default function RecommendedForTarget({ target, sessionId, userKey, isAdmin, fitRecommendations = [], skillFocus = null }: Props) {
+export default function RecommendedForTarget({ target, sessionId, userKey, isAdmin, fitRecommendations = [], skillFocus = null, practiceSessions }: Props) {
   const [reviews, setReviews] = useState<CandidateReview[]>([]);
   const [reviewsState, setReviewsState] = useState<ReviewsState>('loading');
   const [programs, setPrograms] = useState<ProgramRow[]>([]);
@@ -845,6 +849,7 @@ export default function RecommendedForTarget({ target, sessionId, userKey, isAdm
           })}
         </div>
       )}
+      <CasePoolRecommendations target={target} fitRecommendations={fitRecommendations} programs={programs} sessions={practiceSessions} />
     </section>
 
       {detail && (
