@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 import { Brain, ChevronRight, Play, Search, Shuffle, Timer } from 'lucide-react';
 import { tw } from '../lib/colors';
 import { progressPercent } from '../lib/aptitudeProgress';
 import type { AptitudeProgress, ProgressStatus } from '../lib/aptitudeProgress';
+import type { SmartPracticePicks as SmartPicksData } from '../lib/aptitudeSmartPicks';
+import SmartPracticePicks from './SmartPracticePicks';
 
 export interface LibraryFamily {
   id: string;
@@ -27,7 +29,7 @@ export interface LibraryEntry {
   detail: string[];
   best: string | null;
   payload: unknown;
-  /** Shown first, as a full-width card with a description, instructions and a start button. Filters still apply. */
+  /** Intro-screen content (description, instructions, start button label) for a test that opens an intro before it starts. The entry itself is an ordinary tile. */
   feature?: { description: string; instructions: string[]; actionLabel: string; note?: string | null };
 }
 
@@ -36,12 +38,14 @@ interface Props {
   entries: LibraryEntry[];
   family: string;
   onFamilyChange: (id: string) => void;
-  onOpen: (entry: LibraryEntry) => void;
+  onOpen: (entry: LibraryEntry, options?: { random?: boolean }) => void;
   progress?: AptitudeProgress;
   progressLoading?: boolean;
   /** Opens the mixed-category Online Assessment Simulation; the entry card is hidden without it. */
   onOpenSimulation?: () => void;
   simulationNote?: string | null;
+  /** Smart Practice Picks, shown between the progress dashboard and the test types. */
+  smartPicks?: SmartPicksData;
 }
 
 const PAGE_SIZE = 24;
@@ -158,11 +162,17 @@ export default function AptitudeLibrary({
   progressLoading = false,
   onOpenSimulation,
   simulationNote = null,
+  smartPicks,
 }: Props) {
   const [query, setQuery] = useState('');
   const [group, setGroup] = useState('all');
   const [difficulty, setDifficulty] = useState<DifficultyFilter>('all');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  // The results list, or its empty state: whichever is rendered is the Practice scroll target.
+  const resultsRef = useRef<HTMLElement | null>(null);
+  const setResultsNode = (node: HTMLElement | null) => {
+    resultsRef.current = node;
+  };
 
   const familyName = useMemo(() => new Map(families.map((item) => [item.id, item.name])), [families]);
   const familyIcon = useMemo(() => new Map(families.map((item) => [item.id, item.icon])), [families]);
@@ -191,7 +201,7 @@ export default function AptitudeLibrary({
       if (!needle) return true;
       return `${entry.title} ${familyName.get(entry.family) || ''} ${entry.tag || ''}`.toLowerCase().includes(needle);
     });
-    return [...filtered.filter((entry) => entry.feature), ...filtered.filter((entry) => !entry.feature)];
+    return filtered;
   }, [inFamily, activeGroup, difficulty, query, family, familyName]);
 
   const selectFamily = (id: string) => {
@@ -201,7 +211,24 @@ export default function AptitudeLibrary({
   };
 
   const randomTest = () => {
-    if (matches.length) onOpen(matches[Math.floor(Math.random() * matches.length)]);
+    if (matches.length) onOpen(matches[Math.floor(Math.random() * matches.length)], { random: true });
+  };
+
+  const scrollToResults = () => {
+    window.requestAnimationFrame(() => {
+      const target = resultsRef.current;
+      if (!target) return;
+      const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      target.focus({ preventScroll: true });
+    });
+  };
+
+  // Unlike the test-type tiles, a Smart Practice Pick keeps the current search, source and difficulty filters.
+  const practiceFamily = (id: string) => {
+    setVisibleCount(PAGE_SIZE);
+    if (id !== family) onFamilyChange(id);
+    scrollToResults();
   };
 
   const tile = (id: string, label: string, count: number, Icon: ComponentType<{ className?: string }>) => {
@@ -253,6 +280,16 @@ export default function AptitudeLibrary({
         </header>
 
         {progress ? <ProgressDashboard progress={progress} loading={progressLoading} /> : null}
+
+        {smartPicks ? (
+          <SmartPracticePicks
+            program={smartPicks.program}
+            weak={smartPicks.weak}
+            familyName={(id) => familyName.get(id) || id}
+            onPractice={practiceFamily}
+            onBrowse={scrollToResults}
+          />
+        ) : null}
 
         {onOpenSimulation ? (
           <section
@@ -360,7 +397,12 @@ export default function AptitudeLibrary({
         </section>
 
         {matches.length === 0 ? (
-          <div className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-7 text-center">
+          <div
+            ref={setResultsNode}
+            tabIndex={-1}
+            className="scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-7 text-center focus:outline-none"
+            data-testid="aptitude-results"
+          >
             <p className="text-sm font-bold text-[var(--space-text-primary)]">No tests match these filters</p>
             <button
               type="button"
@@ -377,54 +419,15 @@ export default function AptitudeLibrary({
             </button>
           </div>
         ) : (
-          <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul
+            ref={setResultsNode}
+            tabIndex={-1}
+            aria-label="Matching tests"
+            className="grid scroll-mt-3 gap-2.5 focus:outline-none sm:grid-cols-2 lg:grid-cols-3"
+            data-testid="aptitude-results"
+          >
             {matches.slice(0, visibleCount).map((entry) => {
               const Icon = familyIcon.get(entry.family) || Brain;
-              if (entry.feature) {
-                return (
-                  <li key={entry.key} className="sm:col-span-2 lg:col-span-3">
-                    <section
-                      className="flex flex-col gap-3 rounded-2xl border-2 border-[var(--space-brand-primary-600)] bg-[var(--space-surface-card)] p-3.5 sm:flex-row sm:items-start sm:gap-4 sm:p-4"
-                      aria-label={entry.title}
-                      data-testid={`feature-${entry.id}`}
-                    >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]">
-                        <Icon className="h-5 w-5" />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h2 className="text-sm font-bold text-[var(--space-text-primary)] sm:text-base">{entry.title}</h2>
-                          {entry.detail.map((text) => (
-                            <span key={text} className={`${PILL} bg-[var(--space-surface-accent-soft)] text-[var(--space-text-brand)]`}>{text}</span>
-                          ))}
-                          {entry.best ? (
-                            <span className={`${PILL} bg-[var(--space-semantic-success-100)] text-[var(--space-neutral-800)]`}>{entry.best}</span>
-                          ) : null}
-                        </div>
-                        <p className="mt-1 text-xs leading-5 text-[var(--space-text-secondary)]">{entry.feature.description}</p>
-                        <ol className="mt-2 grid gap-1 text-xs leading-5 text-[var(--space-text-secondary)] md:grid-cols-2">
-                          {entry.feature.instructions.map((text, i) => (
-                            <li key={text} className="flex gap-1.5">
-                              <span className="font-bold text-[var(--space-text-brand)]">{i + 1}.</span>
-                              <span>{text}</span>
-                            </li>
-                          ))}
-                        </ol>
-                        {entry.feature.note ? <p className="mt-1.5 text-[11px] font-semibold text-[var(--space-text-brand)]">{entry.feature.note}</p> : null}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => onOpen(entry)}
-                        className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold ${tw.button.primary}`}
-                        data-testid={`button-start-${entry.id}`}
-                      >
-                        <Play className="h-4 w-4" />
-                        {entry.feature.actionLabel}
-                      </button>
-                    </section>
-                  </li>
-                );
-              }
               return (
                 <li key={entry.key}>
                   <button

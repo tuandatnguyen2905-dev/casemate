@@ -50,6 +50,7 @@ import {
   Loader2,
   Lock,
   Play,
+  Repeat,
   Search,
   Shuffle,
   Target,
@@ -106,6 +107,7 @@ import AptitudeLibrary from '../../components/AptitudeLibrary';
 import type { LibraryEntry } from '../../components/AptitudeLibrary';
 import { computeAptitudeProgress } from '../../lib/aptitudeProgress';
 import type { ProgressStartRow } from '../../lib/aptitudeProgress';
+import { useSmartPracticePicks } from '../../lib/aptitudeSmartPicks';
 import { loadInTrayExercises } from '../../lib/inTrayExercises';
 import type { TrayExercise } from '../../lib/inTrayExercises';
 import {
@@ -150,6 +152,7 @@ import {
 } from '../../lib/onlineAssessmentSession';
 import type { OaBlock, OaDifficulty, OaSession } from '../../lib/onlineAssessmentSession';
 import { GC_LEAVE_MESSAGE, GridChallengeResults, GridChallengeSession } from '../../components/GridChallenge';
+import GridChallengeIntro from '../../components/GridChallengeIntro';
 import {
   GC_ROUNDS,
   GC_TEST_ID,
@@ -161,6 +164,27 @@ import {
   scoreGridSession,
 } from '../../lib/gridChallenge';
 import type { GcResponses, GcResult, GcSession } from '../../lib/gridChallenge';
+import { SC_LEAVE_MESSAGE, SwitchChallengeResults, SwitchChallengeSession, SwitchChallengeSetup } from '../../components/SwitchChallenge';
+import {
+  SC_LEVELS,
+  SC_MODES,
+  SC_QUICK_TEST_ID,
+  SC_RESUME_GRACE_MS,
+  SC_TEST_ID,
+  SC_TEST_NAME,
+  SC_TEST_TYPE,
+  clearStoredSwitchRun,
+  countsTowardAptitudeProgress,
+  loadStoredSwitchRun,
+  newSwitchSeed,
+  scoreSwitchRun,
+  storeSwitchRun,
+  switchAttemptAnswerRows,
+  switchDeadline,
+  switchTestId,
+  switchTestName,
+} from '../../lib/switchChallenge';
+import type { ScEnd, ScMode, ScResult, ScRun } from '../../lib/switchChallenge';
 
 declare global {
   interface Window {
@@ -187,7 +211,7 @@ declare global {
  * The eight aptitude families an MT selection round draws from
  * ========================================================================== */
 
-type Category = 'diagrammatic' | 'inductive' | 'deductive' | 'error_checking' | 'spatial' | 'numerical' | 'verbal' | 'situational' | 'logical' | 'critical' | 'mechanical' | 'in_tray' | 'grid_challenge';
+type Category = 'diagrammatic' | 'inductive' | 'deductive' | 'error_checking' | 'spatial' | 'numerical' | 'verbal' | 'situational' | 'logical' | 'critical' | 'mechanical' | 'in_tray' | 'grid_challenge' | 'switch_challenge';
 type TestMode = Category | 'mixed';
 type SourceQuestion =
   | ExpandedQuestion
@@ -325,6 +349,13 @@ const TEST_FAMILIES: TestFamily[] = [
     icon: Grid3x3,
     ready: true,
   },
+  {
+    id: 'switch_challenge',
+    name: 'Switch Challenge',
+    blurb: 'A 6-minute game-based puzzle: work out which 4-digit code a switch machine used to reorder four symbols, with the level rising every 5 tasks. Quick Try (5 tasks or 90 seconds) is there for a warm-up.',
+    icon: Repeat,
+    ready: true,
+  },
 ];
 
 const CATEGORY_LABEL: Record<Category, string> = {
@@ -341,6 +372,7 @@ const CATEGORY_LABEL: Record<Category, string> = {
   mechanical: 'Mechanical Reasoning',
   in_tray: 'In-Tray & E-Tray',
   grid_challenge: 'Grid Challenge',
+  switch_challenge: 'Switch Challenge',
 };
 
 const DIFFICULTY_LABEL: Record<string, string> = {
@@ -1773,7 +1805,7 @@ function SituationalRatingReview({
  * App
  * ========================================================================== */
 
-type View = 'home' | 'family' | 'tray' | 'test' | 'results' | 'oa' | 'grid';
+type View = 'home' | 'family' | 'tray' | 'test' | 'results' | 'oa' | 'grid' | 'grid_intro' | 'switch';
 type AnyTest = ExpandedTest | InductiveTest | DeductiveTest | ErrorCheckingTest | SpatialTest | NumericalTest | VerbalTest | SituationalTest | LogicalTest | MixedTest;
 type SourceTest = Exclude<AnyTest, MixedTest>;
 
@@ -1802,6 +1834,7 @@ const CATEGORY_ROUTES: Record<Category, string> = {
   mechanical: 'mechanical-reasoning',
   in_tray: 'in-tray-e-tray',
   grid_challenge: 'grid-challenge',
+  switch_challenge: 'switch-challenge',
 };
 
 const CATEGORY_BY_ROUTE = Object.fromEntries(
@@ -1826,6 +1859,18 @@ const GC_ROUTE_HASH = '#aptitude-test/grid-challenge/session';
 
 function isGridChallengeHash(): boolean {
   return typeof window !== 'undefined' && window.location.hash.toLowerCase() === GC_ROUTE_HASH;
+}
+
+const GC_INTRO_HASH = '#aptitude-test/grid-challenge/intro';
+
+function isGridIntroHash(): boolean {
+  return typeof window !== 'undefined' && window.location.hash.toLowerCase() === GC_INTRO_HASH;
+}
+
+const SC_ROUTE_HASH = '#aptitude-test/switch-challenge/session';
+
+function isSwitchChallengeHash(): boolean {
+  return typeof window !== 'undefined' && window.location.hash.toLowerCase() === SC_ROUTE_HASH;
 }
 
 interface TypeBreakdown {
@@ -1879,8 +1924,8 @@ function AptitudeTestInner() {
   const mechanicalTests = useMemo(() => enrichTests(loadMechanicalReasoningLibrary()), []);
   const trayExercises = useMemo(() => loadInTrayExercises(), []);
 
-  const initialCategory = useMemo<Category | null>(() => aptitudeCategoryFromHash() || (isGridChallengeHash() ? 'grid_challenge' : null), []);
-  const [view, setView] = useState<View>(() => (isOnlineAssessmentHash() ? 'oa' : 'home'));
+  const initialCategory = useMemo<Category | null>(() => aptitudeCategoryFromHash() || (isGridChallengeHash() || isGridIntroHash() ? 'grid_challenge' : isSwitchChallengeHash() ? 'switch_challenge' : null), []);
+  const [view, setView] = useState<View>(() => (isOnlineAssessmentHash() ? 'oa' : isSwitchChallengeHash() ? 'switch' : isGridIntroHash() ? 'grid_intro' : 'home'));
   const [category, setCategory] = useState<TestMode>(initialCategory || 'diagrammatic');
   const [libraryFamily, setLibraryFamily] = useState<Category | 'all'>(initialCategory || 'all');
   const [trayId, setTrayId] = useState('');
@@ -1908,6 +1953,14 @@ function AptitudeTestInner() {
   const [gridFinished, setGridFinished] = useState<GcResult | null>(null);
   const gridActiveRef = useRef(false);
   gridActiveRef.current = Boolean(gridRun);
+  const [switchRun, setSwitchRun] = useState<ScRun | null>(null);
+  const [switchFinished, setSwitchFinished] = useState<ScResult | null>(null);
+  // The latest submitted tasks of the running session; the session component owns only its own display state.
+  const switchLiveRef = useRef<ScRun | null>(null);
+  const switchFinalizedRef = useRef<Set<string>>(new Set());
+  const switchActiveRef = useRef(false);
+  switchActiveRef.current = Boolean(switchRun);
+  const finishSwitchRef = useRef<(run: ScRun, end: ScEnd, quiet?: boolean) => void>(() => undefined);
 
   const trackTestOpened = (testId: string, testType: string, retake = false) => {
     const previousTestId = lastOpenedTestIdRef.current;
@@ -1953,6 +2006,19 @@ function AptitudeTestInner() {
   useEffect(() => {
     const syncHashRoute = () => {
       const hash = window.location.hash.toLowerCase();
+      if (switchActiveRef.current && hash !== SC_ROUTE_HASH && (hash === '#aptitude-test' || hash.startsWith('#aptitude-test/'))) {
+        if (!window.confirm(SC_LEAVE_MESSAGE)) {
+          window.history.pushState({ app: 'aptitude-test', view: 'switch' }, '', SC_ROUTE_HASH);
+          return;
+        }
+        const live = switchLiveRef.current;
+        if (live) finishSwitchRef.current(live, 'exit');
+        return;
+      }
+      if (isSwitchChallengeHash()) {
+        if (!switchActiveRef.current) setView('switch');
+        return;
+      }
       if (gridActiveRef.current && hash !== GC_ROUTE_HASH && (hash === '#aptitude-test' || hash.startsWith('#aptitude-test/'))) {
         if (!window.confirm(GC_LEAVE_MESSAGE)) {
           window.history.pushState({ app: 'aptitude-test', view: 'grid' }, '', GC_ROUTE_HASH);
@@ -1960,6 +2026,10 @@ function AptitudeTestInner() {
         }
         gridActiveRef.current = false;
         setGridRun(null);
+      }
+      if (isGridIntroHash()) {
+        setView('grid_intro');
+        return;
       }
       if (isGridChallengeHash()) {
         if (!gridActiveRef.current) {
@@ -2236,7 +2306,7 @@ function AptitudeTestInner() {
     return () => window.clearInterval(timer);
   }, [view, deadline, activeTest, startedAt, finishTest]);
 
-  const runningTestId = view === 'test' && activeTest ? activeTest.id : view === 'tray' && trayId ? trayId : view === 'oa' && oaRun ? oaRun.test.id : view === 'grid' && gridRun ? GC_TEST_ID : null;
+  const runningTestId = view === 'test' && activeTest ? activeTest.id : view === 'tray' && trayId ? trayId : view === 'oa' && oaRun ? oaRun.test.id : view === 'grid' && gridRun ? GC_TEST_ID : view === 'switch' && switchRun ? SC_TEST_ID : null;
 
   useEffect(() => {
     activeSecondsRef.current = 0;
@@ -2415,8 +2485,26 @@ function AptitudeTestInner() {
         },
       },
     ];
+    const switchBest = bestFor(SC_TEST_ID);
+    const fromSwitch: LibraryEntry[] = [
+      {
+        key: `switch_challenge:${SC_TEST_ID}`,
+        id: SC_TEST_ID,
+        family: 'switch_challenge',
+        title: SC_TEST_NAME,
+        group: 'Casemate original',
+        source: 'Casemate original',
+        // Deliberately unrated: the difficulty filter lists it under All only.
+        difficulty: null,
+        detail: [`${SC_MODES.full.timeLimitSeconds / 60} min`, 'Quick Try'],
+        best: switchBest ? `Best ${switchBest.score}/${switchBest.total} correct` : null,
+        payload: null,
+      },
+    ];
     return [
       ...fromTests('diagrammatic', tests),
+      ...fromGrid,
+      ...fromSwitch,
       ...fromTests('inductive', inductiveTests),
       ...fromTests('deductive', deductiveTests),
       ...fromTests('error_checking', errorCheckingTests),
@@ -2428,15 +2516,27 @@ function AptitudeTestInner() {
       ...fromTests('critical', criticalTests as AnyTest[]),
       ...fromTests('mechanical', mechanicalTests as AnyTest[]),
       ...fromTray,
-      ...fromGrid,
     ];
   }, [tests, inductiveTests, deductiveTests, errorCheckingTests, spatialTests, numericalTests, verbalTests, situationalTests, logicalTests, criticalTests, mechanicalTests, trayExercises, bestFor, attempts]);
 
   const progress = useMemo(
-    () => computeAptitudeProgress(libraryEntries, attempts, [...startRows, ...localStarts]),
+    () => computeAptitudeProgress(libraryEntries, attempts.filter(countsTowardAptitudeProgress), [...startRows, ...localStarts]),
     [libraryEntries, attempts, startRows, localStarts],
   );
   const progressLoading = history.loading && !Array.isArray(history.data);
+
+  // Only test types that currently have tests in the library can be recommended.
+  const smartPickFamilies = useMemo(
+    () => TEST_FAMILIES.filter((item) => libraryEntries.some((entry) => entry.family === item.id)).map(({ id, name }) => ({ id, name })),
+    [libraryEntries],
+  );
+  const smartPicks = useSmartPracticePicks({
+    attempts,
+    historyLoading: progressLoading,
+    sessionId,
+    email,
+    families: smartPickFamilies,
+  });
 
   /* ------------------------------------------- online assessment simulation */
 
@@ -2545,6 +2645,143 @@ function AptitudeTestInner() {
     },
     [email, sessionId, userKey],
   );
+
+  /* ------------------------------------------------------ switch challenge */
+
+  // Switch Challenge keeps its own timed scoring, so it is never pooled into the Online Assessment Simulation.
+  const switchHistory = useMemo(() => attempts.filter((row) => row.test_type === SC_TEST_TYPE), [attempts]);
+
+  const saveSwitchAttempt = useCallback(
+    async (result: ScResult) => {
+      const testId = switchTestId(result);
+      const testName = switchTestName(result);
+      trackStepView('aptitude-test', 'answer', {
+        dedupeKey: `${result.runId}:${aptitudeAttemptNo}`,
+        properties: { test_id: testId, score: result.correct, total: result.attempted, percent: result.accuracyPercent, timed_out: result.end === 'time', attempt_no: aptitudeAttemptNo },
+      });
+      if (result.ranToEnd) {
+        window.dispatchEvent(new CustomEvent('casemate:pwa-install-ready', {
+          detail: { source: 'aptitude_test_completed' },
+        }));
+      }
+      setSaving(true);
+      setSaveError('');
+      try {
+        const completedAt = new Date().toISOString();
+        const insertResponse = await window.__workspaceDb.from('aptitude_attempts').insert({
+          user_key: userKey,
+          email: email || null,
+          test_type: SC_TEST_TYPE,
+          test_id: testId,
+          test_name: testName,
+          score: result.correct,
+          total: result.attempted,
+          percent: result.accuracyPercent,
+          duration_seconds: result.durationSeconds,
+          timed_out: result.end === 'time',
+          answers_json: switchAttemptAnswerRows(result),
+          completed_at: completedAt,
+        });
+        refreshHistoryRef.current();
+        // The clock running out is how a Full Assessment normally finishes, so a run that ended on its own is reported as submitted.
+        if (sessionId && result.ranToEnd) {
+          emitAptitudeAttempt({
+            insertResponse,
+            sessionId,
+            userKey,
+            completedAt,
+            testType: SC_TEST_TYPE,
+            testId,
+            testName,
+            score: result.correct,
+            total: result.attempted,
+            percent: result.accuracyPercent,
+            durationSeconds: result.durationSeconds,
+            timedOut: false,
+          });
+        }
+      } catch (error) {
+        setSaveError('Your result is shown below, but it could not be saved to your history — try another session in a few minutes.');
+        trackStepError('aptitude-test', 'answer', error, { properties: { test_id: testId } });
+      } finally {
+        setSaving(false);
+      }
+    },
+    [email, sessionId, userKey],
+  );
+
+  const finishSwitch = useCallback(
+    (run: ScRun, end: ScEnd, quiet = false) => {
+      if (switchFinalizedRef.current.has(run.id)) return;
+      switchFinalizedRef.current.add(run.id);
+      clearStoredSwitchRun(userKey);
+      switchLiveRef.current = null;
+      switchActiveRef.current = false;
+      const result = scoreSwitchRun(run, end, Date.now());
+      setSwitchRun(null);
+      if (!quiet) {
+        setSwitchFinished(result);
+        setView('switch');
+      }
+      void saveSwitchAttempt(result);
+    },
+    [saveSwitchAttempt, userKey],
+  );
+  finishSwitchRef.current = finishSwitch;
+
+  const liveSwitchRun = (run: ScRun): ScRun => (switchLiveRef.current && switchLiveRef.current.id === run.id ? switchLiveRef.current : run);
+
+  const showSwitchRoute = () => {
+    if (window.location.hash.toLowerCase() !== SC_ROUTE_HASH) {
+      window.history.pushState({ app: 'aptitude-test', view: 'switch' }, '', SC_ROUTE_HASH);
+    }
+  };
+
+  const openSwitchChallenge = () => {
+    setCategory('switch_challenge');
+    setSwitchFinished(null);
+    setView('switch');
+    showSwitchRoute();
+  };
+
+  const startSwitchChallenge = (mode: ScMode) => {
+    const run: ScRun = { id: `sc-${Date.now().toString(36)}-${newSwitchSeed().toString(36)}`, seed: newSwitchSeed(), mode, startedAt: Date.now(), responses: [] };
+    trackTestOpened(mode === 'full' ? SC_TEST_ID : SC_QUICK_TEST_ID, SC_TEST_TYPE, switchFinished !== null);
+    // Quick Try never touches learning progress, so only a Full Assessment marks the test In Progress.
+    if (mode === 'full') recordTestStart(SC_TEST_ID, SC_TEST_TYPE, SC_TEST_NAME);
+    storeSwitchRun(userKey, run);
+    switchLiveRef.current = { ...run, responses: [] };
+    setCategory('switch_challenge');
+    setSwitchFinished(null);
+    setSaveError('');
+    setSwitchRun(run);
+    setView('switch');
+    showSwitchRoute();
+  };
+
+  // A refreshed or reopened session resumes on the same wall clock; one whose clock ran out while away is saved as it stood.
+  useEffect(() => {
+    const stored = loadStoredSwitchRun(userKey);
+    if (!stored || switchFinalizedRef.current.has(stored.id) || switchLiveRef.current) return;
+    const cap = SC_MODES[stored.mode].maxTasks;
+    if (cap !== null && stored.responses.length >= cap) {
+      finishSwitchRef.current(stored, 'tasks');
+      return;
+    }
+    const overdue = Date.now() - switchDeadline(stored);
+    if (overdue < 0) {
+      switchLiveRef.current = stored;
+      setCategory('switch_challenge');
+      setSwitchFinished(null);
+      setSwitchRun(stored);
+      setView('switch');
+      showSwitchRoute();
+      return;
+    }
+    const endedJustNow = overdue <= SC_RESUME_GRACE_MS;
+    finishSwitchRef.current(stored, endedJustNow ? 'time' : 'interrupted', !endedJustNow);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userKey]);
 
   const openOnlineAssessment = () => {
     setView('oa');
@@ -2689,9 +2926,24 @@ function AptitudeTestInner() {
     );
   };
 
-  const openLibraryEntry = (entry: LibraryEntry) => {
+  const openGridIntro = () => {
+    setCategory('grid_challenge');
+    setGridFinished(null);
+    setView('grid_intro');
+    if (window.location.hash.toLowerCase() !== GC_INTRO_HASH) {
+      window.history.pushState({ app: 'aptitude-test', view: 'grid_intro' }, '', GC_INTRO_HASH);
+    }
+  };
+
+  const openLibraryEntry = (entry: LibraryEntry, options?: { random?: boolean }) => {
+    if (entry.family === 'switch_challenge') {
+      openSwitchChallenge();
+      return;
+    }
     if (entry.family === 'grid_challenge') {
-      startGridChallenge();
+      // Random Test keeps dealing Grid Challenge straight into the game, as before the intro screen existed.
+      if (options?.random) startGridChallenge();
+      else openGridIntro();
       return;
     }
     if (entry.family === 'in_tray') {
@@ -2704,6 +2956,40 @@ function AptitudeTestInner() {
     }
     startTest(entry.payload as AnyTest, entry.family as Category);
   };
+
+  if (view === 'switch') {
+    if (switchRun) {
+      const run = switchRun;
+      return (
+        <SwitchChallengeSession
+          key={run.id}
+          run={run}
+          onAnswer={() => trackSolving(SC_TEST_ID, 'answer_selected', Math.round(activeSecondsRef.current))}
+          onRecord={(response) => {
+            const live = liveSwitchRun(run);
+            const next = { ...live, responses: [...live.responses, response] };
+            switchLiveRef.current = next;
+            storeSwitchRun(userKey, next);
+          }}
+          onEnd={(end) => finishSwitch(liveSwitchRun(run), end)}
+          onExit={() => finishSwitch(liveSwitchRun(run), 'exit')}
+        />
+      );
+    }
+    if (switchFinished) {
+      return (
+        <SwitchChallengeResults
+          result={switchFinished}
+          history={switchHistory}
+          saving={saving}
+          saveError={saveError}
+          onRetake={startSwitchChallenge}
+          onBack={openCategoryList}
+        />
+      );
+    }
+    return <SwitchChallengeSetup history={switchHistory} onStart={startSwitchChallenge} onBack={openCategoryList} />;
+  }
 
   if (view === 'grid' && gridRun) {
     const run = gridRun;
@@ -2743,6 +3029,25 @@ function AptitudeTestInner() {
     );
   }
 
+  if (view === 'grid_intro') {
+    const gridEntry = libraryEntries.find((item) => item.family === 'grid_challenge');
+    if (gridEntry?.feature) {
+      return (
+        <GridChallengeIntro
+          title={gridEntry.title}
+          description={gridEntry.feature.description}
+          instructions={gridEntry.feature.instructions}
+          chips={gridEntry.detail}
+          best={gridEntry.best}
+          note={gridEntry.feature.note}
+          actionLabel={gridEntry.feature.actionLabel}
+          onStart={startGridChallenge}
+          onBack={openCategoryList}
+        />
+      );
+    }
+  }
+
   if (view === 'home' || view === 'grid') {
     return (
       <AptitudeLibrary
@@ -2755,6 +3060,7 @@ function AptitudeTestInner() {
         progressLoading={progressLoading}
         onOpenSimulation={openOnlineAssessment}
         simulationNote={oaEntryNote}
+        smartPicks={smartPicks}
       />
     );
   }
