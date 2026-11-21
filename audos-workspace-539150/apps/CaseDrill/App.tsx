@@ -818,6 +818,8 @@ function CaseDrillInner() {
   // removed, so nothing switches this to 'coach' any more.
   const [mode, setMode] = useState<'library' | 'coach'>('library');
   const [libraryCompact, setLibraryCompact] = useState(false);
+  // Charts' mode chooser and Audio Mode are standalone full pages, so the app header steps aside.
+  const [libraryStandalone, setLibraryStandalone] = useState(false);
   const [phase, setPhase] = useState<Phase>('pick');
   const [drill, setDrill] = useState<MicroDrill | null>(null);
   const [answer, setAnswer] = useState('');
@@ -1265,6 +1267,7 @@ function CaseDrillInner() {
           panels use the entire app width with modest responsive gutters. */}
       <div className="w-full px-3 py-4 sm:px-6 lg:px-8">
         {/* ------------------------------------------------ header */}
+        {libraryStandalone && mode === 'library' && phase === 'pick' ? null : (
         <header className="flex items-start gap-3">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--space-surface-accent-soft)] sm:h-10 sm:w-10">
             <Zap className="h-4 w-4 text-[var(--space-text-brand)] sm:h-5 sm:w-5" />
@@ -1285,6 +1288,7 @@ function CaseDrillInner() {
             </p>
           </div>
         </header>
+        )}
 
         {error && (
           <div className="mt-4 rounded-xl border border-[var(--space-semantic-danger)] bg-[var(--space-surface-card)] px-4 py-3 text-sm text-[var(--space-semantic-danger)]" data-testid="drill-error">
@@ -1312,7 +1316,7 @@ function CaseDrillInner() {
               </div>
             }
           >
-            <QuestionLibrary onCompactLayoutChange={setLibraryCompact} />
+            <QuestionLibrary onCompactLayoutChange={setLibraryCompact} onStandalonePageChange={setLibraryStandalone} />
           </Suspense>
         )}
 

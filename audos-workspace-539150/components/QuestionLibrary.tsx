@@ -19,6 +19,17 @@ import { tw } from '../lib/colors';
 import ExhibitRenderer from './ExhibitRenderer';
 import ExpertDrillExperience from './ExpertDrillExperience';
 import { BackToQuestionButton, CaseQuestionFirst, CaseReadingProvider } from './CaseReadingGuide';
+import {
+  ChartsAudioHeader,
+  ChartsAudioLayout,
+  ChartsAudioQuestion,
+  ChartsModeBanner,
+  ChartsModeChooser,
+  ChartsModePicker,
+  ChartsModeSwitchButton,
+  ChartsNarrationPlayer,
+  type ChartsPracticeMode,
+} from './ChartsAudioMode';
 import { ANSWER_ANCHOR_ID, BackToExhibitsButton, GoToAnswerBar } from './CompareExhibits';
 import { CASE_JOURNEYS } from '../lib/caseJourneys';
 import {
@@ -82,6 +93,7 @@ import {
 import { trackMove, trackStepError, trackStepView, useActiveTimeThreshold } from '../lib/engagementTracking';
 import { scoreBand } from '../lib/scorePresentation';
 import { openCasePoolCase, sourceFullCase } from './SolveFullCaseCta';
+import DrillNextQuestion, { nextInDrillContext, type DrillListContext } from './DrillNextQuestion';
 import MarketSizingAnswerBuilder, {
   MarketSizingAttemptSummary,
   calculateMarketSizingResult,
@@ -345,9 +357,13 @@ function isCompactSingleChart(question: LibraryQuestion): boolean {
   return exhibits.length === 1 && !COMPACT_TABLE_KINDS.includes(exhibits[0].kind);
 }
 
-export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLayoutChange?: (compact: boolean) => void } = {}) {
+export default function QuestionLibrary({ onCompactLayoutChange, onStandalonePageChange }: { onCompactLayoutChange?: (compact: boolean) => void; onStandalonePageChange?: (standalone: boolean) => void } = {}) {
   const { sessionId, visitorId, spaceId, trackEvent } = useSpaceRuntime();
   const [skill, setSkill] = useState<LibrarySkill>('charts');
+  // Charts opens on a practice-mode chooser; drill links and saved attempts open in Text Mode.
+  const [chartsMode, setChartsMode] = useState<ChartsPracticeMode>('chooser');
+  const [chartsChooserDismissed, setChartsChooserDismissed] = useState(false);
+  const lastChartsQuestionIdRef = useRef<string | null>(null);
   const [difficulty, setDifficulty] = useState<LibraryDifficulty | 'all'>('all');
   const [creativityCategory, setCreativityCategory] = useState<CreativityCategory | 'all'>('all');
   const [marketSizingFormat, setMarketSizingFormat] = useState<MarketSizingFormat | 'all'>('all');
@@ -374,6 +390,11 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
   const [confirmRedo, setConfirmRedo] = useState(false);
   const [shownCompletedOn, setShownCompletedOn] = useState('');
   const [attemptHistory, setAttemptHistory] = useState<AttemptHistoryEntry[]>([]);
+  // The list a question was opened from (filters + displayed order) for "Next Question"; null = opened directly.
+  const [listContext, setListContext] = useState<DrillListContext | null>(null);
+  // A question submitted this session inside a nested experience (Creativity, Calculations, Structures, Expert).
+  const [submittedNavId, setSubmittedNavId] = useState<string | null>(null);
+  const [structuresCaseId, setStructuresCaseId] = useState<string | null>(null);
   const libraryOpenedTrackedRef = useRef(false);
   const submittedAttemptRef = useRef(false);
   const explanationViewedRef = useRef(false);
@@ -638,6 +659,33 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     setRecommendedOnly(false);
   };
 
+  /** The active filters in words, shown with "Next Question". */
+  const listSummary = (): string => {
+    const namedJourney = journey !== 'all' && journey !== 'journeys-only' && journey !== 'standalone'
+      ? (CASE_JOURNEYS.find((item) => item.id === journey) as { title?: string } | undefined)?.title || 'One Case Journey'
+      : '';
+    return [
+      skillMeta.label,
+      skill === 'creativity'
+        ? (creativityCategory === 'all' ? 'All problem types' : CREATIVITY_CATEGORY_LABELS[creativityCategory])
+        : (difficulty === 'all' ? 'All difficulties' : DIFFICULTY_LABELS[difficulty]),
+      skill === 'market-sizing' && marketSizingFormat !== 'all' ? MARKET_SIZING_FORMAT_LABELS[marketSizingFormat] : '',
+      drillType !== 'all' ? drillType : '',
+      industry !== 'all' ? industry : '',
+      businessProblem !== 'all' ? businessProblem : '',
+      journey === 'journeys-only' ? 'Case Journeys only' : journey === 'standalone' ? 'Standalone drills only' : namedJourney,
+      estimatedTime === 'under-10' ? 'Under 10 minutes' : estimatedTime === '10-plus' ? '10–12 minutes' : '',
+      completion === 'completed' ? 'Completed' : completion === 'not-completed' ? 'Not completed' : '',
+      recommendedOnly ? 'Recommended for me' : '',
+      query.trim() ? `Search “${query.trim()}”` : '',
+    ].filter(Boolean).join(' · ');
+  };
+
+  const openFromList = (question: LibraryQuestion) => {
+    setListContext({ questions: matches, summary: listSummary(), kind: 'list' });
+    openQuestion(question);
+  };
+
   const resetAttempt = (question?: LibraryQuestion) => {
     submittedAttemptRef.current = false;
     explanationViewedRef.current = false;
@@ -664,7 +712,13 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
   };
 
   const openQuestion = (question: LibraryQuestion, viaNextButton = false) => {
+    if (question.skill === 'charts') {
+      lastChartsQuestionIdRef.current = question.id;
+      setChartsMode((mode) => (mode === 'chooser' ? 'text' : mode));
+    }
     setActive(question);
+    setSubmittedNavId(null);
+    setStructuresCaseId(null);
     resetAttempt(question);
     const savedAttempt = attemptByQuestion.get(question.id);
     if (savedAttempt) {
@@ -726,14 +780,19 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
         if (requested) {
           sessionStorage.removeItem('casemate-open-case-drill');
           sessionStorage.removeItem(CASE_DRILL_SKILL_KEY);
+          setListContext(null);
           setSkill(requested.skill);
+          if (requested.skill === 'charts') setChartsMode('text');
           openQuestion(requested);
           return;
         }
         const requestedSkill = sessionStorage.getItem(CASE_DRILL_SKILL_KEY);
         if (!requestedSkill) return;
         sessionStorage.removeItem(CASE_DRILL_SKILL_KEY);
-        if (isLibrarySkill(requestedSkill)) switchSkill(requestedSkill);
+        if (isLibrarySkill(requestedSkill)) {
+          switchSkill(requestedSkill);
+          if (requestedSkill === 'charts') setChartsMode('text');
+        }
       } catch {
         /* sessionStorage can be unavailable in strict browser modes */
       }
@@ -751,6 +810,11 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
 
   const switchSkill = (nextSkill: LibrarySkill) => {
     setSkill(nextSkill);
+    setListContext(null);
+    if (nextSkill === 'charts') {
+      setChartsMode('chooser');
+      setChartsChooserDismissed(false);
+    }
     setDifficulty('all');
     setCreativityCategory('all');
     setMarketSizingFormat('all');
@@ -767,12 +831,47 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     void emitLibraryEvent('drill_skill_selected', 'step', { skill: nextSkill });
   };
 
+  const chartsQuestionToResume = (): LibraryQuestion | null => {
+    const id = lastChartsQuestionIdRef.current;
+    return id ? visibleQuestions.find((question) => question.id === id) || null : null;
+  };
+
+  /** Chooser buttons: reopen the drill already selected, else (Audio) the first drill in library order, respecting active filters. */
+  const chooseChartsMode = (mode: 'text' | 'audio') => {
+    setChartsMode(mode);
+    setChartsChooserDismissed(false);
+    void emitLibraryEvent('drill_mode_selected', 'step', { skill: 'charts', mode, source: 'chooser' });
+    const resume = chartsQuestionToResume();
+    if (resume) {
+      setListContext(matches.some((question) => question.id === resume.id) ? { questions: matches, summary: listSummary(), kind: 'list' } : null);
+      openQuestion(resume);
+      return;
+    }
+    if (mode !== 'audio') return;
+    if (matches[0]) {
+      openFromList(matches[0]);
+      return;
+    }
+    const first = visibleQuestions.slice().sort((a, b) => DIFFICULTY_RANK[displayDifficultyOf(a)] - DIFFICULTY_RANK[displayDifficultyOf(b)])[0];
+    if (first) {
+      setListContext(null);
+      openQuestion(first);
+    }
+  };
+
+  /** Same drill, same answer state: only the layout changes, so no attempt is created or reset. */
+  const switchChartsMode = (mode: 'text' | 'audio') => {
+    setChartsMode(mode);
+    void emitLibraryEvent('drill_mode_selected', 'step', { skill: 'charts', mode, source: active ? 'switch' : 'library', question_id: active?.id ?? null });
+  };
+
   const randomQuestion = () => {
     const pool = matches.length > 0 ? matches : difficultyQuestions;
     if (pool.length === 0) return;
     const nextQuestion = pool[Math.floor(Math.random() * pool.length)];
     if (active) void emitLibraryEvent('drill_next_question', 'retention', { question_id: nextQuestion.id });
     if (active) trackMove(ENGAGEMENT_APP_ID, 'next_case_button', { mode: ENGAGEMENT_MODE, properties: { from_item_id: active.id, to_item_id: nextQuestion.id } });
+    setListContext(pool === matches ? { questions: matches, summary: listSummary(), kind: 'list' } : null);
     openQuestion(nextQuestion, Boolean(active));
   };
 
@@ -962,6 +1061,64 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     setActive(null);
   };
 
+  /** Opened directly (no list behind it): the same exercise type and difficulty, in the library's default order. */
+  const defaultOrderContext = (question: LibraryQuestion): DrillListContext => {
+    const identity = drillIdentity(question);
+    const sameKind = QUESTION_LIBRARY[question.skill]
+      .map(restoreArchivedHardQuestion)
+      .filter((item) => item.reviewStatus !== 'Archived')
+      .filter((item) => (question.skill === 'creativity'
+        ? item.creativityCategory === question.creativityCategory
+        : drillIdentity(item).exerciseType === identity.exerciseType && drillIdentity(item).difficulty === identity.difficulty));
+    const questions = question.skill === 'creativity'
+      ? sameKind.sort((a, b) => String(a.sourceCaseId || '').localeCompare(String(b.sourceCaseId || '')))
+      : sameKind.sort((a, b) => DIFFICULTY_RANK[displayDifficultyOf(a)] - DIFFICULTY_RANK[displayDifficultyOf(b)]);
+    const skillLabel = SKILL_META.find((item) => item.id === question.skill)?.label || question.skill;
+    return { questions, summary: [skillLabel, identity.exerciseType, identity.difficultyLabel].filter(Boolean).join(' · '), kind: 'default-order' };
+  };
+
+  const goToNextQuestion = (question: LibraryQuestion) => {
+    if (active) {
+      void emitLibraryEvent('drill_next_question', 'retention', { question_id: question.id });
+      trackMove(ENGAGEMENT_APP_ID, 'next_case_button', { mode: ENGAGEMENT_MODE, properties: { from_item_id: active.id, to_item_id: question.id } });
+    }
+    if (question.skill !== skill) setSkill(question.skill);
+    openQuestion(question, true);
+  };
+
+  /** Back to the list the learner was working through, with its filters kept. */
+  const backToQuestionList = (question: LibraryQuestion) => {
+    if (!listContext) {
+      // Opened directly: show the list "Next Question" was following (same exercise type and difficulty).
+      const identity = drillIdentity(question);
+      clearFilters();
+      setSkill(question.skill);
+      if (question.skill === 'creativity') {
+        setCreativityCategory(question.creativityCategory || 'all');
+      } else {
+        setDifficulty(identity.difficulty && difficultyFilterLevelsFor(question.skill).includes(identity.difficulty) ? identity.difficulty : 'all');
+        setDrillType(identity.exerciseType || 'all');
+      }
+    }
+    setConfirmRedo(false);
+    setActive(null);
+  };
+
+  const renderNextQuestion = (question: LibraryQuestion) => {
+    const context = listContext || defaultOrderContext(question);
+    return (
+      <DrillNextQuestion
+        context={context}
+        step={nextInDrillContext(context, question.id)}
+        formatTitle={(value) => capitaliseLineStarts(value, question.skill === 'market-sizing')}
+        onNext={goToNextQuestion}
+        onBackToList={() => backToQuestionList(question)}
+        fullCase={sourceFullCase(question.source_case_id)}
+        onSolveFullCase={openCasePoolCase}
+      />
+    );
+  };
+
   const compactSingleChart = Boolean(active && isCompactSingleChart(active));
   // Medium and Hard solve screens also hide the app's intro line on laptops so the question and exhibits fit one screen.
   const compactHeader = compactSingleChart || Boolean(active && displayDifficultyOf(active) !== 'easy');
@@ -970,18 +1127,38 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     return () => onCompactLayoutChange?.(false);
   }, [compactHeader, onCompactLayoutChange]);
 
+  const chartsAudioView = Boolean(active && active.skill === 'charts' && chartsMode === 'audio');
+  const showChartsChooser = !active && skill === 'charts' && chartsMode === 'chooser' && !chartsChooserDismissed;
+  useEffect(() => {
+    onStandalonePageChange?.(showChartsChooser || chartsAudioView);
+    return () => onStandalonePageChange?.(false);
+  }, [showChartsChooser, chartsAudioView, onStandalonePageChange]);
+
+  if (showChartsChooser) {
+    return (
+      <ChartsModeChooser
+        onAudio={() => chooseChartsMode('audio')}
+        onText={() => chooseChartsMode('text')}
+        onBack={() => setChartsChooserDismissed(true)}
+        loading={attemptsLoading}
+      />
+    );
+  }
+
   if (active?.sourceCaseId?.startsWith('CM-CRE-')) {
     return (
       <CaseReadingProvider itemId={active.id}>
       <CreativityCaseExperience
+        key={active.id}
         question={active}
         onBack={backToLibrary}
         hideEvidenceColumn
-        onSubmitted={() => { setCompletionVersion((version) => version + 1); refreshAttempts(); }}
+        onSubmitted={() => { setSubmittedNavId(active.id); setCompletionVersion((version) => version + 1); refreshAttempts(); }}
         onAnswerInput={() => trackSolving('answer_typed')}
         onGraded={(scoring) => trackAnswer(active.id, scoring)}
         onGradeError={(error) => trackLibraryError('answer', error, active.id)}
       />
+      {submittedNavId === active.id ? <div className="pb-20 sm:pb-0">{renderNextQuestion(active)}</div> : null}
       </CaseReadingProvider>
     );
   }
@@ -990,17 +1167,20 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     return (
       <CaseReadingProvider itemId={active.id}>
       <CalculationCaseExperience
+        key={active.id}
         question={active}
         onBack={backToLibrary}
         onAnswerInput={() => trackSolving('answer_typed')}
         hideEvidenceColumn
         onSubmitted={() => {
+          setSubmittedNavId(active.id);
           setCompletionVersion((version) => version + 1);
           refreshAttempts();
           void emitLibraryEvent('drill_answer_submitted', 'core_action', { question_id: active.id, skill: active.skill, difficulty: active.difficulty, answer_mode: 'calculation-cycle-1' }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
           trackAnswer(active.id);
         }}
       />
+      {submittedNavId === active.id ? <div className="pb-20 sm:pb-0">{renderNextQuestion(active)}</div> : null}
       </CaseReadingProvider>
     );
   }
@@ -1014,13 +1194,15 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
           Back to Structures Library
         </button>
         <StructuresWorkspace
+          key={active.id}
           initialCaseId={active.id}
           onBackToLibrary={() => setActive(null)}
           hideEvidenceColumn
-          onCaseSelected={(item) => trackChooseCase(item)}
+          onCaseSelected={(item) => { setStructuresCaseId(item.id); trackChooseCase(item); }}
           onGraded={(caseId, scoring) => trackAnswer(caseId, scoring)}
           onGradeError={(error) => trackLibraryError('answer', error, trackedItemId)}
           onSubmitted={() => {
+            setSubmittedNavId(structuresCaseId || active.id);
             try { localStorage.setItem(`casemate-expert-completed:${active.id}`, new Date().toISOString()); } catch { /* Best-effort completion filter. */ }
             setCompletionVersion((version) => version + 1);
             if (!submittedAttemptRef.current) {
@@ -1034,6 +1216,9 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
             }
           }}
         />
+        {submittedNavId && submittedNavId === (structuresCaseId || active.id)
+          ? <div className="pb-20 sm:pb-0">{renderNextQuestion(ALL_LIBRARY_QUESTIONS.find((question) => question.id === submittedNavId) || active)}</div>
+          : null}
       </div>
       </CaseReadingProvider>
     );
@@ -1043,9 +1228,12 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     return (
       <CaseReadingProvider itemId={active.id}>
       <ExpertDrillExperience
+        key={active.id}
         question={active}
         onBack={backToLibrary}
         hideEvidenceColumn
+        audioPlayer={chartsAudioView ? <ChartsNarrationPlayer key={`narration-${active.id}`} question={active} onSwitchToText={() => switchChartsMode('text')} /> : undefined}
+        onSwitchMode={active.skill === 'charts' ? switchChartsMode : undefined}
         onAnswerInput={() => trackSolving('answer_typed')}
         onGraded={(scoring) => trackAnswer(active.id, scoring)}
         onGradeError={(error) => trackLibraryError('answer', error, active.id)}
@@ -1053,8 +1241,10 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
           setCompletionVersion((version) => version + 1);
           refreshAttempts();
           void emitLibraryEvent('drill_answer_submitted', 'core_action', { question_id: active.id, skill: active.skill, difficulty: active.difficulty, answer_mode: 'structured-expert' }, { completionKey: `case_drill_library:${active.id}:${libraryUserKey || sessionId}` });
+          setSubmittedNavId(active.id);
         }}
       />
+      {submittedNavId === active.id ? <div className="pb-20 sm:pb-0">{renderNextQuestion(active)}</div> : null}
       </CaseReadingProvider>
     );
   }
@@ -1111,16 +1301,9 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
       : isChoiceQuestion && selectedOptionIndex >= 0
         ? `${String.fromCharCode(65 + selectedOptionIndex)}. ${selectedOption}`
         : submittedAnswerText;
-    const relatedQuestion = (active.recommendedNextDrillId ? ALL_LIBRARY_QUESTIONS.find((question) => question.id === active.recommendedNextDrillId) : null)
-      || visibleQuestions.find((question) => question.id !== active.id && displayDifficultyOf(question) === displayDifficultyOf(active) && !isCompleted(question.id))
-      || visibleQuestions.find((question) => question.id !== active.id && !isCompleted(question.id))
-      || null;
-    const fullCase = sourceFullCase(active.source_case_id);
     const retry = retryAction(redoAttempt, { focus });
-    const nextAction = chooseNextAction(outcome, {
-      'next-question': relatedQuestion ? { kind: 'next-question', label: 'Next related question', detail: `Practise the same skill on “${relatedQuestion.title}”.`, onSelect: () => { if (relatedQuestion.skill !== skill) setSkill(relatedQuestion.skill); openQuestion(relatedQuestion, true); } } : null,
-      'full-case': fullCase ? { kind: 'full-case', label: 'Solve the full case', detail: `Take this drill into its full case: ${fullCase.title}. Your drill result stays saved.`, onSelect: () => openCasePoolCase(fullCase.id) } : null,
-    }, { objective: objectiveResult });
+    // Next Question and Solve the Full Case have their own row under the result (DrillNextQuestion).
+    const nextAction = chooseNextAction(outcome, { 'next-question': null, 'full-case': null }, { objective: objectiveResult });
     const questionNoteLines = [...presented.guidance, ...presented.answerFormat.map((line) => `Answer format: ${line}`)];
     const questionNote = presented.instruction || questionNoteLines.length ? (
       <>
@@ -1154,60 +1337,22 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
     );
     const exhibitNode = activeExhibits.length ? <div className={compactSingleChart ? undefined : 'mt-4'}><ExhibitRenderer exhibits={activeExhibits} compact={compactSingleChart} layout={denseLayout ? 'compare' : 'grid'} guide={presented.exhibitGuide.map(capitaliseLineStarts)} />{denseLayout && !submitted ? <GoToAnswerBar /> : null}</div> : null;
     const answerInColumn = compactSingleChart && !submitted && isChoiceQuestion && !isMarketSizing && active.skill !== 'calculations';
-
-    return (
-      <CaseReadingProvider itemId={active.id}>
-      <div className={compactSingleChart ? 'mt-1' : 'mt-5'} data-testid={`question-library-active-${active.skill}`}>
-        <div className={compactSingleChart ? 'flex flex-wrap items-center gap-x-3 gap-y-1' : undefined}>
-        <button type="button" onClick={backToLibrary} className={`inline-flex items-center gap-1.5 rounded-xl text-xs font-semibold ${compactSingleChart ? 'px-2.5 py-1.5' : 'px-3 py-2'} ${tw.button.secondary}`}>
-          <ArrowLeft className="h-4 w-4" />
-          Back to Question Library
-        </button>
-
-        <div className={`${compactSingleChart ? '' : 'mt-4 '}flex flex-wrap items-center gap-2`}>
-          <CaseIdentityChips identity={drillIdentity(active)} testId="question-library-identity" />
-          {active.marketSizingBank?.geography ? (
-            <span className="inline-flex min-w-0 max-w-full rounded-full border border-dashed border-[var(--space-border-default)] px-2.5 py-0.5 text-[11px] font-semibold leading-4 text-[var(--space-text-muted)]" title={`Geography: ${active.marketSizingBank.geography}`} data-testid="market-sizing-bank-geography">
-              <span className="min-w-0 break-words"><span className="sr-only">Geography: </span>{active.marketSizingBank.geography}</span>
-            </span>
-          ) : null}
-          <span className="text-xs font-medium text-[var(--space-text-muted)]">{questionCountFor(active.skill)} practice questions available</span>
-          {active.estimatedMinutes ? <span className="text-xs font-medium text-[var(--space-text-muted)]">· {active.estimatedMinutes} Min</span> : null}
-        </div>
-        </div>
-
-        <div className={compactSingleChart ? 'mt-1.5 grid gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start' : undefined} data-testid={compactSingleChart ? 'question-library-compact-layout' : undefined}>
-        {compactSingleChart ? (
-          <>
-            <div className="min-w-0 lg:col-start-2 lg:row-start-1">{questionFirstSection}</div>
-            <div className={`min-w-0 lg:col-start-1 lg:row-start-1 ${answerInColumn ? 'lg:row-span-2' : ''}`}>{exhibitNode}</div>
-          </>
-        ) : (
-          <>
-            {questionFirstSection}
-            {exhibitNode}
-          </>
-        )}
-
-        {!submitted ? (
-          <section id={ANSWER_ANCHOR_ID} className={`scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${answerInColumn ? 'min-w-0 p-3 shadow-sm lg:col-start-2 lg:row-start-2' : `${compactSingleChart ? 'min-w-0 lg:col-span-2' : 'mt-4'} ${isCaseCoachLayout ? 'p-5 shadow-sm sm:p-7' : 'p-4 sm:p-5'}`}`} data-testid="question-library-answer-area">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">Your Answer</p>
-              {denseLayout ? <BackToExhibitsButton /> : null}
-            </div>
-
+    const tightAnswer = answerInColumn || chartsAudioView;
+    // Shared by Text Mode and Audio Mode so switching modes keeps the same controls and answer state.
+    const answerControls = (
+      <>
             {isMarketSizing ? (
               <div className="mt-4">
                 <MarketSizingAnswerBuilder value={marketSizingDraft} onChange={(next) => { setMarketSizingDraft(next); setValidationError(''); trackSolving('answer_typed'); }} answerUnit={active.answerUnit} disabled={grading} rootText={presented.rootQuestion} />
               </div>
             ) : (active.answerMode === 'choice' || active.answerMode === 'multiple-choice') && active.skill !== 'calculations' ? (
-              <div className={answerInColumn ? 'mt-2 grid gap-2' : 'mt-3 grid gap-2.5'}>
+              <div className={tightAnswer ? 'mt-2 grid gap-2' : 'mt-3 grid gap-2.5'}>
                 {(active.options || []).map((option, index) => (
                   <button
                     key={option}
                     type="button"
                     onClick={() => { setSelectedOption(option); setValidationError(''); trackSolving('answer_typed'); }}
-                    className={`flex items-start gap-3 rounded-xl border ${answerInColumn ? 'px-3 py-2' : 'px-4 py-3.5'} text-left transition-colors ${selectedOption === option ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] hover:border-[var(--space-border-strong)]'}`}
+                    className={`flex items-start gap-3 rounded-xl border ${tightAnswer ? 'px-3 py-2' : 'px-4 py-3.5'} text-left transition-colors ${selectedOption === option ? 'border-[var(--space-brand-primary-600)] bg-[var(--space-surface-accent-soft)]' : 'border-[var(--space-border-default)] hover:border-[var(--space-border-strong)]'}`}
                   >
                     <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${selectedOption === option ? 'bg-[var(--space-brand-primary-600)] text-[var(--space-text-on-primary)]' : 'bg-[var(--space-surface-muted)] text-[var(--space-text-muted)]'}`}>
                       {String.fromCharCode(65 + index)}
@@ -1253,13 +1398,13 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
             )}
 
             {validationError ? <p className="mt-3 text-sm font-medium text-[var(--space-semantic-danger)]">{validationError}</p> : null}
-            <button type="button" onClick={() => void submit()} disabled={grading} className={`${answerInColumn ? 'mt-3 py-2.5' : 'mt-4 py-3.5'} flex w-full items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold ${tw.button.primary} ${grading ? tw.button.disabled : ''}`} data-testid="button-submit-library-answer">
+            <button type="button" onClick={() => void submit()} disabled={grading} className={`${tightAnswer ? 'mt-3 py-2.5' : 'mt-4 py-3.5'} flex w-full items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold ${tw.button.primary} ${grading ? tw.button.disabled : ''}`} data-testid="button-submit-library-answer">
               <Check className="h-4 w-4" />
               {grading ? 'Mate is grading…' : 'Submit for feedback'}
             </button>
-          </section>
-        ) : scoreResult ? (
-          <div className={compactSingleChart ? 'min-w-0 lg:col-span-2' : undefined}>
+      </>
+    );
+    const resultView = scoreResult ? (
           <CaseResultView
             score={visibleOverallScore}
             scale={resultScale}
@@ -1286,6 +1431,102 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
             format={capitaliseLineStarts}
             testId="question-library-result"
           />
+    ) : null;
+
+    if (chartsAudioView) {
+      // Audio Mode: player, then exhibits beside a sticky question + live answer panel.
+      return (
+        <CaseReadingProvider itemId={active.id}>
+          <ChartsAudioLayout
+            header={(
+              <ChartsAudioHeader
+                title={capitaliseLineStarts(active.title)}
+                onBackToLibrary={backToLibrary}
+                onSwitchToText={() => switchChartsMode('text')}
+                meta={(
+                  <>
+                    <CaseIdentityChips identity={drillIdentity(active)} testId="question-library-identity" />
+                    {active.estimatedMinutes ? <span className="text-xs font-medium text-[var(--space-text-muted)]">{active.estimatedMinutes} Min</span> : null}
+                  </>
+                )}
+              />
+            )}
+            player={<ChartsNarrationPlayer key={`narration-${active.id}`} question={active} onSwitchToText={() => switchChartsMode('text')} />}
+            exhibits={activeExhibits.length ? <ExhibitRenderer exhibits={activeExhibits} compact={activeExhibits.length === 1} layout="compare" guide={presented.exhibitGuide.map(capitaliseLineStarts)} /> : null}
+            panel={(
+              <section id={submitted ? undefined : ANSWER_ANCHOR_ID} className="scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm" data-testid="question-library-answer-area">
+                <ChartsAudioQuestion task={capitaliseLineStarts(presented.task)} notes={[presented.instruction, ...questionNoteLines].filter(Boolean).map(capitaliseLineStarts)} />
+                <div className="mt-3 border-t border-[var(--space-border-default)] pt-3">
+                  {submitted ? (
+                    <p className="text-xs font-semibold text-[var(--space-text-secondary)]">Your feedback is below the exhibits.</p>
+                  ) : (
+                    <>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">Your Answer</p>
+                      {answerControls}
+                    </>
+                  )}
+                </div>
+              </section>
+            )}
+            after={submitted && resultView ? (
+              <div className="pb-20 sm:pb-0">
+                {resultView}
+                {renderNextQuestion(active)}
+              </div>
+            ) : null}
+          />
+        </CaseReadingProvider>
+      );
+    }
+
+    return (
+      <CaseReadingProvider itemId={active.id}>
+      <div className={compactSingleChart ? 'mt-1' : 'mt-5'} data-testid={`question-library-active-${active.skill}`}>
+        <div className={compactSingleChart ? 'flex flex-wrap items-center gap-x-3 gap-y-1' : undefined}>
+        <button type="button" onClick={backToLibrary} className={`inline-flex items-center gap-1.5 rounded-xl text-xs font-semibold ${compactSingleChart ? 'px-2.5 py-1.5' : 'px-3 py-2'} ${tw.button.secondary}`}>
+          <ArrowLeft className="h-4 w-4" />
+          Back to Question Library
+        </button>
+        {active.skill === 'charts' ? <ChartsModeSwitchButton target="audio" onClick={() => switchChartsMode('audio')} className="ml-2" /> : null}
+
+        <div className={`${compactSingleChart ? '' : 'mt-4 '}flex flex-wrap items-center gap-2`}>
+          <CaseIdentityChips identity={drillIdentity(active)} testId="question-library-identity" />
+          {active.marketSizingBank?.geography ? (
+            <span className="inline-flex min-w-0 max-w-full rounded-full border border-dashed border-[var(--space-border-default)] px-2.5 py-0.5 text-[11px] font-semibold leading-4 text-[var(--space-text-muted)]" title={`Geography: ${active.marketSizingBank.geography}`} data-testid="market-sizing-bank-geography">
+              <span className="min-w-0 break-words"><span className="sr-only">Geography: </span>{active.marketSizingBank.geography}</span>
+            </span>
+          ) : null}
+          <span className="text-xs font-medium text-[var(--space-text-muted)]">{questionCountFor(active.skill)} practice questions available</span>
+          {active.estimatedMinutes ? <span className="text-xs font-medium text-[var(--space-text-muted)]">· {active.estimatedMinutes} Min</span> : null}
+        </div>
+        </div>
+
+        <div className={compactSingleChart ? 'mt-1.5 grid gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:items-start' : undefined} data-testid={compactSingleChart ? 'question-library-compact-layout' : undefined}>
+        {compactSingleChart ? (
+          <>
+            <div className="min-w-0 lg:col-start-2 lg:row-start-1">{questionFirstSection}</div>
+            <div className={`min-w-0 lg:col-start-1 lg:row-start-1 ${answerInColumn ? 'lg:row-span-2' : ''}`}>{exhibitNode}</div>
+          </>
+        ) : (
+          <>
+            {questionFirstSection}
+            {exhibitNode}
+          </>
+        )}
+
+        {!submitted ? (
+          <section id={ANSWER_ANCHOR_ID} className={`scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] ${answerInColumn ? 'min-w-0 p-3 shadow-sm lg:col-start-2 lg:row-start-2' : `${compactSingleChart ? 'min-w-0 lg:col-span-2' : 'mt-4'} ${isCaseCoachLayout ? 'p-5 shadow-sm sm:p-7' : 'p-4 sm:p-5'}`}`} data-testid="question-library-answer-area">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-muted)]">Your Answer</p>
+              {denseLayout ? <BackToExhibitsButton /> : null}
+            </div>
+
+            {answerControls}
+          </section>
+        ) : scoreResult ? (
+          <div className={compactSingleChart ? 'min-w-0 lg:col-span-2' : undefined}>
+          {resultView}
+          {renderNextQuestion(active)}
           </div>
         ) : null}
         </div>
@@ -1352,6 +1593,11 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
         </div>
       </section>
 
+      {skill === 'charts' && chartsMode === 'chooser' ? (
+        <ChartsModePicker onAudio={() => chooseChartsMode('audio')} onText={() => chooseChartsMode('text')} loading={attemptsLoading} />
+      ) : (
+      <>
+      {skill === 'charts' ? <ChartsModeBanner mode={chartsMode === 'audio' ? 'audio' : 'text'} onSwitch={switchChartsMode} /> : null}
       <section className="mt-4 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 sm:p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -1451,7 +1697,7 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
               <li key={question.id}>
                 <button
                   type="button"
-                  onClick={() => openQuestion(question)}
+                  onClick={() => openFromList(question)}
                   className="group flex h-full w-full items-start gap-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-left transition-all hover:border-[var(--space-brand-primary-600)] hover:shadow-md"
                   data-testid={`library-question-${question.id}`}
                 >
@@ -1482,6 +1728,8 @@ export default function QuestionLibrary({ onCompactLayoutChange }: { onCompactLa
           </button>
         ) : null}
       </section>
+      </>
+      )}
     </div>
   );
 }

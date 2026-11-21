@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ArrowLeft, Check, RotateCcw, Target } from 'lucide-react';
 import ExhibitRenderer from './ExhibitRenderer';
 import { journeyFor } from '../lib/caseJourneys';
@@ -18,6 +18,7 @@ import CaseIdentityChips from './CaseIdentityChips';
 import { drillIdentity } from '../lib/caseIdentity';
 import { BackToQuestionButton, CaseQuestionFirst, useCaseReadingItemId } from './CaseReadingGuide';
 import { ANSWER_ANCHOR_ID, BackToExhibitsButton, GoToAnswerBar } from './CompareExhibits';
+import { ChartsAudioHeader, ChartsAudioLayout, ChartsAudioQuestion, ChartsModeSwitchButton } from './ChartsAudioMode';
 import {
   buildReasoningFeedback,
   chooseNextAction,
@@ -79,6 +80,10 @@ interface Props {
   onAnswerInput?: () => void;
   onGraded?: (scoring: HonestScoreResult) => void;
   onGradeError?: (error: unknown) => void;
+  /** Charts only: the narration player. When set, the drill renders in Audio Mode (same instance, so typed answers are kept). */
+  audioPlayer?: ReactNode;
+  /** Charts only: switches between Text Mode and Audio Mode on this same drill. */
+  onSwitchMode?: (mode: 'text' | 'audio') => void;
 }
 
 function Field({ id, label, help, value, rows = 3, onChange }: { id: string; label: string; help: string; value: string; rows?: number; onChange: (value: string) => void }) {
@@ -91,7 +96,7 @@ function Field({ id, label, help, value, rows = 3, onChange }: { id: string; lab
   );
 }
 
-export default function ExpertDrillExperience({ question, onBack, onSubmitted, hideEvidenceColumn = false, onAnswerInput, onGraded, onGradeError }: Props) {
+export default function ExpertDrillExperience({ question, onBack, onSubmitted, hideEvidenceColumn = false, onAnswerInput, onGraded, onGradeError, audioPlayer, onSwitchMode }: Props) {
   const { sessionId } = useSpaceRuntime();
   const readingId = useCaseReadingItemId() || question.id;
   const { data: attemptRows, loading: attemptsLoading, refresh: refreshAttempts } = window.useWorkspaceDB<SavedExpertAttempt>('drill_library_attempts', {
@@ -111,6 +116,7 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
   const [retrying, setRetrying] = useState(false);
   const [completedOn, setCompletedOn] = useState('');
   const [attemptHistory, setAttemptHistory] = useState<AttemptHistoryEntry[]>([]);
+  const audioMode = Boolean(audioPlayer);
 
   useEffect(() => {
     if (retrying || submitted) return;
@@ -281,12 +287,103 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
     setError('');
   };
 
+  const answerFields = (
+    <>
+      <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">{isHard ? 'Use specific exhibit values, then explain what they mean. Keep the path direct and decision-focused.' : 'Reference at least Exhibit 1 and Exhibit 2 with specific numbers. A correct number without interpretation cannot receive a high score.'}</p>
+      <div className={audioMode ? 'mt-4 space-y-4' : 'mt-5 space-y-5'}>
+        {question.calculationRequired ? <Field id="expert-calculation" label="Calculation" help="Show formulas, units, assumptions, and the reconciled result before interpreting it. Example: Revenue = 120 × 40 = 4,800 million VND." value={response.calculation} onChange={(value) => update('calculation', value)} rows={4} /> : null}
+        {isHard ? <Field id="hard-observation" label="1. Key Observation" help="Report only what the exhibits show. Example: Volume rose 8%, but revenue fell 3% as price declined 10%." value={response.supportingEvidence} onChange={(value) => update('supportingEvidence', value)} rows={3} /> : null}
+        <Field id="expert-insight" label={`${isHard ? '2' : '1'}. Key Insight`} help="Explain the conclusion behind the observation. Example: Discounting is eroding growth because the price decline outweighs the volume gain." value={response.keyInsight} onChange={(value) => update('keyInsight', value)} />
+        {!isHard ? <Field id="expert-evidence" label="2. Supporting Evidence" help="Cite at least two exhibits with specific, reconciled numbers; do not repeat your conclusion." value={response.supportingEvidence} onChange={(value) => update('supportingEvidence', value)} rows={3} /> : null}
+        <Field id="expert-implication" label="3. Business Implication" help="Explain what your findings mean for the client's objective or business decision. A next step or action plan is not required." value={response.businessImplication} onChange={(value) => update('businessImplication', value)} />
+      </div>
+      {error ? <p className="mt-4 text-sm font-semibold text-[var(--space-semantic-danger)]">{error}</p> : null}
+      <button type="button" onClick={() => void submit()} disabled={grading} className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-bold ${tw.button.primary} ${grading ? tw.button.disabled : ''}`} data-testid="button-submit-expert-answer"><Check className="h-4 w-4" /> {grading ? 'Mate is grading…' : `Submit For ${levelLabel} Feedback`}</button>
+    </>
+  );
+
+  const attemptLoading = !submitted && attemptsLoading && !retrying ? (
+    <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 text-center" aria-busy="true" data-testid="expert-attempt-loading">
+      <p className="text-sm font-bold text-[var(--space-text-primary)]">Checking for your saved result…</p>
+    </section>
+  ) : null;
+
+  const resultArea = submitted && scoringResult ? (
+    <section className="space-y-4" data-testid="expert-feedback">
+      <CaseResultView
+        score={scoringResult.overallScore}
+        scale={10}
+        outcome={outcome}
+        completedOn={completedOn}
+        feedback={resultFeedback}
+        criteria={scoringResult.criteria}
+        learnerResponseText={submittedAnswer}
+        workedAnswer={workedAnswer}
+        history={attemptHistory}
+        retry={retry}
+        nextAction={nextAction}
+        testId="expert-result"
+      />
+      <div className="flex flex-col gap-2 pb-20 sm:flex-row sm:pb-0">
+        <button type="button" onClick={leaveQuestion} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.secondary}`} data-testid="button-back-expert-library"><ArrowLeft className="h-4 w-4" /> Back to Question Library</button>
+      </div>
+    </section>
+  ) : null;
+
+  const guardrail = !submitted ? <div className="mt-4 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-xs leading-5 text-[var(--space-text-muted)]"><Target className="mr-1 inline h-3.5 w-3.5" /> Scoring guardrail: correct numbers alone cannot earn a high score without interpretation and a business implication{isHard ? '.' : ' supported by multiple exhibits.'} A next step or action plan is not required and never costs marks.</div> : null;
+
+  if (audioMode) {
+    return (
+      <div data-testid={`expert-drill-${question.id}`}>
+        <ChartsAudioLayout
+          header={(
+            <ChartsAudioHeader
+              title={shown.title}
+              onBackToLibrary={leaveQuestion}
+              onSwitchToText={() => onSwitchMode?.('text')}
+              meta={(
+                <>
+                  <CaseIdentityChips identity={drillIdentity(question)} testId="expert-identity" />
+                  <span className="text-xs font-semibold text-[var(--space-text-muted)]">{shownExhibits.length >= 3 ? `${shownExhibits.length} connected exhibits` : isHard ? '2 connected exhibits' : '2–3 connected exhibits'}</span>
+                  <span className="text-xs font-semibold text-[var(--space-text-muted)]">{question.estimatedMinutes} min</span>
+                </>
+              )}
+            />
+          )}
+          player={audioPlayer}
+          exhibits={<ExhibitRenderer exhibits={shownExhibits} layout="compare" guide={presented.exhibitGuide} />}
+          panel={submitted ? (
+            <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm">
+              <ChartsAudioQuestion task={presented.task} notes={[presented.instruction, ...presented.guidance]} />
+              <p className="mt-3 border-t border-[var(--space-border-default)] pt-3 text-xs font-semibold text-[var(--space-text-secondary)]">Your feedback is below the exhibits.</p>
+            </section>
+          ) : (
+            <section id={ANSWER_ANCHOR_ID} className="scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 shadow-sm" data-testid="expert-answer-area">
+              <ChartsAudioQuestion task={presented.task} notes={[presented.instruction, ...presented.guidance]} />
+              <div className="mt-3 border-t border-[var(--space-border-default)] pt-3">
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Your answer · Structured {levelLabel} Answer</p>
+                {attemptLoading || answerFields}
+              </div>
+            </section>
+          )}
+          after={(
+            <>
+              {resultArea}
+              {guardrail}
+            </>
+          )}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="mt-3" data-testid={`expert-drill-${question.id}`}>
       <div className="flex flex-wrap items-center gap-2">
         <button type="button" onClick={leaveQuestion} className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold ${tw.button.secondary}`}>
           <ArrowLeft className="h-4 w-4" /> Back to Question Library
         </button>
+        {onSwitchMode ? <ChartsModeSwitchButton target="audio" onClick={() => onSwitchMode('audio')} /> : null}
         <CaseIdentityChips identity={drillIdentity(question)} testId="expert-identity" />
         <span className="text-xs font-semibold text-[var(--space-text-muted)]">{shownExhibits.length >= 3 ? `${shownExhibits.length} connected exhibits` : isHard ? '2 connected exhibits' : '2–3 connected exhibits'}</span>
         <span className="text-xs font-semibold text-[var(--space-text-muted)]">Insight and implication required</span>
@@ -339,52 +436,19 @@ export default function ExpertDrillExperience({ question, onBack, onSubmitted, h
         </div>
 
         <div className="mt-4 space-y-4">
-          {!submitted && attemptsLoading && !retrying ? (
-            <section className="rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 text-center" aria-busy="true" data-testid="expert-attempt-loading">
-              <p className="text-sm font-bold text-[var(--space-text-primary)]">Checking for your saved result…</p>
-            </section>
-          ) : !submitted ? (
+          {attemptLoading || (!submitted ? (
             <section id={ANSWER_ANCHOR_ID} className="scroll-mt-3 rounded-2xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-5 shadow-sm sm:p-6" data-testid="expert-answer-area">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--space-text-brand)]">Your answer · Structured {levelLabel} Answer</p>
                 <BackToExhibitsButton />
               </div>
-              <p className="mt-1 text-xs leading-5 text-[var(--space-text-muted)]">{isHard ? 'Use specific exhibit values, then explain what they mean. Keep the path direct and decision-focused.' : 'Reference at least Exhibit 1 and Exhibit 2 with specific numbers. A correct number without interpretation cannot receive a high score.'}</p>
-              <div className="mt-5 space-y-5">
-                {question.calculationRequired ? <Field id="expert-calculation" label="Calculation" help="Show formulas, units, assumptions, and the reconciled result before interpreting it. Example: Revenue = 120 × 40 = 4,800 million VND." value={response.calculation} onChange={(value) => update('calculation', value)} rows={4} /> : null}
-                {isHard ? <Field id="hard-observation" label="1. Key Observation" help="Report only what the exhibits show. Example: Volume rose 8%, but revenue fell 3% as price declined 10%." value={response.supportingEvidence} onChange={(value) => update('supportingEvidence', value)} rows={3} /> : null}
-                <Field id="expert-insight" label={`${isHard ? '2' : '1'}. Key Insight`} help="Explain the conclusion behind the observation. Example: Discounting is eroding growth because the price decline outweighs the volume gain." value={response.keyInsight} onChange={(value) => update('keyInsight', value)} />
-                {!isHard ? <Field id="expert-evidence" label="2. Supporting Evidence" help="Cite at least two exhibits with specific, reconciled numbers; do not repeat your conclusion." value={response.supportingEvidence} onChange={(value) => update('supportingEvidence', value)} rows={3} /> : null}
-                <Field id="expert-implication" label="3. Business Implication" help="Explain what your findings mean for the client's objective or business decision. A next step or action plan is not required." value={response.businessImplication} onChange={(value) => update('businessImplication', value)} />
-              </div>
-              {error ? <p className="mt-4 text-sm font-semibold text-[var(--space-semantic-danger)]">{error}</p> : null}
-              <button type="button" onClick={() => void submit()} disabled={grading} className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-bold ${tw.button.primary} ${grading ? tw.button.disabled : ''}`} data-testid="button-submit-expert-answer"><Check className="h-4 w-4" /> {grading ? 'Mate is grading…' : `Submit For ${levelLabel} Feedback`}</button>
+              {answerFields}
             </section>
-          ) : scoringResult ? (
-            <section className="space-y-4" data-testid="expert-feedback">
-              <CaseResultView
-                score={scoringResult.overallScore}
-                scale={10}
-                outcome={outcome}
-                completedOn={completedOn}
-                feedback={resultFeedback}
-                criteria={scoringResult.criteria}
-                learnerResponseText={submittedAnswer}
-                workedAnswer={workedAnswer}
-                history={attemptHistory}
-                retry={retry}
-                nextAction={nextAction}
-                testId="expert-result"
-              />
-              <div className="flex flex-col gap-2 pb-20 sm:flex-row sm:pb-0">
-                <button type="button" onClick={leaveQuestion} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${tw.button.secondary}`} data-testid="button-back-expert-library"><ArrowLeft className="h-4 w-4" /> Back to Question Library</button>
-              </div>
-            </section>
-          ) : null}
+          ) : resultArea)}
         </div>
       </div>
 
-      {!submitted ? <div className="mt-4 rounded-xl border border-[var(--space-border-default)] bg-[var(--space-surface-card)] p-4 text-xs leading-5 text-[var(--space-text-muted)]"><Target className="mr-1 inline h-3.5 w-3.5" /> Scoring guardrail: correct numbers alone cannot earn a high score without interpretation and a business implication{isHard ? '.' : ' supported by multiple exhibits.'} A next step or action plan is not required and never costs marks.</div> : null}
+      {guardrail}
       <BackToQuestionButton />
     </div>
   );
